@@ -4,6 +4,7 @@
 #include "types.h"
 #include "net/sb_crypt.h"
 #include "net/SockAddrIn.h"
+#include "net/darray.h"
 
 // GameSpy serverbrowsing (sb_internal.h): servers (struct _SBServer) and their FIFOs, the query engine
 // (SBQueryEngine), the master server list connection (SBServerList, %s.ms%d.gs.nintendowifi.net port 28910),
@@ -65,8 +66,14 @@ struct GsSrvSortStackPad {
 
 // Entry of a server's key/value hash table.
 struct SBKeyValuePair {
-    /* 0x00 */ s32 key;
-    /* 0x04 */ s32 value;
+    /* 0x00 */ char *key; // (both strings interned in the string pool)
+    /* 0x04 */ char *value;
+};
+
+// Entry of the interned string pool (g_SBRefStrList).
+struct SBRefString {
+    /* 0x00 */ char *str;
+    /* 0x04 */ s32 refcount;
 };
 
 // Copy of data_ov065_0228e928 {"queryid", "final"}: reply keys CheckValidKey rejects.
@@ -76,36 +83,36 @@ struct GsServerIgnoredKeys {
 
 // Element of SBServerList::keyList (key name interned in the string pool, key type).
 struct KeyInfo {
-    /* 0x00 */ void *keyName;
+    /* 0x00 */ char *keyName;
     /* 0x04 */ s32 keyType;
 };
 
 struct SBServerList;
 
-// List events: (list, event 0 server added .. 6 public ip known, arg, userData).
-typedef void (*SBListCallBackFn)(SBServerList *, s32, u32, u32);
+// List events: (list, event 0 server added .. 6 public ip known, server, userData).
+typedef void (*SBListCallBackFn)(SBServerList *, s32, _SBServer *, void *);
 // Map loop message (type 5): (list, server, change time, map count, map names, userData).
-typedef void (*SBMaploopCallbackFn)(SBServerList *, void *, u32, s32, void *, u32);
+typedef void (*SBMaploopCallbackFn)(SBServerList *, void *, u32, s32, void *, void *);
 // Player search message (type 6): (list, nick, server ip, server port, last seen, game name, userData).
-typedef void (*SBPlayerSearchCallbackFn)(SBServerList *, void *, u32, u32, u32, void *, u32);
+typedef void (*SBPlayerSearchCallbackFn)(SBServerList *, void *, u32, u32, u32, void *, void *);
 
 struct SBServerList {
     /* 0x000 */ s32 state;
-    /* 0x004 */ void *servers;
-    /* 0x008 */ void *keylist;
+    /* 0x004 */ DArrayImplementation *servers; // of _SBServer *
+    /* 0x008 */ DArrayImplementation *keylist; // of KeyInfo
     /* 0x00c */ char queryforgamename[0x24];
     /* 0x030 */ char queryfromgamename[0x24];
     /* 0x054 */ char queryfromkey[0x20];
     /* 0x074 */ char mychallenge[8];
     /* 0x07c */ u8 *inbuffer;
     /* 0x080 */ s32 inbufferlen;
-    /* 0x084 */ u32 popularvalues[0xff];
+    /* 0x084 */ char *popularvalues[0xff]; // (interned strings)
     /* 0x480 */ s32 numpopularvalues;
     /* 0x484 */ s32 expectedelements;
     /* 0x488 */ SBListCallBackFn ListCallback;
     /* 0x48c */ SBMaploopCallbackFn MaploopCallback;
     /* 0x490 */ SBPlayerSearchCallbackFn PlayerSearchCallback;
-    /* 0x494 */ u32 instance;
+    /* 0x494 */ void *instance;
     /* 0x498 */ char *sortkey;
     /* 0x49c */ s32 sortascending;
     /* 0x4a0 */ s32 mypublicip;
@@ -121,7 +128,7 @@ struct SBServerList {
     /* 0x5c4 */ u32 queryoptions;
     /* 0x5c8 */ s32 pstate;
     /* 0x5cc */ s32 unk_5cc;
-    /* 0x5d0 */ void *deadlist;
+    /* 0x5d0 */ _SBServer *deadlist;
 };
 
 struct _ServerBrowser;

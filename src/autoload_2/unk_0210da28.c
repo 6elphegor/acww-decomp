@@ -1,132 +1,17 @@
-#include "uptr.h"
-#include "nitro/fs.h"
+#include "nnsys/snd_arcstrm.h"
+#include "proto/autoload_2/unk_0210b448.h"
+#include "proto/autoload_2/unk_0210c084.h"
+#include "proto/autoload_2/unk_0210da28.h"
+#include "proto/autoload_2/unk_0210ec0c.h"
+#include "proto/autoload_2/unk_02100234.h"
+#include "proto/autoload_2/unk_02113088.h"
+#include "proto/autoload_2/unk_02114410.h"
+#include "proto/autoload_2/unk_02119434.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) sound library tail: sound-archive stream player (NNS_SndArcStrm*: thread, job queue,
 // stream contexts), capture effects (NNS_SndCapture*) and the NNSiSndFader helpers.
 // autoload_2 0x0210da28-0x0210ec0c (the rest of output_effect.c is unk_0210ec0c.c). ARM, mwcc 1.2/base, -O4,p.
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef unsigned int u32;
 #include "types64.h"
-typedef signed char s8;
-typedef short s16;
-typedef int s32;
-typedef int BOOL;
-
-typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
-typedef struct NNSFndList { void *head; void *tail; u16 num; u16 offset; } NNSFndList;
-
-// NNSiSndFader
-typedef struct Fader {
-    s32 start;      // 0x00
-    s32 end;        // 0x04
-    s32 cnt;        // 0x08
-    s32 frames;     // 0x0c
-} Fader;
-
-#define HDR(c) ((u8 *)(c)->pad_a8)  // (the header buffer: pad_a8 .. the u8 / u16 fields after it, by the member)
-
-// stream context (NNSSndArcStrm), 0x160 bytes, 4 of them (data_021fc650)
-typedef struct Ctx {
-#ifdef HOST64
-    u8 strm[136] __attribute__((aligned(8)));  // NNSSndStrm (Strm in unk_0210a478.c: its 64-bit size, checked there)
-#else
-    u8 strm[0x5c];          // 0x00 NNSSndStrm
-#endif
-    FSFile file;            // 0x5c
-    u32 a4;                 // 0xa4
-    u8 pad_a8[0x18];        // 0xa8 .. 0xe8: 64-byte stream header buffer (type etc. are bytes of it)
-    u8 type;                // 0xc0
-    u8 c1;
-    u8 c2;                  // 0xc2
-    u8 c3;
-    u16 rate;               // 0xc4
-    u16 c6;                 // 0xc6
-    u8 pad_c8[4];
-    u32 cc;                 // 0xcc
-    u8 pad_d0[0x18];
-    Fader fader;            // 0xe8
-    u8 pad_f8[0x18];
-    struct {
-        s32 a : 1;
-        s32 b : 1;
-        s32 c : 1;
-        s32 d : 1;
-        s32 e : 1;
-        s32 f : 1;
-        s32 g : 1;
-    } fl;                   // 0x110
-    s32 v114;
-    s32 v118;
-    s32 pending;            // 0x11c
-    s32 users;              // 0x120
-    u8 nch;                 // 0x124
-    u8 pad125;
-    u8 chIdx[6];            // 0x126
-    void *buf;              // 0x12c
-    u32 bufSize;            // 0x130
-    s32 v134;
-    s32 v138;
-    void *cb;               // 0x13c
-    void *cbArg;            // 0x140
-    s32 v144;
-    s32 v148;
-    struct Ctx **handle;    // 0x14c
-    s32 prio;               // 0x150
-    s32 v154;
-    s32 vol;                // 0x158
-    u32 v15c;               // 0x15c
-} Ctx;
-
-typedef struct Job {
-    NNSFndLink link;        // 0x00
-    Ctx *owner;             // 0x08
-    s32 tag;                // 0x0c
-    s32 n;                  // 0x10
-    u32 buf[6];             // 0x14
-    u32 size;               // 0x2c
-} Job;
-
-#ifdef HOST64
-#include "sys/OSThread.h"
-#define PROTO_LOCAL_FS_CancelFile  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_InitMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_LockMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_UnlockMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_WakeupThread  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StrmThreadProc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_func_0210b48c  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_0210da28.h"
-#include "proto/autoload_2/unk_0210ec0c.h"
-// (by the types: the thread queue and the mutex are larger on 64-bit hosts; the stack after the thread isn't used
-// on hosts, whose threads run on their own stacks)
-typedef struct ThreadInfo {
-    u8 thread[sizeof(OSThread) > 0x4c0 ? sizeof(OSThread) : 0x4c0] __attribute__((aligned(8)));
-    OSThreadQueue queue;
-    OSMutex mutex;
-    NNSFndList list;
-} ThreadInfo;
-// StrmThreadProc (unk_0210c084.c) reaches them through these
-void *SndStrmThread_Queue(ThreadInfo *t) { return &t->queue; }
-void *SndStrmThread_Mutex(ThreadInfo *t) { return &t->mutex; }
-void *SndStrmThread_List(ThreadInfo *t) { return &t->list; }
-#else
-typedef struct ThreadInfo {
-    u8 thread[0x4c0];
-    u32 queue[3];           // 0x4c0
-    u8 mutex[0x18];         // 0x4cc
-    NNSFndList list;        // 0x4e4
-} ThreadInfo;
-#endif
-
-typedef struct SInfo {
-    void *file;             // 0
-    u8 b4;
-    u8 b5;
-    u8 b6;
-    u8 b7;
-} SInfo;
 
 typedef struct EffCtl {
     s32 type;               // 0x00
@@ -141,98 +26,84 @@ typedef struct EffCtl {
     } u;                    // 0x18
 } EffCtl;
 
-typedef struct ArcTbl {
-    u8 pad[0x1c];
-    u32 count;              // 0x1c
-    struct { u32 a; u32 b; u32 c; } ent[1];   // 0x20
-} ArcTbl;
+// the stream library (unk_0210a478.c, unk_0210a9c4.c): its NNSSndStrm is the player's first member
+typedef struct NNSSndStrm NNSSndStrm;
+static inline NNSSndStrm *PlayerStrm(NNSSndStrmPlayer *c) { return (NNSSndStrm *)c->stream; }
+typedef void (*NNSSndStrmBlockCallback)(s32 status, s32 numChannels, NNSSndStrmBufAddr *buffer, u32 len, s32 format,
+                                        void *arg);
+extern BOOL NNS_SndStrmSetup(NNSSndStrm *st, s32 fmt, u32 buf, u32 size, s32 timer, s32 interval,
+                             NNSSndStrmBlockCallback cb, void *arg);
+extern void NNS_SndStrmStart(NNSSndStrm *st);
+extern void NNS_SndStrmStop(NNSSndStrm *st);
+extern void NNS_SndStrmSetVolume(NNSSndStrm *st, u32 vol);
+extern void NNS_SndStrmSetChannelPan(NNSSndStrm *st, s32 ch, u32 pan);
+extern void NNS_SndStrmInit(NNSSndStrm *st);
+extern BOOL NNS_SndStrmAllocChannel(NNSSndStrm *st, s32 n, u8 *ch);
+extern void NNS_SndStrmFreeChannel(NNSSndStrm *st);
 
-// externs: data (bss in autoload_3)
-extern Ctx data_021fc650[4];
-extern ThreadInfo data_021fc160;
-extern ThreadInfo *data_021fbdac;
-extern u8 data_021fc62c[0x18];
-extern NNSFndList data_021fc644;
+// the sound archive (unk_0210b448.c)
+extern s32 NNS_SndArcReadFile(u32 idx, void *buf, u32 len, u32 offset);
+extern u32 NNS_SndArcGetFileOffset(u32 idx);
+extern void *NNS_SndArcGetStrmPlayerInfo(s32 idx);
+extern void *NNS_SndArcGetStrmInfo(s32 idx);
+extern void *NNS_SndHeapAlloc(void *heap, u32 size, void (*cb)(void *, u32, void *, u32), void *a, u32 b);
+
+// externs: data (this file's bss, defined at its end; the C prototype headers don't declare uninitialized variables)
 extern s32 data_021fbda8;
+extern u8 *data_021fbdb0;
+extern NNSSndStrmThread *data_021fbdac;
 extern NNSFndList data_021fbdb4;
-extern u8 data_021fbdc0[0x18];
-extern Job data_021fbdd8[8];
-extern void *data_021fbdb0;
+extern OSMutex data_021fbdc0;
+extern NNSSndStrmLoadCommand data_021fbdd8[8];
 extern u8 data_021fbf60[0x200];
-extern EffCtl data_0213bf10;
-extern s32 data_0213bf28[];
+extern NNSSndStrmThread data_021fc160;
+extern NNSSndStrmPlayer data_021fc650[4];
 extern s16 data_02139fb4[];
 
 // externs: functions
-extern void *NNS_FndGetNextListObject(NNSFndList *, void *);
-extern void NNS_FndRemoveListObject(NNSFndList *, void *);
-extern void NNS_FndAppendListObject(NNSFndList *, void *);
-extern void NNS_FndInitList(NNSFndList *, u16);
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
-extern void OS_LockMutex(void *);
-extern void OS_UnlockMutex(void *);
-extern void OS_InitMutex(void *);
-extern void OS_CreateThread(void *, void *, void *, void *, u32, u32);
-extern void OS_WakeupThreadDirect(void *);
-extern void OS_WakeupThread(void *);
-extern void MI_CpuFill8(u32, u32, u32);
-extern void MIi_CpuClear16(u32, void *, u32);
-extern void MIi_CpuCopyFast();
-extern void DC_FlushRange(void *, u32);
-extern void SND_SetSurroundDecay(u32);
-extern void FS_CancelFile(void *);
-extern void FS_CloseFile(void *);
-extern void FS_InitFile(void *);
-extern BOOL FS_OpenFileFast(void *, FSFileID);
-extern void NNS_SndStrmSetChannelPan(Ctx *, s32, s32);
-extern void NNS_SndStrmSetVolume(Ctx *, s32);
-extern void NNS_SndStrmStop(Ctx *);
-extern void NNS_SndStrmStart(Ctx *);
-extern BOOL NNS_SndStrmSetup();
-extern void NNS_SndStrmFreeChannel(Ctx *);
-extern BOOL NNS_SndStrmAllocChannel();
-extern void NNS_SndStrmInit(Ctx *);
-extern void NNS_SndCaptureStartEffect();
-extern void func_0210b48c(FSFileID *out);
-extern s32 NNS_SndArcReadFile();
-extern u32 NNS_SndArcGetFileOffset();
-extern u8 *NNS_SndArcGetStrmPlayerInfo();
-extern SInfo *NNS_SndArcGetStrmInfo();
-extern void *NNS_SndHeapAlloc();
-extern void StrmThreadProc();
+extern void MI_CpuFill8(void *dst, u32 v, u32 n);
+extern void MIi_CpuCopyFast(const void *src, void *dst, u32 n);
+// (these headers declare them for C++ only so far: proto/autoload_2/unk_02100234.h, unk_02113088.h, unk_02119434.h)
+extern void NNS_FndInitList(NNSFndList *list, u16 offset);
+extern void NNS_FndAppendListObject(NNSFndList *list, void *obj);
+extern void NNS_FndRemoveListObject(NNSFndList *list, void *obj);
+extern void *NNS_FndGetNextListObject(NNSFndList *list, void *obj);
+extern void OS_CreateThread(OSThread *thread, void (*func)(void *), void *arg, void *stack, u32 stackSize, u32 prio);
+extern void OS_WakeupThreadDirect(OSThread *t);
+extern BOOL FS_OpenFileFast(FSFile *file, FSFileID id);
+extern BOOL FS_CloseFile(FSFile *file);
+extern BOOL NNSi_SndFaderIsFinished(NNSSndFader *);
+extern void NNSi_SndFaderInit(NNSSndFader *);
+extern s32 NNSi_SndFaderGet(NNSSndFader *);
+extern void NNSi_SndFaderSet(NNSSndFader *, s32, s32);
+extern void NNSi_SndFaderUpdate(NNSSndFader *);
 
 // in-unit prototypes
-void RequestNextStrm(Ctx *);
-void StrmDataCallback(s32, s32, u32 *, u32, s32, Ctx *);
-void StrmBufDisposeCallback(void *, u32, Ctx *);
-void FreeCommandBuffer(Job *);
-Job *AllocCommandBuffer(void);
-Job *PopCommandBuffer(NNSFndList *);
-void RemoveCommandByPlayer(NNSFndList *, Ctx *);
-void CreateStrmThread(ThreadInfo *, u32);
-void FreeChannel(Ctx *);
-BOOL AllocChannel();
-void ShutdownPlayer__sndarc_stream(Ctx *);
-void ForceStopStrm__sndarc_stream(Ctx *);
-void StopStrm(Ctx *, s32);
-BOOL PrepareStrmCore();
-void FreePlayer(Ctx *);
-Ctx *AllocPlayer(Ctx **, s32, s32);
-void NNS_SndStrmHandleRelease(Ctx **);
-void NNS_SndArcStrmStartPrepared(Ctx **);
-BOOL NNS_SndArcStrmPrepare(Ctx **, s32, s32);
+void RequestNextStrm(NNSSndStrmPlayer *);
+void StrmDataCallback(s32, s32, NNSSndStrmBufAddr *, u32, s32, void *);
+void StrmBufDisposeCallback(void *, u32, void *, u32);
+void FreeCommandBuffer(NNSSndStrmLoadCommand *);
+NNSSndStrmLoadCommand *AllocCommandBuffer(void);
+NNSSndStrmLoadCommand *PopCommandBuffer(NNSFndList *);
+void RemoveCommandByPlayer(NNSFndList *, NNSSndStrmPlayer *);
+void CreateStrmThread(NNSSndStrmThread *, u32);
+void FreeChannel(NNSSndStrmPlayer *);
+BOOL AllocChannel(NNSSndStrmPlayer *c, s32 n, u8 *x);
+void ShutdownPlayer__sndarc_stream(NNSSndStrmPlayer *);
+void ForceStopStrm__sndarc_stream(NNSSndStrmPlayer *);
+void StopStrm(NNSSndStrmPlayer *, s32);
+BOOL PrepareStrmCore(NNSSndStrmPlayer **h, NNSSndArcStrmInfo *info, s32 playerNo, s32 prio, s32 strmNo, u32 offset,
+                     NNSSndStrmCallback strmCallback, void *strmCallbackArg, NNSSndArcStrmCallback sndArcStrmCallback,
+                     void *sndArcStrmCallbackArg);
+void FreePlayer(NNSSndStrmPlayer *);
+NNSSndStrmPlayer *AllocPlayer(NNSSndStrmPlayer **, s32, s32);
+void NNS_SndStrmHandleRelease(NNSSndStrmPlayer **);
+void NNS_SndArcStrmStartPrepared(NNSSndStrmPlayer **);
+BOOL NNS_SndArcStrmPrepare(NNSSndStrmPlayer **, s32, s32);
 BOOL SetupStrmPlayers(void *);
-void OutputEffectHeadphone();
-void OutputEffectMono();
-void OutputEffectSurround();
-void OutputEffectCallback();
-void NNS_SndCaptureChangeOutputEffect(s32);
-BOOL NNSi_SndFaderIsFinished(Fader *);
-void NNSi_SndFaderInit(Fader *);
-s32 NNSi_SndFaderGet(Fader *);
-void NNSi_SndFaderSet(Fader *, s32, s32);
-void NNSi_SndFaderUpdate(Fader *);
+void OutputEffectMono(s16 *l, s16 *r, u32 len);
 
 // HeadphoneProc (NitroSystem output_effect.c, capture effect 2): each channel gets the other one mixed in 24 samples
 // late at a quarter of its level, clamped to s16 (Cut_S32toS16). The `register` local is the library's own.
@@ -310,7 +181,7 @@ void OutputEffectMono(s16 *l, s16 *r, u32 len)
 void NNS_SndArcStrmInit(u32 prio, void *heap)
 {
     s32 i;
-    Ctx *c;
+    NNSSndStrmPlayer *c;
     if (data_021fbda8 != 0) {
         SetupStrmPlayers(heap);
         return;
@@ -320,18 +191,18 @@ void NNS_SndArcStrmInit(u32 prio, void *heap)
     for (i = 0; i < 8; i++) {
         NNS_FndAppendListObject(&data_021fbdb4, &data_021fbdd8[i]);
     }
-    OS_InitMutex(data_021fbdc0);
+    OS_InitMutex(&data_021fbdc0);
     data_021fbdb0 = data_021fbf60;
     c = data_021fc650;
     for (i = 0; i < 4; i++, c++) {
-        c->fl.a = 0;
+        c->activeFlag = 0;
         FS_InitFile(&c->file);
-        NNS_SndStrmInit(c);
-        c->v148 = i;
-        c->nch = 0;
-        c->buf = 0;
+        NNS_SndStrmInit(PlayerStrm(c));
+        c->playerNo = i;
+        c->numChannels = 0;
+        c->buffer = 0;
         c->bufSize = 0;
-        c->users = 0;
+        c->allocChannelCount = 0;
     }
     SetupStrmPlayers(heap);
     CreateStrmThread(&data_021fc160, prio);
@@ -342,7 +213,7 @@ BOOL SetupStrmPlayers(void *heap)
 {
     s32 i;
     u32 size;
-    Ctx *c;
+    NNSSndStrmPlayer *c;
     s32 j;
     u8 *info;
     void *mem;
@@ -350,16 +221,16 @@ BOOL SetupStrmPlayers(void *heap)
     for (i = 0; i < 4; i++, c++) {
         info = NNS_SndArcGetStrmPlayerInfo(i);
         if (info == 0) continue;
-        c->nch = info[0];
+        c->numChannels = info[0];
         for (j = 0; j < info[0]; j++) {
-            c->chIdx[j] = (info + j)[1];
+            c->chNoList[j] = (info + j)[1];
         }
         if (heap != 0) {
-            size = c->nch << 11;
+            size = c->numChannels << 11;
             mem = NNS_SndHeapAlloc(heap, size, StrmBufDisposeCallback, c, 0);
             if (mem == 0) return 0;
             ForceStopStrm__sndarc_stream(c);
-            c->buf = mem;
+            c->buffer = mem;
             c->bufSize = size;
         }
     }
@@ -367,22 +238,22 @@ BOOL SetupStrmPlayers(void *heap)
 }
 
 // NNS_SndArcStrmPrepare-like (lookup stream info then start impl)
-BOOL NNS_SndArcStrmPrepare(Ctx **h, s32 strmNo, s32 len)
+BOOL NNS_SndArcStrmPrepare(NNSSndStrmPlayer **h, s32 strmNo, s32 len)
 {
-    SInfo *info = NNS_SndArcGetStrmInfo(strmNo);
+    NNSSndArcStrmInfo *info = NNS_SndArcGetStrmInfo(strmNo);
     if (info == 0) return 0;
-    return PrepareStrmCore(h, info, info->b6, info->b5, strmNo, len, 0, 0, 0, 0);
+    return PrepareStrmCore(h, info, info->playerNo, info->playerPrio, strmNo, len, 0, 0, 0, 0);
 }
 
 // NNS_SndArcStrmStartPlay flag-like
-void NNS_SndArcStrmStartPrepared(Ctx **h)
+void NNS_SndArcStrmStartPrepared(NNSSndStrmPlayer **h)
 {
-    Ctx *c = *h;
-    if (c != 0) c->fl.c = 1;
+    NNSSndStrmPlayer *c = *h;
+    if (c != 0) c->startFlag = 1;
 }
 
 // NNS_SndArcStrmStart-like (handle, strmNo, len)
-BOOL NNS_SndArcStrmStart(Ctx **h, s32 a, s32 b)
+BOOL NNS_SndArcStrmStart(NNSSndStrmPlayer **h, s32 a, s32 b)
 {
     if (NNS_SndArcStrmPrepare(h, a, b) == 0) return 0;
     NNS_SndArcStrmStartPrepared(h);
@@ -390,32 +261,32 @@ BOOL NNS_SndArcStrmStart(Ctx **h, s32 a, s32 b)
 }
 
 // NNS_SndArcStrmStop-like (handle, fade frames)
-void NNS_SndArcStrmStop(Ctx **h, s32 frames)
+void NNS_SndArcStrmStop(NNSSndStrmPlayer **h, s32 frames)
 {
-    Ctx *c = *h;
+    NNSSndStrmPlayer *c = *h;
     if (c == 0) return;
     StopStrm(c, frames);
 }
 
 // NNS_SndArcStrmSetVolume-like (volume, fade frames)
-void NNS_SndArcStrmMoveVolume(Ctx **h, s32 vol, s32 frames)
+void NNS_SndArcStrmMoveVolume(NNSSndStrmPlayer **h, s32 vol, s32 frames)
 {
-    Ctx *c = *h;
+    NNSSndStrmPlayer *c = *h;
     if (c == 0) return;
-    if (c->fl.d != 0) return;
+    if (c->fadeOutFlag != 0) return;
     NNSi_SndFaderSet(&c->fader, vol << 8, frames);
 }
 
 // NNS_SndArcStrmInitHandle-like
-void NNS_SndStrmHandleInit(Ctx **h)
+void NNS_SndStrmHandleInit(NNSSndStrmPlayer **h)
 {
     *h = 0;
 }
 
 // NNSi_SndArcStrmHandleDetach-like
-void NNS_SndStrmHandleRelease(Ctx **h)
+void NNS_SndStrmHandleRelease(NNSSndStrmPlayer **h)
 {
-    Ctx *c = *h;
+    NNSSndStrmPlayer *c = *h;
     if (c != 0) {
         c->handle = 0;
         *h = 0;
@@ -423,19 +294,19 @@ void NNS_SndStrmHandleRelease(Ctx **h)
 }
 
 // NNS_SndArcStrmGetLoopTime-like (ms)
-u32 func_0210e648(Ctx **h)
+u32 func_0210e648(NNSSndStrmPlayer **h)
 {
-    Ctx *c = *h;
+    NNSSndStrmPlayer *c = *h;
     if (c == 0) return 0;
-    return (u64)c->v15c * (u64)1000 / (u64)c->rate;
+    return (u64)c->curSample * (u64)1000 / (u64)c->info.sampleRate;
 }
 
 // NNS_SndArcStrmGetTotalTime-like (ms)
-u32 func_0210e5fc(Ctx **h)
+u32 func_0210e5fc(NNSSndStrmPlayer **h)
 {
-    Ctx *c = *h;
+    NNSSndStrmPlayer *c = *h;
     if (c == 0) return 0;
-    return (u64)c->cc * (u64)1000 / (u64)c->rate;
+    return (u64)c->info.loopEnd * (u64)1000 / (u64)c->info.sampleRate;
 }
 
 // NNS_SndArcStrmMain-like (per-frame update of the 4 contexts: start, fade, volume)
@@ -444,76 +315,78 @@ void NNSi_SndArcStrmMain(void)
     s32 i;
     s32 v;
     s32 a;
-    Ctx *c;
+    NNSSndStrmPlayer *c;
     c = data_021fc650;
     for (i = 0; i < 4; i++, c++) {
-        if (c->fl.a == 0) continue;
-        if (c->v114 == 0) {
+        if (c->activeFlag == 0) continue;
+        if (c->finishCounter == 0) {
             ForceStopStrm__sndarc_stream(c);
             continue;
         }
-        if (c->fl.c != 0 && c->v118 != 0) {
-            NNS_SndStrmStart(c);
-            c->fl.b = 1;
-            c->fl.c = 0;
+        if (c->startFlag != 0 && c->prepareFlag != 0) {
+            NNS_SndStrmStart(PlayerStrm(c));
+            c->playFlag = 1;
+            c->startFlag = 0;
         }
-        if (c->fl.b == 0) continue;
+        if (c->playFlag == 0) continue;
         NNSi_SndFaderUpdate(&c->fader);
-        a = data_02139fb4[c->v154];
+        a = data_02139fb4[c->initVolume];
         v = data_02139fb4[NNSi_SndFaderGet(&c->fader) >> 8];
         v = v + a;
-        if (v != c->vol) {
-            NNS_SndStrmSetVolume(c, v);
-            c->vol = v;
+        if (v != c->volume) {
+            NNS_SndStrmSetVolume(PlayerStrm(c), v);
+            c->volume = v;
         }
-        if (c->fl.d != 0) {
+        if (c->fadeOutFlag != 0) {
             if (NNSi_SndFaderIsFinished(&c->fader) != 0) ForceStopStrm__sndarc_stream(c);
         }
     }
 }
 
 // NNSi_SndArcStrmAcquire-like (take context idx with priority)
-Ctx *AllocPlayer(Ctx **h, s32 idx, s32 prio)
+NNSSndStrmPlayer *AllocPlayer(NNSSndStrmPlayer **h, s32 idx, s32 prio)
 {
-    Ctx *c;
+    NNSSndStrmPlayer *c;
     if (*h != 0) NNS_SndStrmHandleRelease(h);
     c = &data_021fc650[idx];
-    if (c->buf == 0) return 0;
-    if (c->fl.a) {
+    if (c->buffer == 0) return 0;
+    if (c->activeFlag) {
         if (prio < c->prio) return 0;
         ForceStopStrm__sndarc_stream(c);
     }
     c->prio = prio;
-    c->fl.a = 1;
+    c->activeFlag = 1;
     c->handle = h;
     *h = c;
     return c;
 }
 
 // NNSi_SndArcStrmReset-like (detach handle, clear flags)
-void FreePlayer(Ctx *c)
+void FreePlayer(NNSSndStrmPlayer *c)
 {
-    Ctx **h = c->handle;
+    NNSSndStrmPlayer **h = c->handle;
     if (h != 0) {
         *h = 0;
         c->handle = 0;
     }
-    c->fl.a = 0;
-    c->fl.c = 0;
-    c->fl.b = 0;
+    c->activeFlag = 0;
+    c->startFlag = 0;
+    c->playFlag = 0;
 }
 
 // NNSi_SndArcStrmStartImpl-like: open the stream file, set up the context and NNSSndStrm
-BOOL PrepareStrmCore(Ctx **h, SInfo *info, s32 idx, s32 prio, s32 v144, u32 len, s32 v134, s32 v138, void *cb, void *cbArg)
+BOOL PrepareStrmCore(NNSSndStrmPlayer **h, NNSSndArcStrmInfo *info, s32 playerNo, s32 prio, s32 strmNo, u32 offset,
+                     NNSSndStrmCallback strmCallback, void *strmCallbackArg, NNSSndArcStrmCallback sndArcStrmCallback,
+                     void *sndArcStrmCallbackArg)
 {
-    Ctx *c;
+    NNSSndStrmPlayer *c;
     s32 fmt;
     s32 n;
     FSFileID fid;
 
-    c = AllocPlayer(h, idx, prio);
+    c = AllocPlayer(h, playerNo, prio);
     if (c == 0) return 0;
-    if (NNS_SndArcReadFile(info->file, HDR(c), 0x40, 0) != 0x40) {
+    if (NNS_SndArcReadFile(info->fileId, &c->info, sizeof(NNSSndStrmData), 0) != sizeof(NNSSndStrmData)) {
         FreePlayer(c);
         return 0;
     }
@@ -522,30 +395,30 @@ BOOL PrepareStrmCore(Ctx **h, SInfo *info, s32 idx, s32 prio, s32 v144, u32 len,
         FreePlayer(c);
         return 0;
     }
-    c->a4 = NNS_SndArcGetFileOffset(info->file);
-    c->v15c = (c->rate * len) / 1000;
-    if (c->v15c != 0 && c->type == 2) {
-        c->fl.e = 1;
+    c->fileOffset = NNS_SndArcGetFileOffset(info->fileId);
+    c->curSample = (c->info.sampleRate * offset) / 1000;
+    if (c->curSample != 0 && c->info.format == 2) {
+        c->dirtyFlag = 1;
     } else {
-        c->fl.e = 0;
+        c->dirtyFlag = 0;
     }
-    c->v114 = 4;
-    c->fl.f = 0;
-    c->fl.b = 0;
-    c->v118 = 0;
-    c->fl.c = 0;
-    c->fl.d = 0;
-    c->pending = 0;
-    c->v134 = v134;
-    c->v138 = v138;
-    c->cb = cb;
-    c->cbArg = cbArg;
-    c->v144 = v144;
-    c->vol = 0;
-    c->v154 = info->b4;
+    c->finishCounter = 4;
+    c->finishFlag = 0;
+    c->playFlag = 0;
+    c->prepareFlag = 0;
+    c->startFlag = 0;
+    c->fadeOutFlag = 0;
+    c->commandCount = 0;
+    c->strmCallback = strmCallback;
+    c->strmCallbackArg = strmCallbackArg;
+    c->sndArcStrmCallback = sndArcStrmCallback;
+    c->sndArcStrmCallbackArg = sndArcStrmCallbackArg;
+    c->strmNo = strmNo;
+    c->volume = 0;
+    c->initVolume = info->volume;
     NNSi_SndFaderInit(&c->fader);
     NNSi_SndFaderSet(&c->fader, 0x7f00, 1);
-    switch (c->type) {
+    switch (c->info.format) {
     case 0:
         fmt = 0;
         break;
@@ -554,32 +427,33 @@ BOOL PrepareStrmCore(Ctx **h, SInfo *info, s32 idx, s32 prio, s32 v144, u32 len,
         fmt = 1;
         break;
     }
-    n = c->c2;
-    if (info->b7 & 1) n = 2;
-    if (n > c->nch) n = c->nch;
-    c->fl.g = (n == 1);
-    if (AllocChannel(c, n, c->chIdx) == 0) {
+    n = c->info.numChannels;
+    if (info->flags & 1) n = 2;
+    if (n > c->numChannels) n = c->numChannels;
+    c->monoFlag = (n == 1);
+    if (AllocChannel(c, n, c->chNoList) == 0) {
         FS_CloseFile(&c->file);
         FreePlayer(c);
         return 0;
     }
-    if (NNS_SndStrmSetup(c, fmt, c->buf, (c->bufSize * n) / c->nch, c->c6, 4, StrmDataCallback, c) == 0) {
+    if (NNS_SndStrmSetup(PlayerStrm(c), fmt, NNSi_SndArm7Addr(c->buffer), (c->bufSize * n) / c->numChannels, c->info.timer, 4,
+                         StrmDataCallback, c) == 0) {
         FreeChannel(c);
         FS_CloseFile(&c->file);
         FreePlayer(c);
         return 0;
     }
     if (n == 2) {
-        NNS_SndStrmSetChannelPan(c, 0, 0);
-        NNS_SndStrmSetChannelPan(c, 1, 0x7f);
+        NNS_SndStrmSetChannelPan(PlayerStrm(c), 0, 0);
+        NNS_SndStrmSetChannelPan(PlayerStrm(c), 1, 0x7f);
     }
     return 1;
 }
 
 // NNS_SndArcStrmStop(handle, fadeFrames)-like core
-void StopStrm(Ctx *c, s32 frames)
+void StopStrm(NNSSndStrmPlayer *c, s32 frames)
 {
-    if (c->fl.b == 0) {
+    if (c->playFlag == 0) {
         ForceStopStrm__sndarc_stream(c);
         return;
     }
@@ -588,84 +462,76 @@ void StopStrm(Ctx *c, s32 frames)
         return;
     }
     NNSi_SndFaderSet(&c->fader, 0, frames);
-    c->fl.d = 1;
+    c->fadeOutFlag = 1;
     c->prio = 0;
 }
 
 // NNS_SndArcStrmStop-like (immediate)
-void ForceStopStrm__sndarc_stream(Ctx *c)
+void ForceStopStrm__sndarc_stream(NNSSndStrmPlayer *c)
 {
-    OS_LockMutex(data_021fc62c);
+    OS_LockMutex(&data_021fc160.mutex);
     if (data_021fbdac != 0) OS_LockMutex(&data_021fbdac->mutex);
-    if (c->fl.b) NNS_SndStrmStop(c);
-    if (c->fl.a) FS_CancelFile(&c->file);
+    if (c->playFlag) NNS_SndStrmStop(PlayerStrm(c));
+    if (c->activeFlag) FS_CancelFile(&c->file);
     ShutdownPlayer__sndarc_stream(c);
-    OS_UnlockMutex(data_021fc62c);
+    OS_UnlockMutex(&data_021fc160.mutex);
     if (data_021fbdac != 0) OS_UnlockMutex(&data_021fbdac->mutex);
 }
 
 // NNSi_SndArcStrmClose-like
-void ShutdownPlayer__sndarc_stream(Ctx *c)
+void ShutdownPlayer__sndarc_stream(NNSSndStrmPlayer *c)
 {
-    if (c->fl.a == 0) return;
+    if (c->activeFlag == 0) return;
     FreeChannel(c);
     FS_CloseFile(&c->file);
-    RemoveCommandByPlayer(&data_021fc644, c);
+    RemoveCommandByPlayer(&data_021fc160.commandList, c);
     {
-        ThreadInfo *p = data_021fbdac;
-        if (p != 0) RemoveCommandByPlayer(&p->list, c);
+        NNSSndStrmThread *p = data_021fbdac;
+        if (p != 0) RemoveCommandByPlayer(&p->commandList, c);
     }
     FreePlayer(c);
 }
 
 // NNSi_SndArcStrmChannelAlloc-like
-BOOL AllocChannel(Ctx *c, s32 n, u8 *x)
+BOOL AllocChannel(NNSSndStrmPlayer *c, s32 n, u8 *x)
 {
-    if (c->users == 0) {
-        if (NNS_SndStrmAllocChannel(c, n, x) == 0) return 0;
+    if (c->allocChannelCount == 0) {
+        if (NNS_SndStrmAllocChannel(PlayerStrm(c), n, x) == 0) return 0;
     }
-    c->users = c->users + 1;
+    c->allocChannelCount = c->allocChannelCount + 1;
     return 1;
 }
 
 // NNSi_SndArcStrmChannelRelease-like
-void FreeChannel(Ctx *c)
+void FreeChannel(NNSSndStrmPlayer *c)
 {
-    if (c->users == 0) return;
-    c->users = c->users - 1;
-    if (c->users != 0) return;
-    NNS_SndStrmFreeChannel(c);
+    if (c->allocChannelCount == 0) return;
+    c->allocChannelCount = c->allocChannelCount - 1;
+    if (c->allocChannelCount != 0) return;
+    NNS_SndStrmFreeChannel(PlayerStrm(c));
 }
 
 // NNS_SndArcStrmThread create-like (OS_CreateThread + job list, mutex, queue)
-void CreateStrmThread(ThreadInfo *t, u32 prio)
+void CreateStrmThread(NNSSndStrmThread *t, u32 prio)
 {
-#ifdef HOST64
-    OS_CreateThread(t, StrmThreadProc, t, &t->queue, 0x400, prio);
-    NNS_FndInitList(&t->list, 0);
+    OS_CreateThread(&t->thread, StrmThreadProc, t, &t->queue, 0x400, prio); // (the stack ends at the queue)
+    NNS_FndInitList(&t->commandList, 0);
     OS_InitMutex(&t->mutex);
-    t->queue.head = 0;
     t->queue.tail = 0;
-#else
-    OS_CreateThread(t, StrmThreadProc, t, (u8 *)t + 0x4c0, 0x400, prio);
-    NNS_FndInitList(&t->list, 0);
-    OS_InitMutex(&t->mutex);
-    t->queue[1] = 0;
-    t->queue[0] = t->queue[1];
-#endif
-    OS_WakeupThreadDirect(t);
+    t->queue.head = t->queue.tail;
+    OS_WakeupThreadDirect(&t->thread);
 }
 
 // NNSi_SndArcStrmJobCancel-like (drop all jobs of a stream)
-void RemoveCommandByPlayer(NNSFndList *list, Ctx *c)
+void RemoveCommandByPlayer(NNSFndList *list, NNSSndStrmPlayer *c)
 {
     u32 irq;
-    Job *job;
-    Job *next;
+    NNSSndStrmLoadCommand *job;
+    NNSSndStrmLoadCommand *next;
     irq = OS_DisableInterrupts();
     for (job = NNS_FndGetNextListObject(list, 0); job != 0; job = next) {
         next = NNS_FndGetNextListObject(list, job);
-        if (job->owner == c) {
+        if (job->player == c) {
             NNS_FndRemoveListObject(list, job);
             FreeCommandBuffer(job);
         }
@@ -674,25 +540,25 @@ void RemoveCommandByPlayer(NNSFndList *list, Ctx *c)
 }
 
 // NNSi_SndArcStrmJobPop-like (first job of a thread list)
-Job *PopCommandBuffer(NNSFndList *list)
+NNSSndStrmLoadCommand *PopCommandBuffer(NNSFndList *list)
 {
     u32 irq;
-    Job *job;
+    NNSSndStrmLoadCommand *job;
     irq = OS_DisableInterrupts();
     job = NNS_FndGetNextListObject(list, 0);
     if (job != 0) {
         NNS_FndRemoveListObject(list, job);
-        job->owner->pending = job->owner->pending - 1;
+        job->player->commandCount = job->player->commandCount - 1;
     }
     OS_RestoreInterrupts(irq);
     return job;
 }
 
 // NNSi_SndArcStrmJobAlloc-like (job from the free list)
-Job *AllocCommandBuffer(void)
+NNSSndStrmLoadCommand *AllocCommandBuffer(void)
 {
     u32 irq;
-    Job *job;
+    NNSSndStrmLoadCommand *job;
     irq = OS_DisableInterrupts();
     job = NNS_FndGetNextListObject(&data_021fbdb4, 0);
     if (job != 0) NNS_FndRemoveListObject(&data_021fbdb4, job);
@@ -701,7 +567,7 @@ Job *AllocCommandBuffer(void)
 }
 
 // NNSi_SndArcStrmJobFree-like (job back to the free list)
-void FreeCommandBuffer(Job *job)
+void FreeCommandBuffer(NNSSndStrmLoadCommand *job)
 {
     u32 irq = OS_DisableInterrupts();
     NNS_FndAppendListObject(&data_021fbdb4, job);
@@ -709,101 +575,104 @@ void FreeCommandBuffer(Job *job)
 }
 
 // NNSi_SndArcStrmHeapDestroyCallback-like (snd heap block destroy callback)
-void StrmBufDisposeCallback(void *mem, u32 size, Ctx *c)
+void StrmBufDisposeCallback(void *mem, u32 size, void *arg, u32 unused)
 {
-    if (mem != c->buf) return;
-    OS_LockMutex(data_021fc62c);
+    NNSSndStrmPlayer *c = arg;
+    if (mem != c->buffer) return;
+    OS_LockMutex(&data_021fc160.mutex);
     if (data_021fbdac != 0) OS_LockMutex(&data_021fbdac->mutex);
     ForceStopStrm__sndarc_stream(c);
-    c->buf = 0;
+    c->buffer = 0;
     c->bufSize = 0;
-    c->nch = 0;
-    if (c->users > 0) {
-        NNS_SndStrmFreeChannel(c);
-        c->users = 0;
+    c->numChannels = 0;
+    if (c->allocChannelCount > 0) {
+        NNS_SndStrmFreeChannel(PlayerStrm(c));
+        c->allocChannelCount = 0;
     }
-    OS_UnlockMutex(data_021fc62c);
+    OS_UnlockMutex(&data_021fc160.mutex);
     if (data_021fbdac != 0) OS_UnlockMutex(&data_021fbdac->mutex);
 }
 
 // NNSi_SndArcStrmCallback-like: NNSSndStrm block callback (queues a load job for the stream thread)
-void StrmDataCallback(s32 ch, s32 n, u32 *bufs, u32 size, s32 unused, Ctx *c)
+void StrmDataCallback(s32 ch, s32 n, NNSSndStrmBufAddr *bufs, u32 size, s32 unused, void *arg)
 {
-    Job *job;
-    ThreadInfo *t;
+    NNSSndStrmPlayer *c = arg;
+    NNSSndStrmLoadCommand *job;
+    NNSSndStrmThread *t;
     s32 i;
 
-    if (c->pending >= 2) {
-        for (job = NNS_FndGetNextListObject(&data_021fc644, 0); job != 0; job = NNS_FndGetNextListObject(&data_021fc644, job)) {
-            if (job->owner == c) break;
+    if (c->commandCount >= 2) {
+        for (job = NNS_FndGetNextListObject(&data_021fc160.commandList, 0); job != 0;
+             job = NNS_FndGetNextListObject(&data_021fc160.commandList, job)) {
+            if (job->player == c) break;
         }
-        for (i = 0; i < job->n; i++) {
-            MI_CpuFill8(job->buf[i], 0, job->size);
+        for (i = 0; i < job->numChannels; i++) {
+            MI_CpuFill8(NNSi_SndStrmBufPtr(job->buffer[i]), 0, job->bufLen);
         }
-        NNS_FndRemoveListObject(&data_021fc644, job);
-        c->pending = c->pending - 1;
+        NNS_FndRemoveListObject(&data_021fc160.commandList, job);
+        c->commandCount = c->commandCount - 1;
         FreeCommandBuffer(job);
     }
     job = AllocCommandBuffer();
-    job->owner = c;
-    job->tag = ch;
-    job->n = n;
+    job->player = c;
+    job->status = ch;
+    job->numChannels = n;
     for (i = 0; i < n; i++) {
-        job->buf[i] = bufs[i];
+        job->buffer[i] = bufs[i];
     }
-    job->size = size;
+    job->bufLen = size;
     t = &data_021fc160;
     if (ch == 0) {
         if (data_021fbdac != 0) t = data_021fbdac;
     }
-    c->pending = c->pending + 1;
-    NNS_FndAppendListObject(&t->list, job);
+    c->commandCount = c->commandCount + 1;
+    NNS_FndAppendListObject(&t->commandList, job);
     OS_WakeupThread(&t->queue);
 }
 
 // NNSi_SndArcStrmLoadNext-like: stream thread helper, asks the user callback for the next stream and re-reads its header
-void RequestNextStrm(Ctx *c)
+void RequestNextStrm(NNSSndStrmPlayer *c)
 {
     u8 oldType;
     u16 oldRate;
-    SInfo *info;
-    struct { u32 p; u32 n; } in, out;
+    NNSSndArcStrmInfo *info;
+    NNSSndArcStrmCallbackParam in;
+    NNSSndArcStrmCallbackInfo out;
     BOOL ok;
 
-    in.p = c->v148;
-    in.n = c->v144;
-    out.p = c->v144;
-    out.n = 0;
-    ok = ((BOOL (*)())c->cb)(0, &in, &out, c->cbArg);
+    in.playerNo = c->playerNo;
+    in.strmNo = c->strmNo;
+    out.strmNo = c->strmNo;
+    out.offset = 0;
+    ok = c->sndArcStrmCallback(0, &in, &out, c->sndArcStrmCallbackArg);
     if (ok == 0) return;
-    info = NNS_SndArcGetStrmInfo(out.p);
+    info = NNS_SndArcGetStrmInfo(out.strmNo);
     if (info == 0) return;
-    oldType = c->type;
-    oldRate = c->rate;
-    c->a4 = NNS_SndArcGetFileOffset(info->file);
-    NNS_SndArcReadFile(info->file, HDR(c), 0x40, 0);
-    if (oldRate != c->rate) return;
-    if (oldType == 0 && c->type != 0) return;
-    if (oldType != 0 && c->type == 0) return;
-    c->v144 = out.p;
-    c->v15c = (c->rate * out.n) / 1000;
-    if (c->v15c != 0 && c->type == 2) {
-        c->fl.e = 1;
+    oldType = c->info.format;
+    oldRate = c->info.sampleRate;
+    c->fileOffset = NNS_SndArcGetFileOffset(info->fileId);
+    NNS_SndArcReadFile(info->fileId, &c->info, sizeof(NNSSndStrmData), 0);
+    if (oldRate != c->info.sampleRate) return;
+    if (oldType == 0 && c->info.format != 0) return;
+    if (oldType != 0 && c->info.format == 0) return;
+    c->strmNo = out.strmNo;
+    c->curSample = (c->info.sampleRate * out.offset) / 1000;
+    if (c->curSample != 0 && c->info.format == 2) {
+        c->dirtyFlag = 1;
     } else {
-        c->fl.e = 0;
+        c->dirtyFlag = 0;
     }
-    c->fl.f = 0;
+    c->finishFlag = 0;
 }
 
-// ---- file-scope objects (autoload_3 .bss 0x021fbda8-0x021fcbd0). data_021fc62c / data_021fc644 are the mutex and the
-// command list inside data_021fc160 (interior labels). This definition order gives the original order after mwcc's
-// size sort.
+// ---- file-scope objects (autoload_3 .bss 0x021fbda8-0x021fcbd0). The DS's labels data_021fc62c / data_021fc644 are the
+// mutex and the command list of data_021fc160. This definition order gives the original order after mwcc's size sort.
 s32 data_021fbda8;
-void *data_021fbdb0;
-ThreadInfo *data_021fbdac;
+u8 *data_021fbdb0; // the ADPCM decode buffer (MakeWaveData, unk_0210c084.c)
+NNSSndStrmThread *data_021fbdac;
 NNSFndList data_021fbdb4;
-u8 data_021fbdc0[0x18];
-Job data_021fbdd8[8];
+OSMutex data_021fbdc0; // the decode buffer's mutex
+NNSSndStrmLoadCommand data_021fbdd8[8];
 u8 data_021fbf60[0x200] __attribute__((aligned(32)));
-ThreadInfo data_021fc160;
-Ctx data_021fc650[4];
+NNSSndStrmThread data_021fc160;
+NNSSndStrmPlayer data_021fc650[4];

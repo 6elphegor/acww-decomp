@@ -12,11 +12,11 @@
 #include "sys/QNode.h"
 #include "sys/ProcBase.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_ProcBase_StartCreate  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL__ZN8ProcBase10taskCreateEv  // declared below: the shared prototype conflicts with the calls here
+#include "sys/CmdSeq.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/autoload_2/unk_020ed7e4.h"
+#include "proto/autoload_2/unk_020ed8cc.h"
 #include "proto/autoload_2/unk_02114d84.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 
@@ -37,7 +37,7 @@ extern u8 gProcCreateStep;
 extern u8 sProcCreateGroup;
 extern u16 gProcCreateProfile;
 extern u16 sProcCreateProfile;
-extern u32 sProcCreateParent;
+extern TreeNode *sProcCreateParent;
 extern u32 (*sProcCreateHook)(u32);
 extern void (*sProcDeleteHook)(u32);
 extern u32 sProcCreateParam;
@@ -49,31 +49,15 @@ extern TreeNode gProcTree;
 extern QList gTaskExecuteList, gTaskCreateList, gTaskDrawList, gTaskDeleteList;
 extern ProcProfile **gProfileTable;
 
-#define Heap_alloc _ZN4Heap5allocEji
-void *Heap_alloc(Heap *self, u32 size, s32 align);
-#define Heap_destroy _ZN4Heap7destroyEv
-void Heap_destroy(Heap *self);
-#define Heap_destroy2 _ZN4Heap8destroy2Ev
-void Heap_destroy2(Heap *self);
-#define Heap_getFreeSize _ZN4Heap11getFreeSizeEv
-u32 Heap_getFreeSize(Heap *self);
-#define Heap_adjust _ZN4Heap6adjustEv
-void *Heap_adjust(Heap *self);
-#define Heap_free _ZN4Heap4freeEPv
-void Heap_free(Heap *self, void *p);
+// (the task lists and the object tree: their definitions use other names for the same types, include/proto/.excluded)
 void List_PushBack(QList *l, QNode *n);
 void List_Remove(QList *l, QNode *n);
 void TreeNode_Detach(TreeNode *root, TreeNode *n);
 void TreeNode_Attach(TreeNode *root, TreeNode *n, TreeNode *parent);
 TreeNode *TreeNode_Construct(TreeNode *n);
 void Task_InsertByPriority(QList *l, QNode *n);
-void CmdSeq_Undo(void *p);
-void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
-u32 ProcBase_RunPhase(void *p, P2 a, P2 b, P2 c);
-
-#define ProcBase_taskCreate _ZN8ProcBase10taskCreateEv
-void ProcBase_taskCreate(ProcBase *p);
-void ProcBase_StartCreate(ProcBase *p);
+void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8 (assembly)
+u32 ProcBase_RunPhase(void *p, P2 a, P2 b, P2 c); // (itcm, unk_01ffd0e4.cpp)
 }
 
 static inline BOOL isZero(u32 v) {
@@ -115,7 +99,7 @@ extern "C" ProcBase *_ZN8ProcBaseC2Ev(ProcBase *self) {
     self->param = sProcCreateParam;
     self->profile = sProcCreateProfile;
     self->group = sProcCreateGroup;
-    TreeNode_Attach(&gProcTree, &self->treeNode, (TreeNode *)sProcCreateParent);
+    TreeNode_Attach(&gProcTree, &self->treeNode, sProcCreateParent);
     ProcProfile *d = gProfileTable[self->profile];
     u16 a = d->executePriority;
     QNode *q1 = &self->executeNode;
@@ -168,7 +152,7 @@ extern "C" BOOL _ZN8ProcBase8onDeleteEv(ProcBase *self) {
 }
 
 extern "C" BOOL _ZN8ProcBase9preDeleteEv(ProcBase *self) {
-    if ((self->seq == NULL || CmdSeq_Poll(self->seq) != 0) && self->treeNode.child == NULL) {
+    if ((self->seq == NULL || CmdSeq_Poll((CmdSeq *)self->seq) != 0) && self->treeNode.child == NULL) {
     } else {
         return FALSE;
     }
@@ -180,7 +164,7 @@ extern "C" void _ZN8ProcBase10postDeleteEv(ProcBase *self, s32 a) {
     TreeNode_Detach(&gProcTree, &self->treeNode);
     List_Remove(&gTaskDeleteList, &self->executeNode);
     if (self->procHeap != NULL) (self->procHeap)->destroy2();
-    if (self->seq != NULL) CmdSeq_Undo(self->seq);
+    if (self->seq != NULL) CmdSeq_Undo((CmdSeq *)self->seq);
     delete self;
 }
 
@@ -250,7 +234,7 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
         h = FrameHeap_CreateAsCurrent(size, parent);
         if (h != NULL) {
             BOOL ok;
-            u32 f = h->regionStart & 0x10;
+            u32 f = (uptr)h->regionStart & 0x10;
             if (f) (h)->alloc(0x10, 0x10);
             ok = self->allocResources();
             if (f == 0) {
@@ -275,7 +259,7 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
         u32 f;
         BOOL ok;
         h = FrameHeap_CreateAsCurrent(-1, parent);
-        f = h->regionStart & 0x10;
+        f = (uptr)h->regionStart & 0x10;
         if (f) (h)->alloc(0x10, 0x10);
         ok = self->allocResources();
         if (f == 0) {
@@ -335,7 +319,7 @@ extern "C" BOOL _ZN8ProcBase10createHeapEv(ProcBase *self, u32 size, Heap *paren
         Heap *h = FrameHeap_CreateAsCurrent(size, parent);
         if (h != NULL) {
             BOOL ok;
-            u32 f = h->regionStart & 0x10;
+            u32 f = (uptr)h->regionStart & 0x10;
             if (f) (h)->alloc(0x10, 0x10);
             ok = self->allocResources();
             if (f == 0) {
@@ -371,7 +355,7 @@ extern "C" void _ZN8ProcBasedlEPv(void *p) {
 }
 
 extern "C" void ProcBase_StartCreate(ProcBase *self) {
-    ProcBase_taskCreate(self);
+    self->taskCreate();
     if (self->deletePending != 0) return;
     if (self->activatePending != 0) return;
     if (!isZero(self->state)) return;
@@ -382,16 +366,15 @@ extern "C" void ProcBase_StartCreate(ProcBase *self) {
     List_PushBack(&gTaskCreateList, &self->executeNode);
 }
 
-extern "C" void ProcBase_taskCreate(ProcBase *self) {
-    ProcBase_RunPhase(self, data_0213b13c, data_0213b134, data_0213b124);
+void ProcBase::taskCreate() {
+    ProcBase_RunPhase(this, data_0213b13c, data_0213b134, data_0213b124);
 }
 
-#define ProcBase_taskDelete _ZN8ProcBase10taskDeleteEv
-extern "C" u32 ProcBase_taskDelete(ProcBase *self) {
-    u16 id = self->profile;
-    u32 r = ProcBase_RunPhase(self, data_0213b12c, data_0213b144, data_0213b14c);
+// (the task list's member pointer is void: the phase result is not used)
+void ProcBase::taskDelete() {
+    u16 id = profile;
+    u32 r = ProcBase_RunPhase(this, data_0213b12c, data_0213b144, data_0213b14c);
     if (r == 1) Proc_CallDeleteHook(id);
-    return r;
 }
 
 extern "C" BOOL ProcBase_HasCreatingChild(ProcBase *self) {
@@ -409,7 +392,7 @@ extern "C" void Proc_SetCreateParams(u32 a, TreeNode *parent, u32 c, u32 d) {
     sProcCreateParam = c;
     sProcCreateProfile = a;
     sProcCreateGroup = d;
-    sProcCreateParent = (u32)parent;
+    sProcCreateParent = parent;
 }
 
 extern "C" ProcBase *Proc_Create(u32 a, TreeNode *parent, u32 c, u32 d) {

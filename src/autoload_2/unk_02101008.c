@@ -1,5 +1,4 @@
 #include "uptr.h"
-#define PROTO_LOCAL_abs  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02101008.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/autoload_2/unk_0210169c.h"
@@ -57,176 +56,18 @@ typedef struct HeapHead {
         FrmHead frm;        // frmheap
     } u;
 } HeapHead;
-// the expheap/frmheap "head" parts as seen by functions that receive heap + 0x24
-typedef struct ExpHead {
-    MBlock *freeHead, *freeTail;
-    MBlock *usedHead, *usedTail;
-    u16 groupID;
-    union { u16 raw; struct { u16 allocMode : 1; u16 pad : 15; } f; } feature;
-} ExpHead;
 
-extern u32 abs(s32);          // abs
-extern void MIi_CpuClear32(u32, void *, u32);   // MIi_CpuClear32(data, dest, size)
-extern u32 data_021f5ca0;               // sRootListInitialized
-extern NNSFndList data_021f5ca4;        // sRootList
+extern s32 abs(s32 x); // src/autoload_2/unk_0212703c.c
 
-
-#define HH(e) ((HeapHead *)((u8 *)(e) - (u32)&((HeapHead *)0)->u))  // from its ExpHead / FrmHead part (0x24 on the DS)
-#define EXP(h) ((ExpHead *)&(h)->u)
-
-static inline u16 GetOptFlag(HeapHead *h) { return (u16)(h->attr.raw & 0xff); }
-static inline u16 GetAllocMode(ExpHead *e) { return (u16)(e->feature.raw & 1); }
-static inline void SetAllocDir(MBlock *b, u16 d) {
-    b->attr.raw &= ~0x8000;
-    b->attr.raw |= (d & 1) << 15;
-}
-static inline void SetAlignment(MBlock *b, u16 a) {
-    b->attr.raw &= ~0x7f00;
-    b->attr.raw |= (a & 0x7f) << 8;
-}
-static inline void SetGroupID(MBlock *b, u32 g) {
-    b->attr.raw &= ~0xff;
-    b->attr.raw |= (u8)g;
-}
-static inline void SetGroupIDFrom(MBlock *b, ExpHead *e) {
-    b->attr.raw &= ~0xff;
-    b->attr.raw |= e->groupID & 0xff;
-}
-static inline u32 GetMBlockEnd(MBlock *b) { return b->size + ((u32)b + sizeof(MBlock)); }
 static inline u32 RoundUp(u32 v, u32 a) { return (v + (a - 1)) & ~(a - 1); }
-static inline void ClearMem(HeapHead *h, u32 dst, u32 size) {
-    if (GetOptFlag(h) & 1) {
-        volatile u32 zero = 0;
-        MIi_CpuClear32(zero, (void *)dst, size);
-    }
-}
 
-void NNSi_FndFinalizeHeap(HeapHead *heap);
-NNSFndList *FindListContainHeap(HeapHead *heap);
-HeapHead *FindContainHeap(NNSFndList *list, HeapHead *mem);
-void NNS_FndInitList(NNSFndList *list, u16 offset);
-void NNS_FndRemoveListObject(NNSFndList *list, void *obj);
-void NNS_FndAppendListObject(NNSFndList *list, void *obj);
-void *NNS_FndGetNextListObject(NNSFndList *list, void *obj);
-MBlock *InitMBlock(Region *r, u16 sig);
-MBlock *InsertMBlock(void *list, MBlock *blk, MBlock *prev);
-MBlock *RemoveMBlock(void *list, MBlock *blk);
-void GetRegionOfMBlock(Region *r, MBlock *blk);
-BOOL RecycleRegion(ExpHead *e, Region *r);
-void *AllocUsedBlockFromFreeBlock(ExpHead *e, MBlock *free, u32 mblock, u32 size, u16 dir);
-void *AllocFromHead__ExpHeap(HeapHead *h, u32 size, s32 alignment);
-void *AllocFromTail__ExpHeap(HeapHead *h, u32 size, s32 alignment);
-HeapHead *InitExpHeap(u32 start, u32 end, u16 opt);
-void NNSi_FndInitHeapHead(HeapHead *heap, u32 sig, u32 start, u32 end, u16 opt);
-void SetFirstObject(NNSFndList *list, void *obj);
-void NNS_FndPrependListObject(NNSFndList *list, void *obj);
-void *AllocFromHead__FrameHeap(FrmHead *f, u32 size, u32 alignment);
-void *AllocFromTail__FrameHeap(FrmHead *f, u32 size, u32 alignment);
-void FreeHead(HeapHead *h);
-void FreeTail(HeapHead *h);
-void FreeHead(HeapHead *h);
-void FreeTail(HeapHead *h);
-HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt);
-
-
-#define FRM(h) (&(h)->u.frm)
-
-extern BOOL FS_OpenFile(void *file, const char *path); // FS_OpenFile
-extern void FS_CloseFile(void *file);                   // FS_CloseFile
-extern BOOL FS_UnloadArchive(void *arc);
-extern u32 strlen(const char *s);                 // strlen
-extern BOOL FS_RegisterArchiveName(void *arc, const char *name, u32 len);   // FS_RegisterArchiveName
-extern BOOL FS_LoadArchive(void *arc, u32 base, u32 fat, u32 fatSize, u32 fnt, u32 fntSize, u32 rd, u32 wr);   // FS_LoadArchive
-
-BOOL func_0210149c(u32 *narc);
-
-typedef struct GfdMan {
-    u32 start;      // 0x00
-    u32 end;        // 0x04
-    u32 enabled;    // 0x08
-    u32 flag;       // 0x0c
-    u16 kind;       // 0x10
-    u16 pad;
-    u32 base;       // 0x14
-} GfdMan;
-
-extern GfdMan data_0213bc3c[5];   // the regions by kind (0x0213bc3c-0x0213bcb4)
-extern GfdMan *data_0213bc20[];     // 2 entries: 4x4 compressed textures
-extern GfdMan *data_0213bc28[];     // 5 entries: normal textures
-extern u16 data_021f5cb0;
-
-void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
-u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, BOOL opt);
-s32 NNS_GfdFreeFrmTexVram();
-
-// prototypes
-void *NNS_FndGetPrevListObject(NNSFndList *list, void *obj);
-void *NNS_FndGetNextListObject(NNSFndList *list, void *obj);
-void NNS_FndRemoveListObject(NNSFndList *list, void *obj);
-void NNS_FndInsertListObject(NNSFndList *list, void *target, void *obj);
-void NNS_FndPrependListObject(NNSFndList *list, void *obj);
-void NNS_FndAppendListObject(NNSFndList *list, void *obj);
-void SetFirstObject(NNSFndList *list, void *obj);
-void NNS_FndInitList(NNSFndList *list, u16 offset);
-void NNSi_FndFinalizeHeap(HeapHead *heap);
-void NNSi_FndInitHeapHead(HeapHead *heap, u32 sig, u32 start, u32 end, u16 opt);
-NNSFndList *FindListContainHeap(HeapHead *heap);
-HeapHead *FindContainHeap(NNSFndList *list, HeapHead *mem);
-u32 NNS_FndGetSizeForMBlockExpHeap(u32 memBlock);
-void NNS_FndVisitAllocatedForExpHeap(HeapHead *heap, void (*visitor)(void *, HeapHead *, u32), u32 param);
-u16 NNS_FndGetGroupIDForExpHeap(HeapHead *heap);
-u16 NNS_FndSetGroupIDForExpHeap(HeapHead *heap, u16 id);
-u32 NNS_FndGetAllocatableSizeForExpHeapEx(HeapHead *heap, s32 alignment);
-u32 NNS_FndGetTotalFreeSizeForExpHeap(HeapHead *heap);
-void NNS_FndFreeToExpHeap(HeapHead *heap, u32 mem);
-u32 NNS_FndResizeForMBlockExpHeap(HeapHead *heap, u32 memBlock, u32 size);
-void *NNS_FndAllocFromExpHeapEx(HeapHead *heap, u32 size, s32 alignment);
-void NNS_FndDestroyExpHeap(HeapHead *heap);
-HeapHead *NNS_FndCreateExpHeapEx(u32 start, u32 size, u16 opt);
-BOOL RecycleRegion(ExpHead *e, Region *rgn);
-void *AllocFromTail__ExpHeap(HeapHead *heap, u32 size, s32 alignment);
-void *AllocFromHead__ExpHeap(HeapHead *heap, u32 size, s32 alignment);
-void *AllocUsedBlockFromFreeBlock(ExpHead *e, MBlock *freeBlk, u32 mblock, u32 size, u16 dir);
-HeapHead *InitExpHeap(u32 start, u32 end, u16 opt);
-MBlock *InitMBlock(Region *rgn, u16 sig);
-MBlock *InsertMBlock(void *listp, MBlock *blk, MBlock *prev);
-MBlock *RemoveMBlock(void *listp, MBlock *blk);
-void GetRegionOfMBlock(Region *rgn, MBlock *blk);
-u32 NNS_FndResizeForMBlockFrmHeap(HeapHead *heap, u32 mem, u32 size);
-u32 NNS_FndAdjustFrmHeap(HeapHead *heap);
-BOOL NNS_FndFreeByStateToFrmHeap(HeapHead *heap, u32 tag);
-BOOL NNS_FndRecordStateForFrmHeap(HeapHead *heap, u32 tag);
-u32 NNS_FndGetAllocatableSizeForFrmHeapEx(HeapHead *heap, s32 alignment);
-void NNS_FndFreeToFrmHeap(HeapHead *heap, u32 mode);
-void *NNS_FndAllocFromFrmHeapEx(HeapHead *heap, u32 size, s32 alignment);
-void NNS_FndDestroyFrmHeap(HeapHead *heap);
-HeapHead *NNS_FndCreateFrmHeapEx(u32 start, u32 size, u16 opt);
-void FreeTail(HeapHead *heap);
-void FreeHead(HeapHead *heap);
-void *AllocFromTail__FrameHeap(FrmHead *f, u32 size, u32 alignment);
-void *AllocFromHead__FrameHeap(FrmHead *f, u32 size, u32 alignment);
-HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt);
-BOOL NNS_FndUnmountArchive(void *arc);
-BOOL NNS_FndMountArchive(u32 *arc, const char *name, u32 *narc);
-BOOL func_0210149c(u32 *narc);
-s32 FreeTexVram_();
-s32 AllocTexVram_();
-s32 FreePlttVram_();
-s32 AllocPlttVram_();
-s32 NNS_GfdFreeFrmTexVram();
-u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, BOOL opt);
-void NNS_GfdInitFrmTexVramManager(u32 mode, BOOL setFuncs);
-void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
-
-static inline FrmHead *GetFrmHead(HeapHead *h) { return (FrmHead *)((uptr)h + (u32)&((HeapHead *)0)->u); }  // (0x24 on the DS)
-static inline u32 GetOffsetFromPtr(const void *start, const void *end) { return (u32)end - (u32)start; }
-#define RoundUpPtr(p, a) ((void *)(~((a) - 1) & (((a) - 1) + (u32)(p))))
+// (the frame heap keeps its head and tail as addresses: u32 in every copy of HeapHead, these units' shared layout)
 u32 NNS_FndGetAllocatableSizeForFrmHeapEx(HeapHead *heap, s32 alignment) {
     alignment = abs(alignment);
     {
-        const FrmHead *f = GetFrmHead(heap);
-        const void *block = RoundUpPtr(f->head, alignment);
-        if ((u32)block > (u32)f->tail) return 0;
-        return GetOffsetFromPtr(block, (void *)f->tail);
+        const FrmHead *f = &heap->u.frm;
+        u32 block = RoundUp(f->head, alignment);
+        if (block > f->tail) return 0;
+        return f->tail - block;
     }
 }

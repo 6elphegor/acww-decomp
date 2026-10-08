@@ -4,13 +4,12 @@
 // Prototypes of the functions defined in src/main/unk_020039ec.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#include "proto/autoload_2/unk_020f4a5c.h"
+#include "snd/Melody.h"
 #include "snd/SndBgmViews.h"
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
 #include "snd/SndSceneBase.h"
 #include "snd/SndSeEmitter.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -40,66 +39,6 @@ void Snd_VolumeOn();
 #ifndef PROTO_LOCAL_Snd_FadeOutScene
 void Snd_FadeOutScene();
 #endif
-#ifndef PROTO_LOCAL_Snd_EndTalk
-void Snd_EndTalk();
-#endif
-#ifndef PROTO_LOCAL_Snd_StopAuxSe
-void Snd_StopAuxSe();
-#endif
-#ifndef PROTO_LOCAL_Snd_StartBellRollSe
-void Snd_StartBellRollSe();
-#endif
-#ifndef PROTO_LOCAL_Snd_StopBellRollSe
-void Snd_StopBellRollSe();
-#endif
-#ifndef PROTO_LOCAL_Snd_PosListInit
-void Snd_PosListInit(void *l);
-#endif
-#ifndef PROTO_LOCAL_Snd_PosListUpdate
-void Snd_PosListUpdate(void *l);
-#endif
-#ifndef PROTO_LOCAL_Snd_PosNodeInit
-void Snd_PosNodeInit(void *n, void *l);
-#endif
-#ifndef PROTO_LOCAL_Snd_PosNodeRelease
-void Snd_PosNodeRelease(void *n);
-#endif
-#ifndef PROTO_LOCAL_Snd_GetBeatState
-void *Snd_GetBeatState();
-#endif
-#ifndef PROTO_LOCAL_Snd_BeginMenuDuck
-void Snd_BeginMenuDuck();
-#endif
-#ifndef PROTO_LOCAL_Snd_EndMenuDuck
-void Snd_EndMenuDuck();
-#endif
-#ifndef PROTO_LOCAL_Snd_DuckSubPlayers
-void Snd_DuckSubPlayers();
-#endif
-#ifndef PROTO_LOCAL_Snd_RestoreSubPlayers
-void Snd_RestoreSubPlayers();
-#endif
-#ifndef PROTO_LOCAL_Snd_MelodyInit
-void Snd_MelodyInit(void *c);
-#endif
-#ifndef PROTO_LOCAL_Snd_MelodyStartTrackA
-void Snd_MelodyStartTrackA(void *c);
-#endif
-#ifndef PROTO_LOCAL_Snd_BgmSyncRelease
-void Snd_BgmSyncRelease(void *r);
-#endif
-#ifndef PROTO_LOCAL_Snd_MelodyBeatInit
-void Snd_MelodyBeatInit(void *s);
-#endif
-#ifndef PROTO_LOCAL_Snd_MelodyBeatStop
-void Snd_MelodyBeatStop(void *s);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_Snd_PlaySe
 void Snd_PlaySe(u32 a);
 #endif
@@ -120,6 +59,9 @@ void Snd_BeginTalk(u32 a);
 #endif
 #ifndef PROTO_LOCAL_Snd_PlayTalkVoice
 void Snd_PlayTalkVoice(u32 a, u32 b, u32 c, u32 d);
+#endif
+#ifndef PROTO_LOCAL_Snd_EndTalk
+void Snd_EndTalk();
 #endif
 #ifndef PROTO_LOCAL_Snd_SetVoiceType
 void Snd_SetVoiceType(u32 a);
@@ -142,26 +84,29 @@ void Snd_PlayAuxSe(u32 a);
 #ifndef PROTO_LOCAL_Snd_PlayAuxSeHeld
 void Snd_PlayAuxSeHeld(u32 a);
 #endif
-#ifndef PROTO_LOCAL_Snd_SeEmitterPlayOneShot
-void Snd_SeEmitterPlayOneShot(SndSeEmitter *a, u32 b, u32 c, u32 d);
+#ifndef PROTO_LOCAL_Snd_StopAuxSe
+void Snd_StopAuxSe();
 #endif
-#ifndef PROTO_LOCAL_Snd_SeEmitterPlayHeld
-void Snd_SeEmitterPlayHeld(SndSeEmitter *a, u32 b, u32 c, u32 d);
+#ifndef PROTO_LOCAL_Snd_StartBellRollSe
+void Snd_StartBellRollSe();
+#endif
+#ifndef PROTO_LOCAL_Snd_StopBellRollSe
+void Snd_StopBellRollSe();
 #endif
 #ifndef PROTO_LOCAL_Snd_SeEmitterPlayAlternate
 void Snd_SeEmitterPlayAlternate(void *e, u16 s);
 #endif
-#ifndef PROTO_LOCAL_Snd_SeEmitterPlayOneShotAlt
-void Snd_SeEmitterPlayOneShotAlt(SndSeEmitter *a, u32 b, u32 c, u32 d);
+#ifndef PROTO_LOCAL_Snd_PosListInit
+void Snd_PosListInit(void *l);
 #endif
-#ifndef PROTO_LOCAL_Snd_PosNodePlay
-void Snd_PosNodePlay(void *a, u32 b, VecFx32 *v);
+#ifndef PROTO_LOCAL_Snd_PosListUpdate
+void Snd_PosListUpdate(void *l);
 #endif
-#ifndef PROTO_LOCAL_Snd_PosNodePlayOnce
-void Snd_PosNodePlayOnce(void *a, u32 b, VecFx32 *v);
+#ifndef PROTO_LOCAL_Snd_PosNodeInit
+void Snd_PosNodeInit(void *n, void *l);
 #endif
-#ifndef PROTO_LOCAL_Snd_SetBgmPan
-void Snd_SetBgmPan(void *a, VecFx32 *v);
+#ifndef PROTO_LOCAL_Snd_PosNodeRelease
+void Snd_PosNodeRelease(void *n);
 #endif
 #ifndef PROTO_LOCAL_Snd_PosNodeSetPitch
 void Snd_PosNodeSetPitch(void *n, s32 v);
@@ -187,11 +132,29 @@ void Snd_FadeInBgmTracks(u32 a);
 #ifndef PROTO_LOCAL_Snd_SetBgmTrackVariant
 void Snd_SetBgmTrackVariant(u32 a);
 #endif
+#ifndef PROTO_LOCAL_Snd_GetBeatState
+void *Snd_GetBeatState();
+#endif
+#ifndef PROTO_LOCAL_Snd_BeginMenuDuck
+void Snd_BeginMenuDuck();
+#endif
+#ifndef PROTO_LOCAL_Snd_EndMenuDuck
+void Snd_EndMenuDuck();
+#endif
+#ifndef PROTO_LOCAL_Snd_DuckSubPlayers
+void Snd_DuckSubPlayers();
+#endif
+#ifndef PROTO_LOCAL_Snd_RestoreSubPlayers
+void Snd_RestoreSubPlayers();
+#endif
 #ifndef PROTO_LOCAL_Snd_SetPanIfChanged
 void Snd_SetPanIfChanged(u32 a);
 #endif
 #ifndef PROTO_LOCAL_Snd_SetPan
 void Snd_SetPan(u32 a);
+#endif
+#ifndef PROTO_LOCAL_Snd_MelodyInit
+void Snd_MelodyInit(void *c);
 #endif
 #ifndef PROTO_LOCAL_Snd_MelodySetPattern
 void Snd_MelodySetPattern(void *c, u8 *src);
@@ -199,11 +162,11 @@ void Snd_MelodySetPattern(void *c, u8 *src);
 #ifndef PROTO_LOCAL_Snd_MelodyPlayPattern
 void Snd_MelodyPlayPattern(void *c, u32 v, u8 *pat);
 #endif
-#ifndef PROTO_LOCAL_Snd_MelodyPlayAt
-void Snd_MelodyPlayAt(void *a, VecFx32 *v, u32 c);
-#endif
 #ifndef PROTO_LOCAL_Snd_MelodyPlay
 void Snd_MelodyPlay(void *c, u32 v);
+#endif
+#ifndef PROTO_LOCAL_Snd_MelodyStartTrackA
+void Snd_MelodyStartTrackA(void *c);
 #endif
 #ifndef PROTO_LOCAL_Snd_MelodyPlayNote
 void Snd_MelodyPlayNote(void *c, u32 idx);
@@ -229,8 +192,8 @@ void Snd_BgmSyncInit(void *r, u16 v);
 #ifndef PROTO_LOCAL_Snd_BgmSyncSetState
 void Snd_BgmSyncSetState(void *r, u32 mode);
 #endif
-#ifndef PROTO_LOCAL_Snd_BgmSyncUpdate
-s32 Snd_BgmSyncUpdate(Rb *a, VecFx32 *v);
+#ifndef PROTO_LOCAL_Snd_BgmSyncRelease
+void Snd_BgmSyncRelease(void *r);
 #endif
 #ifndef PROTO_LOCAL_Snd_BgmSyncSetStartBeat
 void Snd_BgmSyncSetStartBeat(void *r, s8 v);
@@ -241,11 +204,47 @@ u32 Snd_BgmSyncReadBeat();
 #ifndef PROTO_LOCAL_Snd_BgmSyncPollStarted
 s32 Snd_BgmSyncPollStarted(void *r);
 #endif
+#ifndef PROTO_LOCAL_Snd_MelodyBeatInit
+void Snd_MelodyBeatInit(void *s);
+#endif
 #ifndef PROTO_LOCAL_Snd_MelodyBeatStart
 void Snd_MelodyBeatStart(void *s, u16 id);
 #endif
+#ifndef PROTO_LOCAL_Snd_MelodyBeatStop
+void Snd_MelodyBeatStop(void *s);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_Snd_SeEmitterPlayOneShot
+void Snd_SeEmitterPlayOneShot(SndSeEmitter *a, u32 b, u32 c, u32 d);
+#endif
+#ifndef PROTO_LOCAL_Snd_SeEmitterPlayHeld
+void Snd_SeEmitterPlayHeld(SndSeEmitter *a, u32 b, u32 c, u32 d);
+#endif
+#ifndef PROTO_LOCAL_Snd_SeEmitterPlayOneShotAlt
+void Snd_SeEmitterPlayOneShotAlt(SndSeEmitter *a, u32 b, u32 c, u32 d);
+#endif
+#ifndef PROTO_LOCAL_Snd_PosNodePlay
+void Snd_PosNodePlay(void *a, u32 b, VecFx32 *v);
+#endif
+#ifndef PROTO_LOCAL_Snd_PosNodePlayOnce
+void Snd_PosNodePlayOnce(void *a, u32 b, VecFx32 *v);
+#endif
+#ifndef PROTO_LOCAL_Snd_SetBgmPan
+void Snd_SetBgmPan(void *a, VecFx32 *v);
+#endif
+#ifndef PROTO_LOCAL_Snd_MelodyPlayAt
+void Snd_MelodyPlayAt(void *a, VecFx32 *v, u32 c);
+#endif
+#ifndef PROTO_LOCAL_Snd_BgmSyncUpdate
+s32 Snd_BgmSyncUpdate(Rb *a, VecFx32 *v);
+#endif
 #ifndef PROTO_LOCAL_Snd_MelodyBeatUpdate
-void Snd_MelodyBeatUpdate(Seq1 *a, VecFx32 *v);
+void Snd_MelodyBeatUpdate(MelodyBeat *a, VecFx32 *v);
 #endif
 }
 #ifndef PROTO_LOCAL_gSndScene

@@ -1,5 +1,4 @@
 #include "nitro/wm.h"
-#define PROTO_LOCAL_MATH_CountPopulation  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0211ef94.h"
 #include "proto/autoload_2/unk_02120c98.h"
 #include "proto/autoload_2/unk_02120ed4.h"
@@ -48,9 +47,9 @@ extern void DC_StoreRange(void *, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
 extern void MIi_CpuCopy16(void *, void *, u32);
 extern void MIi_CpuClearFast(u32, void *, u32);
-extern u32 MATH_CountPopulation(u32);
+extern u32 MATH_CountPopulation(u32);  // (proto/autoload_2/unk_0212703c.h declares it for C++ only until it is regenerated)
 extern u32 WM_SetMPDataToPortEx(WMCallback cb, void *arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
-extern u32 WmGetSharedDataAddress(void *base, u32 x, void *y, u32 n);
+extern u16 *WmGetSharedDataAddress(u8 *base, u32 x, u16 *y, u32 n);
 extern void WmDataSharingSendDataSet(WMPool *ds, BOOL flag);
 extern u8 data_021fff00[0x80];
 extern u32 MBi_CommChangeParentStateCallbackOnly(u32, u32, u16 *);
@@ -492,10 +491,10 @@ void WmDataSharingSetDataCallback(WMMsg *msg) {
     WMStatus *st = w->status;
     WMPool *ds;
     u32 err, aid;
-    ds = (WMPool *)w->portArg[msg->f0a];
+    ds = w->portArg[msg->f0a];
     if (w->portCb[msg->f0a] != WmDataSharingReceiveCallback_Parent && w->portCb[msg->f0a] != WmDataSharingReceiveCallback_Child) return;
     if (ds == 0) return;
-    if (ds != (WMPool *)msg->f20) return;
+    if (WM_ARM7_ADDR(ds) != msg->f20) return; // (f20: the send call's argument, an ARM7 address)
     DC_InvalidateRange(&st->f184, 2);
     err = msg->errcode;
     aid = st->f184;

@@ -3,8 +3,7 @@
 
 #include "types.h"
 
-// The date Mom's letters are checked for (MotherLetter_OnNewDay / TrySend*). Defined in src/main/unk_02095cdc.cpp
-// (which still keeps its own copy of the struct: switch it to this header).
+// The date Mom's letters are checked for (MotherLetter_OnNewDay / TrySend*). Defined in src/main/unk_02095cdc.cpp.
 struct Unk_02096354_Arg {
     u32 year;
     u32 month;

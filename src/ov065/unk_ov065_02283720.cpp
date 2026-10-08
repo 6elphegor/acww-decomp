@@ -7,10 +7,6 @@
 #include "net/gpersist.h"
 #include "net/gt2Main.h"
 #include "net/gpiCallback.h"
-#define PROTO_LOCAL_data_ov065_0228df7c  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_enc1  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_enc3  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_serverreqs  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/autoload_2/unk_02128c60.h"
@@ -18,7 +14,6 @@
 #include "proto/ov065/unk_ov065_02277974.h"
 #include "proto/ov065/unk_ov065_02283720.h"
 
-extern "C" u8 enc1[16];
 
 
 
@@ -62,14 +57,11 @@ extern char data_ov065_0228df50[];
 extern char data_ov065_0228df58[];
 extern char data_ov065_0228df60[];
 extern char data_ov065_0228df6c[];
-extern char data_ov065_0228df7c[];
-extern char enc1[];
-extern char enc3[];
-extern void *serverreqs;
+extern DArrayImplementation *serverreqs;
 
 extern "C" {
 void _strlwr(char *);
-s32 gpiAddOperation(void *, s32, void *, void *, s32, s32, s32);
+s32 gpiAddOperation(void *, s32, void *, void *, s32, GPCallback, void *);
 s32 gpiProcess(void *, s32);
 s32 socket(s32, s32, s32);
 s32 SetSockBlocking(s32, s32);
@@ -96,7 +88,7 @@ void gpiSetError(void *, s32, const char *);
 s32 gpiValueForKey(const char *, const char *, char *, s32);
 s32 gpiCheckForError(void *, const char *, s32);
 s32 gpiInitSearchData(void *, void *, s32);
-s32 gpiStartSearch(void *, void *, s32, s32, s32);
+s32 gpiStartSearch(void *, void *, s32, void *, void *);
 s32 gpiStartProfileSearch(void *, void *);
 s32 gpiSendTransferReply(void *, s32 *, s32, s32, const char *);
 }
@@ -192,13 +184,13 @@ s32 gti2VerifyChallenge(u8 *);
 }
 
 namespace N022838c4 { extern "C" {
-char *gti2GetResponse(char *out, char *in) {
+u8 *gti2GetResponse(u8 *out, u8 *in) {
     s32 ok;
     s32 klen;
     s32 i;
     s32 j;
     klen = STD_GetStringLength("3b8dd8995f7c40a9a5c5b7dd5b481341");
-    ok = gti2VerifyChallenge((u8 *)in);
+    ok = gti2VerifyChallenge(in);
     i = 0;
     j = 0;
     for (; i < 0x20; i++) {
@@ -258,7 +250,7 @@ void CloseStatsConnection() {
 }
 } }
 
-extern "C" { u8 data_ov065_02291104[0x100]; } //@
+extern "C" { char data_ov065_02291104[0x100]; } //@ (the game name)
 namespace N022838c4 { extern "C" {
 s32 PersistThink() {
     s32 r;
@@ -487,7 +479,7 @@ s32 ProcessInBuffer(char *p, s32 n) {
     char *q = (char *)FindFinal(p, n);
     while (n > 0 && q != NULL) {
         s32 len;
-        sGsPersistXorKey = enc1;
+        sGsPersistXorKey = (char *)enc1;
         len = q - p;
         xcode_buf(p, len);
         ProcessStatement(p, len);
@@ -536,7 +528,7 @@ void ClosePendingCallbacks(void) {
         if (i >= 0) {
             do {
                 GsPersistErrorMsg buf = *(GsPersistErrorMsg *)data_ov065_0228df7c;
-                sGsPersistXorKey = enc3;
+                sGsPersistXorKey = (char *)enc3;
                 xcode_buf((char *)&buf, 15);
                 CallReqCallback(i, 0, 0, &buf, 0);
                 i--;
@@ -560,6 +552,6 @@ void gpiDebug(void *h, const char *fmt, ...) {
 }
 } }
 
-extern "C" { u8 data_ov065_02291204[0x100]; } //@
+extern "C" { char data_ov065_02291204[0x100]; } //@ (the secret key)
 
-extern "C" { void *serverreqs; } //@
+extern "C" { DArrayImplementation *serverreqs; } //@

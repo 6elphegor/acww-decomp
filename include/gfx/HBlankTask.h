@@ -10,8 +10,8 @@ struct HBlankTask {
     /* 0x01 */ u8 pad_01[3];
     /* 0x04 */ void (*unk_04)();
     /* 0x08 */ void (*unk_08)();
-    /* 0x0c */ s32 param;
-    /* 0x10 */ s32 nextParam;
+    /* 0x0c */ void (*param)();      // the H-blank callback (HBlank_Handler)
+    /* 0x10 */ void (*nextParam)();  // the one taken at the next frame (HBlank_Add / HBlank_Replace)
     /* 0x14 */ void (*unk_14)();
     /* 0x18 */ HBlankTask *next;
 };

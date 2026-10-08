@@ -7,7 +7,7 @@
 
 class Heap {
 public:
-    Heap(u32 a, u32 b, Heap *parent);
+    Heap(void *start, u32 size, Heap *parent);
     virtual ~Heap(); // 0x00 / 0x04
     virtual void doLock();
     virtual void doUnlock();
@@ -24,9 +24,9 @@ public:
     virtual u32 doGetMaxFreeBlockSize() = 0;
     virtual u32 vfunc_3c(s32 align) = 0; // largest allocatable size
     virtual u32 getTotalFreeSize() = 0;
-    virtual void *changeGroupId(u16 id) = 0;
-    virtual void *getGroupId() = 0;
-    virtual void *doAdjust() = 0;
+    virtual u16 changeGroupId(u16 id) = 0;  // the previous group id
+    virtual u16 getGroupId() = 0;
+    virtual u32 doAdjust() = 0;  // shrink to the content: the new size (0: failed)
 
     void lock();
     void unlock();
@@ -40,10 +40,10 @@ public:
     s32 resize(void *p, u32 size);
     void free(void *p);
     void freeAll();
-    void *adjust();
+    u32 adjust();
     u32 setFlags(u32 flags);
 
-    /* 0x04 */ u32 regionStart;
+    /* 0x04 */ void *regionStart;  // the heap's memory
     /* 0x08 */ u32 regionSize;
     /* 0x0c */ Heap *parentHeap; // parent heap
     /* 0x10 */ u32 heapFlags; // flags: 0x400 call alloc hook, 0x800 call free hook, 0x2000 allow outside system mode, 0x4000 stop when out of memory

@@ -8,7 +8,6 @@ struct CharaAnimCache;
 #ifdef __cplusplus
 #include "player/AnimSlotRef.h"
 #include "sys/Heap.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -16,6 +15,39 @@ extern "C" {
 #endif
 #ifndef PROTO_LOCAL_CharaAnimCache_Destroy
 void CharaAnimCache_Destroy();
+#endif
+#ifndef PROTO_LOCAL_CharaAnim_GetPath
+char *CharaAnim_GetPath(u32 x);
+#endif
+#ifndef PROTO_LOCAL_CharaAnim_GetBodySlotSize
+u32 CharaAnim_GetBodySlotSize();
+#endif
+#ifndef PROTO_LOCAL_CharaAnim_GetPartSlotSize
+u32 CharaAnim_GetPartSlotSize();
+#endif
+#ifndef PROTO_LOCAL_CharaAnim_GetExtraSlotSize
+u32 CharaAnim_GetExtraSlotSize();
+#endif
+#ifndef PROTO_LOCAL_CharaAnim_GetEyeAnim
+u32 CharaAnim_GetEyeAnim(u32 i);
+#endif
+#ifndef PROTO_LOCAL_CharaAnim_GetMouthAnim
+u32 CharaAnim_GetMouthAnim(u32 i);
+#endif
+#ifndef PROTO_LOCAL_JointGroup_GetRangeCount
+u32 JointGroup_GetRangeCount(u32 i);
+#endif
+#ifndef PROTO_LOCAL_JointGroup_GetRangeFirst
+u32 JointGroup_GetRangeFirst(u32 a, u32 b);
+#endif
+#ifndef PROTO_LOCAL_JointGroup_GetRangeLast
+u32 JointGroup_GetRangeLast(u32 a, u32 b);
+#endif
+#ifndef PROTO_LOCAL_CharaAnim_GetJointGroup
+u32 CharaAnim_GetJointGroup(u32 i);
+#endif
+#ifndef PROTO_LOCAL_CharaAnim_GetHoldPoseMode
+u32 CharaAnim_GetHoldPoseMode(u32 i);
 #endif
 #ifndef PROTO_LOCAL_AnimSlotRef_Destruct
 void AnimSlotRef_Destruct();
@@ -130,39 +162,6 @@ void RoomBclHeap_Destroy();
 extern "C" {
 #ifndef PROTO_LOCAL_CharaAnimCache_Create
 void CharaAnimCache_Create(Heap *parent);
-#endif
-#ifndef PROTO_LOCAL_CharaAnim_GetPath
-char *CharaAnim_GetPath(u32 x);
-#endif
-#ifndef PROTO_LOCAL_CharaAnim_GetBodySlotSize
-u32 CharaAnim_GetBodySlotSize();
-#endif
-#ifndef PROTO_LOCAL_CharaAnim_GetPartSlotSize
-u32 CharaAnim_GetPartSlotSize();
-#endif
-#ifndef PROTO_LOCAL_CharaAnim_GetExtraSlotSize
-u32 CharaAnim_GetExtraSlotSize();
-#endif
-#ifndef PROTO_LOCAL_CharaAnim_GetEyeAnim
-u32 CharaAnim_GetEyeAnim(u32 i);
-#endif
-#ifndef PROTO_LOCAL_CharaAnim_GetMouthAnim
-u32 CharaAnim_GetMouthAnim(u32 i);
-#endif
-#ifndef PROTO_LOCAL_JointGroup_GetRangeCount
-u32 JointGroup_GetRangeCount(u32 i);
-#endif
-#ifndef PROTO_LOCAL_JointGroup_GetRangeFirst
-u32 JointGroup_GetRangeFirst(u32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_JointGroup_GetRangeLast
-u32 JointGroup_GetRangeLast(u32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_CharaAnim_GetJointGroup
-u32 CharaAnim_GetJointGroup(u32 i);
-#endif
-#ifndef PROTO_LOCAL_CharaAnim_GetHoldPoseMode
-u32 CharaAnim_GetHoldPoseMode(u32 i);
 #endif
 #ifndef PROTO_LOCAL_AnimSlotRef_Init
 void AnimSlotRef_Init(AnimSlotRef *p);

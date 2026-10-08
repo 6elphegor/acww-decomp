@@ -9,8 +9,6 @@
 #include "net/WifiApContext.h"
 #include "net/WifiLinkEvent.h"
 #include "net/SockStartupConfig.h"
-#define PROTO_LOCAL_WifiAp_GetBlock  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sWifiRssiCount  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02114410.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/ov065/unk_ov065_0225f1a0.h"
@@ -57,7 +55,6 @@ extern u8 sWifiApUsbKeySBox[];
 extern u8 sWifiApNdwcshapPermTable[];
 
 extern "C" {
-u8 *WifiAp_GetBlock(u32 id);
 s32 WifiLink_GetPhase(void);
 s32 WifiLink_StartupAsync(void *a, void *b);
 s32 WifiAp_OnLinkNotify(void *a);
@@ -189,7 +186,7 @@ s32 WifiAp_ProcessStartup(void) {
     WifiApContext *c = (WifiApContext *)WifiAp_GetBlock(0x10);
     if (a == 1) {
         u32 buf[4];
-        buf[0] = *(HOST_AT(c, 0xd0a, dmaNo, 0));
+        buf[0] = c->dmaNo;
         buf[1] = 0;
         buf[2] = 0;
         buf[3] = 0;
@@ -272,16 +269,14 @@ void WifiAp_RescanForState(u32 r) {
     case 4: {
         s64 t = OS_GetTick();
         *(s64 *)&c->stepStartTick = t;
-        u32 idx = c->searchIndex * 0x24;
-        u8 *q = cb + idx;
-        WifiAp_StartScan(gWifiLinkAnyBssid, HOST_AT_A(cb, WifiApContext, 0x304, searchEntries[0].ssid[0], 0) + idx, q[0x302], 0x300000);
+        WifiApSearchEntry *e = &c->searchEntries[c->searchIndex];
+        WifiAp_StartScan(gWifiLinkAnyBssid, e->ssid, e->channelIndex, 0x300000);
         break;
     }
     case 5: {
         s64 t = OS_GetTick();
         *(s64 *)&c->stepStartTick = t;
-        u32 idx = c->searchIndex * 0x24;
-        WifiAp_StartScan(gWifiLinkAnyBssid, HOST_AT_A(cb, WifiApContext, 0x304, searchEntries[0].ssid[0], 0) + idx, c->scanChannel, 0x300000);
+        WifiAp_StartScan(gWifiLinkAnyBssid, c->searchEntries[c->searchIndex].ssid, c->scanChannel, 0x300000);
         break;
     }
     }
@@ -305,7 +300,6 @@ extern u8 gWifiLinkAnySsid[];
 extern u32 sWifiApScanChannelBits[];
 
 extern "C" {
-u8 *WifiAp_GetBlock(u32 id);
 s32 WifiAp_GetErrorCodeForState(u8 *p);
 s32 WifiAp_CleanupStep(u8 *p);
 s32 WifiLink_GetPhase(void);
@@ -733,14 +727,14 @@ u32 WifiAp_BuildSearchFromFound(s32 n, u8 *p, WifiApSearchEntry *out, WMBssDesc 
 }
 
 s32 WifiAp_StepFailedCleanup(void) {
-    if (WifiAp_CleanupStep(WifiAp_GetBlock(1) + 0xa) == 1) {
+    if (WifiAp_CleanupStep((u8 *)WifiAp_GetBlock(1) + 0xa) == 1) {
         return 0x12;
     }
     return 0x11;
 }
 
 s32 WifiAp_GetErrorCode2(void) {
-    u8 *p = WifiAp_GetBlock(1);
+    u8 *p = (u8 *)WifiAp_GetBlock(1);
     s32 n = WifiAp_GetErrorCode();
     if (n < 4) {
         return WifiAp_MapStartupError(n);
@@ -790,7 +784,6 @@ extern "C" {
 
 
 extern "C" {
-u8 *WifiAp_GetBlock(u32 id);
 s32 WifiAp_SortFoundAp(s32 a, void *ctx);
 s32 WifiAp_AddFoundChannel(u32 v);
 s32 WifiAp_IsFreespot(void *rec);
@@ -1091,7 +1084,7 @@ u32 WifiAp_SelectApType(WifiApContext *ctx) {
         if (n > 0) {
             u8 *p = (u8 *)ctx;
             WifiApSearchEntry *e;
-            l.d = HOST_AT(ctx, 0x304, searchEntries[0].ssid[0], 0);
+            l.d = ctx->searchEntries[0].ssid;
             e = ctx->searchEntries;
             do {
                 u32 pr = l.rec->ssidLength;
@@ -1154,23 +1147,23 @@ u32 WifiAp_GetAuthOption(WifiApContext *ctx) {
 }
 
 BOOL WifiAp_GetWepSetting(WifiApContext *ctx, u32 idx, u8 *out) {
-    u8 *c = (u8 *)ctx;
+    WifiApUserSetting *c = ctx->userSettings;
     switch (idx) {
     case 2:
-        c += 0x100;
+        c++;
     case 1:
-        c += 0x100;
+        c++;
     case 0:
-        out[0] = ((WifiApWepModeBits *)(HOST_AT_A(c, WifiApContext, 0xe6, pad000[230], 0)))->v;
-        MI_CpuCopy8(HOST_AT_A(c, WifiApContext, 0x80, pad000[128], 0), out + 2, 0x50);
+        out[0] = c->wepMode;
+        MI_CpuCopy8(c->wepKey, out + 2, 0x50);
         break;
     case 5:
-        c += 0x100;
+        c++;
     case 4:
-        c += 0x100;
+        c++;
     case 3:
         out[0] = 1;
-        MI_CpuCopy8(HOST_AT_A(c, WifiApContext, 0xd1, pad000[209], 0), out + 2, 0x14);
+        MI_CpuCopy8(c->key2, out + 2, 0x14);
         out[0x16] = 0;
         break;
     case 6:
@@ -1218,7 +1211,7 @@ void WifiAp_OnLinkNotify(WifiLinkEvent *m) {
 void WifiAp_OnApFound(WMBssDesc *rec) {
     s32 r6 = -1;
     WifiApContext *ctx = (WifiApContext *)WifiAp_GetBlock(0x10);
-    WifiAp_GetBlock(1)[0xb] = 1;
+    ((u8 *)WifiAp_GetBlock(1))[0xb] = 1;
     switch (WifiAp_GetState()) {
     case 3: {
         u16 proto = rec->ssidLength;
@@ -1237,7 +1230,7 @@ void WifiAp_OnApFound(WMBssDesc *rec) {
     case 5:
         r6 = WifiAp_MatchSearchEntry(rec, 1, ctx->searchEntries + ctx->searchIndex);
         if (r6 >= 0) {
-            ((WifiApSearchEntry *)(HOST_AT(ctx, 0x300, searchEntries[0], 0)) + ctx->searchIndex)->lo = 1;
+            ctx->searchEntries[ctx->searchIndex].lo = 1;
         }
         break;
     default:
@@ -1368,7 +1361,6 @@ extern "C" {
 
 extern WifiLinkSendState sWifiLinkSendState;
 extern u8 sWifiLinkSendLock[];
-extern volatile u8 sWifiRssiCount;
 extern WifiApAllocator *sWifiApAllocator;
 extern WifiApControl *sWifiApControl;
 
@@ -1417,7 +1409,6 @@ u8 WifiAp_ProcessNetSetup();
 
 
 
-void *WifiAp_GetBlock(u32);
 
 
 

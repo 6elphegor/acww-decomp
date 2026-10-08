@@ -192,7 +192,7 @@ void SaveData::reset() {
     ((TownMap *)townMap)->clear();
     ((BbsBoard *)(&bbsBoard))->clear();
     ((HouseData *)(&house))->reset();
-    TownState_Reset((TownState *)townState);
+    TownState_Reset(&townState);
     Weather_SetDateToday(&weather);
     NookShop_Clear((NookShop *)nookShop);
     ((BlancaFaceRecord *)(&blancaFace))->reset();
@@ -243,7 +243,7 @@ void SaveData::setupNewTown() {
     a->clearFlag(9);
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor((SaveVillagers *)villagers, 1);
-    ((ResettiVisitFlag *)TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()))->clear();
+    TownSessionState_GetResettiFlag(TownSessionState_Get())->clear();
     SaveVillagers_UpdateAllRoomInfo(&villagers);
 }
 
@@ -269,7 +269,7 @@ void SaveData::setupNewResident() {
     a->setSkyShotHits(0);
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor((SaveVillagers *)villagers, 1);
-    ((ResettiVisitFlag *)TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()))->clear();
+    TownSessionState_GetResettiFlag(TownSessionState_Get())->clear();
     SaveVillagers_UpdateAllRoomInfo(&villagers);
 }
 
@@ -305,7 +305,7 @@ void SaveData::setupContinue() {
             if (a->testFlag(0x23) == 0) {
                 if (a->testFlag(2) != 0) {
                     ((PlayerSpNpcRecord *)a->getSpNpcRecord())->addResetCount();
-                    ((ResettiVisitFlag *)TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()))->set(1);
+                    TownSessionState_GetResettiFlag(TownSessionState_Get())->set(1);
                 }
             }
         }

@@ -1,5 +1,4 @@
 #include "nitro/fs.h"
-#define PROTO_LOCAL_data_0213a388  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02113088.h"
 #include "proto/autoload_2/unk_0211802c.h"
 #include "proto/autoload_2/unk_021182b8.h"
@@ -26,7 +25,6 @@ extern u32 FSi_GetPackedName(const char *, int);
 extern int FSi_ReadMemoryCore(FSArc *, void *, u32, u32);
 extern int FSi_ReadMemCallback(FSArc *, void *, u32, u32);
 extern int FSi_WriteMemCallback(FSArc *, void *, u32, u32);
-extern int (*data_0213a388[])(FSFile *);
 extern char data_0213bff4[];
 extern FSArc *data_021fea68;
 extern FSDirPos data_021fea6c;

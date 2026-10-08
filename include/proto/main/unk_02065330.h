@@ -13,7 +13,16 @@ struct LetterDefaults;
 #include "talk/MsgString129.h"
 #include "talk/MsgString25B.h"
 #include "talk/MsgString33B.h"
-#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_Letter_LoadTemplate2d
+void Letter_LoadTemplate2d(u8 *code, u8 *dst, u8 *lenOut, u8 *extra);
+#endif
+#ifdef __cplusplus
+}
 #endif
 
 #ifdef __cplusplus
@@ -143,9 +152,6 @@ void Letter_SetSignature(LetterView *o, u8 *p);
 #endif
 #ifndef PROTO_LOCAL_LetterDefaults_Store
 void LetterDefaults_Store(LetterDefaults *a, LetterView *b);
-#endif
-#ifndef PROTO_LOCAL_Letter_LoadTemplate2d
-void Letter_LoadTemplate2d(u8 *code, u8 *dst, u8 *lenOut, u8 *extra);
 #endif
 }
 #ifndef PROTO_LOCAL_sMailGreeting

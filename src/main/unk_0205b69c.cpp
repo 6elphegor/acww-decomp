@@ -43,9 +43,9 @@ extern "C" void HBlank_RunVBlank() {
     }
 }
 
-extern "C" BOOL HBlank_Add(HBlankTask *t, s32 a, void (*b)(), void (*c)()) {
+extern "C" BOOL HBlank_Add(HBlankTask *t, void (*a)(), void (*b)(), void (*c)()) {
     t->nextParam = a;
-    t->param = 0;
+    t->param = NULL;
     t->unk_08 = b;
     t->unk_04 = c;
     t->next = NULL;

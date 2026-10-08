@@ -68,8 +68,8 @@ void ScreenLayers_AcquireStub(u32);
 s32 Math_StepS32Alt(void *, u32, s32);
 s32 FX_Div(s32, s32);
 s32 FX_Sqrt(s32);
-void HBlank_Remove(void *);
-s32 HBlank_Add(void *, void *, void *, u32);
+BOOL HBlank_Remove(HBlankTask *t);
+BOOL HBlank_Add(HBlankTask *t, void (*a)(), void (*b)(), void (*c)());
 void ScreenTransition_OnHidden();
 void ScreenTransition_HideCover();
 void IrisWipe_SetupLayers();
@@ -161,7 +161,7 @@ extern "C" void IrisWipe_Begin() {
     MIi_CpuClear16(z, (u32)sIrisWipeTableB, sizeof sIrisWipeTableB);
     sIrisWipeActiveTable = sIrisWipeTableA;
     IrisWipe_SetupLayers();
-    if (HBlank_Add(sIrisWipeHBlankTask, (void *)IrisWipe_HBlank, (void *)IrisWipe_VBlankRegs, 0) != 0) {
+    if (HBlank_Add((HBlankTask *)sIrisWipeHBlankTask, IrisWipe_HBlank, IrisWipe_VBlankRegs, 0) != 0) {
         sIrisWipeFlags |= 1;
     }
     if (gScreenTransition.progress == 0x1000) Gfx2d_SetBrightness(0);
@@ -171,7 +171,7 @@ extern "C" void IrisWipe_End() {
     Gfx2d_DisableMainWindows(1);
     Gfx2d_DisableSubWindows(1);
     if (sIrisWipeFlags & 1) {
-        HBlank_Remove(sIrisWipeHBlankTask);
+        HBlank_Remove((HBlankTask *)sIrisWipeHBlankTask);
         sIrisWipeFlags &= ~1;
     }
     Gfx2d_HideMainPlanes(4);

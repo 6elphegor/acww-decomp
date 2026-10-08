@@ -56,6 +56,7 @@ public:
     /* 0x88 */ HouseVisitInvite houseVisitInvite;
 };
 
+static_assert(sizeof(HouseVisitInvite) == 0x24, "HouseVisitInvite: PlayerErrands::houseVisitInvite");
 static_assert(sizeof(PlayerErrands) == 0xac, "PlayerErrands: PlayerData::errands");
 
 #endif

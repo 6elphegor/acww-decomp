@@ -282,7 +282,7 @@ u8 FengShui_GetSouthTotal();
 u8 FengShui_GetWestTotal();
 }
 
-extern "C" BOOL HBlank_Replace(HBlankTask *t, s32 a, void (*b)()) {
+extern "C" BOOL HBlank_Replace(HBlankTask *t, void (*a)(), void (*b)()) {
     t->unk_14 = b;
     t->nextParam = a;
     t->taskState = 2;

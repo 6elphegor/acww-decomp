@@ -1,8 +1,8 @@
 #include "nitro/wm.h"
-#define PROTO_LOCAL_MATH_CountPopulation  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0211ef94.h"
 #include "proto/autoload_2/unk_0211f800.h"
 #include "proto/autoload_2/unk_02120fe8.h"
+#include "proto/autoload_2/unk_0212703c.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK WM (wireless manager) API, autoload_2 0x0211f800-0x02120c98. ARM code, mwcc 1.2/base.
 typedef unsigned char u8;
@@ -58,12 +58,12 @@ extern void MIi_CpuCopyFast(void *, void *, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
 extern void MI_CpuFill8(void *, u32, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
-extern u32 MATH_CountPopulation(u32);
+extern u32 MATH_CountPopulation(u32);  // (proto/autoload_2/unk_0212703c.h declares it for C++ only until it is regenerated)
 extern u32 WMi_StartParentEx(WMCallback cb, u32 arg);
 
-u32 WM_SetMPDataToPortEx(WMCallback cb, u32 arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
-u32 WmGetSharedDataAddress(u8 *base, u32 x, u32 y, u32 n);
-BOOL WmCheckParentParameter(u8 *p);
+u32 WM_SetMPDataToPortEx(WMCallback cb, void *arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
+u16 *WmGetSharedDataAddress(u8 *base, u32 x, u16 *y, u32 n);
+BOOL WmCheckParentParameter(WMParentParam *p);
 // (WM key-sharing MP send step, uses WM_SetMPDataToPortEx; callback WmDataSharingSetDataCallback)
 void WmDataSharingSendDataSet(WMPool *buf, BOOL flag) {
     WMStatus *st = WMi_GetSystemWork()->status;
@@ -88,7 +88,7 @@ void WmDataSharingSendDataSet(WMPool *buf, BOOL flag) {
         buf->pkt[cur].hdr = buf->f80e;
         if (flag == 1) buf->pkt[cur].hdr &= ~1;
         OS_RestoreInterrupts(irq);
-        ret = WM_SetMPDataToPortEx(WmDataSharingSetDataCallback, (u32)buf, &buf->pkt[cur], buf->f814, buf->f80e & ack, buf->f816, 1);
+        ret = WM_SetMPDataToPortEx(WmDataSharingSetDataCallback, buf, &buf->pkt[cur], buf->f814, buf->f80e & ack, buf->f816, 1);
         if (ret == 7) {
             buf->slot[cur] = 0xffff;
             buf->f80a = (buf->f80a + 1) & 3;
@@ -101,7 +101,7 @@ void WmDataSharingSendDataSet(WMPool *buf, BOOL flag) {
 }
 
 // (WM key-sharing helper)
-u32 WM_GetSharedDataAddress(u8 *base, u16 *p, u32 n) {
+u16 *WM_GetSharedDataAddress(u8 *base, u16 *p, u32 n) {
     u32 b = p[1];
     u32 m = 1 << n;
     u32 a = p[0];
@@ -110,11 +110,11 @@ u32 WM_GetSharedDataAddress(u8 *base, u16 *p, u32 n) {
     if ((a & m) == 0) return 0;
     if ((b & m) == 0) return 0;
 // (WM key-sharing helper: popcount-indexed lookup)
-    return WmGetSharedDataAddress(base, a, (u32)(p + 2), n);
+    return WmGetSharedDataAddress(base, a, p + 2, n);
 }
 
-u32 WmGetSharedDataAddress(u8 *base, u32 x, u32 y, u32 n) {
-    return W16(base, 0x810) * MATH_CountPopulation(x & ((1 << n) - 1)) + y;
+u16 *WmGetSharedDataAddress(u8 *base, u32 x, u16 *y, u32 n) {
+    return (u16 *)((u8 *)y + W16(base, 0x810) * MATH_CountPopulation(x & ((1 << n) - 1)));
 }
 
 // WM_StartDCF (request 17)
@@ -189,7 +189,7 @@ u32 WM_StartMPEx(WMCallback cb, u32 a, u16 len, u32 c, u16 s1, u16 s2, u16 s3, u
 }
 
 // WM_SetMPDataToPortEx (request 15)
-u32 WM_SetMPDataToPortEx(WMCallback cb, u32 arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio) {
+u32 WM_SetMPDataToPortEx(WMCallback cb, void *arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio) {
     int maxSize;
     u16 mask = 1;
     WMStatus *st = WMi_GetSystemWork()->status;
@@ -208,7 +208,7 @@ u32 WM_SetMPDataToPortEx(WMCallback cb, u32 arg, void *sendData, u16 size, u16 d
     if (sendData == 0) return 6;
     if (mask == 0) return 7;
     DC_InvalidateRange(&st->f50, 2);
-    if (sendData == (void *)st->f50) return 6;
+    if (WM_ARM7_ADDR(sendData) == st->f50) return 6; // (f50: an ARM7 address)
     if (size + (parent != 0 ? 4 : 2) > maxSize) return 6;
     if (size == 0) return 6;
     DC_StoreRange(sendData, size);
@@ -306,32 +306,32 @@ u32 WM_End(WMCallback cb) {
 }
 
 // WM_SetParentParameter (request 7)
-u32 WM_SetParentParameter(WMCallback cb, u8 *p) {
+u32 WM_SetParentParameter(WMCallback cb, WMParentParam *p) {
     u32 r = WMi_CheckStateEx(1, 2);
     u32 n;
     if (r != 0) return r;
     if (p == 0) return 6;
-    if (W16(p, 4) != 0) {
-        if (W32(p, 0) == 0) return 6;
+    if (p->userGameInfoLength != 0) {
+        if (p->userGameInfo == 0) return 6;
     }
-    n = W16(p, 0x14);
-    if (W16(p, 0x34) + (n != 0 ? 42 : 0) > 512 || W16(p, 0x36) + (n != 0 ? 6 : 0) > 512) return 6;
+    n = p->KS_Flag;
+    if (p->parentMaxSize + (n != 0 ? 42 : 0) > 512 || p->childMaxSize + (n != 0 ? 6 : 0) > 512) return 6;
 // WM_SetParentParameter argument check
     WmCheckParentParameter(p);
     WMi_SetCallbackTable(7, cb);
-    DC_StoreRange(p, 0x40);
-    if (W16(p, 4) != 0) DC_StoreRange((void *)W32(p, 0), W16(p, 4));
+    DC_StoreRange(p, sizeof(WMParentParam));
+    if (p->userGameInfoLength != 0) DC_StoreRange(p->userGameInfo, p->userGameInfoLength);
     r = WMi_SendCommand(7, 1, p);
     if (r == 0) r = 2;
     return r;
 }
 
-BOOL WmCheckParentParameter(u8 *p) {
-    u32 v = W16(p, 4);
+BOOL WmCheckParentParameter(WMParentParam *p) {
+    u32 v = p->userGameInfoLength;
     if (v > 0x70) return 0;
-    v = W16(p, 0x18);
+    v = p->beaconPeriod;
     if (v < 10 || v > 1000) return 0;
-    v = W16(p, 0x32);
+    v = p->channel;
     if (v < 1 || v > 14) return 0;
     return 1;
 }
@@ -362,57 +362,57 @@ u32 WM_EndParent(WMCallback cb) {
 }
 
 // WM_StartScan (request 10)
-u32 WM_StartScan(WMCallback cb, u8 *p) {
+u32 WM_StartScan(WMCallback cb, WMScanParam *p) {
     u32 r = WMi_CheckStateEx(3, 2, 3, 5);
-    u8 *m;
+    WMScanReq *m;
     if (r != 0) return r;
     if (p == 0) return 6;
-    if (W32(p, 0) == 0) return 6;
-    if (W16(p, 4) < 1 || W16(p, 4) > 14) return 6;
+    if (p->scanBuf == 0) return 6;
+    if (p->channel < 1 || p->channel > 14) return 6;
     WMi_SetCallbackTable(10, cb);
-    m = WMi_GetSystemWork()->req;
-    W16(m, 0) = 10;
-    W16(m, 2) = W16(p, 4);
-    W32(m, 4) = W32(p, 0);
-    W16(m, 8) = W16(p, 6);
-    W8(m, 10) = W8(p, 8);
-    W8(m, 11) = W8(p, 9);
-    W8(m, 12) = W8(p, 10);
-    W8(m, 13) = W8(p, 11);
-    W8(m, 14) = W8(p, 12);
-    W8(m, 15) = W8(p, 13);
+    m = (WMScanReq *)WMi_GetSystemWork()->req;
+    m->apiid = 10;
+    m->channel = p->channel;
+    m->scanBuf = WM_ARM7_ADDR(p->scanBuf);
+    m->maxChannelTime = p->maxChannelTime;
+    m->bssid[0] = p->bssid[0];
+    m->bssid[1] = p->bssid[1];
+    m->bssid[2] = p->bssid[2];
+    m->bssid[3] = p->bssid[3];
+    m->bssid[4] = p->bssid[4];
+    m->bssid[5] = p->bssid[5];
     r = WMi_SendCommand(10, 0);
     if (r == 0) r = 2;
     return r;
 }
 
 // WM_StartScanEx (request 38)
-u32 WM_StartScanEx(WMCallback cb, u8 *p) {
+u32 WM_StartScanEx(WMCallback cb, WMScanExParam *p) {
     u32 r = WMi_CheckStateEx(3, 2, 3, 5);
-    u8 *m;
+    WMScanExReq *m;
     u32 v;
     if (r != 0) return r;
     if (p == 0) return 6;
-    if (W32(p, 0) == 0) return 6;
-    if (W16(p, 4) > 0x400) return 6;
-    if (W16(p, 0x12) > 32) return 6;
-    v = W16(p, 0x10);
+    if (p->scanBuf == 0) return 6;
+    if (p->scanBufSize > 0x400) return 6;
+    if (p->ssidLength > 32) return 6;
+    v = p->scanType;
     if (v != 0 && v != 1 && v != 2 && v != 3) return 6;
     if ((u16)(v + 0xfffe) <= 1) {
-        if (W16(p, 0x34) > 32) return 6;
+        if (p->ssidMatchLength > 32) return 6;
     }
     WMi_SetCallbackTable(38, cb);
-    m = WMi_GetSystemWork()->req;
-    W16(m, 0) = 38;
-    W16(m, 2) = W16(p, 6);
-    W32(m, 4) = W32(p, 0);
-    W16(m, 8) = W16(p, 4);
-    W16(m, 10) = W16(p, 8);
-    MI_CpuCopy8(p + 10, m + 12, 6);
-    W16(m, 18) = W16(p, 0x10);
-    W16(m, 0x36) = W16(p, 0x34);
-    W16(m, 20) = W16(p, 0x12);
-    MI_CpuCopy8(p + 20, m + 22, 32);
+    m = (WMScanExReq *)WMi_GetSystemWork()->req;
+    m->apiid = 38;
+    m->channelList = p->channelList;
+    m->scanBuf = WM_ARM7_ADDR(p->scanBuf);
+    m->scanBufSize = p->scanBufSize;
+    m->maxChannelTime = p->maxChannelTime;
+    MI_CpuCopy8(p->bssid, m->bssid, 6);
+    m->scanType = p->scanType;
+    m->ssidMatchLength = p->ssidMatchLength;
+    m->ssidLength = p->ssidLength;
+    MI_CpuCopy8(p->ssid, m->ssid, 32);
     r = WMi_SendCommand(38, 0);
     if (r == 0) r = 2;
     return r;
@@ -429,23 +429,23 @@ u32 WM_EndScan(WMCallback cb) {
 }
 
 // WM_StartConnect-style (request 12)
-u32 WM_StartConnectEx(WMCallback cb, u8 *bss, u8 *ssid, u32 arg, u16 extra) {
+u32 WM_StartConnectEx(WMCallback cb, WMBssDesc *bss, u8 *ssid, u32 arg, u16 extra) {
     u32 r = WMi_CheckStateEx(1, 2);
-    u8 *m;
+    WMConnectReq *m;
     if (r != 0) return r;
     if (bss == 0) return 6;
-    DC_StoreRange(bss, W16(bss, 0) << 1);
+    DC_StoreRange(bss, bss->length << 1);
     WMi_SetCallbackTable(12, cb);
-    m = WMi_GetSystemWork()->req;
-    W16(m, 0) = 12;
-    W32(m, 4) = (u32)bss;
+    m = (WMConnectReq *)WMi_GetSystemWork()->req;
+    m->apiid = 12;
+    m->pInfo = WM_ARM7_ADDR(bss);
     if (ssid != 0) {
-        MI_CpuCopy8(ssid, m + 8, 24);
+        MI_CpuCopy8(ssid, m->ssid, 24);
     } else {
-        MI_CpuFill8(m + 8, 0, 24);
+        MI_CpuFill8(m->ssid, 0, 24);
     }
-    W32(m, 32) = arg;
-    W16(m, 38) = extra;
+    m->powerSave = arg;
+    m->authMode = extra;
     r = WMi_SendCommand(12, 0);
     if (r == 0) r = 2;
     return r;
@@ -483,7 +483,7 @@ u32 WM_SetIndCallback(WMCallback cb) {
 }
 
 // WM_SetPortCallback
-u32 WM_SetPortCallback(u16 port, WMCallback cb, u32 arg) {
+u32 WM_SetPortCallback(u16 port, WMCallback cb, void *arg) {
     u32 irq = OS_DisableInterrupts();
     u32 r = WMi_CheckInitialized();
     if (r != 0) {
@@ -539,19 +539,19 @@ int WM_GetMPReceiveBufferSize(void) {
 
 u8 *WM_ReadMPData(WMSet *p, u32 ch) {
     WMArm9Buf *w = WMi_GetSystemWork();
-    u32 a[16];
+    u8 *a[16];
     int i;
     if (WMi_CheckInitialized() != 0) return 0;
     if (ch < 1 || ch > 15) return 0;
     DC_InvalidateRange(&w->status->f17e, 2);
     if ((w->status->f17e & (1 << ch)) == 0) return 0;
     if (p->num == 0) return 0;
-    a[0] = (u32)p->data;
+    a[0] = p->data;
     i = 0;
     do {
-        if (ch == W16(((u32 *)a)[i], 4)) return (u8 *)((u32 *)a)[i];
+        if (ch == W16(a[i], 4)) return a[i];
         i++;
-        ((u32 *)a)[i] = ((u32 *)a)[i - 1] + p->size;
+        a[i] = a[i - 1] + p->size;
     } while (i < p->num);
     return 0;
 }

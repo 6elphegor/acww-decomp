@@ -11,6 +11,7 @@
 #include "proto/autoload_2/unk_02133b68.h"
 #include "proto/autoload_2/unk_02133d04.h"
 #include "proto/autoload_2/unk_0213510c.h"
+#include "sys/std_terminate.h"
 
 // The modern build has no C++ exceptions (the game never throws, it was built with -Cpp_exceptions off): the
 // try blocks run as plain blocks and their handlers are never entered.
@@ -128,7 +129,7 @@ void SetupCatchInfo(ThrowContext *context, s32 cinfo_ref, s32 offset);
 DestructorChain *data_0220066c;
 
 // thandler, the terminate handler (autoload_2 .data 0x0213c6b0), initially dthandler
-VoidFunc data_0213c6b0 = _ZSt9dthandlerv;
+VoidFunc data_0213c6b0 = std::dthandler;
 
 // __partial_array_destructor-style cleanup: destroy the constructed elements [start, ptr) backwards.
 extern "C" void func_021358a8(char *start, char *ptr, size_t size, ObjFunc dtor) {
@@ -138,12 +139,14 @@ extern "C" void func_021358a8(char *start, char *ptr, size_t size, ObjFunc dtor)
             dtor(ptr);
         }
     } catch (...) {
-        _ZSt9terminatev();
+        std::terminate();
     }
 }
 
 // __cxa_vec_new (label in symbols.txt)
 extern "C" void *__cxa_vec_new(size_t count, size_t size, size_t padding, ObjFunc ctor, ObjFunc dtor) {
+    // the game's operator new[] by its symbol: it returns NULL when the heap is full, while a C++ call of ::operator new[]
+    // is assumed to return non-NULL (GCC drops the check below)
     char *block = (char *)_Znam(count * size + padding);
     char *array;
     char *ptr;
@@ -169,7 +172,7 @@ extern "C" void *__cxa_vec_new(size_t count, size_t size, size_t padding, ObjFun
             if (dtor) {
                 func_021358a8(array, ptr, size, dtor);
             }
-            _ZdaPv(block);
+            ::operator delete[](block);
             throw;
         }
     }
@@ -219,7 +222,7 @@ extern "C" void __cxa_vec_dtor(void *array, size_t count, size_t size, ObjFunc d
                     dtor(ptr);
                 }
             } catch (...) {
-                _ZSt9terminatev();
+                std::terminate();
             }
             throw;
         }
@@ -238,7 +241,7 @@ extern "C" void __cxa_vec_cleanup(void *array, size_t count, size_t size, ObjFun
                 dtor(ptr);
             }
         } catch (...) {
-            _ZSt9terminatev();
+            std::terminate();
         }
     }
 }
@@ -249,17 +252,17 @@ extern "C" void __cxa_vec_delete(void *array, size_t size, size_t padding, ObjFu
         if (dtor) {
             __cxa_vec_dtor(array, ((size_t *)array)[-1], size, dtor);
         }
-        _ZdaPv((char *)array - padding);
+        ::operator delete[]((char *)array - padding);
     }
 }
 
 // dthandler: default terminate handler
-extern "C" void _ZSt9dthandlerv(void) {
+void std::dthandler() {
     abort();
 }
 
 // terminate
-extern "C" void _ZSt9terminatev(void) {
+void std::terminate() {
     data_0213c6b0();
 }
 

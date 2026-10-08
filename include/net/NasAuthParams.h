@@ -8,6 +8,7 @@
 // "gsbrcd" text and the allocator (DwcLogin_StartNasAuth / DwcLogin_PollNasAuth in src/ov065/unk_ov065_02270e34.cpp,
 // NetCheck_ThreadMain in src/ov065/unk_ov065_0226ec94.cpp).
 
+typedef struct NasAuthParams NasAuthParams;
 struct NasAuthParams {
     /* 0x00 */ u8 inGameName[0x16]; // u16 text
     /* 0x16 */ char gsbrcd[14];

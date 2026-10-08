@@ -20,12 +20,11 @@ namespace Nc {
 extern "C" {
 
 
-typedef s32 (*GsGpConnectCallback)(GPConnection *, void *, s32);
 
 void gpiDisconnect(GPConnection *, s32);
 void gpiSetErrorString(GPConnection *, const char *);
 s32 gpiConnect(GPConnection *, const char *, const char *, const char *, const char *, const char *,
-                        const char *, s32, s32, s32, s32, GsGpConnectCallback, s32);
+                        const char *, const char *, s32, s32, s32, GPCallback, void *);
 s32 gpiCheckConnect(GPConnection *);
 void msleep(s32);
 s32 gpiFindOperationByID(GPConnection *, GPIOperation **, s32);
@@ -73,11 +72,11 @@ void gpiSetErrorString(GPConnection *, const char *);
 s32 gpiSendAuthBuddyRequest(GPConnection *, GPIProfile *);
 s32 gpiCanFreeProfile(GPIProfile *);
 void gpiRemoveProfile(GPConnection *, GPIProfile *);
-s32 gpiGetPeerByProfile(GPConnection *, s32);
-s32 gpiAddPeer(GPConnection *, s32, s32);
-s32 gpiPeerGetSig(GPConnection *, s32);
-s32 gpiPeerStartConnect(GPConnection *, s32);
-s32 gpiPeerAddMessage(GPConnection *, s32, s32, s32);
+GPIPeer *gpiGetPeerByProfile(GPConnection *, s32);
+GPIPeer *gpiAddPeer(GPConnection *, s32, s32);
+s32 gpiPeerGetSig(GPConnection *, GPIPeer *);
+s32 gpiPeerStartConnect(void *, GPIPeer *);
+s32 gpiPeerAddMessage(void *, GPIPeer *, s32, const char *);
 void gpiAppendStringToBuffer(GPConnection *, GPIBuffer *, const char *);
 void gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
 s32 gpiValueForKey(const char *, const char *, char *, s32);
@@ -89,7 +88,7 @@ GPIProfile *gpiProfileListAdd(GPConnection *, s32);
 
 
 s32 gpiSendServerBuddyMessage(GPConnection *h, s32 a, s32 b, const char *s);
-s32 gpiSendBuddyMessage(GPConnection *h, s32 id, s32 b, s32 t);
+s32 gpiSendBuddyMessage(GPConnection *h, s32 id, s32 b, const char *t);
 }
 }
 
@@ -210,7 +209,7 @@ s32 gpiProcessRecvBuddyMessage(GPConnection *h, const char *s) {
         if (p.p.callback == 0) {
             break;
         }
-        r5 = (GPRecvBuddyMessageArg *)GsUtil_Alloc(HOST_SIZED(0xc, GPRecvBuddyMessageArg));
+        r5 = (GPRecvBuddyMessageArg *)GsUtil_Alloc(sizeof(GPRecvBuddyMessageArg));
         if (r5 == NULL) {
             ERR1();
         }
@@ -259,7 +258,7 @@ s32 gpiProcessRecvBuddyMessage(GPConnection *h, const char *s) {
             break;
         }
         {
-            GPRecvBuddyRequestArg *r5 = (GPRecvBuddyRequestArg *)GsUtil_Alloc(HOST_SIZED(0x40c, GPRecvBuddyRequestArg));
+            GPRecvBuddyRequestArg *r5 = (GPRecvBuddyRequestArg *)GsUtil_Alloc(sizeof(GPRecvBuddyRequestArg));
             if (r5 == NULL) {
                 ERR1();
             }
@@ -285,7 +284,7 @@ s32 gpiProcessRecvBuddyMessage(GPConnection *h, const char *s) {
         if (n->buddyStatus == NULL) {
             u8 *q;
             u8 *k;
-            n->buddyStatus = (GPIBuddyStatus *)GsUtil_Alloc(HOST_SIZED(0x18, GPIBuddyStatus));
+            n->buddyStatus = (GPIBuddyStatus *)GsUtil_Alloc(sizeof(GPIBuddyStatus));
             if (n->buddyStatus == NULL) {
                 ERR1();
             }
@@ -343,7 +342,7 @@ s32 gpiProcessRecvBuddyMessage(GPConnection *h, const char *s) {
             break;
         }
         {
-            GPRecvBuddyStatusArg *m = (GPRecvBuddyStatusArg *)GsUtil_Alloc(HOST_SIZED(0xc, GPRecvBuddyStatusArg));
+            GPRecvBuddyStatusArg *m = (GPRecvBuddyStatusArg *)GsUtil_Alloc(sizeof(GPRecvBuddyStatusArg));
             if (m == NULL) {
                 ERR1();
             }
@@ -385,7 +384,7 @@ s32 gpiProcessRecvBuddyMessage(GPConnection *h, const char *s) {
         if (p4.p.callback == 0) {
             break;
         }
-        r5 = (GPRecvGameInviteArg *)GsUtil_Alloc(HOST_SIZED(0x108, GPRecvGameInviteArg));
+        r5 = (GPRecvGameInviteArg *)GsUtil_Alloc(sizeof(GPRecvGameInviteArg));
         if (r5 == NULL) {
             ERR1();
         }
@@ -404,7 +403,7 @@ s32 gpiProcessRecvBuddyMessage(GPConnection *h, const char *s) {
         if (gpiValueForKey(s, "\\msg\\", buf, 0x1000) == 0) {
             ERR3();
         }
-        gpiSendBuddyMessage(h, v, 0x67, (s32)"1");
+        gpiSendBuddyMessage(h, v, 0x67, "1");
         break;
     }
     return 0;
@@ -434,13 +433,13 @@ s32 gpiSendServerBuddyMessage(GPConnection *h, s32 a, s32 b, const char *s) {
 
 namespace Nd {
 extern "C" {
-s32 gpiSendBuddyMessage(GPConnection *h, s32 id, s32 b, s32 t) {
+s32 gpiSendBuddyMessage(GPConnection *h, s32 id, s32 b, const char *t) {
     GPIProfile *n;
-    s32 r6;
+    GPIPeer *r6;
     r6 = gpiGetPeerByProfile(h, id);
     if (r6 == 0) {
         if (!(gpiGetProfile(h, id, &n) != 0 && n->buddyStatus != NULL && n->buddyStatus->port != 0)) {
-            return gpiSendServerBuddyMessage(h, id, b, (const char *)t);
+            return gpiSendServerBuddyMessage(h, id, b, t);
         }
         r6 = gpiAddPeer(h, id, 1);
         if (r6 == 0) {

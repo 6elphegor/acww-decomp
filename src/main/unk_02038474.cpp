@@ -15,13 +15,7 @@
 #include "sys/ProcProfile.h"
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
-#define PROTO_LOCAL_ChatBalloon_PackSyncVar  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ChatBalloon_ReceiveRemote  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_DebugVar_GetStub  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StrBuf_AsciiToGame  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StrBuf_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StrBuf_ClearAlt  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StrBuf_GameToAscii  // declared below: the shared prototype conflicts with the calls here
+
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_020116e0.h"
 #include "proto/main/unk_02038474.h"
@@ -32,6 +26,7 @@
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_0209c37c.h"
 
 extern "C" const s32 data_020c8cb4;
 extern "C" const s32 data_020c8cb8;
@@ -205,19 +200,13 @@ extern s32 gGfxMainOnTop;
 
 BOOL TalkRequest_IsActive();
 s32 Scene_GetCurrent();
-void StrBuf_ClearAlt(void *p);
-void StrBuf_AsciiToGame(EncodedStringBaseRef *p, void *q);
-void StrBuf_GameToAscii(ChatBalloonName *a, EncodedStringBaseRef *b);
-void MI_CpuCopy8(void *dst, void *src, u32 n);
-void ChatBalloon_ReceiveRemote();
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 void MsgTextLabel_Destroy(TextLabel *obj);
-s32 DebugVar_GetStub(s32 a, s32 b);
 void Math_StepS32(void *p, s32 a, s32 b);
-s32 *_ZN10SpriteAnim6getSeqEv(void *p);
-void StrBuf_Clear(void *buf);
 s32 func_01ffcb0c(s32 a, s32 b);
 }
+// (the StrBuf_* helpers take the text buffers as StrBuf, the same interface as MsgStringBase / EncodedStringBase)
 
 static inline BOOL IsPositive(s32 v) {
     if (v > 0) {
@@ -246,7 +235,7 @@ ChatBalloonText::~ChatBalloonText() {}
 
 u32 ChatBalloonText::capacity() { return 0x21; }
 
-u8 *ChatBalloonText::data() { return HOST_AT(this, 0x12, text[0], 0); }
+u8 *ChatBalloonText::data() { return text; }
 
 EncodedStringRef::EncodedStringRef(u8 *data, u32 size) : buffer(data), bufferSize(size) {}
 
@@ -256,13 +245,13 @@ u32 EncodedStringRef::capacity() { return bufferSize; }
 
 u8 *EncodedStringRef::data() { return buffer; }
 
-ChatBalloonName::ChatBalloonName() { StrBuf_Clear(this); }
+ChatBalloonName::ChatBalloonName() { StrBuf_Clear((StrBuf *)this); }
 
 ChatBalloonName::~ChatBalloonName() {}
 
 u32 ChatBalloonName::capacity() { return 9; }
 
-u8 *ChatBalloonName::data() { return HOST_AT(this, 4, text[0], 0); }
+u8 *ChatBalloonName::data() { return text; }
 
 EncodedStringBaseRef::EncodedStringBaseRef(u8 *data, u32 size) : buffer(data), bufferSize(size) {}
 
@@ -291,15 +280,15 @@ ChatBalloon::~ChatBalloon() {
 void ChatBalloon::draw() {
     if (visible != 0) {
         if (localIndex == 0) {
-            void *h = textAnim.getCell();
+            GXOamAttr *h = (GXOamAttr *)textAnim.getCell();
             s32 x = getOriginX() + textAnim.getFrameX(-1);
             s32 y = slideY + (popOffsetY + (stackY + getOriginY()) + textAnim.getFrameY(-1));
             Oam_DrawCell(0, h, x, y, palette, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         } else {
-            void *h1 = nameAnim.getCell();
+            GXOamAttr *h1 = (GXOamAttr *)nameAnim.getCell();
             s32 x1 = getOriginX() + nameAnim.getFrameX(-1);
             s32 y1 = slideY + (popOffsetY + (stackY + getOriginY()) + nameAnim.getFrameY(-1));
-            void *h2 = textAnim.getCell();
+            GXOamAttr *h2 = (GXOamAttr *)textAnim.getCell();
             s32 x2 = getOriginX() + textAnim.getFrameX(-1);
             s32 y2 = slideY + (popOffsetY + (stackY + getOriginY()) + textAnim.getFrameY(-1));
             Oam_DrawCell(2, h1, x1, y1, palette, -1, 0x1000, 0x1000, 0, -1, 0, 0);
@@ -392,7 +381,7 @@ void ChatBalloon::refreshLabelsUnk() {
 
 void ChatBalloon::reset() {
     text.clear();
-    StrBuf_Clear(&name);
+    StrBuf_Clear((StrBuf *)&name);
     destroyNameLabel();
     destroyTextLabel();
     stateTimer = 0;
@@ -420,14 +409,14 @@ void ChatBalloon::enterOpen() {
     state = 1;
     visible = 1;
     if (localIndex == 0) {
-        a = DebugVar_GetStub(0x136, 2) + 3;
+        a = DebugVar_GetStub() + 3;
     } else {
-        a = DebugVar_GetStub(0x12c, 2) + 3;
+        a = DebugVar_GetStub() + 3;
     }
     if (localIndex == 0) {
-        b = DebugVar_GetStub(0x136, 3) + 5;
+        b = DebugVar_GetStub() + 5;
     } else {
-        b = DebugVar_GetStub(0x12c, 3) - 5;
+        b = DebugVar_GetStub() - 5;
     }
     stateTimer = a;
     popOffsetY = b;
@@ -439,19 +428,19 @@ void ChatBalloon::enterOpen() {
 void ChatBalloon::execOpen() {
     s32 a, b, c;
     if (localIndex == 0) {
-        a = DebugVar_GetStub(0x136, 4) + 2;
+        a = DebugVar_GetStub() + 2;
     } else {
-        a = DebugVar_GetStub(0x12c, 4) + 2;
+        a = DebugVar_GetStub() + 2;
     }
     if (localIndex == 0) {
-        b = DebugVar_GetStub(0x136, 5) - 6;
+        b = DebugVar_GetStub() - 6;
     } else {
-        b = DebugVar_GetStub(0x12c, 5) + 6;
+        b = DebugVar_GetStub() + 6;
     }
     if (localIndex == 0) {
-        c = DebugVar_GetStub(0x136, 6) + 2;
+        c = DebugVar_GetStub() + 2;
     } else {
-        c = DebugVar_GetStub(0x12c, 6) - 2;
+        c = DebugVar_GetStub() - 2;
     }
     if (stateTimer > a) {
         popOffsetY += b;
@@ -470,9 +459,9 @@ void ChatBalloon::enterShow() {
     state = 2;
     visible = 1;
     if (localIndex == 0) {
-        t = DebugVar_GetStub(0x137, 2) + 0x258;
+        t = DebugVar_GetStub() + 0x258;
     } else {
-        t = DebugVar_GetStub(0x12d, 2) + 0x258;
+        t = DebugVar_GetStub() + 0x258;
     }
     stateTimer = t;
 }
@@ -480,9 +469,9 @@ void ChatBalloon::enterShow() {
 void ChatBalloon::execShow() {
     s32 t;
     if (localIndex == 0) {
-        t = DebugVar_GetStub(0x137, 3) + 6;
+        t = DebugVar_GetStub() + 6;
     } else {
-        t = DebugVar_GetStub(0x12d, 3) + 6;
+        t = DebugVar_GetStub() + 6;
     }
     Math_StepS32(&stackY, stackTargetY, t);
     stateTimer--;
@@ -499,9 +488,9 @@ void ChatBalloon::enterClose() {
     state = 3;
     visible = 1;
     if (localIndex == 0) {
-        t = DebugVar_GetStub(0x138, 2) + 2;
+        t = DebugVar_GetStub() + 2;
     } else {
-        t = DebugVar_GetStub(0x12e, 2) + 2;
+        t = DebugVar_GetStub() + 2;
     }
     stateTimer = t;
 }
@@ -509,9 +498,9 @@ void ChatBalloon::enterClose() {
 void ChatBalloon::execClose() {
     s32 t;
     if (localIndex == 0) {
-        t = DebugVar_GetStub(0x138, 3) + 0xb;
+        t = DebugVar_GetStub() + 0xb;
     } else {
-        t = DebugVar_GetStub(0x12e, 3) - 0xb;
+        t = DebugVar_GetStub() - 0xb;
     }
     popOffsetY += t;
     stateTimer--;
@@ -520,9 +509,9 @@ void ChatBalloon::execClose() {
         destroyTextLabel();
         enterHidden();
         if (localIndex == 0) {
-            t = DebugVar_GetStub(0x138, 4);
+            t = DebugVar_GetStub();
         } else {
-            t = DebugVar_GetStub(0x12e, 4) + 0xa;
+            t = DebugVar_GetStub() + 0xa;
         }
         cooldown = t;
     }
@@ -547,7 +536,7 @@ void ChatBalloon::fitToText() {
         w = nameLabel->measureWidth();
         n = (w + 7) >> 3;
         pad = n * 8 - w;
-        hi = _ZN10SpriteAnim6getSeqEv(&nameAnim)[1] - 1;
+        hi = nameAnim.getSeq()->frameCount - 1;
         lo = n - 1;
         if (lo < 0) {
             hi = 0;
@@ -559,7 +548,7 @@ void ChatBalloon::fitToText() {
     }
     w2 = textLabel->measureWidth();
     n2 = (w2 + 7) >> 3;
-    hi = _ZN10SpriteAnim6getSeqEv(&textAnim)[1] - 1;
+    hi = textAnim.getSeq()->frameCount - 1;
     lo = n2 - 1;
     if (lo < 0) {
         hi = 0;
@@ -911,7 +900,7 @@ extern "C" void ChatBalloon_SendSyncVar(s32 i, ChatBalloon *x) {
     if (i < 4) {
         CommManager *g = gCommManager;
         if ((g)->isOnline() && (g)->isSlotActive(i)) {
-            CommSyncVar_SetVar(i + 0x14, (s32)x, 0, 1);
+            CommSyncVar_SetVar(i + 0x14, x, 0, 1);
         }
     }
 }
@@ -927,7 +916,7 @@ extern "C" void ChatBalloon_ReceiveRemote() {
                 EncodedStringRef b((sChatBalloonSyncBuf + 9), 0x20);
                 ChatBalloonName t;
                 ChatBalloonText u;
-                StrBuf_GameToAscii(&t, &s);
+                StrBuf_GameToAscii((StrBuf *)&t, (StrBuf *)&s);
                 u.fromEncoded(&b, 0, 0);
                 ChatBalloon_Post(i, (StrBuf *)&t, &u);
             }
@@ -950,13 +939,14 @@ extern "C" u8 ChatBalloon_ReadSyncVar(s32 idx) {
     return c;
 }
 
-extern "C" void ChatBalloon_PackSyncVar(u8 *a, void *b, ChatBalloon *c) {
+// b: the sync variable's index (CommSyncVar_PackPlayerMsg0..3)
+extern "C" void ChatBalloon_PackSyncVar(u8 *a, u32 b, ChatBalloon *c) {
     EncodedStringRef buf((sChatBalloonSyncBuf + 9), 0x20);
     EncodedStringBaseRef s((sChatBalloonSyncBuf + 1), 8);
-    StrBuf_ClearAlt(&buf);
-    StrBuf_ClearAlt(&s);
-    buf.fromMsgString((MsgString *)(HOST_AT(c, 0x54, text, 0)));
-    StrBuf_AsciiToGame(&s, HOST_AT(c, 0x88, name, 0));
+    StrBuf_ClearAlt((StrBuf *)&buf);
+    StrBuf_ClearAlt((StrBuf *)&s);
+    buf.fromMsgString(&c->text);
+    StrBuf_AsciiToGame((StrBuf *)&s, (StrBuf *)&c->name);
     sChatBalloonSyncBuf[0] = 1;
     MI_CpuCopy8(sChatBalloonSyncBuf, a, CommSyncVar_GetVarSize(b));
 }

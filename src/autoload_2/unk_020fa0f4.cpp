@@ -10,8 +10,6 @@
 #include "gfx/SplPt.h"
 #include "gfx/SplNode.h"
 #include "nitro/io_access.h"
-#define PROTO_LOCAL_data_0213bc10  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bc18  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020fa0f4.h"
 #include "proto/autoload_2/unk_020fa398.h"
 #include "proto/autoload_2/unk_020fa39c.h"
@@ -92,10 +90,6 @@ void spl_draw_pol(Mg2 *m, Nd *p, PosCb cb);
 }
 
 
-extern "C" {
-extern u32 (*data_0213bc18)(u32, u32, u32);
-extern u32 (*data_0213bc10)(u32, u32, u32);
-}
 
 typedef void (*TexFn)(void *);
 typedef void (*DrawFn)(Mc *, Node *, u32);

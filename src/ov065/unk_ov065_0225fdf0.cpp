@@ -9,8 +9,6 @@
 #include "net/SockAddrIn.h"
 #include "net/SockStartupConfig.h"
 #include "net/SockCoreConfig.h"
-#define PROTO_LOCAL_OS_WakeupThread  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sSockDefaultSocket  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02113088.h"
 #include "proto/autoload_2/unk_02114410.h"
 #include "proto/autoload_2/unk_0212703c.h"
@@ -33,7 +31,7 @@ extern "C" {
 s32 OS_DisableInterrupts();
 s32 OS_RestoreInterrupts(s32);
 s32 OS_Sleep(s32);
-s32 MI_CpuCopy8(s32, void *, s32);
+s32 MI_CpuCopy8(const void *, void *, s32);
 s32 OS_SNPrintf(char *, u32, const char *, ...);
 s64 func_02133100(s64, s64);
 
@@ -42,17 +40,17 @@ s32 SockCore_GetSendRingFree(SockCoreSocket *);
 s32 SockCore_Cleanup();
 u32 SockCore_GetHostIp();
 s32 SockCore_SetDnsServers(u32, u32);
-u32 SockCore_ParseDottedAddr(u32);
-u32 SockCore_ResolveHost(s32);
-s32 SockCore_Accept(s32, u16 *, u32 *);
-s32 SockCore_Listen(s32);
-s32 SockCore_Connect(s32, u32, u32);
-s32 SockCore_Bind(s32, u32);
-s32 SockCore_Create(void *);
-s32 SockCore_Close(s32);
-s32 SockCore_Shutdown(s32);
-s32 SockCore_SendTo(s32, s32, s32, u32, u32, u32);
-s32 SockCore_RecvFrom(s32, s32, s32, u16 *, u32 *, u32);
+u32 SockCore_ParseDottedAddr(const char *);
+u32 SockCore_ResolveHost(const char *);
+sptr SockCore_Accept(SockCoreSocket *, u16 *, u32 *);
+s32 SockCore_Listen(SockCoreSocket *);
+s32 SockCore_Connect(SockCoreSocket *, u32, u32);
+s32 SockCore_Bind(SockCoreSocket *, u32);
+sptr SockCore_Create(void *);
+s32 SockCore_Close(SockCoreSocket *);
+s32 SockCore_Shutdown(SockCoreSocket *);
+s32 SockCore_SendTo(SockCoreSocket *, const void *, s32, u32, u32, u32);
+s32 SockCore_RecvFrom(SockCoreSocket *, void *, s32, u16 *, u32 *, u32);
 s32 Dns_QueryServer(s32, u32, u32);
 s32 IpAddr_Parse(s32, s32 *);
 
@@ -62,14 +60,14 @@ extern u32 sDnsServers[2];
 // forward declarations (the original file defined them in ascending order)
 u32 SockCore_GetPollEvents(SockCoreSocket *o);
 s32 SockCore_GetRecvAvailable(SockCoreSocket *o);
-s32 SockCore_IsInvalidHandle(s32 x);
+s32 SockCore_IsInvalidHandle(SockCoreSocket *x);
 SockCoreSocket **SockList_Find(SockCoreSocket **pp, SockCoreSocket *n);
 void SockList_Remove(SockCoreSocket **pp, SockCoreSocket *n);
 void SockList_Push(SockCoreSocket **pp, SockCoreSocket *n);
 void *Sock_AllocHook(u32 sz);
 void Sock_FreeHook(void *p);
 BOOL SockCore_IsInClosedList(SockCoreSocket *n);
-char *Sock_InetNtoP(s32 mode, s32 x, char *buf, u32 len);
+char *Sock_InetNtoP(s32 mode, const void *x, char *buf, u32 len);
 void IpAddr_StoreBe32(u32 v, u8 *p);
 
 extern IpRandStateSignedStep sIpRandState;
@@ -97,29 +95,29 @@ SockHostEnt sHostent;
 SockCoreConfig sSockStartupConfig;
 char sHostentName[0x104];
 
-s32 Sock_Create(s32 a, s32 b) {
+sptr Sock_Create(s32 a, s32 b) {
     if (b == 1) {
         return SockCore_Create(sSockTcpParams);
     }
     return SockCore_Create(sSockUdpParams);
 }
 
-s32 Sock_Bind(s32 a, SockAddrIn *sa) {
-    return SockCore_Bind(a, HTONS(sa->port));
+s32 Sock_Bind(sptr a, SockAddrIn *sa) {
+    return SockCore_Bind((SockCoreSocket *)a, HTONS(sa->port));
 }
 
-s32 Sock_Connect(s32 a, SockAddrIn *sa) {
-    return SockCore_Connect(a, HTONS(sa->port), HTONL(sa->addr));
+s32 Sock_Connect(sptr a, SockAddrIn *sa) {
+    return SockCore_Connect((SockCoreSocket *)a, HTONS(sa->port), HTONL(sa->addr));
 }
 
-s32 Sock_Recv(s32 a, s32 b, s32 c, u32 d) {
-    return SockCore_RecvFrom(a, b, c, 0, 0, d);
+s32 Sock_Recv(sptr a, void *b, s32 c, u32 d) {
+    return SockCore_RecvFrom((SockCoreSocket *)a, b, c, 0, 0, d);
 }
 
-s32 Sock_RecvFrom(s32 a, s32 b, s32 c, u32 d, SockAddrIn *sa) {
+s32 Sock_RecvFrom(sptr a, void *b, s32 c, u32 d, SockAddrIn *sa) {
     u16 port;
     u32 ip;
-    s32 r = SockCore_RecvFrom(a, b, c, &port, &ip, d);
+    s32 r = SockCore_RecvFrom((SockCoreSocket *)a, b, c, &port, &ip, d);
     if (r >= 0) {
         SockAddrIn *q = *(SockAddrIn *volatile *)&sa;
         if (q != NULL) {
@@ -130,11 +128,11 @@ s32 Sock_RecvFrom(s32 a, s32 b, s32 c, u32 d, SockAddrIn *sa) {
     return r;
 }
 
-s32 Sock_Send(s32 a, s32 b, s32 c, u32 d) {
-    return SockCore_SendTo(a, b, c, 0, 0, d);
+s32 Sock_Send(sptr a, const void *b, s32 c, u32 d) {
+    return SockCore_SendTo((SockCoreSocket *)a, b, c, 0, 0, d);
 }
 
-s32 Sock_SendTo(s32 a, s32 b, s32 c, u32 d, SockAddrIn *sa) {
+s32 Sock_SendTo(sptr a, const void *b, s32 c, u32 d, SockAddrIn *sa) {
     u32 port;
     u32 ip;
     if (sa != NULL) {
@@ -144,18 +142,18 @@ s32 Sock_SendTo(s32 a, s32 b, s32 c, u32 d, SockAddrIn *sa) {
         port = 0;
         ip = port;
     }
-    return SockCore_SendTo(a, b, c, port, ip, d);
+    return SockCore_SendTo((SockCoreSocket *)a, b, c, port, ip, d);
 }
 
-s32 Sock_Shutdown(s32 a) {
-    return SockCore_Shutdown(a);
+s32 Sock_Shutdown(sptr a) {
+    return SockCore_Shutdown((SockCoreSocket *)a);
 }
 
-s32 Sock_Close(s32 a) {
-    return SockCore_Close(a);
+s32 Sock_Close(sptr a) {
+    return SockCore_Close((SockCoreSocket *)a);
 }
 
-SockHostEnt *Sock_GetHostByName(s32 x) {
+SockHostEnt *Sock_GetHostByName(const char *x) {
     u32 ip = SockCore_ResolveHost(x);
     if (ip == 0) {
         return NULL;
@@ -203,14 +201,14 @@ s32 Sock_SetDnsServers(u32 *a, u32 *b) {
     return SockCore_SetDnsServers(HTONL(*a), HTONL(*b));
 }
 
-s32 Sock_Listen(s32 a) {
-    return SockCore_Listen(a);
+s32 Sock_Listen(sptr a) {
+    return SockCore_Listen((SockCoreSocket *)a);
 }
 
-s32 Sock_Accept(s32 a, SockAddrIn *sa) {
+sptr Sock_Accept(sptr a, SockAddrIn *sa) {
     u16 port;
     u32 addr;
-    s32 r = SockCore_Accept(a, &port, &addr);
+    sptr r = SockCore_Accept((SockCoreSocket *)a, &port, &addr);
     if (r >= 0) {
         sa->port = HTONS(port);
         sa->addr = HTONL(addr);
@@ -287,11 +285,11 @@ s32 Sock_Cleanup() {
 }
 
 char *Sock_InetNtoA(u32 a, ...) {
-    Sock_InetNtoP(2, (s32)&a, sInetNtoaBuf, 0x10);
+    Sock_InetNtoP(2, &a, sInetNtoaBuf, 0x10);
     return sInetNtoaBuf;
 }
 
-s32 Sock_InetAtoN(u32 a, u32 *out) {
+s32 Sock_InetAtoN(const char *a, u32 *out) {
     u32 r = SockCore_ParseDottedAddr(a);
     if (r == 0) {
         return 0;
@@ -300,7 +298,7 @@ s32 Sock_InetAtoN(u32 a, u32 *out) {
     return 1;
 }
 
-char *Sock_InetNtoP(s32 mode, s32 x, char *buf, u32 len) {
+char *Sock_InetNtoP(s32 mode, const void *x, char *buf, u32 len) {
     u8 b[8];
     if (mode != 2) {
         return NULL;
@@ -396,8 +394,8 @@ void SockCore_RemoveFromClosedList(SockCoreSocket *n) {
     SockList_Remove(&sSockClosedList, n);
 }
 
-s32 SockCore_IsInvalidHandle(s32 x) {
-    if (x <= 0 || SockList_Find(&sSockOpenList, (SockCoreSocket *)x) == NULL) {
+s32 SockCore_IsInvalidHandle(SockCoreSocket *x) {
+    if ((sptr)x <= 0 || SockList_Find(&sSockOpenList, x) == NULL) {
         return 1;
     }
     return 0;
@@ -417,7 +415,7 @@ u32 SockCore_Align4(u32 x) {
 u32 SockCore_GetPollEvents(SockCoreSocket *o) {
     u32 r = 0;
     BOOL ok;
-    if (SockCore_IsInvalidHandle((s32)o)) {
+    if (SockCore_IsInvalidHandle(o)) {
         r |= 0x80;
     } else {
         if (o->flags & 0x40) {
@@ -515,7 +513,6 @@ void OS_DisableScheduler();
 void OS_EnableScheduler();
 s32 OS_ReceiveMessage(void *, void *, s32);
 void OS_SendMessage(void *, s32, s32);
-void OS_WakeupThread(void *);
 void OS_Sleep(s32);
 s32 OS_TryLockMutex(void *);
 
@@ -526,7 +523,7 @@ void SockCore_FreeMsg(void *);
 void SockCore_PostCommand(void *, s32);
 void SockCore_PostCommandAsync(void *, void *);
 s32 SockCore_DestroyMsgPool();
-s32 Dns_Resolve(void *);
+s32 Dns_Resolve(const char *);
 s32 IpSoc_AllocEphemeralPort();
 void IpSoc_Use(void *);
 void IpSoc_Unuse();
@@ -537,18 +534,17 @@ void IpStack_Shutdown();
 void IpStack_SetIdleCallback(s32);
 s32 IpStack_RequestStop();
 void WifiLink_SetRecvCallback(s32);
-s32 SockCore_IsInClosedList(s32);
-s32 SockCore_IsInvalidHandle(void *);
+BOOL SockCore_IsInClosedList(SockCoreSocket *);
+s32 SockCore_IsInvalidHandle(SockCoreSocket *);
 void SockCore_RemoveFromClosedList(void *);
 void SockCore_RemoveFromOpenList(void *);
 void SockCore_AddToClosedList(void *);
 
 extern File *sSockClosedList;
 extern File *sSockOpenList;
-extern File *sSockDefaultSocket;
 extern Alloc *sSockCoreConfig;
 extern u32 gOwnIp;
-extern u32 sIpStackParams[];
+extern IpStackConfig sIpStackParams;
 extern u32 sDnsServers[2];
 
 s32 SockCore_QueueSend(File *self, u8 *buf, s32 len, s32 off, u32 a5, u32 a6, s32 wait);
@@ -569,8 +565,8 @@ s32 SockCore_CloseAllUserSockets();
 s32 SockCore_Cleanup();
 s32 SockCore_GetHostIp();
 s32 SockCore_SetDnsServers(u32 a, u32 b);
-s32 SockCore_ParseDottedAddr(void *x);
-s32 SockCore_ResolveHost(void *x);
+s32 SockCore_ParseDottedAddr(const char *x);
+s32 SockCore_ResolveHost(const char *x);
 }
 
 static inline BOOL Unk_ov065_02260488_Valid(File *p) {
@@ -593,28 +589,28 @@ static inline BOOL Unk_ov065_02260488_Local(File *p) {
 
 extern "C" {
 
-s32 SockCore_ResolveHost(void *x) {
-    u32 buf[0x64 / 4];
+s32 SockCore_ResolveHost(const char *x) {
+    IpSocket conn;
     if (x == NULL) {
         return 0;
     }
-    void *p = sSockCoreConfig->alloc(0x1154);
+    u8 *p = (u8 *)sSockCoreConfig->alloc(0x1154);
     if (p == NULL) {
         return 0;
     }
-    MI_CpuFill8(buf, 0, 0x64);
-    buf[0x40 / 4] = (u32)p;
-    buf[0x3c / 4] = 0xb68;
-    buf[0x4c / 4] = (u32)p + 0xb68;
-    buf[0x48 / 4] = 0x5ea;
-    IpSoc_Use(buf);
+    MI_CpuFill8(&conn, 0, sizeof(conn));
+    conn.rxBuf = p;
+    conn.rxBufSize = 0xb68;
+    conn.txBuf = p + 0xb68;
+    conn.txBufSize = 0x5ea;
+    IpSoc_Use(&conn);
     s32 r = Dns_Resolve(x);
     IpSoc_Unuse();
     sSockCoreConfig->free(p);
     return r;
 }
 
-s32 SockCore_ParseDottedAddr(void *x) {
+s32 SockCore_ParseDottedAddr(const char *x) {
     u32 irq = OS_DisableInterrupts();
     u32 a = sDnsServers[0];
     u32 b = sDnsServers[1];
@@ -666,7 +662,7 @@ s32 SockCore_Cleanup() {
         IpStack_SetIdleCallback(0);
         Alloc *a = sSockCoreConfig;
         if (a->recvRingBuf == 0) {
-            a->free((void *)sIpStackParams[7]);
+            a->free(sIpStackParams.recvRingBuf);
         }
         sSockCoreConfig = NULL;
     }
@@ -733,17 +729,17 @@ s32 SockCore_TryShutdown() {
 }
 
 s32 SockCore_IsFreed(File *self) {
-    if ((s32)self >= 0 && SockCore_IsInvalidHandle(self) != 0 && SockCore_IsInClosedList((s32)self) == 0) {
+    if ((sptr)self >= 0 && SockCore_IsInvalidHandle(self) != 0 && SockCore_IsInClosedList(self) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
 s32 SockCore_Close(File *self) {
-    if ((s32)self <= 0) {
+    if ((sptr)self <= 0) {
         return -0x1c;
     }
-    if (SockCore_IsInClosedList((s32)self)) {
+    if (SockCore_IsInClosedList(self)) {
         return -0x1a;
     }
     if (SockCore_IsInvalidHandle(self)) {
@@ -1106,7 +1102,6 @@ u32 OS_DisableInterrupts(...);
 void OS_RestoreInterrupts(u32 v);
 s32 OS_GetProcMode();
 void OS_Sleep(s32 v);
-void OS_WakeupThread(void *q);
 s32 OS_TryLockMutex(void *m);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 
@@ -1208,7 +1203,7 @@ s32 SockCore_CmdSend(WJob *j)
         r = -0x4c;
     }
     rx->ringRead = j->ringEnd;
-    OS_WakeupThread(HOST_AT(rx, 0x104, spaceWaitQueue.head, 0));
+    OS_WakeupThread(&rx->spaceWaitQueue);
     return r;
 }
 

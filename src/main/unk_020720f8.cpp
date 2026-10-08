@@ -73,9 +73,6 @@ extern "C" {
 extern CommManager *gCommManager;
 }
 extern "C" {
-void Net_Init(u32, u32, u32, u64, u32, void *, void *);
-}
-extern "C" {
 void MI_CpuFill8(void *, u32, u32);
 }
 extern "C" {
@@ -83,12 +80,6 @@ FriendEntry *FriendList_GetEntries(FriendEntry *p);
 }
 extern "C" {
 void MI_CpuCopy8(const void *, void *, u32);
-}
-extern "C" {
-void Net_StartWifi(u32, void *, void *, void *, void *);
-}
-extern "C" {
-void Net_StartLocal(u32, void *);
 }
 extern "C" {
 void Scene_GetCurrent();
@@ -115,7 +106,7 @@ void ReddPassword_ForgetVisitor();
 extern "C" void Comm_ResetPeerState(s32 r4) {
     if (r4 == 4) {
         VillagerStates_ResetRuntime();
-        TownSessionState_Reset((u8 *)TownSessionState_Get());
+        TownSessionState_Reset(TownSessionState_Get());
     }
     RoomFtrState_ResetAll();
     RoomObjSync_Reset();
@@ -348,10 +339,10 @@ extern "C" void Comm_Start(s32 a, u32 b, u32 c) {
     o->setAuxBufA((u8 *)NetHeap_Alloc(0xc00, 4));
     o->setAuxBufB((u8 *)NetHeap_Alloc(0xc00, 4));
     NetOverlay_AssertAny();
-    Net_Init(0x41444d45, 0x400040, 1, 0x4fe752, b, (void *)NetHeap_Alloc, (void *)NetHeap_Free);
+    Net_Init(0x41444d45, 0x400040, 1, 0x4fe752, b, (NetAllocFn)NetHeap_Alloc, NetHeap_Free);
     if ((u8)(a + 0xff) <= 1) {
         NetOverlay_AssertWireless();
-        Net_StartLocal(a, (void *)Comm_OnReceive);
+        Net_StartLocal(a, Comm_OnReceive);
     } else {
         CommManager *p = gCommManager;
         u8 *r5 = (u8 *)(p)->getWifiFriendList();
@@ -368,14 +359,14 @@ extern "C" void Comm_Start(s32 a, u32 b, u32 c) {
         MI_CpuCopy8(TownId_GetName((u16 *)gSaveData.townId), r6 + 8, 8);
         MI_CpuCopy8(PlayerWifiData_GetDwcUserData(l18->getWifiUserData()), r6 + 0x10, 0x40);
         NetOverlay_AssertWifi();
-        Net_StartWifi(a, (void *)Comm_OnReceive, (void *)Comm_OnFriendDeletedNop, r6, r5);
+        Net_StartWifi(a, Comm_OnReceive, (NetFriendFn)Comm_OnFriendDeletedNop, r6, r5);
     }
     (o)->setErrorMode(c);
 }
 extern "C" void Comm_StartOv067Mode() {
     gCommManager->started = 1;
     NetOverlay_AssertAny();
-    Net_Init(0x41444d45, 0x400083, 1, 0x4fe752, 2, (void *)NetHeap_Alloc, (void *)NetHeap_Free);
+    Net_Init(0x41444d45, 0x400083, 1, 0x4fe752, 2, (NetAllocFn)NetHeap_Alloc, NetHeap_Free);
 }
 extern "C" s32 Comm_End() {
     s32 r5 = 1;

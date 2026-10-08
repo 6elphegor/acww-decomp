@@ -4,15 +4,18 @@
 #include "types.h"
 #include "net/SslRootCa.h"
 #include "net/SslSession.h"
+#include "net/SslMd5Context.h"
+#include "net/SslSha1Context.h"
 
 // SSL 3.0 connection state of an IpSocket (IpSocket +0x0c, 0x804 bytes): handshake randoms and hashes, record
 // layer keys/ciphers/sequence numbers, certificate parse/verify state, root CA list, server key/certificate and
 // the receive record buffer. Used by src/ov065/unk_ov065_02261638.cpp (record receive), unk_ov065_02264d0c.cpp
 // (handshake, record layer, certificate parser) and unk_ov065_022671a0.cpp (root CA list).
 
-struct SslConnection;
+typedef struct SslConnection SslConnection;
 
 // RSA private key in CRT form (SslRsa_PrivateDecrypt).
+typedef struct SslRsaPrivateKey SslRsaPrivateKey;
 struct SslRsaPrivateKey {
     /* 0x00 */ s32 modulusLen;
     /* 0x04 */ u8 *modulus;
@@ -29,6 +32,7 @@ struct SslRsaPrivateKey {
 };
 
 // Server certificate given to the SSL server side (Ssl_SendServerHello).
+typedef struct SslServerCert SslServerCert;
 struct SslServerCert {
     /* 0x00 */ u32 length;
     /* 0x04 */ u8 *data;
@@ -55,10 +59,10 @@ struct SslConnection {
     /* 0x1b0 */ u8 *readIv;
     /* 0x1b4 */ u8 readCipher[0x104];
     /* 0x2b8 */ u8 readSeqNum[8];
-    /* 0x2c0 */ u8 handshakeSha1[0x5c];
-    /* 0x31c */ u8 sha1Work[0x5c];
-    /* 0x378 */ u8 handshakeMd5[0x58];
-    /* 0x3d0 */ u8 md5Work[0x58];
+    /* 0x2c0 */ SslSha1Context handshakeSha1;
+    /* 0x31c */ SslSha1Context sha1Work;
+    /* 0x378 */ SslMd5Context handshakeMd5;
+    /* 0x3d0 */ SslMd5Context md5Work;
     /* 0x428 */ u8 isServer;
     /* 0x429 */ u8 handshakeState;
     /* 0x42a */ u8 recordReady;
@@ -80,15 +84,15 @@ struct SslConnection {
     /* 0x581 */ u8 inPublicKey;
     /* 0x582 */ u8 pendingAttrOid;
     /* 0x583 */ u8 isDateValid;
-    /* 0x584 */ u8 issuerName[0x100];
-    /* 0x684 */ u8 subjectName[0x100];
-    /* 0x784 */ u8 commonName[0x50];
+    /* 0x584 */ char issuerName[0x100];
+    /* 0x684 */ char subjectName[0x100];
+    /* 0x784 */ char commonName[0x50];
     /* 0x7d4 */ char *hostName;
     /* 0x7d8 */ u8 *certData;
     /* 0x7dc */ s32 certLen;
     /* 0x7e0 */ u32 currentDate;
     /* 0x7e4 */ SslCertVerifyCallback certVerifyCallback;
-    /* 0x7e8 */ void **rootCaList;
+    /* 0x7e8 */ SslRootCa **rootCaList;
     /* 0x7ec */ s32 numRootCas;
     /* 0x7f0 */ SslRsaPrivateKey *serverKey;
     /* 0x7f4 */ SslServerCert *serverCert;

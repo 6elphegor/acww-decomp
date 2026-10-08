@@ -703,9 +703,9 @@ void Fog_SetAlpha(u32 v);
 void Fog_SetOffset(u16 v);
 extern u8 gFieldSceneKind;
 // H-blank tasks
-BOOL HBlank_Add(HBlankTask *t, s32 a, void (*b)(), void (*c)());
+BOOL HBlank_Add(HBlankTask *t, void (*a)(), void (*b)(), void (*c)());
 BOOL HBlank_Remove(HBlankTask *t);
-BOOL HBlank_Replace(HBlankTask *t, s32 a, void (*b)());
+BOOL HBlank_Replace(HBlankTask *t, void (*a)(), void (*b)());
 // save data
 extern SaveData gSaveData;
 }
@@ -3346,7 +3346,7 @@ void SkyShotSequence::actPeteFallen() {
     if (timer <= 0) {
         void* p = PlayerActor_GetBodyPos(playerSlot);
         if (p) {
-            ((PeteFallState *)(TownSessionState_GetPeteFall((u8 *)TownSessionState_Get())))->pickFallPos((VecFx32 *)p, fallDir);
+            ((PeteFallState *)(TownSessionState_GetPeteFall(TownSessionState_Get())))->pickFallPos((VecFx32 *)p, fallDir);
         }
         PlayerActor_LocalEndWatch();
         Camera_RestorePrevMode();
@@ -4060,7 +4060,7 @@ void SkySprites::updateShootingStar() {
                 spawn(3, 0x1e, 0, 0);
             }
         } else if (second == 0x1e && second != prevSecond) {
-            if (!Random_GlobalBelow(((WeatherRecord *)gSaveData.weather)->todayPattern == 0 ? 4 : 0x100)) {
+            if (!Random_GlobalBelow((&gSaveData.weather)->todayPattern == 0 ? 4 : 0x100)) {
                 shootingStarDelay = Random_GlobalBelow(0x258);
             }
         }
@@ -4749,7 +4749,7 @@ void SkySprites::updateUfo() {
             u32 m = (u32)v % 10;
             if (prevTime.minute != v) {
                 if (m == 2 || m == 7) {
-                    if (!((VisitorSpawnFlags *)(TownSessionState_GetVisitorFlags((u8 *)TownSessionState_Get())))->isVisitorSpawned()) {
+                    if (!((VisitorSpawnFlags *)(TownSessionState_GetVisitorFlags(TownSessionState_Get())))->isVisitorSpawned()) {
                         if (sprites[45].kind != 6) {
                             if (ufoChance == 0) {
                                 ufoChance = Random_GlobalBelow(8) + 1;
@@ -4784,7 +4784,7 @@ void SkySprites::updatePete() {
             if (r != 1 && r != 2) {
                 if (time.hour != prevTime.hour) {
                     if (time.hour == 9 || time.hour == 0x11) {
-                        if (!((PeteFallState *)(TownSessionState_GetPeteFall((u8 *)TownSessionState_Get())))->isVisitorActive()) {
+                        if (!((PeteFallState *)(TownSessionState_GetPeteFall(TownSessionState_Get())))->isVisitorActive()) {
                             if (sprites[45].kind != 7) {
                                 spawn(7, 0x2d, 0, 0);
                             }
@@ -4801,7 +4801,7 @@ void SkySprites::updatePete() {
 
 void SkySprites::updateRainbow() {
     rainbowStrength = 0;
-    u8 k = ((WeatherRecord *)gSaveData.weather)->todayPattern;
+    u8 k = (&gSaveData.weather)->todayPattern;
     if (k >= 0x13 && k <= 0x17) {
         if (*(data_020d0e04 + k - 0x13) == time.hour) {
             s32 n = time.minute;
@@ -5795,7 +5795,7 @@ void WeatherManager::init() {
     switch (r) {
     case 3:
     case 4:
-        ((WeatherRecord *)gSaveData.weather)->rained = 1;
+        (&gSaveData.weather)->rained = 1;
         break;
     }
     setLevels(r, r);
@@ -5900,7 +5900,7 @@ BOOL WeatherManager::requestLevel(s32 v) {
 
 void WeatherManager::updateHourly() {
     ClockDateTimeWords t;
-    WeatherRecord *w = (WeatherRecord *)gSaveData.weather;
+    WeatherRecord *w = &gSaveData.weather;
     t.words[0] = 0;
     t.words[1] = 0;
     Clock_GetDateTime(&t.dt);
@@ -5925,8 +5925,8 @@ void WeatherManager::updateHourly() {
 }
 
 s32 WeatherManager::getWeatherAtOffset(s32 v) {
-    s32 t = v + ((WeatherRecord *)gSaveData.weather)->hourBase;
-    return getPatternWeather(((WeatherRecord *)gSaveData.weather)->todayPattern, t % 24);
+    s32 t = v + (&gSaveData.weather)->hourBase;
+    return getPatternWeather((&gSaveData.weather)->todayPattern, t % 24);
 }
 
 s32 WeatherManager::getPatternWeather(s32 a, s32 b) {
@@ -6433,8 +6433,7 @@ BOOL SkyProc::onCreate() {
         if (SkyObjGfxLoader_LoadPalettes(&gSkySprites.loader)) {
             if (Sky_SetEngine(0)) {
                 SkySprites_Start(&gSkySprites);
-                // (the H-blank handler: HBlank_Add takes it as an integer)
-                r4 = HBlank_Add(&sSkyHBlankTask, (s32)(uptr)Sky_HBlankSub, Sky_VBlankSub, Sky_FrameOutdoor);
+                r4 = HBlank_Add(&sSkyHBlankTask, Sky_HBlankSub, Sky_VBlankSub, Sky_FrameOutdoor);
             }
         }
     } else {
@@ -6642,7 +6641,7 @@ extern "C" BOOL Sky_SetEngine(s32 arg) {
         IO_W(rb, (IO_R(rb) & ~3) | 2);
         IO_W(ra, (IO_R(ra) & 0x43) | 0x4c00);
         IO_W(rb, (IO_R(rb) & 0x43) | 0x6f00);
-        HBlank_Replace(&sSkyHBlankTask, (s32)(uptr)Sky_HBlankSub, Sky_VBlankSub);  // (the H-blank handler as an integer)
+        HBlank_Replace(&sSkyHBlankTask, Sky_HBlankSub, Sky_VBlankSub);
     } else {
         Gfx2d_SetMainBgModeState(1);
         Clock_GetMinuteHour(&t.minute);
@@ -6659,7 +6658,7 @@ extern "C" BOOL Sky_SetEngine(s32 arg) {
         IO_W(rb, (IO_R(rb) & ~3) | 2);
         IO_W(ra, (IO_R(ra) & 0x43) | 0x4400);
         IO_W(rb, (IO_R(rb) & 0x43) | 0x6700);
-        HBlank_Replace(&sSkyHBlankTask, (s32)(uptr)Sky_HBlankMain, Sky_VBlankMain);  // (the H-blank handler as an integer)
+        HBlank_Replace(&sSkyHBlankTask, Sky_HBlankMain, Sky_VBlankMain);
     }
     if (arg != gWeatherManager.engine || arg == 1) {
         if (Sky_LoadCloudBg(arg) && Sky_LoadNextCloudBg(arg) && Sky_LoadStarBg(arg)) {
@@ -6680,7 +6679,7 @@ extern "C" BOOL Sky_SetEngine(s32 arg) {
 }
 
 extern "C" void Sky_Disable(void) {
-    HBlank_Replace(&sSkyHBlankTask, (s32)(uptr)Sky_HBlankNone, Sky_VBlankDisabled);  // (the H-blank handler as an integer)
+    HBlank_Replace(&sSkyHBlankTask, Sky_HBlankNone, Sky_VBlankDisabled);
     Gfx2d_HideMainPlanes(0xa);
 }
 

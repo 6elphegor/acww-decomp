@@ -12,12 +12,11 @@ typedef signed int s32;
 typedef int BOOL;
 
 #include "sys/OSThread.h"  // the real types: a thread and its queues are larger on 64-bit hosts
-#define PROTO_LOCAL_CARDi_InitCommon  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CARDi_TaskThread  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02113088.h"
 #include "proto/autoload_2/unk_02117984.h"
 #include "proto/autoload_2/unk_0211d680.h"
 #include "proto/autoload_2/unk_0211dc4c.h"
+#include "proto/autoload_2/unk_0211e558.h"
 #include "proto/autoload_2/unk_0211ea4c.h"
 #include "proto/main/unk_02000b44.h"
 #include "proto/main/unk_0206d49c.h"
@@ -107,7 +106,6 @@ void PXI_SetFifoRecvCallback(u32, void *);
 void RtcWaitBusy(void);
 void RtcGetResultCallback(void);
 void RtcCommonCallback(void);
-void CARDi_TaskThread(void *);
 void CARDi_OnFifoRecv(void);
 BOOL CARDi_Request(void *, u32, u32);
 void CARDi_SetRomOp(u32, u32);
@@ -125,7 +123,6 @@ s32 RTCi_ConvertTimeToSecond(RTCTime *);
 s32 RTC_ConvertDateToDay(RTCDate *);
 void CARD_Enable(u32);
 u32 CARD_IsEnabled(void);
-void CARDi_InitCommon(void);
 void CARDi_UnlockResource(u32, u32);
 void CARDi_LockResource(u32, u32);
 void CARDi_SetTask(void (*)(CARDCommon *));
@@ -198,7 +195,8 @@ void CARDi_InitCommon(void) {
     c->queue.head = c->queue.tail = 0;
     c->tq.head = c->tq.tail = 0;
     c->priority = 4;
-    OS_CreateThread(&c->thread, CARDi_TaskThread, 0, data_021fee20 + 0x100, 0x400, c->priority);
+    // (the task thread's procedure takes no argument)
+    OS_CreateThread(&c->thread, (void (*)(void *))CARDi_TaskThread, 0, data_021fee20 + 0x100, 0x400, c->priority);
     OS_WakeupThreadDirect(&c->thread);
     PXI_SetFifoRecvCallback(11, CARDi_OnFifoRecv);
     if (*(u16 *)0x027ffc40 != 2) CARD_Enable(1);

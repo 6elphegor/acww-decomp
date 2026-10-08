@@ -3,8 +3,7 @@
 // function. mwcc 1.2/base, C++, ARM, -O4,p. The two H-blank handlers behind it (0x01ffcd50, 0x01ffceb8) are UNMATCHED, see notes.txt.
 #include "types.h"
 #include "nitro/io_access.h"
-#define PROTO_LOCAL_Main_VBlankCallback  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_WakeupThread  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02113088.h"
 #include "proto/dtcm/unk_027e0434.h"
 #include "proto/itcm/unk_01ffcc60.h"
 #include "proto/main/unk_02060b7c.h"
@@ -12,11 +11,10 @@
 extern "C" {
 extern s32 sVBlankCount;
 extern u16 gMainWaitingFrame;
-extern u8 gFrameWaitQueue[];
-extern u8 gVBlankQueue[];
-extern u8 data_027e0000[];
+extern OSThreadQueue gFrameWaitQueue;
+extern OSThreadQueue gVBlankQueue;
+extern u8 data_027e0000[];  // DTCM's start
 
-void OS_WakeupThread(void *queue); // OS_WakeupThread
 void VramQueueTex_Run(void);
 void HBlank_RunVBlank(void);
 }
@@ -46,13 +44,13 @@ extern "C" void Main_VBlankCallback(void) {
     sVBlankCount++;
     if (sVBlankCount >= gVBlanksPerFrame) {
         if (gMainWaitingFrame != 0) {
-            OS_WakeupThread(gFrameWaitQueue);
+            OS_WakeupThread(&gFrameWaitQueue);
             sVBlankCount = 0;
             VramQueueTex_Run();
         }
     }
     HBlank_RunVBlank();
-    OS_WakeupThread(gVBlankQueue);
-    *(vu32 *)((u32)data_027e0000 + 0x3ff8) |= 1;
+    OS_WakeupThread(&gVBlankQueue);
+    *(vu32 *)(data_027e0000 + 0x3ff8) |= 1;  // HW_INTR_CHECK_BUF (DTCM + 0x3ff8): the vblank interrupt was handled
 }
 

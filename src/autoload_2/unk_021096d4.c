@@ -14,8 +14,7 @@ typedef int s32;
 #include "types64.h"
 typedef int BOOL;
 
-typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
-typedef struct NNSFndList { void *head; void *tail; u16 num; u16 offset; } NNSFndList;
+#include "nnsys/fnd_list.h"
 #include "sys/PMCbInfo.h"
 #include "proto/autoload_2/unk_021093f4.h"
 #include "proto/autoload_2/unk_021096d4.h"

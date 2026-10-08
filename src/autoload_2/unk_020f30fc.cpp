@@ -36,51 +36,27 @@
 #include "sys/FndList.h"
 #include "snd/SndSeEmitter.h"
 #include "snd/SndSeGroup.h"
-
-
-// sound manager gSndMgr (SndMgr, unk_020f0dec.cpp): only the fields read here
-struct SndScene {
-    /* 0x00 */ u8 pad0[4];
-    /* 0x04 */ s8 id;
-};
-
-struct Glob {
-    /* 0x00 */ u8 pad0[0x2c];
-    /* 0x2c */ SndScene *f2c;
-    /* 0x30 */ u8 pad30[0x1d];
-    /* 0x4d */ u8 f4d;
-    /* 0x4e */ u8 pad4e[0x12];
-    /* 0x60 */ u8 f60;
-};
-
-
-
+#include "snd/SndMgr.h"
+#include "snd/SndSceneBase.h"
+#include "snd/SndPosNode.h"
 #include "snd/SndSeqHandle.h"
+#include "snd/SndSeqPlayer.h"
 
-struct SeqHeader {
-    /* 0x00 */ u8 unk_00[0x38];
-    /* 0x38 */ u16 seqNo;
-    /* 0x3a */ u16 seqArcIndex;
-};
-
+// the sequence parameters in the sound archive (ROM data)
 struct SeqInfo {
     u8 pad[4];
     u8 playerPrio;
 };
 
+// the volume curve (Ramp of src/autoload_2/unk_020f44f0.cpp: seven s32 words)
 struct Pan4500 {
     u8 pad[0x10];
     s32 w10;
 };
 
 extern "C" {
-extern Glob gSndMgr;
-extern u8 data_021f5bc0[];
-
-u32 SndMgr_Rand(void *g, u32 n);
 void NNS_SndPlayerSetVolume(void *p, s32 v);
 void NNS_SndPlayerStopSeqBySeqNo(s32 a, s32 b, u32 c);
-void Snd_StartSeqArcEx(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 SndSeGroup_PlayHeld(SndHandle *h, u32 a, u32 b, s32 c, s16 d);
 s32 SndSeGroup_Play(SndHandle *h, u32 a, u32 b, s32 c, s16 d);
 void SndSeGroup_Update(SndHandle *h, void *src);
@@ -106,10 +82,7 @@ public:
     SndSeEmitterKind2();                   // C1 0x020f3e50 (implicit destructor: D1 0x020f44a0, D0 0x020f44c4)
 };
 
-class SndPosList;
-
 extern "C" {
-extern SndSeqHandle gSndBgmHandle;
 void SndList_InitLink(void **p);
 void *SndList_GetLast(void **p);
 void *SndList_GetFirst(void **p);
@@ -117,9 +90,6 @@ void *SndList_GetPrev(void *list, void *obj);
 void *SndList_GetNext(void *list, void *obj);
 void SndList_Remove(void *list, void *obj);
 void SndList_Append(void *list, void *obj);
-void Snd_StopHandle(void *p, u32 a);
-void Snd_InitHandle(void *p);
-void Snd_StartSeqArc(u16 a, u16 b, void *out);
 void NNS_FndInitList(void *list, u16 offset);
 void NNS_SndPlayerWriteVariable(void *p, u32 a, s32 b);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 b);
@@ -142,41 +112,8 @@ static inline BOOL notNull(void *p) {
     return p != NULL;
 }
 
-// positional sound source (main's wrappers unk_020039ec.cpp call it by the func_ names), linked into the list gSndPosList
-class SndPosNode {
-public:
-    void init(SndPosList *list);      // 0x020f3e14
-    void play(s32 v, VecFx32 *p);        // 0x020f3d54
-    void restart();                   // 0x020f3c78
-    void stop();                      // 0x020f3c2c
-    BOOL isFinished();                // 0x020f3be8
-    void updatePan();                 // 0x020f3b98
-    void playOnce(u32 v, VecFx32 *p);    // 0x020f3b08
-    void setPitch(s32 v);             // 0x020f3af0
-    void setBgmPan(VecFx32 *p);          // 0x020f3a6c (does not use this)
-    void release();                   // 0x020f3a34
-
-    /* 0x00 */ void *link[2];
-    /* 0x08 */ SndSeqHandle h;
-    /* 0x0c */ VecFx32 pos;
-    /* 0x18 */ u16 id;
-    /* 0x1a */ u8 b1a;
-    /* 0x1b */ u8 b1b;
-};
-
-// the list of positional sources (gSndPosList points to it)
-class SndPosList {
-public:
-    SndPosList *release();                 // 0x020f3a18
-    void init();                           // 0x020f39f8
-    void add(SndPosNode *node);            // 0x020f39a0
-    void update();                         // 0x020f3800
-    void remove(SndPosNode *node);         // 0x020f37b4
-    void playAt(s32 v, VecFx32 *p);           // 0x020f3724
-
-    /* 0x00 */ FndList list;
-    /* 0x0c */ SndSeqHandle h;
-};
+// positional sound sources (SndPosNode / SndPosList: snd/SndPosNode.h; main's wrappers unk_020039ec.cpp call them by
+// the func_ names), linked into the list gSndPosList
 
 // sound-environment channels: base vtable 0x0213b914 (dsd label data_0213b91c); main / ov003 / ov004 construct them with inline
 // constructors (vptr stores of _ZTV13SndEnvChannel / 938 / 954 / 970), the key functions are here
@@ -187,9 +124,9 @@ public:
 #include "snd/CreatureSndChannel.h"
 // vtable 0x0213b968 (data_0213b970)
 #include "snd/SkySndChannel.h"
-#define PROTO_LOCAL_SndMgr_Rand  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ed8cc.h"
 #include "proto/autoload_2/unk_020ef150.h"
+#include "proto/autoload_2/unk_020f0dec.h"
 #include "proto/autoload_2/unk_020f30fc.h"
 #include "proto/main/unk_0206d49c.h"
 
@@ -229,8 +166,8 @@ void SndSeEmitter::update(void *src) {
 
 BOOL SndSeEmitter::playOneShot(s32 id, s32 c, s16 d) {
     s32 x;
-    if (kind == 99 && gSndMgr.f60 != 0) {
-        void *p = data_021f5bc0;
+    if (kind == 99 && gSndMgr.menuDuck != 0) {
+        SndSeqHandle *p = &gSndMgr.auxSeHandle;
         Snd_StartSeqArcEx(p, 10, -1, -1, id / 1000, id % 1000);
         NNS_SndPlayerSetVolume(p, 100);
         return TRUE;
@@ -258,8 +195,7 @@ BOOL SndSeEmitter::playOneShot(s32 id, s32 c, s16 d) {
 }
 
 BOOL SndSeEmitter::playHeld(s32 id, s32 c, s16 d) {
-    Glob *g = &gSndMgr;
-    if (g->f4d == 1) return FALSE;
+    if (gSndMgr.seDisabled == 1) return FALSE;
     if (id == 0x7f6) stopEffects();
     return SndSeGroup_PlayHeld(this, id / 1000, id % 1000, c, d);
 }
@@ -283,7 +219,7 @@ SndSeEmitterKind1::SndSeEmitterKind1() {
 }
 
 void SndSeEmitterKind1::onVolume(SndHandle *h, s32 idx) {
-    if (gSndMgr.f60 == 0) return;
+    if (gSndMgr.menuDuck == 0) return;
     // the handle viewed as its voice group (include/snd/SndSeGroup.h): voice idx's sound handle
     void *slot = &reinterpret_cast<Group *>(h)->voices[idx].handle;
     SndSeEmitterKind1 *o = static_cast<SndSeEmitterKind1 *>(h);
@@ -339,7 +275,7 @@ void SndPosNode::init(SndPosList *list) {
 }
 
 void SndPosNode::play(s32 v, VecFx32 *p) {
-    if (gSndMgr.f4d != 0) return;
+    if (gSndMgr.seDisabled != 0) return;
     pos = *p;
     if (v > 1001 && v < 1072) {
         id = v;
@@ -358,7 +294,7 @@ void SndPosNode::restart() {
     BOOL halt = FALSE;
     void *p = h.p;
     if (notNull(p)) {
-        if ((s32)((SeqHeader *)p)->seqArcIndex != (id % 1000)) {
+        if ((s32)((SndSeqPlayer *)p)->seqArcIndex != (id % 1000)) {
             start = TRUE;
             halt = start;
         } else {
@@ -374,7 +310,7 @@ void SndPosNode::restart() {
 }
 
 void SndPosNode::stop() {
-    if (gSndMgr.f4d != 0) {
+    if (gSndMgr.seDisabled != 0) {
         Snd_StopHandle(&h, 15);
     } else {
         Snd_StopHandle(&h, 0);
@@ -401,7 +337,7 @@ void SndPosNode::updatePan() {
 }
 
 void SndPosNode::playOnce(u32 v, VecFx32 *p) {
-    if (gSndMgr.f4d != 0) return;
+    if (gSndMgr.seDisabled != 0) return;
     id = v;
     pos = *p;
     b1a = 0;
@@ -419,7 +355,7 @@ void SndPosNode::setPitch(s32 v) {
 
 void SndPosNode::setBgmPan(VecFx32 *p) {
     s32 a;
-    SndSeqHandle *bh = &gSndBgmHandle;
+    SndSeqHandle *bh = &gSndMgr.bgmHandle;
     if (!notNull(bh->p)) return;
     a = Snd_DistanceToVolume(Snd_CalcListenerDistance(p, 0));
     s32 b = Snd_CalcPan(p, 0);
@@ -484,10 +420,10 @@ void SndPosList::update() {
     for (SndPosNode *p = (SndPosNode *)SndList_GetFirst((void **)&list); p != NULL; p = (SndPosNode *)SndList_GetNext(&list, p)) {
         p->b1b = 0;
     }
-    if (gSndMgr.f2c->id != 10) return;
-    SndSeqHandle *bh = (SndSeqHandle *)(void *)&gSndBgmHandle;
+    if (gSndMgr.scene->id != 10) return;
+    SndSeqHandle *bh = &gSndMgr.bgmHandle;
     if (!bh) return;
-    u32 id = ((SeqHeader *)bh->p)->seqNo;
+    u32 id = SndSeqHandle_Player(bh)->seqNo;
     if (id < 176 || id > 245) NNS_SndPlayerStopSeqBySeqNo(1, 0x107, 5);
 }
 
@@ -498,7 +434,7 @@ void SndPosList::remove(SndPosNode *node) {
 }
 
 void SndPosList::playAt(s32 v, VecFx32 *p) {
-    Snd_StartSeqArc(v % 1000, 1, &h);
+    Snd_StartSeqArc((u16)(v % 1000), 1, &h);
     s32 a = Snd_DistanceToVolume(Snd_CalcListenerDistance(p, 0));
     s32 b = Snd_CalcPan(p, 0);
     NNS_SndPlayerSetVolume(&h, a);
@@ -555,7 +491,7 @@ void SndEnvChannel::update(VecFx32 *pos) {
     s32 t;
     s32 w;
     s32 a, b;
-    if (gSndMgr.f4d == 1) return;
+    if (gSndMgr.seDisabled == 1) return;
     if (flags & 4) {
         if (notNull(h.p)) Snd_StopHandle(&h, 0);
         flags &= ~4;

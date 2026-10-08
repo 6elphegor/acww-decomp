@@ -765,8 +765,8 @@ BOOL NpcSpawner::onCreate()
     u8 *a = (u8 *)this;
     u32 saved = F4::sVisitorSpawnTableCount;
     u8 *g = F4::gSaveVillagers;
-    ((PeteFallState *)(TownSessionState_GetPeteFall((u8 *)TownSessionState_Get())))->clearVisitorActive();
-    ((VisitorSpawnFlags *)(TownSessionState_GetVisitorFlags((u8 *)TownSessionState_Get())))->clearVisitorSpawned();
+    ((PeteFallState *)(TownSessionState_GetPeteFall(TownSessionState_Get())))->clearVisitorActive();
+    ((VisitorSpawnFlags *)(TownSessionState_GetVisitorFlags(TownSessionState_Get())))->clearVisitorSpawned();
     if (F4::Scene_InTown()) {
         if (g != 0) {
             F4::SaveVillagers_UpdateBirthdayParty(g);
@@ -824,9 +824,9 @@ BOOL NpcSpawner::onCreate()
     pickVisitor();
     u16 *r4 = spawnScheduledVisitor(sVisitorSpawnTable, saved);
     if (r4) {
-        ((VisitorSpawnFlags *)(TownSessionState_GetVisitorFlags((u8 *)TownSessionState_Get())))->setVisitorSpawned();
-        if (r4[1] != 0xd008 || ((PeteFallState *)(TownSessionState_GetPeteFall((u8 *)TownSessionState_Get())))->hasFallPos() != 0) {
-            ((PeteFallState *)(TownSessionState_GetPeteFall((u8 *)TownSessionState_Get())))->setVisitorActive();
+        ((VisitorSpawnFlags *)(TownSessionState_GetVisitorFlags(TownSessionState_Get())))->setVisitorSpawned();
+        if (r4[1] != 0xd008 || ((PeteFallState *)(TownSessionState_GetPeteFall(TownSessionState_Get())))->hasFallPos() != 0) {
+            ((PeteFallState *)(TownSessionState_GetPeteFall(TownSessionState_Get())))->setVisitorActive();
         }
     }
     NpcSpawner_RepickKatiePosOnline();
@@ -1313,7 +1313,7 @@ extern "C" BOOL Visitor_IsTaxiActive()
 extern "C" u16 *Visitor_CheckResetti()
 {
     u16 k;
-    if (F2::Scene_GetCurrent() == 0 && ((ResettiVisitFlag *)(TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get())))->isSet() != 0 && (F2::gCommManager)->isSlotActive(F2::gCommManager->myAid) == 0) {
+    if (F2::Scene_GetCurrent() == 0 && ((ResettiVisitFlag *)(TownSessionState_GetResettiFlag(TownSessionState_Get())))->isSet() != 0 && (F2::gCommManager)->isSlotActive(F2::gCommManager->myAid) == 0) {
         k = 0xd011;
         return VisitorTable_FindByNpc(&k, sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
     }
@@ -1378,7 +1378,7 @@ extern "C" BOOL VisitorPlace_TomNook(s32 a, VecFx32 *p, Unk_02083314_K *q)
 extern "C" BOOL Visitor_IsTortimerDue()
 {
     if ((F2::gCommManager)->isSlotActive(F2::gCommManager->myAid) == 0) {
-        if (TownSessionState_TestFlag((u32 *)TownSessionState_Get(), 8) != 0 && Visitor_IsTaxiActive() == 0 && Visitor_IsNookJobActive() == 0)
+        if (TownSessionState_TestFlag(TownSessionState_Get(), 8) != 0 && Visitor_IsTaxiActive() == 0 && Visitor_IsNookJobActive() == 0)
             return TRUE;
     }
     return FALSE;
@@ -1640,13 +1640,13 @@ extern "C" u16 *Visitor_FindKatie(s32 flag)
             }
         }
     c2:
-        if (((KatieVisitState *)(TownSessionState_GetKatieState((u8 *)TownSessionState_Get())))->isFollowing() != 0) {
+        if (((KatieVisitState *)(TownSessionState_GetKatieState(TownSessionState_Get())))->isFollowing() != 0) {
             if (F2::Scene_GetCurrent() == 0xb) {
                 if ((F2::gCommManager)->isOnline() == 0)
                     goto fe;
             }
         }
-        if (((KatieVisitState *)(TownSessionState_GetKatieState((u8 *)TownSessionState_Get())))->isFollowing() != 0) {
+        if (((KatieVisitState *)(TownSessionState_GetKatieState(TownSessionState_Get())))->isFollowing() != 0) {
             if (F2::Scene_GetCurrent() == 0xc) {
             fe:
                 k = 0xd022;
@@ -1666,7 +1666,7 @@ extern "C" BOOL VisitorPlace_Katie(s32 a, VecFx32 *p)
 {
     BOOL c = F2::gFieldSceneKind == 0 ? TRUE : FALSE;
     if (c) {
-        ((KatieVisitState *)(TownSessionState_GetKatieState((u8 *)TownSessionState_Get())))->getPos(p);
+        ((KatieVisitState *)(TownSessionState_GetKatieState(TownSessionState_Get())))->getPos(p);
         return TRUE;
     }
     F2::FieldPos_FromUnitCenter(p, 6, 0x11);
@@ -1679,7 +1679,7 @@ extern "C" void NpcSpawner_RepickKatiePosOnline() {
         if (Visitor_IsNookJobActive() == 0) {
             if (LostChild_IsKatieDue() != 0) {
                 if (F1::Unk_02083058_IsA()) {
-                    ((KatieVisitState *)(TownSessionState_GetKatieState((u8 *)TownSessionState_Get())))->pickKatiePos();
+                    ((KatieVisitState *)(TownSessionState_GetKatieState(TownSessionState_Get())))->pickKatiePos();
                 }
             }
         }
@@ -1708,7 +1708,7 @@ extern "C" u16 *Visitor_CheckKaitlin() {
 }
 
 extern "C" BOOL VisitorPlace_Kaitlin(void *self, void *b) {
-    ((KatieVisitState *)(TownSessionState_GetKatieState((u8 *)TownSessionState_Get())))->getPos((VecFx32 *)b);
+    ((KatieVisitState *)(TownSessionState_GetKatieState(TownSessionState_Get())))->getPos((VecFx32 *)b);
     return TRUE;
 }
 
@@ -1868,20 +1868,20 @@ fail:
 }
 
 extern "C" BOOL VisitorPlace_Pete(void *self, void *b, u16 *out) {
-    void *p = TownSessionState_GetPeteFall((u8 *)TownSessionState_Get());
+    void *p = TownSessionState_GetPeteFall(TownSessionState_Get());
     ((PeteFallState *)p)->getPos((VecFx32 *)b);
     out[1] = ((PeteFallState *)p)->getFacing();
     return TRUE;
 }
 
 extern "C" BOOL VisitorPlace_AtVisitorPos(void *self, void *b, u16 *out) {
-    ((VisitorPos *)(TownSessionState_GetVisitorPos((u8 *)TownSessionState_Get())))->getPos((VecFx32 *)(b));
+    ((VisitorPos *)(TownSessionState_GetVisitorPos(TownSessionState_Get())))->getPos((VecFx32 *)(b));
     out[1] = Random_GlobalBelow(0xffff);
     return TRUE;
 }
 
 extern "C" BOOL VisitorPlace_Gulliver(void *self, void *b, u16 *out, void *d) {
-    ((VisitorSpawnFlags *)(TownSessionState_GetVisitorFlags((u8 *)TownSessionState_Get())))->getGulliverSpawn(b, out + 1, (VecFx32 *)d);
+    ((VisitorSpawnFlags *)(TownSessionState_GetVisitorFlags(TownSessionState_Get())))->getGulliverSpawn(b, out + 1, (VecFx32 *)d);
     return TRUE;
 }
 

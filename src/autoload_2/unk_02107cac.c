@@ -11,15 +11,17 @@ typedef struct GeBuf {
     u32 cmd;
     s32 w[14];
 } GeBuf;
-typedef struct View { u8 pad[26]; u16 anm[1]; } View;
 
-extern u32 data_0213bcb8;
-extern u32 data_0213bcc4;
+// the G3D runtime objects by their members (include/nnsys/g3d_rt.h); resources (u8 *) are read by their file offsets
+#include "nnsys/g3d_rt.h"
+#include "proto/autoload_2/unk_02104000.h"
+#include "proto/autoload_2/unk_02107cac.h"
+
 extern void MIi_CpuClear16(u16 data, void *dest, u32 size);
 extern s32 NNS_G3dGetResDictIdxByName(void *dict, void *name);
-extern u8 *NNSi_G3dGetTexPatAnmFV(u8 *, u32, u32);
-extern u32 NNSi_G3dGetTexPatAnmTexNameByIdx(u8 *, u32);
-extern u32 NNSi_G3dGetTexPatAnmPlttNameByIdx(u8 *, u32);
+extern u8 *NNSi_G3dGetTexPatAnmFV(u8 *, u32, u32);           // src/autoload_2/unk_021065dc.c
+extern u8 *NNSi_G3dGetTexPatAnmTexNameByIdx(u8 *, u32);      // src/autoload_2/unk_021065dc.c
+extern u8 *NNSi_G3dGetTexPatAnmPlttNameByIdx(u8 *, u32);     // src/autoload_2/unk_021065dc.c
 extern u32 *NNS_G3dGetResDataByName(const void *dict, const void *name);
 extern s32 FX_Div(s32, s32);
 extern void NNS_G3dGeBufferOP_N(u32 cmd, void *args, u32 n);
@@ -31,10 +33,10 @@ static inline s32 FxMul(s32 a, s32 b)
 }
 
 // NNS g3d: build the texture matrix (MTX_MODE texture, LOAD/MULT_4x3) from a material SRT result
-void NNSi_G3dSendTexSRTSi3d(u32 *a)
+void NNSi_G3dSendTexSRTSi3d(const G3dMatAnmResult *a)
 {
     GeBuf s;
-    if (a[0] & 8) {
+    if (a->flag & 8) {
         s.cmd = 0x00101710;
     } else {
         s.cmd = 0x00101910;
@@ -49,106 +51,101 @@ void NNSi_G3dSendTexSRTSi3d(u32 *a)
     s.w[4] = 0;
     s.w[3] = 0;
     s.w[2] = 0;
-    if (a[0] & 4) {
+    if (a->flag & 4) {
         s.w[10] = 0;
         s.w[11] = 0;
-        if (a[0] & 1) {
+        if (a->flag & 1) {
             s.w[1] = 0x1000;
             s.w[5] = 0x1000;
         } else {
-            s.w[1] = a[6];
-            s.w[5] = a[7];
+            s.w[1] = a->scaleS;
+            s.w[5] = a->scaleT;
         }
-    } else if (a[0] & 1) {
-        s.w[10] = -(s32)(a[9] << 4) * *(u16 *)((u8 *)a + 0x2c);
-        s.w[11] = -(s32)(a[10] << 4) * *(u16 *)((u8 *)a + 0x2e);
+    } else if (a->flag & 1) {
+        s.w[10] = -(s32)((u32)a->transS << 4) * a->origWidth;
+        s.w[11] = -(s32)((u32)a->transT << 4) * a->origHeight;
         s.w[1] = 0x1000;
         s.w[5] = 0x1000;
     } else {
-        s32 x = (s32)(((long long)(s32)a[6] * (s32)a[9]) >> 8);
+        s32 x = (s32)(((long long)a->scaleS * a->transS) >> 8);
         s32 y;
-        s.w[10] = *(u16 *)((u8 *)a + 0x2c) * -x;
-        y = (s32)(((long long)(s32)a[7] * (s32)a[10]) >> 8);
-        s.w[11] = *(u16 *)((u8 *)a + 0x2e) * -y;
-        s.w[1] = a[6];
-        s.w[5] = a[7];
+        s.w[10] = a->origWidth * -x;
+        y = (s32)(((long long)a->scaleT * a->transT) >> 8);
+        s.w[11] = a->origHeight * -y;
+        s.w[1] = a->scaleS;
+        s.w[5] = a->scaleT;
     }
-    if (a[12] != 0x1000) {
-        s.w[1] = FxMul(a[12], s.w[1]);
-        s.w[10] = FxMul(a[12], s.w[10]);
+    if (a->magW != 0x1000) {
+        s.w[1] = FxMul(a->magW, s.w[1]);
+        s.w[10] = FxMul(a->magW, s.w[10]);
     }
-    if (a[13] != 0x1000) {
-        s.w[5] = FxMul(a[13], s.w[5]);
-        s.w[11] = FxMul(a[13], s.w[11]);
+    if (a->magH != 0x1000) {
+        s.w[5] = FxMul(a->magH, s.w[5]);
+        s.w[11] = FxMul(a->magH, s.w[11]);
     }
-    NNS_G3dGeBufferOP_N(s.cmd, (u32 *)&s + 1, 14);
+    NNS_G3dGeBufferOP_N(s.cmd, s.w, 14);
 }
 
 // NNS g3d: send joint SRT result to the geometry engine (NNS_G3dGeBufferOP_N: MTX_MULT_4x3 0x19, MTX_MULT_3x3 0x1a, MTX_SCALE 0x1b, MTX_TRANS 0x1c)
-void NNSi_G3dSendJointSRTBasic(u32 *r)
+// (MTX_MULT_4x3 sends rot and the trans after it)
+void NNSi_G3dSendJointSRTBasic(G3dJntAnmResult *r)
 {
-    if ((r[0] & 4) == 0) {
-        if ((r[0] & 2) == 0) {
-            NNS_G3dGeBufferOP_N(0x19, r + 10, 12);
+    if ((r->flag & 4) == 0) {
+        if ((r->flag & 2) == 0) {
+            NNS_G3dGeBufferOP_N(0x19, r->rot, 12);
         } else {
-            NNS_G3dGeBufferOP_N(0x1c, r + 19, 3);
+            NNS_G3dGeBufferOP_N(0x1c, r->trans, 3);
         }
-    } else if ((r[0] & 2) == 0) {
-        NNS_G3dGeBufferOP_N(0x1a, r + 10, 9);
+    } else if ((r->flag & 2) == 0) {
+        NNS_G3dGeBufferOP_N(0x1a, r->rot, 9);
     }
-    if ((r[0] & 1) == 0) {
-        NNS_G3dGeBufferOP_N(0x1b, r + 1, 3);
+    if ((r->flag & 1) == 0) {
+        NNS_G3dGeBufferOP_N(0x1b, r->scale, 3);
     }
 }
 
 // NNS g3d scene-graph helper (SBC node state): copy/flag update
-void NNSi_G3dGetJointScaleBasic(u32 *obj, s32 *src, u8 *info, u32 flags)
+// (a G3dRS funcJntScale)
+void NNSi_G3dGetJointScaleBasic(G3dJntAnmResult *obj, const s32 *src, const u8 *info, u32 flags)
 {
     if (flags & 4) {
-        obj[0] |= 1;
+        obj->flag |= 1;
     } else {
-        obj[1] = src[0];
-        obj[2] = src[1];
-        obj[3] = src[2];
+        obj->scale[0] = src[0];
+        obj->scale[1] = src[1];
+        obj->scale[2] = src[2];
     }
-    obj[0] |= 0x18;
+    obj->flag |= 0x18;
 }
 
 // NNS g3d (NNSi_G3dAnmObjInitVisAnm-like): bind a visibility animation block to the model
-#include "nnsys/g3d_rt.h"
-#define PROTO_LOCAL_data_0213bcb8  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bcc4  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_02107cac.h"
-// (by the members: include/nnsys/g3d_rt.h)
-void NNSi_G3dAnmObjInitNsBva(u8 *out_, u32 res, u8 *blk)
+void NNSi_G3dAnmObjInitNsBva(G3dAnmObj *out, void *res, u8 *blk)
 {
-    G3dAnmObj *out = (G3dAnmObj *)out_;
     u32 i = 0;
-    out->funcAnm = (void *)(__UINTPTR_TYPE__)data_0213bcb8;
+    out->funcAnm = data_0213bcb8;
     out->numMapData = blk[23];
-    out->resAnm = (void *)(__UINTPTR_TYPE__)res;
+    out->resAnm = res;
     for (; i < out->numMapData; i++) {
         out->mapData[i] = i | 0x100;
     }
 }
 
 // NNS g3d (visibility animation, NNSi_G3dAnmCalcVis-like): look up the visibility bit for a joint at a frame
-void NNSi_G3dAnmCalcNsBva(u32 *out, u32 *a, u32 frame)
+void NNSi_G3dAnmCalcNsBva(G3dVisAnmResult *out, const G3dAnmObj *a, u32 dataIdx)
 {
-    u8 *t = (u8 *)a[2];
-    s32 k = (s32)a[0] >> 12;
-    u32 idx = k * *(u16 *)(t + 6) + frame;
-    *out = ((u32 *)(t + 12))[idx >> 5] & (1 << (idx & 31));
+    u8 *t = (u8 *)a->resAnm;
+    s32 k = a->frame >> 12;
+    u32 idx = k * *(u16 *)(t + 6) + dataIdx;
+    out->isVisible = ((u32 *)(t + 12))[idx >> 5] & (1 << (idx & 31));
 }
 
 // NNS g3d (NNSi_G3dAnmObjInitTexPatAnm-like): bind a texture pattern animation block to the model
-void NNSi_G3dAnmObjInitNsBtp(u8 *obj_, u8 *res, u8 *blk)
+void NNSi_G3dAnmObjInitNsBtp(G3dAnmObj *obj, u8 *res, u8 *blk)
 {
-    G3dAnmObj *obj = (G3dAnmObj *)obj_;
     u8 *dict = blk + *(u32 *)(blk + 8);
     u32 i;
     volatile u16 zero;
-    obj->funcAnm = (void *)(__UINTPTR_TYPE__)data_0213bcc4;
+    obj->funcAnm = data_0213bcc4;
     obj->numMapData = blk[24];
     obj->resAnm = res;
     zero = 0;
@@ -163,9 +160,9 @@ void NNSi_G3dAnmObjInitNsBtp(u8 *obj_, u8 *res, u8 *blk)
 }
 
 // NNS g3d (texture animation): texture index + tex scale result for the current frame
-s32 SetTexParamaters_(u8 *A, u32 x, u8 *out)
+s32 SetTexParamaters_(u8 *A, const u8 *name, G3dMatAnmResult *out)
 {
-    u32 *p = NNS_G3dGetResDataByName(A + 60, (const void *)x);
+    u32 *p = NNS_G3dGetResDataByName(A + 60, name);
     u32 m;
     u32 w, h;
     s32 r;
@@ -174,31 +171,31 @@ s32 SetTexParamaters_(u8 *A, u32 x, u8 *out)
     } else {
         m = *(u32 *)(A + 24) & 0xffff;
     }
-    *(u32 *)(out + 16) &= 0xc00f0000;
-    *(u32 *)(out + 16) |= p[0] + m;
-    *(u16 *)(out + 44) = p[1] & 0x7ff;
-    *(u16 *)(out + 46) = (p[1] & 0x3ff800) >> 11;
+    out->prmTexImage &= 0xc00f0000;
+    out->prmTexImage |= p[0] + m;
+    out->origWidth = p[1] & 0x7ff;
+    out->origHeight = (p[1] & 0x3ff800) >> 11;
     w = p[1] & 0x7ff;
     h = 0x7ff & (p[1] >> 11);
-    if (w == *(u16 *)(out + 44)) {
+    if (w == out->origWidth) {
         r = 0x1000;
     } else {
-        r = FX_Div(w << 12, *(u16 *)(out + 44) << 12);
+        r = FX_Div(w << 12, out->origWidth << 12);
     }
-    *(s32 *)(out + 48) = r;
-    if (h == *(u16 *)(out + 46)) {
+    out->magW = r;
+    if (h == out->origHeight) {
         r = 0x1000;
     } else {
-        r = FX_Div(h << 12, *(u16 *)(out + 46) << 12);
+        r = FX_Div(h << 12, out->origHeight << 12);
     }
-    *(s32 *)(out + 52) = r;
+    out->magH = r;
     return r;
 }
 
 // NNS g3d (texture animation): palette index result for the current frame
-u32 SetPlttParamaters_(u8 *A, u32 x, u8 *out)
+u32 SetPlttParamaters_(u8 *A, const u8 *name, G3dMatAnmResult *out)
 {
-    u16 *p = (u16 *)NNS_G3dGetResDataByName(A + *(u16 *)(A + 52), (const void *)x);
+    u16 *p = (u16 *)NNS_G3dGetResDataByName(A + *(u16 *)(A + 52), name);
     u16 w = *(u32 *)(A + 44);
     u16 v;
     u16 f = p[1];
@@ -207,20 +204,20 @@ u32 SetPlttParamaters_(u8 *A, u32 x, u8 *out)
         v = v >> 1;
         w = w >> 1;
     }
-    *(u32 *)(out + 20) = v + w;
+    out->prmTexPltt = v + w;
     return v + w;
 }
 
 // NNS g3d (texture/palette animation): per-material calc, texture index then palette index
-u32 NNSi_G3dAnmCalcNsBtp(u8 *obj, u32 *a, u32 frame)
+u32 NNSi_G3dAnmCalcNsBtp(G3dMatAnmResult *obj, const G3dAnmObj *a, u32 dataIdx)
 {
-    u8 *res = (u8 *)a[2];
-    u8 *e = NNSi_G3dGetTexPatAnmFV(res, (u16)frame, (u16)(a[0] >> 12));
-    u32 r = SetTexParamaters_((u8 *)a[5], NNSi_G3dGetTexPatAnmTexNameByIdx(res, e[2]), obj);
+    u8 *res = (u8 *)a->resAnm;
+    u8 *e = NNSi_G3dGetTexPatAnmFV(res, (u16)dataIdx, (u16)((u32)a->frame >> 12));
+    u32 r = SetTexParamaters_((u8 *)a->resTex, NNSi_G3dGetTexPatAnmTexNameByIdx(res, e[2]), obj);
     if (e[3] == 0xff) {
         return r;
     }
-    return SetPlttParamaters_((u8 *)a[5], NNSi_G3dGetTexPatAnmPlttNameByIdx(res, e[3]), obj);
+    return SetPlttParamaters_((u8 *)a->resTex, NNSi_G3dGetTexPatAnmPlttNameByIdx(res, e[3]), obj);
 }
 
 // NNS g3d animation key fetch for fx32 values (value stored as fx32 or fx16; constant / full / step-2 / step-4 interpolated)

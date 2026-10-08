@@ -1,5 +1,5 @@
-#define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02119020.h"
+#include "proto/autoload_2/unk_02119434.h"
 #include "proto/autoload_2/unk_02122114.h"
 #include "proto/main/unk_0206d49c.h"
 // mwcc-flags: -nothumb -O4,p
@@ -27,10 +27,9 @@ extern void *MBi_MakeParentSendBuffer(void *, void *);
 extern u32 IsChildAidValid(u32);
 extern u32 MBi_BlockHeaderEnd(u32, u32, void *);
 extern u8 *WM_ReadMPData(void *, u32);
-extern void FS_InitFile(void *);
-extern u32 FS_OpenFileDirect(void *, void *, u32, u32, int);
-extern u32 FS_ReadFile(void *, u32, u32);
-extern void FS_CloseFile(void *);
+extern BOOL FS_OpenFileDirect(FSFile *file, FSArc *arc, u32 start, u32 end, int id);
+extern s32 FS_ReadFile(FSFile *file, void *dst, s32 len);
+extern BOOL FS_CloseFile(FSFile *file);
 extern u8 *MBi_SetRecvBufferFromChild(void *, void *, u32);
 extern u32 MBi_calc_nextsendblock(u32, u32);
 extern void MBi_ClearParentPieceBuffer(u32);
@@ -52,7 +51,7 @@ void MBi_CommChangeParentStateCallbackOnly(u32 a, u32 b, void *c);
 void MBi_CommParentRecvDataPerChild(u8 *msg, u32 aid);
 typedef struct { u8 id; u16 aid; u16 pad; } WMsg;
 typedef struct { u32 f0, f4, f8, fc; } WJob;
-typedef struct { u8 pad[0x14]; u32 f14; } WObj;
+typedef struct { u8 pad[0x10]; char name[4]; u32 f14; } WObj; // name: the archive's name (f14 characters)
 typedef struct { u8 pad[0x10]; WJob *job; WObj *obj; } WArg;
 typedef struct { u8 f0 : 4; u8 aid : 4; } WEnt;
 void MBi_CommChangeParentState(u32 a, u32 b, void *c);
@@ -269,19 +268,19 @@ u32 MBi_CommParentSendDLFileInfo(void) {
 }
 // (job completion: run transfer step, job state = 2 on success, else OS_Terminate)
 void MBi_ReloadCache(WArg *arg) {
-    u8 buf[72];
+    FSFile file;
     WJob *job;
     WObj *obj;
     u32 base;
-    void *rp;
+    FSArc *rp;
     obj = arg->obj;
     job = arg->job;
-    FS_InitFile(buf);
+    FS_InitFile(&file);
     base = job->f0;
-    rp = FS_FindArchive((u8 *)obj + 0x10, obj->f14);
-    if (FS_OpenFileDirect(buf, rp, base, base + job->f4, -1) != 0) {
-        if (job->f4 == FS_ReadFile(buf, job->f8, job->f4)) job->fc = 2;
-        FS_CloseFile(buf);
+    rp = FS_FindArchive(obj->name, obj->f14);
+    if (FS_OpenFileDirect(&file, rp, base, base + job->f4, -1) != 0) {
+        if (job->f4 == FS_ReadFile(&file, (void *)job->f8, job->f4)) job->fc = 2;
+        FS_CloseFile(&file);
     }
     if (job->fc == 2) return;
     Fatal_Trap();

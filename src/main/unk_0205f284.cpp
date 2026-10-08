@@ -14,7 +14,6 @@
 #include "actor/Character.h"
 #include "gfx/Model.h"
 #include "sys/Heap.h"
-#define PROTO_LOCAL_FishBobber_Draw  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gFishBobberHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0203ecec.h"
@@ -568,7 +567,7 @@ void FishBobber::update()
     (((FishBobberStates *)this)->*sFishBobberStateFns[curState])();
 }
 
-extern "C" void FishBobber_Draw(u8 *self, Mtx43 *m, s32 arg)
+extern "C" void FishBobber_Draw(u8 *self, Mtx43 *m, VecFx32 *scale)
 {
     if (*(s32 *)(self + 4) != 0) {
         u8 *e = (u8 *)sFishBobberPool.getModel(*self);
@@ -603,7 +602,7 @@ extern "C" void FishBobber_Draw(u8 *self, Mtx43 *m, s32 arg)
             mt = tmp;
         }
         *(Mtx43 *)(e + 0x64) = mt;
-        ((Model *)(e))->drawScaled((s32 *)(arg));
+        ((Model *)(e))->drawScaled(&scale->x);
     }
 }
 

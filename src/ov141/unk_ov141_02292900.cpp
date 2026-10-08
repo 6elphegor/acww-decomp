@@ -592,7 +592,7 @@ void NearbyTownsMenu::flushBgScreen() {
 
 void NearbyTownsMenu::scanTowns() {
     s32 cnt;
-    u32 *list;
+    void **list;  // the beacons (Net_GetScanResults)
     s32 n2;
     s32 z[3];
     NearbyTownBeaconInfo buf;
@@ -610,30 +610,30 @@ void NearbyTownsMenu::scanTowns() {
     z[1] = 0;
     z[2] = 0;
     for (u8 j = 0; j < cnt; j = j + 1) {
-        u32 e = list[j];
-        if (e != 0) {
+        void *e = list[j];
+        if (e != NULL) {
             NetOverlay_AssertWireless();
-            u32 n = Net_GetBeaconGameInfoSize((void *)e);
+            u32 n = Net_GetBeaconGameInfoSize(e);
             if (n == 0x11) {
                 NetOverlay_AssertWireless();
-                MI_CpuCopy8(Net_GetBeaconGameInfo((void *)e), &buf, n);
+                MI_CpuCopy8(Net_GetBeaconGameInfo(e), &buf, n);
                 if (buf.flag == 0) {
                     s32 idx = findRowByAddress((u8 *)e);
                     if (idx == ~z[1]) {
                         s32 idx2 = findFreeRow();
                         if (idx2 != ~z[2]) {
-                            storeTown(idx2, (void *)e);
+                            storeTown(idx2, e);
                             NetOverlay_AssertWireless();
-                            n2 = Net_GetBeaconGameInfoSize((void *)e);
+                            n2 = Net_GetBeaconGameInfoSize(e);
                             NetOverlay_AssertWireless();
-                            void *q = Net_GetBeaconGameInfo((void *)e);
+                            void *q = Net_GetBeaconGameInfo(e);
                             u8 *dst = rowUserData[idx2];
                             MI_CpuCopy8(q, dst, n2);
                             listPanel.setRow(idx2, dst);
                             *((u8 *)this + idx2 + 0x1669) = z[0];
                         }
                     } else {
-                        storeTown(idx, (void *)e);
+                        storeTown(idx, e);
                     }
                 }
             }

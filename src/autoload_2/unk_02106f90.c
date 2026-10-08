@@ -11,35 +11,15 @@ typedef int BOOL;
 #define NULL 0
 
 #include "nnsys/g3d_rt.h"
-#define PROTO_LOCAL_data_0213bcbc  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02104000.h"
 #include "proto/autoload_2/unk_02106f90.h"
-typedef G3dRS RS;  // NNSG3dRS
 
-// NNSG3dAnmObj by its members (include/nnsys/g3d_rt.h: the pointers move the later members on 64-bit hosts)
-typedef struct TexObj {
-    u32 pad0, pad4;
-    u8 *res;                 // resAnm
-    __UINTPTR_TYPE__ w0c;    // funcAnm
-    void *next_, *resTex_;
-    u8 prio_;
-    u8 cnt;                  // numMapData
-    u16 tbl[1];              // mapData
-} TexObj;
-
-typedef struct JOut {
-    u32 flags;
-    u8 pad4[0x24];
-    s32 m[9];     // 0x28
-    s32 trans[3]; // 0x4c
-} JOut;
-
-extern RS *data_021f5cc0;
-extern u32 data_0213bcbc;
+extern G3dRS *data_021f5cc0;
 extern const u8 data_02135e5c[9][4], data_02135e5d[][4], data_02135e5e[][4], data_02135e5f[][4]; // e5d..e5f: interior labels
 extern void MI_Zero36B(void *);
 extern void MIi_CpuClear16(u32, void *, u32);   // MI_CpuClear16 (data, dest, size)
 
-static inline u8 *JntEnt(RS *rs)
+static inline u8 *JntEnt(G3dRS *rs)
 {
     u8 *jnt = rs->pResNodeInfo;
     u32 id = rs->c[1];
@@ -50,30 +30,31 @@ static inline u8 *JntEnt(RS *rs)
 typedef struct P16 { s16 x, y; } P16;
 
 // anm object init from a joint anim: tbl[i] = node id | 0x100 (node map cleared with MI_CpuClear16)
-void NNSi_G3dAnmObjInitNsBca(TexObj *o, u8 *res, u8 *src)
+// (o: the NNSG3dAnmObj by its members, include/nnsys/g3d_rt.h)
+void NNSi_G3dAnmObjInitNsBca(G3dAnmObj *o, u8 *res, u8 *src)
 {
     u32 i;
     u16 *offs;
-    o->res = res;
-    o->w0c = data_0213bcbc;
-    o->cnt = src[0x17];
+    o->resAnm = res;
+    o->funcAnm = data_0213bcbc;
+    o->numMapData = src[0x17];
     {
         volatile u16 zero = 0;
-        MIi_CpuClear16(zero, o->tbl, o->cnt * 2);
+        MIi_CpuClear16(zero, o->mapData, o->numMapData * 2);
     }
     offs = (u16 *)(res + 20);
     for (i = 0; i < *(u16 *)(res + 6); i++) {
-        o->tbl[i] = (*(u32 *)(res + offs[i]) >> 24) | 0x100;
+        o->mapData[i] = (*(u32 *)(res + offs[i]) >> 24) | 0x100;
     }
 }
 
 // joint translation from the render state node
-void getMdlTrans_(JOut *out)
+void getMdlTrans_(G3dJntAnmResult *out)
 {
-    RS *rs = data_021f5cc0;
+    G3dRS *rs = data_021f5cc0;
     u8 *ent = JntEnt(rs);
     if (*(u16 *)ent & 1) {
-        out->flags |= 4;
+        out->flag |= 4;
     } else {
         u32 *p = (u32 *)(ent + 4);
         out->trans[0] = p[0];
@@ -83,9 +64,9 @@ void getMdlTrans_(JOut *out)
 }
 
 // joint scale from the render state node (calls the RS callback with the data pointer)
-void getMdlScale_(void *out)
+void getMdlScale_(G3dJntAnmResult *out)
 {
-    RS *rs = data_021f5cc0;
+    G3dRS *rs = data_021f5cc0;
     u8 *jnt = rs->pResNodeInfo;
     u8 *node = rs->c;
     u8 *t = jnt + *(u16 *)(jnt + 6);
@@ -102,13 +83,13 @@ void getMdlScale_(void *out)
             p += 16;
         }
     }
-    rs->funcJntScale(out, p, node, (void *)flag);
+    rs->funcJntScale(out, (const int *)p, node, flag);
 }
 
 // joint rotation from the render state node (identity flag / pivot matrix / 8 stored values)
-void getMdlRot_(JOut *out)
+void getMdlRot_(G3dJntAnmResult *out)
 {
-    RS *rs = data_021f5cc0;
+    G3dRS *rs = data_021f5cc0;
     u8 *ent = JntEnt(rs);
     u32 flag = *(u16 *)ent;
     s16 *p = (s16 *)(ent + 4);
@@ -120,42 +101,42 @@ void getMdlRot_(JOut *out)
             s32 a = p[0];
             s32 b = p[1];
             s32 k = (s32)(flag & 0xf0) >> 4;
-            MI_Zero36B(out->m);
-            out->m[k] = (*(u16 *)ent & 0x100) ? -0x1000 : 0x1000;
-            out->m[data_02135e5c[k][0]] = a;
-            out->m[data_02135e5d[k][0]] = b;
+            MI_Zero36B(out->rot);
+            out->rot[k] = (*(u16 *)ent & 0x100) ? -0x1000 : 0x1000;
+            out->rot[data_02135e5c[k][0]] = a;
+            out->rot[data_02135e5d[k][0]] = b;
             if (*(u16 *)ent & 0x200) {
                 b = -b;
             }
-            out->m[data_02135e5e[k][0]] = b;
+            out->rot[data_02135e5e[k][0]] = b;
             if (*(u16 *)ent & 0x400) {
                 a = -a;
             }
-            out->m[data_02135e5f[k][0]] = a;
+            out->rot[data_02135e5f[k][0]] = a;
         } else {
-            out->m[0] = *(s16 *)(ent + 2);
-            out->m[1] = p[0];
-            out->m[2] = p[1];
-            out->m[3] = p[2];
-            out->m[4] = p[3];
-            out->m[5] = p[4];
-            out->m[6] = p[5];
-            out->m[7] = p[6];
-            out->m[8] = p[7];
+            out->rot[0] = *(s16 *)(ent + 2);
+            out->rot[1] = p[0];
+            out->rot[2] = p[1];
+            out->rot[3] = p[2];
+            out->rot[4] = p[3];
+            out->rot[5] = p[4];
+            out->rot[6] = p[5];
+            out->rot[7] = p[6];
+            out->rot[8] = p[7];
         }
     } else {
-        out->flags |= 2;
+        out->flag |= 2;
     }
 }
 
 // same as 02106f90 but without frame blending
-void getTransData_(s32 *out, u32 f, u32 *ent, u8 *base)
+void getTransData_(s32 *out, s32 frame, const u32 *ent, const void *base)
 {
-    u8 *d;
+    const u8 *d;
     u32 info;
     u32 lim, q;
-    f = (s32)f >> 12;
-    d = base + ent[1];
+    u32 f = frame >> 12;
+    d = (const u8 *)base + ent[1];
     info = ent[0];
     if ((info & 0xc0000000) != 0) {
         lim = (info & 0x1fff0000) >> 16;
@@ -187,9 +168,9 @@ void getTransData_(s32 *out, u32 f, u32 *ent, u8 *base)
                     ib = ia + 1;
                 }
                 if (info & 0x20000000) {
-                    *out = (((s16 *)d)[ia] + ((s16 *)d)[ia] + ((s16 *)d)[ia] + ((s16 *)d)[ib]) >> 2;
+                    *out = (((const s16 *)d)[ia] + ((const s16 *)d)[ia] + ((const s16 *)d)[ia] + ((const s16 *)d)[ib]) >> 2;
                 } else {
-                    *out = (s32)(((s64)((s32 *)d)[ia] + ((s32 *)d)[ia] + ((s32 *)d)[ia] + ((s32 *)d)[ib]) >> 2);
+                    *out = (s32)(((s64)((const s32 *)d)[ia] + ((const s32 *)d)[ia] + ((const s32 *)d)[ia] + ((const s32 *)d)[ib]) >> 2);
                 }
                 return;
             }
@@ -203,26 +184,27 @@ void getTransData_(s32 *out, u32 f, u32 *ent, u8 *base)
     goto fetch;
 avg:
     if (info & 0x20000000) {
-        *out = (((s16 *)d)[q] + ((s16 *)d + q)[1]) >> 1;
+        *out = (((const s16 *)d)[q] + ((const s16 *)d + q)[1]) >> 1;
     } else {
-        *out = (((s32 *)d)[q] >> 1) + (((s32 *)d + q)[1] >> 1);
+        *out = (((const s32 *)d)[q] >> 1) + (((const s32 *)d + q)[1] >> 1);
     }
     return;
 fetch:
     if (info & 0x20000000) {
-        *out = ((s16 *)d)[f];
+        *out = ((const s16 *)d)[f];
     } else {
-        *out = ((s32 *)d)[f];
+        *out = ((const s32 *)d)[f];
     }
 }
 
 // joint animation: interpolated single value (s16 or s32, with frame blending)
-void getTransDataEx_(s32 *out, s32 frame, u32 *ent, u8 *hdr)
+void getTransDataEx_(s32 *out, s32 frame, const u32 *ent, const void *res)
 {
-    u8 *d = hdr + ent[1];
+    const u8 *hdr = (const u8 *)res;
+    const u8 *d = hdr + ent[1];
     u32 info = ent[0];
     s32 f = frame >> 12;
-    if (f == *(u16 *)(hdr + 4) - 1) {
+    if (f == *(const u16 *)(hdr + 4) - 1) {
         if (info & 0xc0000000) {
             if (info & 0x40000000) {
                 f = (f & 1) + ((u32)f >> 1);
@@ -230,22 +212,22 @@ void getTransDataEx_(s32 *out, s32 frame, u32 *ent, u8 *hdr)
                 f = (f & 3) + ((u32)f >> 2);
             }
         }
-        if (*(u32 *)(hdr + 8) & 2) {
+        if (*(const u32 *)(hdr + 8) & 2) {
             s32 t = frame & 0xfff;
             s32 a, b;
             if (info & 0x20000000) {
-                a = ((s16 *)d)[f];
-                b = ((s16 *)d)[0];
+                a = ((const s16 *)d)[f];
+                b = ((const s16 *)d)[0];
             } else {
-                a = ((s32 *)d)[f];
-                b = ((s32 *)d)[0];
+                a = ((const s32 *)d)[f];
+                b = ((const s32 *)d)[0];
             }
             *out = a + ((t * (b - a)) >> 12);
         } else {
             if (info & 0x20000000) {
-                *out = ((s16 *)d)[f];
+                *out = ((const s16 *)d)[f];
             } else {
-                *out = ((s32 *)d)[f];
+                *out = ((const s32 *)d)[f];
             }
         }
     } else {
@@ -281,11 +263,11 @@ void getTransDataEx_(s32 *out, s32 frame, u32 *ent, u8 *hdr)
         sh = 0;
     fin:
         if (info & 0x20000000) {
-            a = ((s16 *)d)[f];
-            b = ((s16 *)d + f)[1];
+            a = ((const s16 *)d)[f];
+            b = ((const s16 *)d + f)[1];
         } else {
-            a = ((s32 *)d)[f];
-            b = ((s32 *)d + f)[1];
+            a = ((const s32 *)d)[f];
+            b = ((const s32 *)d + f)[1];
         }
         *out = (a * mul + ((t * (b - a)) >> 12)) >> sh;
     }

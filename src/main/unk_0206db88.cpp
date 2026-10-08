@@ -5,12 +5,6 @@
 #include "gfx/BgVramTask.h"
 #include "nitro/io_access.h"
 #include "player/PlayerData.h"
-#define PROTO_LOCAL_MenuScreen_StepAct08  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuScreen_StepAct09  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ScreenLayers_AcquireStub  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ScreenLayers_ReleaseStub  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gMelodyPlayer  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/dtcm/unk_027e0434.h"
 #include "proto/itcm/unk_01ffcc60.h"
@@ -21,36 +15,25 @@
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206d988.h"
+#include "proto/main/unk_0205b69c.h"
 #include "proto/main/unk_0206db88.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02097444.h"
 
 
 extern "C" {
-extern u8 gMelodyPlayer[];
 extern u8 gSaveTownTune[];
 extern s32 gGfxMainOnTop;
 extern u8 gFieldSceneKind;
-extern u8 gCurrentHeap[];
 
 s64 func_02133540(u32, u32, u32);
-#define MelodyTrack_dtor _ZN11MelodyTrackD1Ev
-void *MelodyTrack_dtor(void *);
 BOOL Camera_RestorePrevMode();
 void Sky_SetEngine(u32);
-void ScreenLayers_ReleaseStub(u32);
 s32 func_01ffcb0c(s32, s32);
 BOOL Camera_IsViewPushed();
 void Camera_PopView();
-void ScreenLayers_AcquireStub(u32);
 void Sky_Disable();
 BOOL Camera_SetMode1();
-u16 *_ZN10PlayerData22getInventoryBackgroundEv(void *self);
-BOOL HBlank_Add(void *, void (*)(void), void (*)(void), s32);
-void HBlank_Remove(void *);
-
-BOOL MenuScreen_StepAct08();
-BOOL MenuScreen_StepAct09();
 
 }
 
@@ -67,7 +50,7 @@ SlotS16 sMenuWipePos;
 Slot16 sMenuScreenScroll;
 Slot8 sMenuScreenWipeFlags;
 Slot8 sMenuScreenBgKind;
-u32 sMenuWipeHBlankTask[HOST_SIZED(0x1c, HBlankTask) / 4] HOST_ALIGN8;  // HBlankTask
+HBlankTask sMenuWipeHBlankTask;
 
 BOOL (*sMenuScreenSteps[])() = {
     MenuScreen_StepAct00, MenuScreen_StepAct01, MenuScreen_StepAct02, MenuScreen_StepAct03, MenuScreen_StepAct04,
@@ -82,7 +65,7 @@ extern "C" void MenuScreen_WipeInVBlank(void) {
     if (sMenuWipePos.v > 20) {
         sMenuWipePos.v -= 20;
     } else {
-        HBlank_Remove(sMenuWipeHBlankTask);
+        HBlank_Remove(&sMenuWipeHBlankTask);
         sMenuScreenWipeFlags.v &= ~1;
         Gfx2d_SetMainWin1Rect(0, 0, 255, 192);
         IO_W((volatile u16 *)0x4000042, 0xff);
@@ -108,7 +91,7 @@ extern "C" void MenuScreen_WipeOutVBlank(void) {
     if (sMenuWipePos.v < 0x103) {
         sMenuWipePos.v += 20;
     } else {
-        HBlank_Remove(sMenuWipeHBlankTask);
+        HBlank_Remove(&sMenuWipeHBlankTask);
         sMenuScreenWipeFlags.v &= ~1;
         sMenuWipePos.v = 0xfe;
         IO_W((volatile u16 *)0x4000042, 0xfeff);
@@ -129,7 +112,7 @@ extern "C" void MenuScreen_WipeOutVBlank(void) {
 
 extern "C" void MenuScreen_StopWipe(void) {
     if (sMenuScreenWipeFlags.v & 1) {
-        HBlank_Remove(sMenuWipeHBlankTask);
+        HBlank_Remove(&sMenuWipeHBlankTask);
         sMenuScreenWipeFlags.v &= ~1;
     }
 }
@@ -137,7 +120,7 @@ extern "C" void MenuScreen_StopWipe(void) {
 extern "C" void MenuScreen_StartWipeIn(void) {
     s32 i;
     sMenuWipePos.v = 0x117;
-    if (HBlank_Add(sMenuWipeHBlankTask, MenuScreen_WipeHBlank, (void (*)(void))MenuScreen_WipeInVBlank, 0)) {
+    if (HBlank_Add(&sMenuWipeHBlankTask, MenuScreen_WipeHBlank, MenuScreen_WipeInVBlank, 0)) {
         sMenuScreenWipeFlags.v |= 1;
     }
     for (i = 0; i < 24; i++) {
@@ -150,7 +133,7 @@ extern "C" void MenuScreen_StartWipeIn(void) {
 extern "C" void MenuScreen_StartWipeOut(void) {
     s32 i;
     sMenuWipePos.v = 0;
-    if (HBlank_Add(sMenuWipeHBlankTask, MenuScreen_WipeHBlank, (void (*)(void))MenuScreen_WipeOutVBlank, 0)) {
+    if (HBlank_Add(&sMenuWipeHBlankTask, MenuScreen_WipeHBlank, MenuScreen_WipeOutVBlank, 0)) {
         sMenuScreenWipeFlags.v |= 1;
     }
     for (i = 0; i < 24; i++) {
@@ -187,12 +170,12 @@ extern "C" void MenuScreen_UploadClothPattern(u16 *p, BgVramTaskPair *x, u8 *img
     u32 v = *p;
     if (v >= 0x11a8 && v <= 0x12a7) in1 = TRUE;
     if (in1 || (v >= 0x12a8 && v <= 0x12af)) {
-        void *heap = *(void **)gCurrentHeap;
+        Heap *heap = gCurrentHeap;
         void *o = Heap_AllocTail(heap, 0x2c4);
         if (o != NULL) {
             ClothTex_LoadItem(o, p, r);
             Gfx_LightenPalette16((u16 *)ClothTex_GetPlttData(o), pal);
-            Gfx2d_LinearToTiles4bppBytes(ClothTex_GetTexData(o), img, 4, 4);
+            Gfx2d_LinearToTiles4bppBytes((u8 *)ClothTex_GetTexData(o), img, 4, 4);
             Heap_Free(heap, o);
             if (x->requestCharsAndPalette(img, 5, 0, 0, 0xf, pal, 0) != 0) {
                 r->setInventoryBackground(p);
@@ -213,7 +196,7 @@ extern "C" void MenuScreen_SetupSubBg() {
 
 extern "C" BOOL MenuScreen_LoadStdBackground(u32 arg) {
     char buf[0x24];
-    void *heap = *(void **)gCurrentHeap;
+    Heap *heap = gCurrentHeap;
     if (!Gfx2d_LoadScreenFile("menu/inventory/b_itm_back.bsc", heap, arg)) {
         return FALSE;
     }
@@ -231,14 +214,14 @@ extern "C" BOOL MenuScreen_LoadBackground(u32 arg) {
         return MenuScreen_LoadStdBackground(arg);
     }
     BOOL ok;
-    void *heap = *(void **)gCurrentHeap;
+    Heap *heap = gCurrentHeap;
     PlayerData *r = PlayerData_GetCurrent();
-    u16 tmp = *_ZN10PlayerData22getInventoryBackgroundEv(r);
-    void *a = Heap_AllocTail(heap, 0x200);
+    u16 tmp = *(u16 *)r->getInventoryBackground();
+    u8 *a = (u8 *)Heap_AllocTail(heap, 0x200);
     if (a == NULL) {
         return FALSE;
     }
-    void *b = Heap_AllocTail(heap, 0x20);
+    u8 *b = (u8 *)Heap_AllocTail(heap, 0x20);
     if (b == NULL) {
         Heap_Free(heap, a);
         return FALSE;
@@ -252,7 +235,7 @@ extern "C" BOOL MenuScreen_LoadBackground(u32 arg) {
     ClothTex_LoadItem(c, &tmp, r);
     Gfx_LightenPalette16((u16 *)ClothTex_GetPlttData(c), (u16 *)b);
     ok = Gfx2d_LoadPaletteRange(b, arg, 0, 0, 0);
-    Gfx2d_LinearToTiles4bppBytes(ClothTex_GetTexData(c), a, 4, 4);
+    Gfx2d_LinearToTiles4bppBytes((u8 *)ClothTex_GetTexData(c), a, 4, 4);
     ok &= Gfx2d_LoadCharRange(a, arg, 0, 0, 0xf);
     Heap_Free(heap, a);
     Heap_Free(heap, b);
@@ -393,7 +376,7 @@ extern "C" BOOL MenuScreen_StepAct08() {
         Camera_PopView();
     }
     if (Unk_0206dc9c_IsZero(gFieldSceneKind)) {
-        ScreenLayers_AcquireStub(0);
+        ScreenLayers_AcquireStub();
         Sky_SetEngine(1);
         Gfx2d_HideMainPlanes(8);
     }
@@ -420,7 +403,7 @@ extern "C" BOOL MenuScreen_StepAct09() {
                 Sky_SetEngine(0);
             }
             MenuCtrl_ClearMenuOnTop();
-            ScreenLayers_ReleaseStub(0);
+            ScreenLayers_ReleaseStub();
         }
     }
     if (sMenuScreenProgress > sMenuScreenProgressStep) {

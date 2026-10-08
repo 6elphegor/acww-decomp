@@ -5,50 +5,14 @@
 // autoload_2 0x020f8b44-0x020f92d4 (10 functions), PARTIAL, code unchanged from G011b: particle manager (emit, update);
 // 0x020f8e70-0x020f9018: resource table loaders (callbacks) and resource layout builder (SPL_Load).
 #include "types.h"
-#include "snd/SndBgmViews.h"
 #include "gfx/SplEmitterViews.h"
-#include "snd/SndBgmHd.h"
 #include "nitro/io_access.h"
-#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020f7a5c.h"
 #include "proto/autoload_2/unk_020f8b44.h"
 #include "proto/autoload_2/unk_0210c084.h"
 #include "proto/autoload_2/unk_02111ccc.h"
 #include "proto/autoload_2/unk_0211220c.h"
 
-
-
-struct Fo;
-// view of gSndMgr (sound manager of G006): +0 current object, +0x2c Q*, +0x3c Hd* (same word as gSndBgmHandle)
-struct Mg {
-    Fo *cur;
-    u8 p4[0x28];
-    Q *q;
-    u8 p30[0xc];
-    Hd *h;
-};
-
-// object with the sub-struct at +0x14
-struct Fo {
-    u32 *vptr;
-    u32 w4;
-    u8 pad8[0xc];
-    s8 c14;
-    s8 c15;
-    s8 c16;
-    s8 c17;
-    s8 c18;
-    u8 pad19[3];
-    s32 w1c;
-    s32 w20;
-    s32 w24;
-    u8 c28;
-    u8 c29;
-    u8 c2a;
-    u8 pad2b;
-    s16 s2c;
-    u8 c2e;
-};
 
 
 // SPL-style particle manager: ResInfo = emitter resource header, Entry = live emitter, Mgr = manager
@@ -253,17 +217,6 @@ struct Pool32 {
 };
 
 extern "C" {
-extern Mg gSndMgr;
-void NNS_SndPlayerReadVariable(void *p, u32 sel, void *out);
-void NNS_SndPlayerReadGlobalVariable(u32 sel, void *out);
-void Snd_StopHandle(void *p, u32 v);
-void Snd_InitHandle(void *p);
-void NNS_SndHandleReleaseSeq(void *p);
-void NNS_SndPlayerWriteVariable(void *p, u32 a, s32 b);
-void BgmSyncSnd_ReadHeader(Rb *r);
-void BgmSyncSnd_ReadVars(Rb *r);
-void BgmSyncSnd_SelectStep(Rb *r);
-void BgmSyncSnd_UpdatePosition(Rb *r, void *arg);
 void func_020f9690(Entry *e, void *list);
 void spl_init(Entry *e, void *tab, void *v);
 Entry *spl_pop_front(void *list);
@@ -285,8 +238,6 @@ s32 SPL_LoadTexByCallbackFunction(Fp *self, Cb cb);
 u32 sAllocTex(u32 a, u32 b);
 void *MI_CpuFill8(void *p, u32 v, u32 n);
 }
-
-static inline BOOL nz(u32 v) { return v != 0; }
 
 extern "C" void SPL_Load(Fp *self, u8 *base) {
     s32 i;

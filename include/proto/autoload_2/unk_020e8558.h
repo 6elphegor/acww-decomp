@@ -6,7 +6,6 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "sys/Heap.h"
-#include "types.h"
 class ExpHeap;
 class FrameHeap;
 #endif
@@ -23,11 +22,23 @@ void Heap_InstallThreadSwitchCallback(void);
 #ifndef PROTO_LOCAL_Heap_InitSystem
 void Heap_InitSystem(void);
 #endif
+#ifndef PROTO_LOCAL_ExpHeap_FreeBlockVisitor
+void ExpHeap_FreeBlockVisitor(void *block, void *heap, u32 param);
+#endif
 #ifndef PROTO_LOCAL_Heap_SaveCurrent
 void Heap_SaveCurrent(void);
 #endif
 #ifndef PROTO_LOCAL_Heap_RestoreCurrent
 void Heap_RestoreCurrent(void);
+#endif
+#ifndef PROTO_LOCAL_Mem_AllocAligned
+void *Mem_AllocAligned(u32 size, s32 align);
+#endif
+#ifndef PROTO_LOCAL_Mem_AllocTail
+void *Mem_AllocTail(u32 size);
+#endif
+#ifndef PROTO_LOCAL_Mem_Alloc
+void *Mem_Alloc(u32 size);
 #endif
 #ifndef PROTO_LOCAL_Mem_Free
 void Mem_Free(void *p);
@@ -53,9 +64,6 @@ ExpHeap *ExpHeap_Create(u32 size, Heap *parent);
 #ifndef PROTO_LOCAL_FrameHeap_Create
 FrameHeap *FrameHeap_Create(u32 size, Heap *parent);
 #endif
-#ifndef PROTO_LOCAL_ExpHeap_FreeBlockVisitor
-void ExpHeap_FreeBlockVisitor(void *block, void *heap, u32 param);
-#endif
 #ifndef PROTO_LOCAL_Heap_SetCurrent
 Heap *Heap_SetCurrent(Heap *heap);
 #endif
@@ -76,15 +84,6 @@ void Heap_Free(Heap *heap, void *p);
 #endif
 #ifndef PROTO_LOCAL_Heap_CreateProcHeap
 void Heap_CreateProcHeap(u32 size, Heap *parent);
-#endif
-#ifndef PROTO_LOCAL_Mem_AllocAligned
-void *Mem_AllocAligned(u32 size, s32 align);
-#endif
-#ifndef PROTO_LOCAL_Mem_AllocTail
-void *Mem_AllocTail(u32 size);
-#endif
-#ifndef PROTO_LOCAL_Mem_Alloc
-void *Mem_Alloc(u32 size);
 #endif
 }
 #ifndef PROTO_LOCAL_sRootHeapSize

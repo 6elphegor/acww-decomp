@@ -7,25 +7,14 @@ typedef unsigned int u32;
 typedef int s32;
 typedef short s16;
 #include "types64.h"
-#define PROTO_LOCAL_data_0213bcc8  // declared below: the shared prototype conflicts with the calls here
+#include "nnsys/g3d_rt.h"
+#include "proto/autoload_2/unk_02104000.h"
 #include "proto/autoload_2/unk_02107634.h"
 typedef int BOOL;
 #define NULL 0
 
-extern u32 data_0213bcc8;
 extern void MIi_CpuClear16(u32, void *, u32);   // MI_CpuClear16 (data, dest, size)
 extern s32 NNS_G3dGetResDictIdxByName(u8 *, u8 *);          // NNS_G3dGetResDictIdxByName (dict, name)
-
-// NNSG3dAnmObj by its members (include/nnsys/g3d_rt.h: the pointers move the later members on 64-bit hosts)
-typedef struct TexObj {
-    u32 pad0, pad4;
-    u8 *res;                 // resAnm
-    __UINTPTR_TYPE__ w0c;    // funcAnm
-    void *next_, *resTex_;
-    u8 prio_;
-    u8 cnt;                  // numMapData
-    u16 tbl[1];              // mapData
-} TexObj;
 
 // packed u16 (RGB555-aware) animation array reader (frame, const / 1:1 / 1:2 / 1:4 rate with interpolation)
 u16 GetMatColAnmValue_(u8 *base, u32 info, u32 idx)
@@ -135,21 +124,22 @@ u16 GetMatColAnmuAlphaValue_(u8 *base, u32 info, u32 idx)
 }
 
 // anm object init by name: for every animated entry find the model entry with the same name (NNS_G3dGetResDictIdxByName)
-void NNSi_G3dAnmObjInitNsBma(TexObj *o, u8 *names, u8 *res)
+// (o: the NNSG3dAnmObj by its members, include/nnsys/g3d_rt.h)
+void NNSi_G3dAnmObjInitNsBma(G3dAnmObj *o, u8 *names, u8 *res)
 {
     u8 *dict = res + *(u32 *)(res + 8);
     u32 i;
-    o->w0c = data_0213bcc8;
-    o->cnt = res[0x18];
+    o->funcAnm = data_0213bcc8;
+    o->numMapData = res[0x18];
     {
         volatile u16 zero = 0;
-        MIi_CpuClear16(zero, o->tbl, o->cnt * 2);
+        MIi_CpuClear16(zero, o->mapData, o->numMapData * 2);
     }
     for (i = 0; i < names[9]; i++) {
         u8 *blk = names + 8 + *(u16 *)(names + 14);
         s32 idx = NNS_G3dGetResDictIdxByName(dict + 4, blk + *(u16 *)(blk + 2) + i * 16);
         if (idx >= 0) {
-            o->tbl[idx] = i | 0x100;
+            o->mapData[idx] = i | 0x100;
         }
     }
 }

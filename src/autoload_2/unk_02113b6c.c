@@ -2,9 +2,8 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK os_thread.c: OS_InitThread, autoload_2 0x02113b6c-0x02113cc8. ARM code, mwcc 1.2/base.
 #include "uptr.h"
-#define PROTO_LOCAL_OS_InitThread  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OSi_IdleThreadProc  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02113b6c.h"
+#include "proto/itcm/unk_01ffa4a0.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -29,12 +28,12 @@ extern u8 SDK_SYS_STACKSIZE[];            // 0x2000
 extern u8 SDK_IRQ_STACKSIZE[];            // 0x1000
 extern u8 SDK_SECTION_ARENA_DTCM_START[]; // 0x027e0460
 
-#define HW_DTCM ((u32)data_027e0000)
+#define HW_DTCM data_027e0000
 #define HW_DTCM_SVC_STACK (HW_DTCM + 0x3f80)
-#define OSi_SYS_STACK_SIZE ((s32)SDK_SYS_STACKSIZE)
-#define OSi_IRQ_STACK_SIZE ((s32)SDK_IRQ_STACKSIZE)
+// (absolute symbols: their addresses are the sizes)
+#define OSi_SYS_STACK_SIZE ((s32)(uptr)SDK_SYS_STACKSIZE)
+#define OSi_IRQ_STACK_SIZE ((s32)(uptr)SDK_IRQ_STACKSIZE)
 
-void OSi_IdleThreadProc(void *);
 void *OS_SetSwitchThreadCallback(void (*cb)(OSThread *, OSThread *));
 void OS_CreateThread(OSThread *t, void (*f)(void *), void *arg, void *stack, u32 size, u32 prio);
 
@@ -51,10 +50,10 @@ void OS_InitThread(void) {
     data_021fccfc.profiler = 0;
     data_021fcc2c.list = &data_021fccfc;
     data_021fcc2c.current = &data_021fccfc;
-    stackLo = (OSi_SYS_STACK_SIZE <= 0) ? (void *)((u32)SDK_SECTION_ARENA_DTCM_START - OSi_SYS_STACK_SIZE)
-                                        : (void *)((u32)(HW_DTCM_SVC_STACK - OSi_IRQ_STACK_SIZE) - OSi_SYS_STACK_SIZE);
-    data_021fccfc.stackBottom = (u32)(HW_DTCM_SVC_STACK - OSi_IRQ_STACK_SIZE);
-    data_021fccfc.stackTop = (u32)stackLo;
+    stackLo = (OSi_SYS_STACK_SIZE <= 0) ? SDK_SECTION_ARENA_DTCM_START - OSi_SYS_STACK_SIZE
+                                        : HW_DTCM_SVC_STACK - OSi_IRQ_STACK_SIZE - OSi_SYS_STACK_SIZE;
+    data_021fccfc.stackBottom = HW_DTCM_SVC_STACK - OSi_IRQ_STACK_SIZE;
+    data_021fccfc.stackTop = stackLo;
     data_021fccfc.stackWarningOffset = 0;
     *(u32 *)(data_021fccfc.stackBottom - sizeof(u32)) = 0xfddb597d;
     *(u32 *)(data_021fccfc.stackTop) = 0x7bf9dd5b;
@@ -64,7 +63,8 @@ void OS_InitThread(void) {
     data_021fcc2c.irqDepth = 0;
     data_027fffa0 = (u32)(uptr)&data_021fcc2c;
     OS_SetSwitchThreadCallback(0);
-    OS_CreateThread(&data_021fcc3c, OSi_IdleThreadProc, 0, data_021fcdbc + 50, 200, 31);
+    // (the idle thread's procedure takes no argument)
+    OS_CreateThread(&data_021fcc3c, (void (*)(void *))OSi_IdleThreadProc, 0, data_021fcdbc + 50, 200, 31);
     data_021fcc3c.priority = 32;
     data_021fcc3c.state = 1;
 }

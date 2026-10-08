@@ -9,9 +9,10 @@
 // perhaps SndMgr_PlayTalkVoice, are this file's first part); nothing in the data decides it, so the unit takes only what is proven.
 #include "types.h"
 #include "snd/SndMgr.h"
-#define PROTO_LOCAL_NNS_SndCaptureStopEffect  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ed8cc.h"
 #include "proto/autoload_2/unk_020ef150.h"
 #include "proto/autoload_2/unk_020f0dec.h"
+#include "proto/autoload_2/unk_0210b1b0.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/main/unk_0206d49c.h"
 
@@ -22,19 +23,12 @@ SndMgr gSndMgr;
 
 extern "C" {
 void *NNS_SndHeapCreate(u32 a, u32 b);
-void Snd_InitSystem(u32 a, u32 b, u32 c, u32 d);
 u32 CARD_GetThreadPriority(void);
 void NNS_SndCaptureCreateThread(u32 a);
 void NNS_SndSetMasterVolume(u32 a);
-void *Snd_GetHeap(void);
 void NNS_SndArcStrmInit(u32 a, void *b);
 void NNS_SndStrmHandleInit(void *p);
-void Snd_LoadGroup(u32 a);
-void Snd_InitHandle(void *p);
-void Snd_Main(void);
-void Snd_StartOutputEffect(u32 a);
 void NNS_SndCaptureChangeOutputEffect(u32 a);
-void NNS_SndCaptureStopEffect(SndMgr *self);
 }
 
 SndMgr::SndMgr() {
@@ -46,12 +40,15 @@ SndMgr::SndMgr() {
     keepHeap = 0;
 }
 
-void SndMgr::init(u32 a, u32 b, u32 c) {
+// heap: the sound heap's memory (size bytes); its first 0x339c bytes become the manager's own sub-heap, the rest the sound
+// system's heap. arcPath: the sound archive's file name.
+void SndMgr::init(void *heap, u32 size, const char *arcPath) {
     subHeap = NULL;
     if (subHeap != NULL) Fatal_Trap();
-    subHeap = NNS_SndHeapCreate(a, 0x339c);
+    // (NNS_SndHeapCreate still takes the address as u32, unk_0210b448.c)
+    subHeap = NNS_SndHeapCreate((uptr)heap, 0x339c);
     if (subHeap == NULL) Fatal_Trap();
-    Snd_InitSystem(a + 0x339c, b - 0x339c, c, 0);
+    Snd_InitSystem((u8 *)heap + 0x339c, size - 0x339c, arcPath, NULL);
     NNS_SndCaptureCreateThread(CARD_GetThreadPriority() - 1);
     outputMode = 1;
     startOutputEffect();
@@ -97,5 +94,5 @@ void SndMgr::startOutputEffect() {
 }
 
 void SndMgr::stopAll() {
-    NNS_SndCaptureStopEffect(this);
+    NNS_SndCaptureStopEffect();
 }

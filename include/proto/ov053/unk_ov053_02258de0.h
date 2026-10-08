@@ -12,74 +12,8 @@ class SpNpcHarriet;
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_data_ov053_0225a374
-extern void *data_ov053_0225a374[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a39c
-extern void *data_ov053_0225a39c[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a38c
-extern void *data_ov053_0225a38c[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a3a4
-extern void *data_ov053_0225a3a4[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a344
-extern void *data_ov053_0225a344[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a34c
-extern void *data_ov053_0225a34c[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a354
-extern void *data_ov053_0225a354[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a3e4
-extern void *data_ov053_0225a3e4[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a3dc
-extern void *data_ov053_0225a3dc[2];
-#endif
 #ifndef PROTO_LOCAL_sSpNpcHarrietKey
 extern char sSpNpcHarrietKey[];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a3c4
-extern void *data_ov053_0225a3c4[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a3bc
-extern void *data_ov053_0225a3bc[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a3b4
-extern void *data_ov053_0225a3b4[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a35c
-extern void *data_ov053_0225a35c[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a394
-extern void *data_ov053_0225a394[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a364
-extern void *data_ov053_0225a364[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a3cc
-extern void *data_ov053_0225a3cc[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a3ec
-extern void *data_ov053_0225a3ec[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a36c
-extern void *data_ov053_0225a36c[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a3ac
-extern void *data_ov053_0225a3ac[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a3d4
-extern void *data_ov053_0225a3d4[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a384
-extern void *data_ov053_0225a384[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov053_0225a37c
-extern void *data_ov053_0225a37c[2];
 #endif
 #ifdef __cplusplus
 }

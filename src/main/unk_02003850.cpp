@@ -1,5 +1,6 @@
 #include "types.h"
 #include "snd/TvSound.h"
+#include "sys/new.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_02003850.h"
 
@@ -7,44 +8,36 @@ extern "C" {
 }
 
 
-struct TvSoundVtableView {
-    void *vtable;
-};
-extern u32 data_0213bac4[];
-extern u32 data_0213b9e4[];
-extern u32 data_0213ba04[];
-extern u32 data_0213ba24[];
-extern u32 data_0213ba44[];
-extern u32 data_0213bb64[];
-extern u32 data_0213ba64[];
-extern u32 data_0213bae4[];
-extern u32 data_0213bb04[];
-extern u32 data_0213bb24[];
-extern u32 data_0213ba84[];
-extern u32 data_0213bb44[];
-extern u32 data_0213baa4[];
-
 extern u32 data_020c6190[];
+// the object sizes by type (TvSound_GetMaxSize: the heap TvSound_Create allocates from)
 extern const u32 sTvSoundSizes[];
-const u32 sTvSoundSizes[] = {0x10, 0x10, 0x10, 0x10, 0x14, 0x10, 0x10, 0x18, 0x14, 0x10, 0x14, 0x10};
+const u32 sTvSoundSizes[] = {
+    sizeof(TvSoundProgram0), sizeof(TvSoundProgram1), sizeof(TvSoundProgram2), sizeof(TvSoundProgram3),
+    sizeof(TvSoundProgram4), sizeof(TvSoundProgram5), sizeof(TvSoundProgram6), sizeof(TvSoundProgram7),
+    sizeof(TvSoundProgram8), sizeof(TvSoundProgram9), sizeof(TvSoundProgram10), sizeof(TvSoundWeather),
+};
 
-#define MK(sz, vt) { TvSoundVtableView *o = (TvSoundVtableView *)Heap_Alloc(heap, sz); if (o) { o->vtable = data_0213bac4; o->vtable = vt; } return (TvSound *)o; }
+template <class T> static TvSound *TvSound_New(Heap *heap) {
+    void *p = Heap_Alloc(heap, sizeof(T));
+    if (p == NULL) return NULL;
+    return new (p) T;
+}
 
-extern "C" TvSound *TvSound_Create(u32 heap, s32 type) {
+extern "C" TvSound *TvSound_Create(Heap *heap, s32 type) {
     switch (type) {
-    case 0: MK(0x10, data_0213b9e4)
-    case 1: MK(0x10, data_0213ba04)
-    case 2: MK(0x10, data_0213ba24)
-    case 3: MK(0x10, data_0213ba44)
-    case 4: MK(0x14, data_0213bb64)
-    case 5: MK(0x10, data_0213ba64)
-    case 6: MK(0x10, data_0213bae4)
-    case 7: MK(0x18, data_0213bb04)
-    case 8: MK(0x14, data_0213bb24)
-    case 9: MK(0x10, data_0213ba84)
-    case 10: MK(0x14, data_0213bb44)
-    case 0xff: MK(0x10, data_0213baa4)
-    default: MK(0x10, data_0213b9e4)
+    case 0: return TvSound_New<TvSoundProgram0>(heap);
+    case 1: return TvSound_New<TvSoundProgram1>(heap);
+    case 2: return TvSound_New<TvSoundProgram2>(heap);
+    case 3: return TvSound_New<TvSoundProgram3>(heap);
+    case 4: return TvSound_New<TvSoundProgram4>(heap);
+    case 5: return TvSound_New<TvSoundProgram5>(heap);
+    case 6: return TvSound_New<TvSoundProgram6>(heap);
+    case 7: return TvSound_New<TvSoundProgram7>(heap);
+    case 8: return TvSound_New<TvSoundProgram8>(heap);
+    case 9: return TvSound_New<TvSoundProgram9>(heap);
+    case 10: return TvSound_New<TvSoundProgram10>(heap);
+    case 0xff: return TvSound_New<TvSoundWeather>(heap);
+    default: return TvSound_New<TvSoundProgram0>(heap);
     }
 }
 

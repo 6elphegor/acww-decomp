@@ -10,7 +10,12 @@
 struct WlxBlockEntry {
     u32 ggid;
     void (*doneCallback)(u32, void *);
-    u32 bufferInfo[8];
+    u8 *sendData; // (bufferInfo[0..7] in the DS layout)
+    u32 sendSize;
+    u32 unk_10[2];
+    u8 *recvData;
+    u32 recvBufSize;
+    u32 unk_20[2];
 };
 
 struct WlxBlock {
@@ -20,12 +25,12 @@ struct WlxBlock {
     u8 ackSeq;
     u8 ackKind;
     u16 ackSegment;
-    u32 sendData;
+    u8 *sendData;
     u32 sendSize;
     u32 unk_10;
     u16 sendCheck;
     u16 unk_16;
-    u32 recvData;
+    u8 *recvData;
     u32 recvSize;
     u32 recvBufSize;
     u16 recvCheck;
@@ -94,7 +99,9 @@ struct WlxWmMsg {
 typedef s32 (*WlxWmEventFn)(u32, void *);
 
 struct WlxWmWork {
-    u8 pad_0000[0x4ee0];
+    u8 wmBuf[0xf00];      // WM_Init work area
+    u8 mpSendBuf[0x220];  // WM_StartMPEx send buffer (sendBufSize)
+    u8 mpRecvBuf[0x3dc0]; // WM_StartMPEx receive buffer (recvBufSize)
     u8 mpSendData[0x200];
     u16 dmaNo;
     u16 channel;
@@ -110,10 +117,10 @@ struct WlxWmWork {
     s32 needMeasureChannel;
     s32 bestChannelBusy;
     s32 numBeacons;
-    u8 pad_510c[0x516c - 0x510c];
-    u16 bssParentMaxSize;
-    u16 bssChildMaxSize;
-    u8 pad_5170[0x55e0 - 0x5170];
+    u8 pad_510c[0x14];
+    WMBssDesc bssDesc;     // the parent found by the scan (WM_StartConnectEx)
+    u8 scanBuffer[0x400];  // WM_StartScanEx result buffer
+    // WM_StartScanEx parameter (WMScanExParam as the WM layer reads it: the buffer address in 32 bits)
     u32 scanBuf;
     u16 scanBufSize;
     u16 scanChannelList;
@@ -487,13 +494,13 @@ static inline u32 Clz(u32 x) {
 
 
 extern "C" void Wlx_SelectNextEntry(void) {
-    u32 *r;
-    r = (u32 *)WlxBlock_FindEntry(&sWlx->block, (void *)sWlx->block.curEntry, 0, 0);
+    WlxBlockEntry *r;
+    r = (WlxBlockEntry *)WlxBlock_FindEntry(&sWlx->block, sWlx->block.curEntry, 0, 0);
     if (r == NULL) {
-        r = (u32 *)WlxBlock_FindEntry(&sWlx->block, 0, 0, 1);
+        r = (WlxBlockEntry *)WlxBlock_FindEntry(&sWlx->block, 0, 0, 1);
     }
     WlxBlock_SetCurrent(&sWlx->block, r);
-    sWlx->parentParam.ggid = *r;
+    sWlx->parentParam.ggid = r->ggid;
 }
 
 extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
@@ -517,8 +524,8 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
     case 6:
         ret = WlxBlock_SelectByBeacon(&sWlx->block, (u32 *)arg);
         if (ret != 0) {
-            u32 *e = (u32 *)WlxBlock_GetCurrent(&sWlx->block);
-            sWlx->parentParam.ggid = e[0];
+            WlxBlockEntry *e = (WlxBlockEntry *)WlxBlock_GetCurrent(&sWlx->block);
+            sWlx->parentParam.ggid = e->ggid;
         }
         break;
     case 0: {
@@ -578,38 +585,37 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
         }
         break;
     case 9: {
-        u32 *e = (u32 *)WlxBlock_GetCurrent(&sWlx->block);
+        WlxBlockEntry *e = (WlxBlockEntry *)WlxBlock_GetCurrent(&sWlx->block);
         s32 f = Wlx_IsParent();
         u32 x, y, idx;
         if (f != 0) {
             x = sWlx->parentParam.parentMaxSize;
         } else {
-            x = sWlx->wm.bssParentMaxSize;
+            x = sWlx->wm.bssDesc.gameInfo.parentMaxSize;
         }
         if (f != 0) {
             y = sWlx->parentParam.childMaxSize;
         } else {
-            y = sWlx->wm.bssChildMaxSize;
+            y = sWlx->wm.bssDesc.gameInfo.childMaxSize;
         }
         idx = (u16)(f != 0 ? m->aid : 0);
         WlxWork *g = sWlx;
         WlxMember *tbl = g->members;
-        u32 off = idx * 8;
-        WlxMember *r = (WlxMember *)((u8 *)tbl + idx * 8);
+        WlxMember *r = &tbl[idx];
         WlxBlock_Reset(&g->block, x, y);
-        *(u16 *)((u8 *)tbl + off) = idx;
+        r->aid = idx;
         if (f != 0) {
             r->mac01 = m->mac01;
             r->mac23 = m->mac23;
             r->mac45 = m->mac45;
         } else {
-            u16 *q = (u16 *)((u8 *)sWlx + 0x5240);
-            r->mac01 = q[2];
-            r->mac23 = q[3];
-            r->mac45 = q[4];
+            const u16 *q = (const u16 *)sWlx->wm.bssDesc.bssid;
+            r->mac01 = q[0];
+            r->mac23 = q[1];
+            r->mac45 = q[2];
         }
         if (Wlx_GetState() == 3 && e != NULL) {
-            WlxBlock_StartSend(&sWlx->block, e[2], e[3], e[6], e[7]);
+            WlxBlock_StartSend(&sWlx->block, e->sendData, e->sendSize, e->recvData, e->recvBufSize);
         } else {
             sWlx->block.reqKind = 5;
         }
@@ -623,7 +629,7 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
         break;
     }
     case 10:
-        WlxBlock_OnDisconnectStub(&sWlx->block, (u16)(u32)arg);
+        WlxBlock_OnDisconnectStub(&sWlx->block, (u16)(uptr)arg);  // event 10: arg is the aid
         if (Wlx_GetConnectedMask() == 0) {
             if (Wlx_GetState() != 3) {
                 if (Wlx_GetState() != 1) {
@@ -762,7 +768,7 @@ extern "C" u16 Wlx_GetConnectedMask(void) {
     return r;
 }
 
-extern "C" void Wlx_RegisterData(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5) {
+extern "C" void Wlx_RegisterData(u32 a0, void (*a1)(u32, void *), u8 *a2, u32 a3, u8 *a4, u32 a5) {
     s32 ie = OS_DisableInterrupts();
     WlxBlockEntry *e = (WlxBlockEntry *)WlxBlock_FindEntry(&sWlx->block, 0, a0, 1);
     if (e == NULL) {
@@ -771,11 +777,11 @@ extern "C" void Wlx_RegisterData(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5)
             Fatal_Trap();
         } else {
             e->ggid = a0;
-            e->doneCallback = (void (*)(u32, void *))a1;
-            e->bufferInfo[0] = a2;
-            e->bufferInfo[1] = a3;
-            e->bufferInfo[4] = a4;
-            e->bufferInfo[5] = a5;
+            e->doneCallback = a1;
+            e->sendData = a2;
+            e->sendSize = a3;
+            e->recvData = a4;
+            e->recvBufSize = a5;
         }
     }
     OS_RestoreInterrupts(ie);
@@ -885,11 +891,11 @@ extern "C" void WlxWm_SendMpData(WlxWmWork *s) {
     if (s->aid == 0) {
         v = s->parentParam->parentMaxSize;
     } else {
-        v = *(u16 *)(HOST_AT(s, 0x516e, bssChildMaxSize, 0));
+        v = s->bssDesc.gameInfo.childMaxSize;
     }
     u16 fl = s->connectedMask;
     l.e = v;
-    l.d = (void *)(HOST_AT(s, 0x4ee0, mpSendData[0], 0));
+    l.d = s->mpSendData;
     l.f = fl;
     if (s->eventCallback != NULL) {
         s->eventCallback(7, &l.d);
@@ -900,7 +906,7 @@ extern "C" void WlxWm_SendMpData(WlxWmWork *s) {
     s->isSending = WlxWm_CheckApiCall(s, 0xf, WM_SetMPDataToPortEx((void *)WlxWm_OnMpDataSent, 0, l.d, l.e, l.f, 4, 2));
 }
 
-extern "C" void WlxWm_SetState(WlxWmWork *s, s32 st, u32 arg) {
+extern "C" void WlxWm_SetState(WlxWmWork *s, s32 st, void *arg) {
     s->state = st;
     s32 prev = s->requestedState;
     if (prev == st) {
@@ -934,7 +940,7 @@ extern "C" void WlxWm_SetState(WlxWmWork *s, s32 st, u32 arg) {
             }
             s->connectedMask |= 1;
             if (s->eventCallback != NULL) {
-                s->eventCallback(9, (void *)arg);
+                s->eventCallback(9, arg);
             }
             WlxWm_SendMpData(s);
             return;
@@ -1056,7 +1062,7 @@ extern "C" void WlxWm_EnableStep(WMPortRecvCallback *m) {
     if (m == NULL) {
         s->needMeasureChannel = 1;
         s->state = 1;
-        WlxWm_CheckApiCall(s, 0, WM_Init(s, s->dmaNo));
+        WlxWm_CheckApiCall(s, 0, WM_Init(s->wmBuf, s->dmaNo));
         WlxWm_CheckApiCall(s, 3, WM_Enable((void *)WlxWm_EnableStep));
         return;
     }
@@ -1226,7 +1232,7 @@ extern "C" void WlxWm_StartParentStep(WlxWmMsg *m) {
         if (c->parentParam->CS_Flag == 0) {
             b = TRUE;
         }
-        WlxWm_CheckApiCall(c, 0xe, WM_StartMPEx(WlxWm_StartParentStep, HOST_AT(c, 0x1120, pad_0000[4384], 0), c->recvBufSize, HOST_AT(c, 0xf00, pad_0000[3840], 0), c->sendBufSize, (u16)b, 0, 0, 0, 0, 0));
+        WlxWm_CheckApiCall(c, 0xe, WM_StartMPEx(WlxWm_StartParentStep, c->mpRecvBuf, c->recvBufSize, c->mpSendBuf, c->sendBufSize, (u16)b, 0, 0, 0, 0, 0));
         return;
     }
     if (m->apiid != 0xe) {
@@ -1276,13 +1282,13 @@ extern "C" void WlxWm_ConnectStep(WlxWmMsg *m) {
     }
     if (m == NULL) {
         c->state = 1;
-        WlxWm_CheckApiCall(c, 0xc, WM_StartConnectEx(WlxWm_OnChildEvent, HOST_AT(c, 0x5120, pad_510c[20], 0), 0, 1, 0));
+        WlxWm_CheckApiCall(c, 0xc, WM_StartConnectEx(WlxWm_OnChildEvent, &c->bssDesc, 0, 1, 0));
         return;
     }
     if (m->apiid == 0xc) {
         c->aid = m->myAid;
         BOOL b = c->parentParam->CS_Flag == 0 ? TRUE : FALSE;
-        WlxWm_CheckApiCall(c, 0xe, WM_StartMPEx(WlxWm_ConnectStep, HOST_AT(c, 0x1120, pad_0000[4384], 0), c->recvBufSize, HOST_AT(c, 0xf00, pad_0000[3840], 0), c->sendBufSize, (u16)b, 0, 0, 0, 0, 0));
+        WlxWm_CheckApiCall(c, 0xe, WM_StartMPEx(WlxWm_ConnectStep, c->mpRecvBuf, c->recvBufSize, c->mpSendBuf, c->sendBufSize, (u16)b, 0, 0, 0, 0, 0));
         return;
     }
     if (m->apiid != 0xe) {
@@ -1291,7 +1297,7 @@ extern "C" void WlxWm_ConnectStep(WlxWmMsg *m) {
     if (m->mpState != 0xa) {
         return;
     }
-    WlxWm_SetState(c, 5, (u32)m);
+    WlxWm_SetState(c, 5, m);
 }
 
 extern "C" void WlxWm_MeasureChannelStep(WlxWmMsg *m) {
@@ -1331,7 +1337,7 @@ extern "C" void WlxWm_ScanStep(WlxWmMsg *m) {
     if (m == NULL) {
         c->state = 1;
         c->numBeacons = 0;
-        c->scanBuf = (u32)c + 0x51e0;
+        c->scanBuf = (u32)(uptr)c->scanBuffer;
         c->scanBufSize = 0x400;
         c->scanChannelList = WM_GetAllowedChannel();
         c->scanMaxChannelTime = 0x6e;
@@ -1344,7 +1350,7 @@ extern "C" void WlxWm_ScanStep(WlxWmMsg *m) {
     }
     if (m->apiid == 0x26) {
         if (m->state == 5) {
-            DC_InvalidateRange(HOST_AT(c, 0x51e0, pad_5170[112], 0), 0x400);
+            DC_InvalidateRange(c->scanBuffer, sizeof(c->scanBuffer));
             c->numBeacons = m->numBeacons;
         }
         WlxWm_CheckApiCall(c, 0xb, WM_EndScan(WlxWm_ScanStep));
@@ -1356,7 +1362,7 @@ extern "C" void WlxWm_ScanStep(WlxWmMsg *m) {
     BOOL found = FALSE;
     if (c->requestedState == 5) {
         s32 i;
-        u8 *p = HOST_AT(c, 0x51e0, pad_5170[112], 0);
+        u8 *p = c->scanBuffer;
         WlxDebug_Printf("found:%d beacons\n", c->numBeacons);
         i = 0;
         if (c->numBeacons > 0) {
@@ -1370,7 +1376,7 @@ extern "C" void WlxWm_ScanStep(WlxWmMsg *m) {
                     }
                     if (found) {
                         WlxDebug_Printf("     -> matched!\n");
-                        MI_CpuCopy8(p, HOST_AT(c, 0x5120, pad_510c[20], 0), 0xc0);
+                        MI_CpuCopy8(p, &c->bssDesc, sizeof(WMBssDesc));
                         break;
                     }
                 }
@@ -1447,7 +1453,7 @@ extern "C" void WlxBlock_Reset(WlxBlock *w, u32 a, u32 b) {
     w->numRecvSegments = 0;
 }
 
-extern "C" void WlxBlock_StartSend(WlxBlock *w, u32 p, u32 q, u32 r, u32 s) {
+extern "C" void WlxBlock_StartSend(WlxBlock *w, u8 *p, u32 q, u8 *r, u32 s) {
     if (w->reqKind != 0) {
         return;
     }
@@ -1537,7 +1543,7 @@ extern "C" void WlxBlock_BuildSend(WlxBlock *w, WlxMpPacket *msg) {
             if (rem > seg) {
                 rem = seg;
             }
-            MI_CpuCopy8((void *)(w->sendData + off), p, rem);
+            MI_CpuCopy8(w->sendData + off, p, rem);
             break;
         }
         }
@@ -1576,7 +1582,7 @@ extern "C" void WlxBlock_StoreSegment(WlxBlock *w, s32 idx, void *src) {
     if (rem > seg) {
         rem = seg;
     }
-    MI_CpuCopy8(src, (void *)(w->recvData + off), rem);
+    MI_CpuCopy8(src, w->recvData + off, rem);
     *slot |= bit;
     w->numMissingSegments = w->numMissingSegments - 1;
     if (w->numMissingSegments == 0) {
@@ -1651,9 +1657,9 @@ extern "C" BOOL WlxBlock_Receive(WlxBlock *w, WlxMpPacket *msg) {
                 if (w->ackKind == 4) {
                     WlxBlockEntry *cb = w->curEntry;
                     void (*fn)(u32, void *) = cb->doneCallback;
-                    u32 *e = (u32 *)WlxBlock_GetCurrent(w);
+                    WlxBlockEntry *e = (WlxBlockEntry *)WlxBlock_GetCurrent(w);
                     struct {
-                        u32 a;
+                        u8 *a;
                         u32 b;
                         u32 c;
                         u16 d;
@@ -1677,7 +1683,7 @@ extern "C" BOOL WlxBlock_Receive(WlxBlock *w, WlxMpPacket *msg) {
                     if (fn != 0) {
                         fn(5, &l);
                     }
-                    if (e[0] != 0) {
+                    if (e->ggid != 0) {
                         WlxBlock_SetCurrent(w, e);
                     }
                     if (w->sendData == 0) {

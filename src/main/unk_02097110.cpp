@@ -7,6 +7,7 @@
 #include "item/LetterView.h"
 #include "player/PlayerData.h"
 #include "save/TownId.h"
+#include "player/PlayerBank.h"
 #include "proto/autoload_2/unk_0211ea4c.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_020637e4.h"
@@ -18,10 +19,6 @@
 #include "proto/main/unk_020b2c50.h"
 
 
-struct PlayerBank {
-    u32 balance;
-    u8 donationLevel;
-};
 
 extern SaveData gSaveData;
 extern TownId gSaveTownId;

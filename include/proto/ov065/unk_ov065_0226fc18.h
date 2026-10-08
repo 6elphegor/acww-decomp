@@ -42,7 +42,7 @@ extern "C" {
 extern u32 data_ov065_02290674;
 #endif
 #ifndef PROTO_LOCAL_sDwcConnTable
-extern u32 sDwcConnTable[32];
+extern void *sDwcConnTable[32];
 #endif
 #ifndef PROTO_LOCAL_sDwcConnInfo
 extern u8 sDwcConnInfo[0x100];

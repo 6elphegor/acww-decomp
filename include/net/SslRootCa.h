@@ -7,6 +7,7 @@
 // matches name against the issuer, SslCert_VerifySignature uses modulus/exponent) (ov065 data units unk_ov065_0228bc08.cpp ..
 // unk_ov065_0228c72c.cpp, one per certificate): subject name, RSA modulus and public exponent.
 
+typedef struct SslRootCa SslRootCa;
 struct SslRootCa {
     /* 0x00 */ const char *name;
     /* 0x04 */ s32 modulusLen;

@@ -79,7 +79,7 @@ OSMutex *OSi_RemoveMutexLinkFromQueue(OSMutex **q);
 u32 OSi_DetectDeviceType(void);
 BOOL func_02113ed0(void);
 u32 OSi_GetUnusedThreadId(void);
-void OSi_SleepAlarmCallback(OSThread **p);
+void OSi_SleepAlarmCallback(void *arg);
 void OS_WakeupThreadDirect(OSThread *t);
 void OS_KillThreadWithPriority(OSThread *t, void *arg, u32 prio);
 u32 OS_GetThreadPriority(OSThread *t);

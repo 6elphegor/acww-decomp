@@ -8,6 +8,7 @@
 #include "proto/autoload_2/unk_02133d04.h"
 #include "proto/autoload_2/unk_02134d70.h"
 #include "proto/autoload_2/unk_0213510c.h"
+#include "sys/std_terminate.h"
 
 typedef struct ExceptionInfo {
     char *current_function;      // 0x00
@@ -74,7 +75,7 @@ extern "C" u8 NextAction(ActionIterator *iter) {
         if (!info->action_pointer || *info->action_pointer & 0x80) {
             FindExceptionRecord((char *)__PopStackFrame(context, info), info);
             if (info->exception_record == 0) {
-                _ZSt9terminatev();
+                std::terminate();
             }
             __SetupFrameInfo(context, info);
             if (info->action_pointer == 0) {
@@ -207,7 +208,7 @@ extern "C" u8 NextAction(ActionIterator *iter) {
             break;
         }
         default:
-            _ZSt9terminatev();
+            std::terminate();
             break;
         }
         break;

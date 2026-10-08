@@ -8,7 +8,6 @@
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
 #include "player/FishBobber.h"
-#include "types.h"
 class FishBobberPool;
 #endif
 
@@ -20,15 +19,6 @@ void FishBobberPool_Create(void *parent);
 #endif
 #ifndef PROTO_LOCAL_FishBobberPool_Destroy
 void FishBobberPool_Destroy();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_FishBobber_GetFloating
-FishBobber *FishBobber_GetFloating(s32 idx);
 #endif
 #ifndef PROTO_LOCAL_FishBobber_GetModelPath
 char *FishBobber_GetModelPath(u32 n);
@@ -45,8 +35,17 @@ u32 FishBobber_GetTex4x4VramSize();
 #ifndef PROTO_LOCAL_FishBobber_GetPlttVramSize
 u32 FishBobber_GetPlttVramSize();
 #endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_FishBobber_GetFloating
+FishBobber *FishBobber_GetFloating(s32 idx);
+#endif
 #ifndef PROTO_LOCAL_FishBobber_Draw
-void FishBobber_Draw(u8 *self, Mtx43 *m, s32 arg);
+void FishBobber_Draw(u8 *self, Mtx43 *m, VecFx32 *scale);
 #endif
 #ifndef PROTO_LOCAL_Fishing_CalcArcSpeed
 void Fishing_CalcArcSpeed(VecFx32 *a, VecFx32 *b, s32 *c, s32 *d, u8 mode);

@@ -46,7 +46,7 @@ void gpiSetError(GPConnection *, s32, const char *);
 void gpiCallErrorCallback(GPConnection *, s32, s32);
 void _strlwr(char *);
 char *goastrdup(const char *);
-s32 gpiAddOperation(GPConnection *, s32, void *, GPIOperation **, s32, s32, s32);
+s32 gpiAddOperation(GPConnection *, s32, void *, GPIOperation **, s32, GPCallback, void *);
 void gpiFailedOpCallback(GPConnection *, GPIOperation *);
 void gpiDisconnect(GPConnection *, s32);
 s32 gpiProcess(GPConnection *, s32);
@@ -97,7 +97,7 @@ s32 gpiStartConnect(GPConnection *, GPIOperation *);
 extern "C" {
 void gpiFreeInfoCache(GPIProfile *p);
 s32 gpiSetInfoCache(GPConnection *h, GPIProfile *p, GPIInfoCache *q);
-s32 gpiGetInfo(GPConnection *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5);
+s32 gpiGetInfo(GPConnection *h, s32 a1, s32 a2, s32 a3, GPCallback a4, void *a5);
 s32 gpiSendGetInfo(GPConnection *h, s32 a1, s32 a2);
 s32 gpiSetInfos(GPConnection *h, s32 cmd, char *val);
 }
@@ -118,12 +118,12 @@ s32 gpiAppendStringToBuffer(void *, GPIBuffer *, const char *);
 s32 gpiAppendIntToBuffer(void *, GPIBuffer *, s32);
 void gpiCallErrorCallback(void *, s32, s32);
 s32 gpiAddCallback(void *, GPICallback, void *, void *, s32);
-s32 gpiSetInfoCache(void *, u32 *, GPIInfoCache *);
+s32 gpiSetInfoCache(void *, GPIProfile *, GPIInfoCache *);
 s32 gpiInfoCacheToArg(GPIInfoCache *, void *);
 s32 gpiIntToDate(void *, s32, s32 *, s32 *, s32 *);
 void gpiRemoveOperation(void *, void *);
-s32 gpiGetProfile(void *, s32, u32 **);
-u32 *gpiProfileListAdd(void *, s32);
+s32 gpiGetProfile(void *, s32, GPIProfile **);
+GPIProfile *gpiProfileListAdd(void *, s32);
 void gpiSetErrorString(void *, const char *);
 void gpiSetError(void *, s32, const char *);
 s32 gpiValueForKey(const char *, const char *, char *, s32);
@@ -335,7 +335,7 @@ extern "C" {
 s32 gpiProcessGetInfo(void *h, GPIOperation *req, char *str) {
     GPIConnection *ctx = *(GPIConnection **)h;
     struct {
-        u32 *e;
+        GPIProfile *e;
         GPICallbackCopy p;
         char buf[0x40];
         char a[0x1f];
@@ -499,16 +499,16 @@ s32 gpiProcessGetInfo(void *h, GPIOperation *req, char *str) {
         l.e = gpiProfileListAdd(h, r5);
     }
     if (flag != 0) {
-        GsUtil_Free((void *)l.e[6]);
-        l.e[6] = 0;
-        l.e[6] = (u32)goastrdup(l.buf);
+        GsUtil_Free(l.e->peerSig);
+        l.e->peerSig = 0;
+        l.e->peerSig = goastrdup(l.buf);
     }
     if (ctx->infoCaching != 0) {
         gpiSetInfoCache(h, l.e, &s);
     }
     l.p = req->callback;
     if (l.p.p.callback != 0) {
-        node = GsUtil_Alloc(0x204);
+        node = GsUtil_Alloc(sizeof(GPGetInfoResponseArg));
         if (node == NULL) {
             gpiSetErrorString(h, "Out of memory.");
             return 1;
@@ -962,7 +962,7 @@ s32 gpiSendGetInfo(GPConnection *h, s32 a1, s32 a2) {
 
 namespace Na {
 extern "C" {
-s32 gpiGetInfo(GPConnection *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5) {
+s32 gpiGetInfo(GPConnection *h, s32 a1, s32 a2, s32 a3, GPCallback a4, void *a5) {
     void *m;
     GPIProfile *n;
     GPIOperation *out2;
@@ -981,7 +981,7 @@ s32 gpiGetInfo(GPConnection *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5) {
         ok = 0;
     }
     if (a4 != 0 && ok != 0 && gpiGetProfile(h, a1, &n) != 0 && n->cache != 0) {
-        m = GsUtil_Alloc(0x204);
+        m = GsUtil_Alloc(sizeof(GPGetInfoResponseArg));
         if (m == 0) {
             gpiSetErrorString(h, "Out of memory.");
             return 1;
@@ -1031,7 +1031,7 @@ s32 gpiSetInfoCache(GPConnection *h, GPIProfile *p, GPIInfoCache *q) {
         return 1;
     }
     gpiFreeInfoCache(p);
-    p->cache = (GPIInfoCache *)GsUtil_Alloc(HOST_SIZED(0xf0, GPIInfoCache));
+    p->cache = (GPIInfoCache *)GsUtil_Alloc(sizeof(GPIInfoCache));
     d = p->cache;
     if (d != 0) {
         *(GPIInfoCacheCopy *)d = *(GPIInfoCacheCopy *)q;

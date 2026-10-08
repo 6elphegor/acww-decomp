@@ -188,7 +188,7 @@ BOOL SpNpcTortimerFireworks::onCreate() {
         return FALSE;
     }
     changeAct(0);
-    ContestRecord_BeginContestDay(gContestRecord, 0);
+    ContestRecord_BeginContestDay((ContestRecord *)gContestRecord, 0);
     ((NpcAnimCtrl *)(&animCtrl))->playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;

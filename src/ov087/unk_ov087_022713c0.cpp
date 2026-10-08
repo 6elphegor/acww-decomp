@@ -232,7 +232,7 @@ BOOL SpNpcCornimer::onCreate() {
     ((NpcAnimCtrl *)(&animCtrl))->playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;
-    ContestRecord_BeginFestival(gContestRecord, 2);
+    ContestRecord_BeginFestival((ContestRecord *)gContestRecord, 2);
     return TRUE;
 }
 

@@ -203,7 +203,7 @@ void MBi_InitSendFixedBeacon(void) {
         data_021fff8c.p8 = c;
     } else {
         data_021fff8c.p10 = 4;
-        data_021fff8c.p8 = HOST_AT(c, 0x220, f220[0], 0);
+        data_021fff8c.p8 = c->f220;
     }
     data_021fff8c.state = 3;
 }
@@ -212,7 +212,7 @@ void MBi_InitSendFixedBeacon(void) {
 void MBi_SendFixedBeacon(u32 a, u32 b, u32 c) {
     u8 *end;
     u8 *p8;
-    end = (u8 *)data_021fff8c.cur + 0x358;
+    end = &data_021fff8c.cur->f358;
     p8 = (u8 *)data_021fff8c.p8;
     if (p8 + 0x62 <= end) {
         data_021fffa0.c.b = 0x62;

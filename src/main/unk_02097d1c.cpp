@@ -113,7 +113,7 @@ PlayerData::~PlayerData() {
     Catalog_Destruct();
 }
 
-void PlayerData::fillZero() { MI_CpuFill8(this, 0, 0x228c); }
+void PlayerData::fillZero() { MI_CpuFill8(this, 0, sizeof(PlayerData)); }
 
 void PlayerData::reset() {
     fillZero();
@@ -382,7 +382,7 @@ s32 PlayerData::findUnusedSlot(s32 n)
             r = i;
             break;
         }
-        p = (PlayerData *)((u8 *)p + 0x228c);
+        p = (PlayerData *)((u8 *)p + sizeof(PlayerData));
     }
     return r;
 }

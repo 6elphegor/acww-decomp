@@ -1061,7 +1061,7 @@ extern "C" BOOL DwcFriendData_IsFriendKey(void *p) {
     return FALSE;
 }
 
-extern "C" BOOL DwcFriendData_FromCodeDigits(void *out, u8 *data, u32 ctx) {
+extern "C" BOOL DwcFriendData_FromCodeDigits(void *out, u8 *data, void *userData) {
     u8 tmp[12];
     u64 acc = 0;
     u64 i = 0;
@@ -1070,20 +1070,20 @@ extern "C" BOOL DwcFriendData_FromCodeDigits(void *out, u8 *data, u32 ctx) {
         acc = m + (u32)data[i];
         i++;
     } while (i < 12);
-    if (!Net_FriendKeyToFriendData(ctx, tmp, acc)) {
+    if (!Net_FriendKeyToFriendData(userData, tmp, acc)) {
         return FALSE;
     }
     MI_CpuCopy8(tmp, out, 12);
     return TRUE;
 }
 
-extern "C" BOOL DwcFriendData_ToCodeDigits(u32 a, u8 *buf) {
+extern "C" BOOL DwcFriendData_ToCodeDigits(void *friendData, u8 *buf) {
     u64 v;
     s32 i;
-    if (Net_GetFriendDataType((void *)a) != 2) {
+    if (Net_GetFriendDataType(friendData) != 2) {
         return FALSE;
     }
-    v = Net_GetFriendKey(a);
+    v = Net_GetFriendKey(friendData);
     for (i = 11; i >= 0; i--) {
         buf[i] = (u8)(v % 10);
         v = v / 10;
@@ -2551,7 +2551,7 @@ fail:
     return FALSE;
 }
 extern "C" BOOL CommSend_PlayerData(u8 *p, u32 v) {
-    return CommSend_Chunked(p, (void *)PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot)), 0x228c, 4, v);
+    return CommSend_Chunked(p, (void *)PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot)), sizeof(PlayerData), 4, v);
 }
 extern "C" BOOL CommSend_SyncVarChunk(u8 *p, u32 v) {
     return CommSend_Chunked(p, gCommManager->getSyncVarBuf(), 0x68c, 0xc, v);
@@ -2759,7 +2759,7 @@ extern "C" s32 CommCtrl_SendAct14() {
 }
 extern "C" s32 CommSend_PlayerDataToHost(u8 *a) {
     PlayerData *r = PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot));
-    return CommSend_Chunked(a, r, 0x228c, 0x15, 1);
+    return CommSend_Chunked(a, r, sizeof(PlayerData), 0x15, 1);
 }
 extern "C" s32 CommSend_LetterStorageToHost(u8 *a) {
     u8 *r = PlayerData_GetLetterStorage(PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot)));

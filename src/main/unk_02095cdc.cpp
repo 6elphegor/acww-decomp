@@ -16,6 +16,7 @@
 #include "player/PlayerData.h"
 #include "save/TownExchangeRecord.h"
 #include "sys/ClockDateTime.h"
+#include "item/MotherLetterDate.h"
 #include "npc/VillagerId.h"
 #include "proto/main/unk_020030d8.h"
 #include "proto/autoload_2/unk_020ec848.h"
@@ -48,11 +49,6 @@
 
 
 
-struct Unk_02096354_Arg {
-    u32 year;
-    u32 month;
-    u32 day;
-};
 
 // ClockDateTime locals cleared as two words.
 struct ZeroedDateTimeWords {

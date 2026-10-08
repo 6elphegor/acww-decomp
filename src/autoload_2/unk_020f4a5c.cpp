@@ -11,111 +11,32 @@
 // The unit's own compile reproduces the order of all six objects with the definitions at the end of the file in address order.
 #include "types.h"
 #include "gfx/VecFx32.h"
-#define PROTO_LOCAL_MelodyBeat_PlayStep  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MelodyPlayer_PlayRandom  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NNS_SndArcPlayerStartSeqArc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SndMgr_Rand  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
+#include "snd/Melody.h"
+#include "snd/SndMgr.h"
+#include "snd/SndScenes.h"
+#include "proto/autoload_2/unk_020ed8cc.h"
+#include "proto/autoload_2/unk_020ef150.h"
+#include "proto/autoload_2/unk_020f0dec.h"
 #include "proto/autoload_2/unk_020f4a5c.h"
 #include "proto/autoload_2/unk_0210c084.h"
 
-struct Obj {
-    /* 0x00 */ u32 *vptr;
-    /* 0x04 */ u8 pad04[0x30];
-    /* 0x34 */ void *f34;
-    /* 0x38 */ u8 pad38[4];
-    /* 0x3c */ u16 h3c;
-    /* 0x3e */ u8 b3e;
-    /* 0x3f */ u8 b3f;
-    /* 0x40 */ u8 b40;
-};
-
-
-struct Seq1 {
-    /* 0x00 */ void *h;
-    /* 0x04 */ u16 id;
-    /* 0x06 */ s8 step;
-    /* 0x07 */ u8 tick;
-    /* 0x08 */ s8 v8;
-    /* 0x09 */ s8 v9;
-    /* 0x0a */ u8 active;
-    /* 0x0b */ u8 limit;
-};
-
-struct Seq2 {
-    /* 0x00 */ void *h;
-    /* 0x04 */ u8 *pat;
-    /* 0x08 */ u16 id;
-    /* 0x0a */ u8 active;
-    /* 0x0b */ s8 pos;
-    /* 0x0c */ u8 tick;
-    /* 0x0d */ u8 pad0d;
-    /* 0x0e */ s8 s14;
-    /* 0x0f */ s8 s15;
-    /* 0x10 */ s8 s16;
-    /* 0x11 */ s8 s17;
-};
-
-struct Ctl2 {
-    /* 0x00 */ Seq2 a;
-    /* 0x14 */ Seq2 b;
-    /* 0x28 */ u8 pat[16];
-    /* 0x38 */ u8 b38;
-    /* 0x39 */ s8 b39;
-    /* 0x3a */ s8 b3a;
-    /* 0x3b */ u8 b3b;
-    /* 0x3c */ u8 b3c;
-};
-
-struct SndObjX {
-    /* 0x00 */ u8 pad0[6];
-    /* 0x06 */ u8 b6;
-    /* 0x07 */ u8 pad7[5];
-    /* 0x0c */ s32 w0c;
-    /* 0x10 */ u8 pad10[2];
-    /* 0x12 */ u8 b12;
-    /* 0x13 */ u8 pad13[10];
-    /* 0x1d */ u8 b1d;
-};
-
-struct Glob {
-    /* 0x00 */ u8 pad0[0x28];
-    /* 0x28 */ void *f28;
-    /* 0x2c */ SndObjX *f2c;
-    /* 0x30 */ Ctl2 *f30;
-    /* 0x34 */ u8 pad34[0x19];
-    /* 0x4d */ u8 f4d;
-    /* 0x4e */ u8 pad4e[0x12];
-    /* 0x60 */ u8 f60;
-};
+// the scene sound setup MelodyBeat plays in: one with a tempo follower and the heap level at +0x1d
+typedef SndScene10 MelodyScene;
 
 extern "C" {
-extern Glob gSndMgr;
-
-u32 SndMgr_Rand(void *g, u32 n);
+// (not in the shared headers: not decompiled yet)
 void NNS_SndPlayerSetVolume(void *p, s32 v);
 void NNS_SndHandleReleaseSeq(void *p);
 void NNS_SndPlayerSetTrackVolume(void *p, u32 a, s32 b);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 b);
 void NNS_SndPlayerSetTempoRatio(void *p, s32 v);
 void NNS_SndPlayerReadVariable(void *p, u32 a, void *out);
-void Snd_StopHandle(void *p, u32 v);
-void Snd_InitHandle(void *p);
-void Snd_StartSeqArc(u16 a, u16 b, void *out);
-void *Snd_GetHeap(void);
 void NNS_SndHeapLoadState(void *a, u32 b);
-BOOL NNS_SndArcPlayerStartSeqArc(void *a, u32 b, u32 c);
 s32 FX_Div(s32 a, s32 b);
 
 s32 Snd_DistanceToVolume(s32 x);
 s32 Snd_CalcPan(VecFx32 *p, s32 m);
 s32 Snd_CalcListenerDistance(VecFx32 *p, s32 m);
-void MelodyBeat_PlayStep(Seq1 *self, VecFx32 *pos);
-void MelodyBeat_ReadParams(Seq1 *self);
-void MelodyTrack_Init(Seq2 *s);
-void MelodyTrack_Reset(Seq2 *s);
-void MelodyTrack_PlayStep(Seq2 *s);
-void MelodyTrack_ReadParams(Seq2 *s);
 }
 
 // this file's objects (defined at the end of the file; defining them here instead gives the same object)
@@ -127,70 +48,64 @@ static inline s32 FX_Mul(s32 a, s32 b) {
     return (s32)(((s64)a * b + 0x800) >> 12);
 }
 
-static inline BOOL nz(void *p) {
-    return p != 0;
+// destructor (D1 0x020f4a5c): releases the handle's sequence
+MelodyTrack::~MelodyTrack() {
+    NNS_SndHandleReleaseSeq(this);
 }
 
-// dtor D1 (alias _ZN11MelodyTrackD1Ev): NNS_SndHandleReleaseSeq(this)
-#define MelodyTrack_dtor _ZN11MelodyTrackD1Ev
-extern "C" Obj *MelodyTrack_dtor(Obj *self) {
-    NNS_SndHandleReleaseSeq(self);
-    return self;
-}
-
-// Seq2: init
-extern "C" void MelodyTrack_Init(Seq2 *self) {
+// MelodyTrack: init
+extern "C" void MelodyTrack_Init(MelodyTrack *self) {
     MelodyTrack_Reset(self);
     Snd_InitHandle(self);
 }
 
-// Seq2: start with id and pattern
-extern "C" void MelodyTrack_Start(Seq2 *self, u16 id, u8 *pat) {
+// MelodyTrack: start with id and pattern
+extern "C" void MelodyTrack_Start(MelodyTrack *self, u16 id, u8 *pat) {
     MelodyTrack_Reset(self);
-    if (nz(self->h)) Snd_StopHandle(self, 0);
+    if (self->handle != NULL) Snd_StopHandle(self, 0);
     self->id = id;
     self->pat = pat;
     self->active = 1;
     Snd_StartSeqArc(0, self->id, self);
 }
 
-// Seq2: start with a pattern
-extern "C" void MelodyTrack_StartPattern(Seq2 *self, u8 *pat) {
+// MelodyTrack: start with a pattern
+extern "C" void MelodyTrack_StartPattern(MelodyTrack *self, u8 *pat) {
     MelodyTrack_Reset(self);
-    if (nz(self->h)) Snd_StopHandle(self, 0);
+    if (self->handle != NULL) Snd_StopHandle(self, 0);
     self->pat = pat;
     self->active = 1;
     Snd_StartSeqArc(0, self->id, self);
 }
 
-// Seq2: play event idx + 20
-extern "C" void MelodyTrack_PlayNote(Seq2 *self, u32 idx) {
+// MelodyTrack: play event idx + 20
+extern "C" void MelodyTrack_PlayNote(MelodyTrack *self, u32 idx) {
     MelodyTrack_Reset(self);
     if (idx > 13) return;
-    if (nz(self->h)) Snd_StopHandle(self, 0);
+    if (self->handle != NULL) Snd_StopHandle(self, 0);
     Snd_StartSeqArc(idx + 20, 0xd3, self);
 }
 
-// Seq2: set id
-extern "C" void MelodyTrack_SetInstrument(Seq2 *s, u16 v) {
+// MelodyTrack: set id
+extern "C" void MelodyTrack_SetInstrument(MelodyTrack *s, u16 v) {
     s->id = v;
 }
 
 // cancel (Snd_StopHandle(p, 5))
-extern "C" void MelodyTrack_Stop(void *p) {
-    return Snd_StopHandle(p, 5);
+extern "C" void MelodyTrack_Stop(MelodyTrack *p) {
+    Snd_StopHandle(p, 5);
 }
 
-// Seq2: reset state
-extern "C" void MelodyTrack_Reset(Seq2 *self) {
+// MelodyTrack: reset state
+extern "C" void MelodyTrack_Reset(MelodyTrack *self) {
     self->active = 0;
     self->pos = -1;
     self->tick = 0;
     self->s14 = self->s15 = self->s16 = self->s17 = -1;
 }
 
-// Seq2: read the four parameters of the playing sound
-extern "C" void MelodyTrack_ReadParams(Seq2 *self) {
+// MelodyTrack: read the four parameters of the playing sound
+extern "C" void MelodyTrack_ReadParams(MelodyTrack *self) {
     s16 a, b, c, d;
     d = -1;
     c = -1;
@@ -206,8 +121,8 @@ extern "C" void MelodyTrack_ReadParams(Seq2 *self) {
     self->s17 = d;
 }
 
-// Seq2: pattern value for step idx (mode 0 plain, 1 / 2 pairs, 3 table lookup)
-extern "C" u8 MelodyTrack_GetStepNote(Seq2 *self, u8 idx) {
+// MelodyTrack: pattern value for step idx (mode 0 plain, 1 / 2 pairs, 3 table lookup)
+extern "C" u8 MelodyTrack_GetStepNote(MelodyTrack *self, u8 idx) {
     u8 r;
     switch (self->s16) {
     case 0:
@@ -257,8 +172,8 @@ extern "C" u8 MelodyTrack_GetStepNote(Seq2 *self, u8 idx) {
     return r;
 }
 
-// Seq2: start the sound of the current step, volume by position
-extern "C" void MelodyTrack_PlayStep(Seq2 *self) {
+// MelodyTrack: start the sound of the current step, volume by position
+extern "C" void MelodyTrack_PlayStep(MelodyTrack *self) {
     u32 v = MelodyTrack_GetStepNote(self, self->pos);
     s32 d = 153600 / (self->s14 * 120);
     switch (v) {
@@ -296,32 +211,32 @@ extern "C" void MelodyTrack_PlayStep(Seq2 *self) {
         if (vol != -1) NNS_SndPlayerSetVolume(self, vol);
     }
     {
-        Ctl2 *c = gSndMgr.f30;
+        MelodyPlayer *c = gSndMgr.melody;
         NNS_SndPlayerSetTrackVolume(self, 0xff, c->b39);
         NNS_SndPlayerSetTrackPan(self, 0xff, c->b3a);
     }
 }
 
-// Seq2: end-of-pattern test (positions 15 / 23 / table+6 depending on the mode); starts the next step
-extern "C" BOOL MelodyTrack_CheckEnd(Seq2 *self) {
+// MelodyTrack: end-of-pattern test (positions 15 / 23 / table+6 depending on the mode); starts the next step
+extern "C" BOOL MelodyTrack_CheckEnd(MelodyTrack *self) {
     s8 k = self->s16;
     u32 v;
     if (k == 0) {
         if (self->pos == 15) {
             Snd_StopHandle(self, 0);
-            gSndMgr.f30->b3c = 0;
+            gSndMgr.melody->b3c = 0;
             return TRUE;
         }
     } else if ((u8)(s8)(k - 1) <= 1) {
         if (self->pos == 23) {
             Snd_StopHandle(self, 0);
-            gSndMgr.f30->b3c = 0;
+            gSndMgr.melody->b3c = 0;
             return TRUE;
         }
     } else if (k == 3) {
         if (self->pos == data_0213597c[12] + 6) {
             Snd_StopHandle(self, 0);
-            gSndMgr.f30->b3c = 0;
+            gSndMgr.melody->b3c = 0;
             return TRUE;
         }
     }
@@ -330,8 +245,8 @@ extern "C" BOOL MelodyTrack_CheckEnd(Seq2 *self) {
     return FALSE;
 }
 
-// Seq2: per-frame update; returns the current position or -1
-extern "C" s32 MelodyTrack_Update(Seq2 *self) {
+// MelodyTrack: per-frame update; returns the current position or -1
+extern "C" s32 MelodyTrack_Update(MelodyTrack *self) {
     s32 r = -1;
     if (self->active) {
         if (self->s14 == -1) {
@@ -355,9 +270,9 @@ extern "C" s32 MelodyTrack_Update(Seq2 *self) {
     return r;
 }
 
-// Ctl2 ctor: registers itself in gSndMgr+0x30
-extern "C" void MelodyPlayer_Init(Ctl2 *c) {
-    gSndMgr.f30 = c;
+// MelodyPlayer ctor: registers itself in gSndMgr+0x30
+extern "C" void MelodyPlayer_Init(MelodyPlayer *c) {
+    gSndMgr.melody = c;
     MelodyTrack_Init(&c->b);
     MelodyTrack_Init(&c->a);
     MelodyTrack_SetInstrument(&c->a, 0);
@@ -372,21 +287,21 @@ extern "C" u8 *Melody_GetDefaultPattern(void) {
     return (u8 *)sMelodyDefaultPattern;
 }
 
-// Ctl2: copy a 16-byte pattern
-extern "C" void MelodyPlayer_SetPattern(Ctl2 *c, u8 *src) {
+// MelodyPlayer: copy a 16-byte pattern
+extern "C" void MelodyPlayer_SetPattern(MelodyPlayer *c, u8 *src) {
     s32 i;
     for (i = 0; i < 16; i++) {
         c->pat[i] = src[i];
     }
 }
 
-// Ctl2: address of the pattern (+0x28)
-extern "C" u8 *MelodyPlayer_GetPattern(Ctl2 *c) {
+// MelodyPlayer: address of the pattern (+0x28)
+extern "C" u8 *MelodyPlayer_GetPattern(MelodyPlayer *c) {
     return c->pat;
 }
 
-// Ctl2: start by index with a given pattern (400 = special)
-extern "C" void MelodyPlayer_PlayPattern(Ctl2 *c, u32 v, u8 *pat) {
+// MelodyPlayer: start by index with a given pattern (400 = special)
+extern "C" void MelodyPlayer_PlayPattern(MelodyPlayer *c, u32 v, u8 *pat) {
     u32 w;
     c->b3c = 1;
     c->b39 = -1;
@@ -407,8 +322,8 @@ extern "C" void MelodyPlayer_PlayPattern(Ctl2 *c, u32 v, u8 *pat) {
     }
 }
 
-// Ctl2: start by index with the stored pattern (index < 200 or >= 200)
-extern "C" void MelodyPlayer_Play(Ctl2 *c, u32 v) {
+// MelodyPlayer: start by index with the stored pattern (index < 200 or >= 200)
+extern "C" void MelodyPlayer_Play(MelodyPlayer *c, u32 v) {
     u32 w;
     c->b3c = 1;
     c->b39 = -1;
@@ -425,8 +340,8 @@ extern "C" void MelodyPlayer_Play(Ctl2 *c, u32 v) {
     }
 }
 
-// Ctl2: start by index (0..200), random pattern row
-extern "C" void MelodyPlayer_PlayRandom(Ctl2 *c, u32 v) {
+// MelodyPlayer: start by index (0..200), random pattern row
+extern "C" void MelodyPlayer_PlayRandom(MelodyPlayer *c, u32 v) {
     u32 w;
     c->b3c = 1;
     c->b39 = -1;
@@ -438,8 +353,8 @@ extern "C" void MelodyPlayer_PlayRandom(Ctl2 *c, u32 v) {
     MelodyTrack_Start(&c->b, w, (u8 *)sMelodyPresetPatterns[c->b3b]);
 }
 
-// Ctl2: copy a random-chosen pattern row (16 bytes) from sMelodyPresetPatterns
-extern "C" u8 *MelodyPlayer_ApplyRandomPattern(Ctl2 *c) {
+// MelodyPlayer: copy a random-chosen pattern row (16 bytes) from sMelodyPresetPatterns
+extern "C" u8 *MelodyPlayer_ApplyRandomPattern(MelodyPlayer *c) {
     const u8 *src = sMelodyPresetPatterns[c->b3b];
     s32 i;
     for (i = 0; i < 16; i++) {
@@ -448,19 +363,19 @@ extern "C" u8 *MelodyPlayer_ApplyRandomPattern(Ctl2 *c) {
     return c->pat;
 }
 
-// Ctl2: stop the second player
-extern "C" void MelodyPlayer_StopTrackB(Ctl2 *c) {
+// MelodyPlayer: stop the second player
+extern "C" void MelodyPlayer_StopTrackB(MelodyPlayer *c) {
     MelodyTrack_Stop(&c->b);
     c->b.active = 0;
 }
 
-// Ctl2: start the first player with the stored pattern
-extern "C" void MelodyPlayer_StartTrackA(Ctl2 *c) {
-    return MelodyTrack_StartPattern(&c->a, c->pat);
+// MelodyPlayer: start the first player with the stored pattern
+extern "C" void MelodyPlayer_StartTrackA(MelodyPlayer *c) {
+    MelodyTrack_StartPattern(&c->a, c->pat);
 }
 
-// Ctl2: start the event of the given mode with listener volume / pan from a position
-extern "C" void MelodyPlayer_PlayAt(Ctl2 *c, VecFx32 *pos, u32 mode) {
+// MelodyPlayer: start the event of the given mode with listener volume / pan from a position
+extern "C" void MelodyPlayer_PlayAt(MelodyPlayer *c, VecFx32 *pos, u32 mode) {
     u32 a;
     u32 b;
     if ((u8)(c->b3c + 255) <= 1) return;
@@ -492,37 +407,37 @@ extern "C" void MelodyPlayer_PlayAt(Ctl2 *c, VecFx32 *pos, u32 mode) {
     MelodyTrack_Start(&c->b, b, c->pat);
 }
 
-// Ctl2: start event on the second player
-extern "C" void MelodyPlayer_PlayNote(Ctl2 *c, u32 idx) {
-    return MelodyTrack_PlayNote(&c->b, idx);
+// MelodyPlayer: start event on the second player
+extern "C" void MelodyPlayer_PlayNote(MelodyPlayer *c, u32 idx) {
+    MelodyTrack_PlayNote(&c->b, idx);
 }
 
-// Ctl2: update both Seq2 players, +0x38 = first one is active
-extern "C" s32 MelodyPlayer_Update(Ctl2 *c) {
+// MelodyPlayer: update both MelodyTrack players, +0x38 = first one is active
+extern "C" s32 MelodyPlayer_Update(MelodyPlayer *c) {
     c->b38 = MelodyTrack_Update(&c->a) >= 0;
     return MelodyTrack_Update(&c->b);
 }
 
-// Ctl2: byte +0x38 (playing flag)
-extern "C" u8 MelodyPlayer_IsPlaying(Ctl2 *c) {
+// MelodyPlayer: byte +0x38 (playing flag)
+extern "C" u8 MelodyPlayer_IsPlaying(MelodyPlayer *c) {
     return c->b38;
 }
 
-// forward to MelodyTrack_SetInstrument (set id)
-extern "C" void MelodyPlayer_SetInstrument(Seq2 *s, u16 v) {
-    return MelodyTrack_SetInstrument(s, v);
+// set the instrument (sequence archive) of track A
+extern "C" void MelodyPlayer_SetInstrument(MelodyPlayer *c, u16 v) {
+    MelodyTrack_SetInstrument(&c->a, v);
 }
 
 // same with volume reset (NNS_SndHeapLoadState(stream, 0)) and NNS_SndArcLoadBank
-extern "C" void MelodyPlayer_LoadBank(void *c, u32 id) {
-    void *h = gSndMgr.f28;
+extern "C" void MelodyPlayer_LoadBank(MelodyPlayer *c, u32 id) {
+    void *h = gSndMgr.subHeap;
     NNS_SndHeapLoadState(h, 0);
     NNS_SndArcLoadBank(id, h);
 }
 
 // start sound id in the stream of the sound manager (gSndMgr+0x28)
-extern "C" void MelodyPlayer_LoadSeqArc(void *c, u32 id) {
-    NNS_SndArcLoadSeqArc(id, gSndMgr.f28);
+extern "C" void MelodyPlayer_LoadSeqArc(MelodyPlayer *c, u32 id) {
+    NNS_SndArcLoadSeqArc(id, gSndMgr.subHeap);
 }
 
 // empty
@@ -533,9 +448,9 @@ extern "C" void MelodyBeat_Construct(void) {
 extern "C" void MelodyBeat_Destruct(void) {
 }
 
-// Seq1: init (pattern table from MelodyPlayer_GetPattern)
-extern "C" void MelodyBeat_Init(Seq1 *self) {
-    sMelodyBeatPattern = MelodyPlayer_GetPattern(gSndMgr.f30);
+// MelodyBeat: init (pattern table from MelodyPlayer_GetPattern)
+extern "C" void MelodyBeat_Init(MelodyBeat *self) {
+    sMelodyBeatPattern = MelodyPlayer_GetPattern(gSndMgr.melody);
     Snd_InitHandle(self);
     self->active = 0;
     self->step = -1;
@@ -543,17 +458,17 @@ extern "C" void MelodyBeat_Init(Seq1 *self) {
     self->v8 = self->v9 = -1;
 }
 
-// Seq1: stop
-extern "C" void MelodyBeat_Stop(Seq1 *self) {
+// MelodyBeat: stop
+extern "C" void MelodyBeat_Stop(MelodyBeat *self) {
     self->active = 0;
-    if (nz(self->h)) Snd_StopHandle(self, 0);
+    if (self->handle != NULL) Snd_StopHandle(self, 0);
     NNS_SndHandleReleaseSeq(self);
 }
 
-// Seq1: start pattern/sound id (switches the stream pair 1 / 2 through data_0213b9d8)
-extern "C" void MelodyBeat_Start(Seq1 *self, u16 id) {
-    Ctl2 *c = gSndMgr.f30;
-    SndObjX *o;
+// MelodyBeat: start pattern/sound id (switches the stream pair 1 / 2 through data_0213b9d8)
+extern "C" void MelodyBeat_Start(MelodyBeat *self, u16 id) {
+    MelodyPlayer *c = gSndMgr.melody;
+    MelodyScene *o;
     void *h;
     u32 ok;
     if (c->b3c == 1) return;
@@ -569,18 +484,18 @@ extern "C" void MelodyBeat_Start(Seq1 *self, u16 id) {
         Snd_StopHandle(self, 0);
     }
     if (ok) return;
-    o = gSndMgr.f2c;
+    o = (MelodyScene *)gSndMgr.scene;
     if (o == 0) return;
-    if (o->b6 != 0) {
+    if (o->f6 != 0) {
         data_0213b9d8 = 2;
     } else {
         data_0213b9d8 = (data_0213b9d8 == 1) ? 2 : 1;
     }
     if (data_0213b9d8 == 1) {
         h = Snd_GetHeap();
-        NNS_SndHeapLoadState(h, o->b1d + 1);
+        NNS_SndHeapLoadState(h, o->f1d + 1);
     } else if (data_0213b9d8 == 2) {
-        h = gSndMgr.f28;
+        h = gSndMgr.subHeap;
         Snd_GetHeap();
         NNS_SndHeapLoadState(h, 0);
     }
@@ -591,21 +506,21 @@ extern "C" void MelodyBeat_Start(Seq1 *self, u16 id) {
     }
 }
 
-// Seq1: per-frame update of the pattern player
-extern "C" void MelodyBeat_Update(Seq1 *self, VecFx32 *pos) {
-    SndObjX *o;
+// MelodyBeat: per-frame update of the pattern player
+extern "C" void MelodyBeat_Update(MelodyBeat *self, VecFx32 *pos) {
+    MelodyScene *o;
     u8 flag;
     s32 v;
     s32 w;
     if (self->active == 0) return;
     if (self->v8 == -1) {
-        if (!nz(self->h)) Snd_StartSeqArc(0, self->id, self);
+        if (self->handle == NULL) Snd_StartSeqArc(0, self->id, self);
         MelodyBeat_ReadParams(self);
         return;
     }
     self->tick++;
-    o = gSndMgr.f2c;
-    flag = o->b12;
+    o = (MelodyScene *)gSndMgr.scene;
+    flag = o->tempo.c10;
     if (self->tick >= self->limit) {
         BOOL done = MelodyBeat_EndStep(self);
         self->tick = 0;
@@ -621,7 +536,7 @@ extern "C" void MelodyBeat_Update(Seq1 *self, VecFx32 *pos) {
         return;
     }
     v = self->v8;
-    w = o->w0c;
+    w = o->tempo.w4;
     if (v == 100) {
         self->limit = w >> 12;
         return;
@@ -629,8 +544,8 @@ extern "C" void MelodyBeat_Update(Seq1 *self, VecFx32 *pos) {
     self->limit = FX_Mul(w, FX_Div(v << 12, 100 << 12)) >> 12;
 }
 
-// Seq1: read the two pattern parameters (ids 4 and 3) of the playing sound
-extern "C" void MelodyBeat_ReadParams(Seq1 *self) {
+// MelodyBeat: read the two pattern parameters (ids 4 and 3) of the playing sound
+extern "C" void MelodyBeat_ReadParams(MelodyBeat *self) {
     s16 a, b;
     b = -1;
     a = -1;
@@ -640,12 +555,12 @@ extern "C" void MelodyBeat_ReadParams(Seq1 *self) {
     self->v9 = b;
 }
 
-// Seq1: start the sound of the current pattern step (13 = random variant)
-extern "C" void MelodyBeat_PlayStep(Seq1 *self, VecFx32 *pos) {
+// MelodyBeat: start the sound of the current pattern step (13 = random variant)
+extern "C" void MelodyBeat_PlayStep(MelodyBeat *self, VecFx32 *pos) {
     u32 v = sMelodyBeatPattern[self->step];
     switch (v) {
     case 13:
-        if (nz(self->h)) Snd_StopHandle(self, 0);
+        if (self->handle != NULL) Snd_StopHandle(self, 0);
         NNS_SndArcPlayerStartSeqArc(self, self->id, (u16)(v + 1 + SndMgr_Rand(&gSndMgr, 6)));
         MelodyBeat_ApplyPosition(self, pos);
         return;
@@ -653,17 +568,17 @@ extern "C" void MelodyBeat_PlayStep(Seq1 *self, VecFx32 *pos) {
     case 15:
         return;
     }
-    if (nz(self->h)) Snd_StopHandle(self, 0);
+    if (self->handle != NULL) Snd_StopHandle(self, 0);
     NNS_SndArcPlayerStartSeqArc(self, self->id, (u16)(v + 1));
     MelodyBeat_ApplyPosition(self, pos);
 }
 
-// Seq1: advance to the next pattern step or end the sequence (returns TRUE at the end)
-extern "C" BOOL MelodyBeat_EndStep(Seq1 *self) {
+// MelodyBeat: advance to the next pattern step or end the sequence (returns TRUE at the end)
+extern "C" BOOL MelodyBeat_EndStep(MelodyBeat *self) {
     s32 s = self->step;
     if (s >= 15) {
         Snd_StopHandle(self, 0);
-        gSndMgr.f30->b3c = 0;
+        gSndMgr.melody->b3c = 0;
         self->active = 0;
         self->step = -1;
         self->tick = 0;
@@ -681,7 +596,7 @@ extern "C" BOOL MelodyBeat_EndStep(Seq1 *self) {
 }
 
 // set the volume (id 15) and pan (id 15) of a voice from a position
-extern "C" void MelodyBeat_ApplyPosition(void *obj, VecFx32 *pos) {
+extern "C" void MelodyBeat_ApplyPosition(MelodyBeat *obj, VecFx32 *pos) {
     s32 a = Snd_DistanceToVolume(Snd_CalcListenerDistance(pos, 0));
     s32 b = Snd_CalcPan(pos, 0);
     NNS_SndPlayerSetTrackVolume(obj, 15, a);
@@ -689,9 +604,9 @@ extern "C" void MelodyBeat_ApplyPosition(void *obj, VecFx32 *pos) {
 }
 
 // ---- file-scope objects, defined after their users (definition order sets the .rodata / .data / .bss order)
-u8 data_0213b9d8 = 1; // which stream pair (1 / 2) Seq1 uses
-u16 data_021f5c28; // id of the last Seq1 pattern
-u8 *sMelodyBeatPattern; // current Ctl2 pattern row
+u8 data_0213b9d8 = 1; // which stream pair (1 / 2) MelodyBeat uses
+u16 data_021f5c28; // id of the last MelodyBeat pattern
+u8 *sMelodyBeatPattern; // current MelodyPlayer pattern row
 const u8 data_0213597c[16] = {0, 2, 3, 4, 5, 6, 7, 9, 11, 15, 19, 25, 33, 0, 0, 0};
 const u8 sMelodyDefaultPattern[16] = {10, 12, 10, 7, 6, 7, 9, 11, 10, 15, 13, 15, 3, 14, 14, 15};
 const u8 sMelodyPresetPatterns[48][16] = {

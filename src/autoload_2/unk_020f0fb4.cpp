@@ -10,368 +10,51 @@
 //                             ~ D2 f29c8 / D0 f29ec / D1 f2a18, overrides vfunc_0c f2968, vfunc_1c f2938, vfunc_20 f2910, vfunc_24 f28c0
 //   26 + 3 subclasses         per class: ctor (C1; C2 unreferenced), ~ (D0, D1; D2 unreferenced except for the two bases), vfunc_0c
 //                             (the scene's INIT) and a few overrides (0x0213b338: sub-object at +8, vfunc_10/1c/20/28; 0x0213b610:
-//                             sub-object at +8, vfunc_10/28; 0x0213b7e4: vfunc_14). The sub-objects at +8 are objects of the BGM
-//                             animation file (G011, still PARTIAL): raw storage here, constructed/destroyed by explicit calls of their
-//                             extern "C" functions (f833c/f831c, f80d8/f80ac), which is the same code as a member object.
-// Class DECLARATION order (base, mid, then 0x0213b2d0, 574, 338, 36c, ..., 880; see realclass2_work/inv.py) sets the vtable order: mwcc
-// creates the vtables last, in reverse declaration order, and heapsorts the file's data by size. Keep it.
+//                             sub-object at +8, vfunc_10/28; 0x0213b7e4: vfunc_14). The sub-objects at +8 are member objects of the
+//                             BGM animation file's classes (BgmTempoTracker, BgmBeatSync: src/autoload_2/unk_020f7a5c.cpp).
+// The classes are declared in include/snd/SndScenes.h (on the DS their declaration order set the vtable order).
 // Every function lands on its original address with the original bytes; every old func_ name stays (aliases.txt), nothing is renamed
 // except the vtables (renames.txt, _ZTV at the real start).
 #include "types.h"
 #include "snd/Player.h"
 #include "snd/SndSeBytes4.h"
-
-
-
-struct F30 {
-    u8 pad[0x3c];
-    u8 f3c;
-};
-
-class SndSceneBase;
-
-// sound manager gSndMgr (SndMgr, unk_020f0dec.cpp)
-struct Glob {
-    /* 0x00 */ u8 pad0[0x28];
-    /* 0x28 */ void *f28;
-    /* 0x2c */ SndSceneBase *f2c;
-    /* 0x30 */ F30 *f30;
-    /* 0x34 */ u8 pad1[0x19];
-    /* 0x4d */ u8 f4d;
-    /* 0x4e */ u8 pad2[0x14];
-    /* 0x62 */ u8 f62;
-    /* 0x63 */ u8 pad3[0x10];
-    /* 0x73 */ u8 f73;
-};
-
-// BGM animation object (sub-object at +8 of two scene classes; functions in the G011 file, still PARTIAL)
-class SubObj {
-public:
-    virtual void vfunc_00();
-};
+#include "snd/SndSceneBase.h"
+#include "snd/SndScenes.h"
+#include "snd/SndMgr.h"
+#include "snd/Melody.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/autoload_2/unk_020ed8cc.h"
+#include "proto/autoload_2/unk_020edd58.h"
+#include "proto/autoload_2/unk_020ef150.h"
+#include "proto/autoload_2/unk_020f0dec.h"
+#include "proto/autoload_2/unk_020f0fb4.h"
+#include "proto/autoload_2/unk_020f30fc.h"
+#include "proto/autoload_2/unk_020f4a5c.h"
+#include "proto/autoload_2/unk_0210c084.h"
 
 extern "C" {
-extern Glob gSndMgr;
-extern Player gSndSeSystem;
-
-void *Snd_GetHeap(void);
-void *Snd_GetHeapLevel(void);
-void *Snd_RestoreHeapLevel(u32 a);
-BOOL SndSeSystem_Setup(Player *o, u32 a, u32 b, Bytes4 s);
-void SndSeSystem_Shutdown(Player *p, s32 v);
-void NNS_SndHeapSaveState(void *p);
-void NNS_SndHeapLoadState(void *a, u32 b);
-void *NNS_SndHeapGetCurrentLevel(void *a);
-void NNS_SndPlayerCreateHeap(s32 a, void *b, u32 c);
-void NNS_SndPlayerSetPlayerVolume(s32 a, s32 b);
-void NNS_SndPlayerStopSeqByPlayerNo(s32 a, s32 b);
-void SndMgr_StartVolumeFadeIn(void *self);
-void SndMgr_UpdateVolumeCurve(Glob *g, u32 a);
-void SndMgr_SetPlayerVolumes(Glob *g, s32 a, s32 b);
-void SndMgr_LoadBank(Glob *g, s32 v);
-void SndMgr_SetVoiceType(Glob *g, u32 v);
-#define SndMgr_stopAll _ZN6SndMgr7stopAllEv
-void SndMgr_stopAll(Glob *g);
-#define SndMgr_startOutputEffect _ZN6SndMgr17startOutputEffectEv
-void SndMgr_startOutputEffect(Glob *g);
+// the sound library (src/autoload_2/unk_0210b448.c, unk_02109830.c: file-local types there)
+s32 NNS_SndHeapSaveState(void *heap);
+void NNS_SndHeapLoadState(void *heap, s32 level);
+s32 NNS_SndHeapGetCurrentLevel(void *heap);
+BOOL NNS_SndPlayerCreateHeap(s32 playerNo, void *heap, u32 size);
+void NNS_SndPlayerSetPlayerVolume(s32 playerNo, s32 vol);
+void NNS_SndPlayerStopSeqByPlayerNo(s32 playerNo, s32 frames);
 void Snd_SetUnusedFlag(s32 v);
-void MelodyPlayer_SetInstrument(F30 *a, s32 b);
-void MelodyPlayer_StopTrackB(F30 *v);
-#define BgmBeatSync_setEnable _ZN11BgmBeatSync9setEnableEh
-void BgmBeatSync_setEnable(void *p, s32 v);
-#define BgmBeatSync_dtor _ZN11BgmBeatSyncD1Ev
-void BgmBeatSync_dtor(void *p);
-#define BgmBeatSync_ctor _ZN11BgmBeatSyncC1Ev
-void BgmBeatSync_ctor(void *p);
-#define BgmTempoTracker_setMode _ZN15BgmTempoTracker7setModeEh
-void BgmTempoTracker_setMode(void *p, s32 v);
-#define BgmTempoTracker_dtor _ZN15BgmTempoTrackerD1Ev
-void BgmTempoTracker_dtor(void *p);
-#define BgmTempoTracker_ctor _ZN15BgmTempoTrackerC1Ev
-void BgmTempoTracker_ctor(void *p);
 }
 
 // colour passed by value to SndSeSystem_Setup (byte 0 is replaced by the caller's argument)
 extern "C" Bytes4 data_0213b2c4 = {0x00, 0x02, 0xff, 0x00};
 
-// vtable 0x0213b8e0 (dsd label data_0213b8e8)
-#include "snd/SndSceneBase.h"
-#include "snd/SndMgr.h"
-#define PROTO_LOCAL_MelodyPlayer_SetInstrument  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SndMgr_LoadBank  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SndMgr_SetPlayerVolumes  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SndMgr_SetVoiceType  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SndMgr_StartVolumeFadeIn  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SndMgr_UpdateVolumeCurve  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020ec848.h"
-#include "proto/autoload_2/unk_020f0fb4.h"
-#include "proto/autoload_2/unk_020f30fc.h"
-#include "proto/autoload_2/unk_0210c084.h"
-
-// vtable 0x0213b8ac (dsd label data_0213b8b4)
-class SndScene01 : public SndSceneBase {
-public:
-    SndScene01();                     // C1 0x020f2a3c, C2 0x020f2a94
-    virtual ~SndScene01();            // D2 0x020f29c8, D0 0x020f29ec, D1 0x020f2a18
-    virtual void load();            // 0x020f2968
-    virtual void beginTalk(s32 a);       // 0x020f2938
-    virtual void endTalk();            // 0x020f2910
-    virtual void setBankVariant(s32 a);       // 0x020f28c0
-};
-
-// vtable 0x0213b2c8 (dsd label data_0213b2d0)
-class SndScene02 : public SndScene01 {
-public:
-    SndScene02();                     // C1 0x020f2878 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene02();            // D0 0x020f2828, D1 0x020f2854
-    virtual void load();            // 0x020f27d0
-};
-
-// vtable 0x0213b56c (dsd label data_0213b574)
-class SndScene03 : public SndScene01 {
-public:
-    SndScene03();                     // C1 0x020f2788 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene03();            // D0 0x020f2738, D1 0x020f2764
-    virtual void load();            // 0x020f26d8
-};
-
-// vtable 0x0213b330 (dsd label data_0213b338)
-class SndScene10 : public SndSceneBase {
-public:
-    SndScene10();                     // C1 0x020f269c (C2 unreferenced, dead-stripped)
-    virtual ~SndScene10();            // D0 0x020f2634, D1 0x020f266c
-    virtual void load();            // 0x020f2568
-    virtual void update(s32 cameraDistance);            // 0x020f2544
-    virtual void beginTalk(s32 a);       // 0x020f24fc
-    virtual void endTalk();            // 0x020f24c0
-    virtual void onBgmChange(u32 a, u32 c); // 0x020f2534
-
-    /* 0x08 */ u32 sub[5];          // BGM animation object (G011 file; has a vptr, so word-aligned)
-    /* 0x1c */ u8 state;
-    /* 0x1d */ u8 f1d;
-};
-
-// vtable 0x0213b364 (dsd label data_0213b36c)
-class SndScene19 : public SndSceneBase {
-public:
-    SndScene19();                     // C1 0x020f2494 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene19();            // D0 0x020f2444, D1 0x020f2470
-    virtual void load();            // 0x020f23fc
-};
-
-// vtable 0x0213b398 (dsd label data_0213b3a0)
-class SndScene20 : public SndSceneBase {
-public:
-    SndScene20();                     // C1 0x020f23d0 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene20();            // D0 0x020f2380, D1 0x020f23ac
-    virtual void load();            // 0x020f2338
-};
-
-// vtable 0x0213b3cc (dsd label data_0213b3d4)
-class SndScene21 : public SndSceneBase {
-public:
-    SndScene21();                     // C1 0x020f230c (C2 unreferenced, dead-stripped)
-    virtual ~SndScene21();            // D0 0x020f22bc, D1 0x020f22e8
-    virtual void load();            // 0x020f2274
-};
-
-// vtable 0x0213b400 (dsd label data_0213b408)
-class SndScene22 : public SndSceneBase {
-public:
-    SndScene22();                     // C1 0x020f2248 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene22();            // D0 0x020f21f8, D1 0x020f2224
-    virtual void load();            // 0x020f21b0
-};
-
-// vtable 0x0213b434 (dsd label data_0213b43c)
-class SndScene23 : public SndSceneBase {
-public:
-    SndScene23();                     // C1 0x020f2184 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene23();            // D0 0x020f2134, D1 0x020f2160
-    virtual void load();            // 0x020f20dc
-};
-
-// vtable 0x0213b468 (dsd label data_0213b470)
-class SndScene24 : public SndSceneBase {
-public:
-    SndScene24();                     // C1 0x020f20b0 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene24();            // D0 0x020f2060, D1 0x020f208c
-    virtual void load();            // 0x020f2018
-};
-
-// vtable 0x0213b49c (dsd label data_0213b4a4)
-class SndScene30 : public SndSceneBase {
-public:
-    SndScene30();                     // C1 0x020f1fec (C2 unreferenced, dead-stripped)
-    virtual ~SndScene30();            // D0 0x020f1f9c, D1 0x020f1fc8
-    virtual void load();            // 0x020f1f44
-};
-
-// vtable 0x0213b4d0 (dsd label data_0213b4d8)
-class SndScene31 : public SndSceneBase {
-public:
-    SndScene31();                     // C1 0x020f1f18 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene31();            // D0 0x020f1ec8, D1 0x020f1ef4
-    virtual void load();            // 0x020f1e70
-};
-
-// vtable 0x0213b504 (dsd label data_0213b50c)
-class SndScene32 : public SndSceneBase {
-public:
-    SndScene32();                     // C1 0x020f1e44 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene32();            // D0 0x020f1df4, D1 0x020f1e20
-    virtual void load();            // 0x020f1d9c
-};
-
-// vtable 0x0213b538 (dsd label data_0213b540)
-class SndScene33 : public SndSceneBase {
-public:
-    SndScene33();                     // C1 0x020f1d70 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene33();            // D0 0x020f1d20, D1 0x020f1d4c
-    virtual void load();            // 0x020f1cc8
-};
-
-// vtable 0x0213b2fc (dsd label data_0213b304)
-class SndScene34 : public SndSceneBase {
-public:
-    SndScene34();                     // C1 0x020f1c9c (C2 unreferenced, dead-stripped)
-    virtual ~SndScene34();            // D0 0x020f1c4c, D1 0x020f1c78
-    virtual void load();            // 0x020f1bf4
-};
-
-// vtable 0x0213b5a0 (dsd label data_0213b5a8)
-class SndScene35 : public SndSceneBase {
-public:
-    SndScene35();                     // C1 0x020f1bc8 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene35();            // D0 0x020f1b78, D1 0x020f1ba4
-    virtual void load();            // 0x020f1b30
-};
-
-// vtable 0x0213b5d4 (dsd label data_0213b5dc)
-class SndScene40 : public SndSceneBase {
-public:
-    SndScene40();                     // C1 0x020f1b04 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene40();            // D0 0x020f1ab4, D1 0x020f1ae0
-    virtual void load();            // 0x020f1a6c
-};
-
-// vtable 0x0213b608 (dsd label data_0213b610)
-class SndScene41 : public SndSceneBase {
-public:
-    SndScene41();                     // C1 0x020f1a38 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene41();            // D0 0x020f19d0, D1 0x020f1a08
-    virtual void load();            // 0x020f1988
-    virtual void update(s32 cameraDistance);            // 0x020f1964
-    virtual void onBgmChange(u32 a, u32 c); // 0x020f191c
-
-    /* 0x08 */ u32 sub[5];          // BGM animation object (G011 file; has a vptr, so word-aligned)
-};
-
-// vtable 0x0213b63c (dsd label data_0213b644)
-class SndScene42 : public SndSceneBase {
-public:
-    SndScene42();                     // C1 0x020f18f0 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene42();            // D0 0x020f18a0, D1 0x020f18cc
-    virtual void load();            // 0x020f1858
-};
-
-// vtable 0x0213b670 (dsd label data_0213b678)
-class SndScene43 : public SndSceneBase {
-public:
-    SndScene43();                     // C1 0x020f182c (C2 unreferenced, dead-stripped)
-    virtual ~SndScene43();            // D0 0x020f17dc, D1 0x020f1808
-    virtual void load();            // 0x020f1794
-};
-
-// vtable 0x0213b6a4 (dsd label data_0213b6ac)
-class SndScene44 : public SndSceneBase {
-public:
-    SndScene44();                     // C1 0x020f1768 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene44();            // D0 0x020f1718, D1 0x020f1744
-    virtual void load();            // 0x020f16d0
-};
-
-// vtable 0x0213b6d8 (dsd label data_0213b6e0)
-class SndScene45 : public SndSceneBase {
-public:
-    SndScene45();                     // C1 0x020f16a4 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene45();            // D0 0x020f1654, D1 0x020f1680
-    virtual void load();            // 0x020f160c
-};
-
-// vtable 0x0213b70c (dsd label data_0213b714)
-class SndScene46 : public SndSceneBase {
-public:
-    SndScene46();                     // C1 0x020f15e0 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene46();            // D0 0x020f1590, D1 0x020f15bc
-    virtual void load();            // 0x020f1548
-};
-
-// vtable 0x0213b740 (dsd label data_0213b748)
-class SndScene47 : public SndSceneBase {
-public:
-    SndScene47();                     // C1 0x020f151c (C2 unreferenced, dead-stripped)
-    virtual ~SndScene47();            // D0 0x020f14cc, D1 0x020f14f8
-    virtual void load();            // 0x020f1484
-};
-
-// vtable 0x0213b774 (dsd label data_0213b77c)
-class SndScene48 : public SndSceneBase {
-public:
-    SndScene48();                     // C1 0x020f1458 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene48();            // D0 0x020f1408, D1 0x020f1434
-    virtual void load();            // 0x020f13c0
-};
-
-// vtable 0x0213b7a8 (dsd label data_0213b7b0)
-class SndScene50 : public SndSceneBase {
-public:
-    SndScene50();                     // C1 0x020f138c (C2 unreferenced, dead-stripped)
-    virtual ~SndScene50();            // D0 0x020f133c, D1 0x020f1368
-    virtual void load();            // 0x020f12f4
-};
-
-// vtable 0x0213b7dc (dsd label data_0213b7e4)
-class SndScene51 : public SndSceneBase {
-public:
-    SndScene51();                     // C1 0x020f12c8 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene51();            // D0 0x020f1278, D1 0x020f12a4
-    virtual void load();            // 0x020f1238
-    virtual void fadeOutAll();            // 0x020f1200
-};
-
-// vtable 0x0213b810 (dsd label data_0213b818)
-class SndScene52 : public SndSceneBase {
-public:
-    SndScene52();                     // C1 0x020f11d4 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene52();            // D0 0x020f1184, D1 0x020f11b0
-    virtual void load();            // 0x020f1144
-};
-
-// vtable 0x0213b844 (dsd label data_0213b84c)
-class SndScene60 : public SndScene01 {
-public:
-    SndScene60();                     // C1 0x020f1118 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene60();            // D0 0x020f10c8, D1 0x020f10f4
-    virtual void load();            // 0x020f1070
-};
-
-// vtable 0x0213b878 (dsd label data_0213b880)
-class SndScene99 : public SndSceneBase {
-public:
-    SndScene99();                     // C1 0x020f1044 (C2 unreferenced, dead-stripped)
-    virtual ~SndScene99();            // D0 0x020f0ff4, D1 0x020f1020
-    virtual void load();            // 0x020f0fb4
-};
+// The classes are declared in include/snd/SndScenes.h (vtable 0x0213b8e0 for the base, then each scene's).
 
 // Definitions in descending address order (mwcc emits a file's functions last to first).
 
 SndSceneBase::SndSceneBase() {
-    gSndMgr.f2c = this;
-    gSndMgr.f4d = 0;
-    gSndMgr.f30->f3c = 0;
-    if (gSndMgr.f30 != 0) MelodyPlayer_SetInstrument(gSndMgr.f30, 210);
+    gSndMgr.scene = this;
+    gSndMgr.seDisabled = 0;
+    gSndMgr.melody->b3c = 0;
+    if (gSndMgr.melody != 0) MelodyPlayer_SetInstrument(gSndMgr.melody, 210);
     SndMgr_SetPlayerVolumes(&gSndMgr, 127, 127);
     NNS_SndPlayerSetPlayerVolume(15, 100);
     id = -1;
@@ -381,8 +64,8 @@ SndSceneBase::SndSceneBase() {
 }
 
 SndSceneBase::~SndSceneBase() {
-    gSndMgr.f2c = 0;
-    NNS_SndHeapLoadState(gSndMgr.f28, 0);
+    gSndMgr.scene = 0;
+    NNS_SndHeapLoadState(gSndMgr.subHeap, 0);
 }
 
 void SndSceneBase::vfunc_08() {
@@ -396,8 +79,8 @@ void SndSceneBase::update(s32 cameraDistance) {
 }
 
 void SndSceneBase::fadeOutAll() {
-    MelodyPlayer_StopTrackB(gSndMgr.f30);
-    gSndMgr.f4d = 1;
+    MelodyPlayer_StopTrackB(gSndMgr.melody);
+    gSndMgr.seDisabled = 1;
     stopPlayers(15);
     f5 = 1;
 }
@@ -424,9 +107,9 @@ void SndSceneBase::unload() {
     Snd_ClearListenerCallbacks();
     void *t = Snd_GetHeap();
     SndSeSystem_Shutdown(&gSndSeSystem, 1);
-    if (gSndMgr.f62 != 0) return;
+    if (gSndMgr.keepHeap != 0) return;
     NNS_SndHeapLoadState(t, 1);
-    ((SndMgr *)(void *)(&gSndMgr))->stopAll();
+    gSndMgr.stopAll();
 }
 
 void SndSceneBase::beginTalk(s32 a) {
@@ -450,7 +133,7 @@ void SndSceneBase::beginTalk(s32 a) {
 }
 
 void SndSceneBase::endTalk() {
-    Snd_RestoreHeapLevel((u32)Snd_GetHeapLevel());
+    Snd_RestoreHeapLevel(Snd_GetHeapLevel());
     f6 = 0;
 }
 
@@ -459,8 +142,8 @@ void SndSceneBase::onBgmChange(u32 a, u32 c) {
 
 void SndSceneBase::setupHeaps(u32 a, s32 b) {
     void *t = Snd_GetHeap();
-    if (gSndMgr.f62 == 0) {
-        ((SndMgr *)(void *)(&gSndMgr))->startOutputEffect();
+    if (gSndMgr.keepHeap == 0) {
+        gSndMgr.startOutputEffect();
         NNS_SndPlayerCreateHeap(0, t, a);
         NNS_SndHeapSaveState(t);
     }
@@ -519,10 +202,10 @@ void SndSceneBase::createPlayer12Heaps() {
 }
 
 SndScene01::SndScene01() {
-    if (gSndMgr.f30 != 0) MelodyPlayer_SetInstrument(gSndMgr.f30, 209);
+    if (gSndMgr.melody != 0) MelodyPlayer_SetInstrument(gSndMgr.melody, 209);
     id = 1;
     Snd_SetUnusedFlag(1);
-    gSndMgr.f73 = 0;
+    gSndMgr.trackVariant = 0;
 }
 
 SndScene01::~SndScene01() {
@@ -535,11 +218,11 @@ void SndScene01::load() {
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
     SndMgr_LoadBank(&gSndMgr, 143);
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 void SndScene01::beginTalk(s32 a) {
-    Snd_RestoreHeapLevel((u32)Snd_GetHeapLevel());
+    Snd_RestoreHeapLevel(Snd_GetHeapLevel());
     SndSceneBase::beginTalk(a);
 }
 
@@ -549,7 +232,7 @@ void SndScene01::endTalk() {
 }
 
 void SndScene01::setBankVariant(s32 a) {
-    Snd_RestoreHeapLevel((u32)Snd_GetHeapLevel());
+    Snd_RestoreHeapLevel(Snd_GetHeapLevel());
     if (a != 0) {
         if (a == 1) {
             SndMgr_LoadBank(&gSndMgr, 178);
@@ -560,7 +243,7 @@ void SndScene01::setBankVariant(s32 a) {
 }
 
 SndScene02::SndScene02() {
-    if (gSndMgr.f30 != 0) MelodyPlayer_SetInstrument(gSndMgr.f30, 209);
+    if (gSndMgr.melody != 0) MelodyPlayer_SetInstrument(gSndMgr.melody, 209);
     id = 2;
 }
 
@@ -573,11 +256,11 @@ void SndScene02::load() {
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
     SndMgr_LoadBank(&gSndMgr, 143);
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene03::SndScene03() {
-    if (gSndMgr.f30 != 0) MelodyPlayer_SetInstrument(gSndMgr.f30, 209);
+    if (gSndMgr.melody != 0) MelodyPlayer_SetInstrument(gSndMgr.melody, 209);
     id = 3;
 }
 
@@ -591,17 +274,15 @@ void SndScene03::load() {
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
     SndMgr_LoadBank(&gSndMgr, 143);
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene10::SndScene10() {
-    BgmTempoTracker_ctor(sub);
     id = 10;
     state = 0;
 }
 
 SndScene10::~SndScene10() {
-    BgmTempoTracker_dtor(sub);
 }
 
 void SndScene10::load() {
@@ -614,24 +295,24 @@ void SndScene10::load() {
     void *t = Snd_GetHeap();
     NNS_SndArcLoadWaveArc(9, t);
     NNS_SndHeapSaveState(t);
-    f1d = (u8)(u32)NNS_SndHeapGetCurrentLevel(t);
+    f1d = (u8)NNS_SndHeapGetCurrentLevel(t);
     SndMgr_LoadBank(&gSndMgr, 144);
     createPlayer12Heaps();
     NNS_SndHeapSaveState(t);
     state = 1;
-    gSndMgr.f62 = 0;
-    BgmTempoTracker_setMode(sub, 1);
+    gSndMgr.keepHeap = 0;
+    tempo.setMode(1);
     NNS_SndPlayerSetPlayerVolume(18, 63);
     NNS_SndPlayerSetPlayerVolume(19, 63);
 }
 
 void SndScene10::update(s32 cameraDistance) {
     SndSceneBase::update(cameraDistance);
-    ((SubObj *)sub)->vfunc_00();
+    tempo.update();
 }
 
 void SndScene10::onBgmChange(u32 v, u32 c) {
-    return BgmTempoTracker_setMode(sub, v);
+    return tempo.setMode(v);
 }
 
 void SndScene10::beginTalk(s32 a) {
@@ -660,7 +341,7 @@ void SndScene19::load() {
     createPlayer4Heap();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene20::SndScene20() {
@@ -675,7 +356,7 @@ void SndScene20::load() {
     createPlayer4Heap();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene21::SndScene21() {
@@ -690,7 +371,7 @@ void SndScene21::load() {
     createPlayer4Heap();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene22::SndScene22() {
@@ -705,7 +386,7 @@ void SndScene22::load() {
     createPlayer4Heap();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene23::SndScene23() {
@@ -722,7 +403,7 @@ void SndScene23::load() {
     createPlayer6Heaps();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene24::SndScene24() {
@@ -737,7 +418,7 @@ void SndScene24::load() {
     createPlayer4Heap();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene30::SndScene30() {
@@ -754,7 +435,7 @@ void SndScene30::load() {
     createPlayer6Heaps();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene31::SndScene31() {
@@ -771,7 +452,7 @@ void SndScene31::load() {
     createPlayer6Heaps();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene32::SndScene32() {
@@ -788,7 +469,7 @@ void SndScene32::load() {
     createPlayer6Heaps();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene33::SndScene33() {
@@ -805,7 +486,7 @@ void SndScene33::load() {
     createPlayer6Heaps();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene34::SndScene34() {
@@ -822,7 +503,7 @@ void SndScene34::load() {
     createPlayer6Heaps();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene35::SndScene35() {
@@ -837,7 +518,7 @@ void SndScene35::load() {
     createPlayer4Heap();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene40::SndScene40() {
@@ -852,16 +533,14 @@ void SndScene40::load() {
     createPlayer4Heap();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene41::SndScene41() {
-    BgmBeatSync_ctor(sub);
     id = 41;
 }
 
 SndScene41::~SndScene41() {
-    BgmBeatSync_dtor(sub);
 }
 
 void SndScene41::load() {
@@ -869,20 +548,20 @@ void SndScene41::load() {
     createPlayer4Heap();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 void SndScene41::update(s32 cameraDistance) {
     SndSceneBase::update(cameraDistance);
-    ((SubObj *)sub)->vfunc_00();
+    beatSync.update();
 }
 
 void SndScene41::onBgmChange(u32 a, u32 c) {
     if (c >= 99 && c <= 171) {
-        BgmTempoTracker_setMode(sub, a);
-        BgmBeatSync_setEnable(sub, 1);
+        beatSync.setMode(a);
+        beatSync.setEnable(1);
     } else {
-        BgmBeatSync_setEnable(sub, 0);
+        beatSync.setEnable(0);
     }
 }
 
@@ -898,7 +577,7 @@ void SndScene42::load() {
     createPlayer4Heap();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene43::SndScene43() {
@@ -913,7 +592,7 @@ void SndScene43::load() {
     createPlayer4Heap();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene44::SndScene44() {
@@ -928,7 +607,7 @@ void SndScene44::load() {
     createPlayer4Heap();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene45::SndScene45() {
@@ -943,7 +622,7 @@ void SndScene45::load() {
     createPlayer4Heap();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene46::SndScene46() {
@@ -958,7 +637,7 @@ void SndScene46::load() {
     createPlayer4Heap();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene47::SndScene47() {
@@ -973,7 +652,7 @@ void SndScene47::load() {
     createPlayer4Heap();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene48::SndScene48() {
@@ -988,7 +667,7 @@ void SndScene48::load() {
     createPlayer4Heap();
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene50::SndScene50() {
@@ -1004,7 +683,7 @@ void SndScene50::load() {
     createPlayer11Heaps(3);
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene51::SndScene51() {
@@ -1018,13 +697,13 @@ void SndScene51::load() {
     setupHeaps(0x0, 28);
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
     SndMgr_StartVolumeFadeIn(&gSndMgr);
 }
 
 void SndScene51::fadeOutAll() {
-    MelodyPlayer_StopTrackB(gSndMgr.f30);
-    gSndMgr.f4d = 1;
+    MelodyPlayer_StopTrackB(gSndMgr.melody);
+    gSndMgr.seDisabled = 1;
     stopPlayers(17);
 }
 
@@ -1039,7 +718,7 @@ void SndScene52::load() {
     setupHeaps(0x2a824, 29);
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene60::SndScene60() {
@@ -1055,7 +734,7 @@ void SndScene60::load() {
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
     SndMgr_LoadBank(&gSndMgr, 143);
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }
 
 SndScene99::SndScene99() {
@@ -1069,5 +748,5 @@ void SndScene99::load() {
     setupHeaps(0x2a824, 29);
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
-    gSndMgr.f62 = 0;
+    gSndMgr.keepHeap = 0;
 }

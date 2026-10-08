@@ -4,7 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_02095cdc.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-struct Unk_02096354_Arg;
+#include "item/MotherLetterDate.h"
 #ifdef __cplusplus
 #include "item/Letter.h"
 #include "types.h"

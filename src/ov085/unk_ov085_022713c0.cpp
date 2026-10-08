@@ -168,7 +168,7 @@ BOOL SpNpcTortimerBrightNights::onCreate() {
     collider.groups |= 2;
     festDay = Event_GetDaysSinceStart(0x11);
     u8 *const g = gContestRecord;
-    ContestRecord_BeginFestival(g, 1);
+    ContestRecord_BeginFestival((ContestRecord *)g, 1);
     if (!Talk_CheckAndSetPlayerFlag(0x1f, 0)) {
         ((ContestRecord *)(g))->clearVotedVillager();
     }

@@ -13,85 +13,16 @@ typedef int BOOL;
 #define NULL 0
 
 #include "nnsys/g3d_rt.h"
-#define PROTO_LOCAL_data_0213bd40  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_021040ac.h"
 #include "proto/autoload_2/unk_02105b3c.h"
-#include "proto/autoload_2/unk_02105d50.h"
-#include "proto/autoload_2/unk_021104ac.h"
-#include "proto/autoload_2/unk_02110c98.h"
-#include "proto/itcm/unk_01ff8ad4.h"
-typedef G3dRS RS;  // NNSG3dRS
+#include "proto/autoload_2/unk_0213bd28.h"
 extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
 extern void NNS_G3dGeSendDL(void *, u32);
-
-typedef struct V3 { s32 x, y, z; } V3;
-typedef union Glb {
-    u32 w[0x99 + 1];
-    struct {
-    u32 w0, w4;
-    u8 pad8[0x90];
-    u32 ctl98;
-    u8 pad9c[0x44];
-    V3 e0;
-    V3 scale;
-    u32 pad_f8;
-    u32 flag;
-    } n;
-} Glb;
-extern Glb data_027e00c8;
-extern u8 data_027e0114[], data_027e0184[];
-extern u32 data_0213bd58[2];
-extern u32 data_0213bd5c;
-extern s8 data_02135d5c[];
-extern BOOL G3X_GetClipMtx(void *);
-extern BOOL G3X_GetVectorMtx(void *);
-extern void MTX_Copy44To43_(void *, void *);
-extern void NNS_G3dMdlSetMdlAlpha(void *, u32, void *);
-extern void NNS_G3dMdlSetMdlPolygonID(void *, u32, void *);
-extern void NNS_G3dMdlSetMdlLightEnableFlag(void *, u32, void *);
-extern void NNS_G3dMdlSetMdlEmi(void *, u32, void *);
-typedef struct Cb {
-    u8 pad0[0x10];
-    struct Cb *next;    // 0x10
-    u8 pad14[5];
-    u8 n;               // 0x19
-    u16 tbl[1];         // 0x1a
-} Cb;
-extern void (*data_0213bd40[])(void *);
-extern u8 *NNS_G3dGlbGetWV(void);
-extern u8 *NNS_G3dGlbGetInvWV(void);
-extern u8 *NNS_G3dGlbGetInvV(void);
-extern void MTX_Copy43To44_(void *, void *);
-extern void MTX_Concat44(void *, void *, void *);
-extern s32 VEC_Mag(void *);
-extern void VEC_Normalize(void *, void *);
-extern void MIi_CpuSend32(void *, void *, u32);
-extern s32 data_0213be38[3];
-extern s32 data_0213be44[3];
-extern s32 data_0213be14[9];
-extern u8 data_0213be0c[], data_0213be08[];
-extern s32 data_0213bdf0[3], data_0213bdfc[3];
-extern u8 data_0213bdc4[], data_0213bdcc[], data_0213bdc0[];
-typedef struct MtxEnt { s32 m[25]; } MtxEnt;
-extern MtxEnt data_021f70c4[];
-extern MtxEnt data_021f7104[];
-extern void MIi_CpuClearFast(u32, void *, u32);
-typedef struct MatArg {
-    u32 flag;           // 0x00
-    u8 pad04[0x14];
-    s32 scaleS, scaleT; // 0x18
-    s16 rotSin, rotCos; // 0x20
-    s32 transS, transT; // 0x24
-    u16 w, h;           // 0x2c
-    u32 texParam;       // 0x30
-    u32 plttBase;       // 0x34
-} MatArg;
 
 // NNS_G3dDraw1Mat1Shp
 void NNS_G3dDraw1Mat1Shp(u8 *mdl, u32 matIdx, u32 shpIdx, BOOL sendMat)
 {
     u32 buf[7];
-    MatArg a;
+    G3dMatAnmResult a;
     s32 sc1[3];
     s32 sc2[3];
     s32 ps = *(s32 *)(mdl + 0x1c);
@@ -124,13 +55,13 @@ void NNS_G3dDraw1Mat1Shp(u8 *mdl, u32 matIdx, u32 shpIdx, BOOL sendMat)
         buf[6] = *(u16 *)(mat + 0x1c);
         NNS_G3dGeBufferOP_N(buf[0], &buf[1], 6);
         if (*(u16 *)(mat + 0x1e) & 1) {
-            void (*fn)(void *) = data_0213bd40[mdl[0x16]];
+            void (*fn)() = data_0213bd40[mdl[0x16]]; // NNS_G3dSendTexSRT_FuncArray: by the texture matrix mode
             u8 *p;
             a.flag = 8;
-            a.w = *(u16 *)(mat + 0x20);
-            a.h = *(u16 *)(mat + 0x22);
-            a.texParam = *(u32 *)(mat + 0x24);
-            a.plttBase = *(u32 *)(mat + 0x28);
+            a.origWidth = *(u16 *)(mat + 0x20);
+            a.origHeight = *(u16 *)(mat + 0x22);
+            a.magW = *(u32 *)(mat + 0x24);
+            a.magH = *(u32 *)(mat + 0x28);
             p = mat + 0x2c;
             if (!(*(u16 *)(mat + 0x1e) & 2)) {
                 const s32 *q = (const s32 *)p;
@@ -142,8 +73,8 @@ void NNS_G3dDraw1Mat1Shp(u8 *mdl, u32 matIdx, u32 shpIdx, BOOL sendMat)
             }
             if (!(*(u16 *)(mat + 0x1e) & 4)) {
                 const s16 *q = (const s16 *)p;
-                a.rotSin = *(q + 0);
-                a.rotCos = *(q + 1);
+                a.sinR = *(q + 0);
+                a.cosR = *(q + 1);
                 p += 2 * sizeof(s16);
             } else {
                 a.flag |= 2;

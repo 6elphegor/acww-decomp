@@ -27,12 +27,12 @@ extern "C" {
 s32 strncmp(const char *, const char *, s32);
 char *goastrdup(const char *);
 void gpiSetErrorString(void *, const char *);
-s32 gpiSendBuddyMessage(void *, s32, s32, s32);
+s32 gpiSendBuddyMessage(GPConnection *, s32, s32, const char *);
 s32 gpiDeleteBuddy(void *, s32);
 s32 gpiAuthBuddyRequest(void *, s32);
 s32 gpiSetInfos(void *, s32, s32);
-s32 gpiGetInfo(void *, s32, s32, s32, s32, s32);
-s32 gpiProfileSearch(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+s32 gpiGetInfo(void *, s32, s32, s32, GPCallback, void *);
+s32 gpiProfileSearch(GPConnection *, char *, char *, char *, char *, char *, s32, s32, s32, GPCallback, void *);
 s32 gpiAppendStringToBuffer(void *, GPIBuffer *, const char *);
 s32 gpiAppendIntToBuffer(void *, GPIBuffer *, s32);
 s32 gpiGetProfile(void *, s32, void *);
@@ -47,12 +47,12 @@ namespace Nc {
 extern "C" {
 
 
-typedef s32 (*GsGpConnectCallback)(GPConnection *, void *, s32);
+typedef s32 (*GsGpConnectCallback)(GPConnection *, void *, void *);
 
 void gpiDisconnect(GPConnection *, s32);
 void gpiSetErrorString(GPConnection *, const char *);
 s32 gpiConnect(GPConnection *, const char *, const char *, const char *, const char *, const char *,
-                        const char *, s32, s32, s32, s32, GsGpConnectCallback, s32);
+                        const char *, const char *, s32, s32, s32, GPCallback, void *);
 s32 gpiCheckConnect(GPConnection *);
 void msleep(s32);
 s32 gpiFindOperationByID(GPConnection *, GPIOperation **, s32);
@@ -133,7 +133,7 @@ s32 gpProcess(GPConnection *h) {
 
 namespace Nc {
 extern "C" {
-s32 gpSetCallback(GPConnection *h, s32 i, s32 x, s32 y) {
+s32 gpSetCallback(GPConnection *h, s32 i, GPCallback x, void *y) {
     GPIConnection *c;
     if (h == NULL || (c = *h) == NULL) {
         return 2;
@@ -151,7 +151,7 @@ s32 gpSetCallback(GPConnection *h, s32 i, s32 x, s32 y) {
 
 namespace Nc {
 extern "C" {
-s32 gpConnectPreAuthenticatedA(GPConnection *h, char *a, char *b, s32 c, s32 d, GsGpConnectCallback cb, s32 e) {
+s32 gpConnectPreAuthenticatedA(GPConnection *h, char *a, char *b, s32 c, s32 d, GsGpConnectCallback cb, void *e) {
     GPIConnection *ctx;
     if (h == NULL || (ctx = *h) == NULL) {
         return 2;
@@ -172,7 +172,7 @@ s32 gpConnectPreAuthenticatedA(GPConnection *h, char *a, char *b, s32 c, s32 d, 
         return 0;
     }
     return gpiConnect(h, "", "", "",
-                               "", a, b, 0, c, 0, d, cb, e);
+                               "", a, b, NULL, c, 0, d, (GPCallback)cb, e);
 }
 }
 }
@@ -196,7 +196,7 @@ void gpDisconnect(GPConnection *h) {
 
 namespace Nb {
 extern "C" {
-s32 gpProfileSearchA(GPConnection *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, GPCallback cb, void *arg) {
+s32 gpProfileSearchA(GPConnection *h, char *a1, char *a2, char *a3, char *a4, char *a5, s32 a6, s32 a7, GPCallback cb, void *arg) {
     GPIConnection *c;
     if (h == NULL || (c = *h) == NULL) {
         return 2;
@@ -211,7 +211,7 @@ s32 gpProfileSearchA(GPConnection *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s3
         cb(h, &l, arg);
         return 0;
     }
-    return gpiProfileSearch(h, a1, a2, a3, a4, a5, a6, 0, a7, (s32)cb, (s32)arg);
+    return gpiProfileSearch(h, a1, a2, a3, a4, a5, a6, 0, a7, cb, arg);
 }
 }
 }
@@ -236,7 +236,7 @@ s32 gpGetInfo(GPConnection *h, s32 a1, s32 a2, s32 a3, GPCallback cb, void *arg)
         gpiSetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
-    return gpiGetInfo(h, a1, a2, a3, (s32)cb, (s32)arg);
+    return gpiGetInfo(h, a1, a2, a3, cb, arg);
 }
 }
 }
@@ -551,7 +551,7 @@ s32 gpSetStatusA(GPConnection *h, s32 v, const char *s1, const char *s2) {
 
 namespace Nb {
 extern "C" {
-s32 gpSendBuddyMessageA(GPConnection *h, s32 a, s32 b) {
+s32 gpSendBuddyMessageA(GPConnection *h, s32 a, const char *b) {
     GPIConnection *c;
     if (h == NULL || (c = *h) == NULL) {
         return 2;

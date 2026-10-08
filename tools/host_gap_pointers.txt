@@ -10,5 +10,6 @@ data_02200144
 gProfileTable
 gSceneBlockMap
 sProcCreateHook
+sProcCreateParent
 sProcDeleteHook
 data_01ff8ab4 8

@@ -7,12 +7,8 @@ typedef unsigned short u16;
 typedef unsigned int u32;  // (long is 64 bits on 64-bit hosts)
 #include "types64.h"
 #include "nitro/io_access.h"
-#define PROTO_LOCAL_data_0213bd28  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bd34  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bd40  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bd60  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bd70  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213be50  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_021053f4.h"
+#include "proto/autoload_2/unk_0213bd28.h"
 #include "proto/itcm/unk_01ff8000.h"
 #include "proto/itcm/unk_01ff8228.h"
 #include "proto/itcm/unk_01ff8ad4.h"
@@ -633,7 +629,7 @@ void OSi_IrqCallback(int index) {
     if (callback) {
         callback(data_027e0058[index].arg);
     }
-    *(vu32 *)((u32)data_027e0000 + 0x3ff8) |= imask;
+    *(vu32 *)(data_027e0000 + 0x3ff8) |= imask;  // HW_INTR_CHECK_BUF (DTCM + 0x3ff8)
     if (!data_027e0058[index].enable) {
         (void)OS_DisableIrqMask(imask);
     }

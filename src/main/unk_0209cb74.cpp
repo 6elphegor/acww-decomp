@@ -147,7 +147,7 @@ extern "C" void SaveData_Apply(u8 *p) {
     NpcSpawn_ResetAll();
     NpcNetRecords_InitVillagers();
     SaveVillagers_ResetMoods(p + 0x8a3c);
-    TownSessionState_Reset((u8 *)TownSessionState_Get());
+    TownSessionState_Reset(TownSessionState_Get());
     RoomFtrState_ResetAll();
     RoomObjSync_Reset();
     BuildingStates_Reset();
@@ -158,10 +158,10 @@ extern "C" void SaveData_Apply(u8 *p) {
     Town_OnLoad();
     NookShop_UpdateDaily(p + 0x15db4, 0);
     Melody_SetPacked(p + 0x15fa8);
-    _ZN15KatieVisitState12pickKatiePosEv(TownSessionState_GetKatieState((u8 *)TownSessionState_Get()));
-    _ZN13PeteFallState5clearEv(TownSessionState_GetPeteFall((u8 *)TownSessionState_Get()));
+    _ZN15KatieVisitState12pickKatiePosEv(TownSessionState_GetKatieState(TownSessionState_Get()));
+    _ZN13PeteFallState5clearEv(TownSessionState_GetPeteFall(TownSessionState_Get()));
     TownSessionState_CheckTortimerReward(TownSessionState_Get());
-    ((VisitorPos *)(TownSessionState_GetVisitorPos((u8 *)TownSessionState_Get())))->pickRandomPos();
+    ((VisitorPos *)(TownSessionState_GetVisitorPos(TownSessionState_Get())))->pickRandomPos();
     ((HudCountdown *)(Hud_GetCountdown()))->start(0, 1);
     LowBattery_Reset();
     SaveVillagers_PickGreeter(p + 0x8a3c);
