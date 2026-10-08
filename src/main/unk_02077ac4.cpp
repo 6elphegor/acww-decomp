@@ -304,17 +304,7 @@ BOOL Scene_InVillagerHouse();
 BOOL Scene_InTown();
 BOOL MapBlock_HasAllAttr(void *cell, s32 v);
 static inline BOOL Unk_02078384_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
-struct MapBlockView {
-    u8 pad_00[0x20];
-    void *bgModel;  // 0x20 (the pointers: their size on 64-bit hosts)
-    uptr buried;    // 0x24
-};
-struct BlockMapView {
-    MapBlockView *blocks;
-    u32 width;
-    u32 height;
-};
-static inline MapBlockView *Unk_02078738_GetCell(BlockMapView *g, u32 x, u32 y) {
+static inline MapBlock *Unk_02078738_GetCell(BlockMap *g, u32 x, u32 y) {
     if (x < g->width && y < g->height && g->blocks != NULL) {
         return &g->blocks[y * g->width + x];
     }
@@ -8575,9 +8565,9 @@ extern "C" void VillagerTrend_NotifyUnk5(VecFx32 *p) {
 
 namespace nB {
 extern "C" BOOL TownMap_HasAttr8AtPos(VecFx32 *p) {
-    BlockMapView *g = (BlockMapView *)gSceneBlockMap;
+    BlockMap *g = gSceneBlockMap;
     if (g != NULL) {
-        MapBlockView *c = Unk_02078738_GetCell(g, p->x >> 17, p->z >> 17);
+        MapBlock *c = Unk_02078738_GetCell(g, p->x >> 17, p->z >> 17);
         if (c != NULL) {
             if (MapBlock_HasAllAttr(c, 8)) {
                 return TRUE;
