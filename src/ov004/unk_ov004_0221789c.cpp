@@ -50,6 +50,7 @@
 #include "proto/main/unk_020b7d10.h"
 #include "proto/ov004/unk_ov004_0221789c.h"
 #include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/main/unk_020b4828.h"
 
 class FleaMarketSellerVillager;
 
@@ -75,8 +76,6 @@ s32 Vec_Equal(VecFx32 *a, VecFx32 *b);
 s32 Vec_NotEqual(VecFx32 *a, VecFx32 *b);
 u8 Math_CountDownU8(u8 *p);
 s32 Math_AngleDiffAbs(s32, s32);
-s32 Scene_GetWarpRequest(void);
-void SceneWarp_RequestExit(s32, s32);
 s32 TalkRequest_SetTargetDone(void *);
 void TalkRequest_AddPlayerTalk6(void *, u32);
 BOOL Villager_RemoveFurnitureAt(VillagerData *a, u32 *b, u8 *c, s32 d);

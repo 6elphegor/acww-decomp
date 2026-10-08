@@ -51,6 +51,7 @@
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/ov068/unk_ov068_0226dbe8.h"
 #include "player/PlayerData.h"
+#include "proto/main/unk_020b4828.h"
 
 
 // ---------------------------------------------------------------- TU10 classes
@@ -179,8 +180,6 @@ BOOL Ground_LockExit(s32 v);
 void Ground_UnlinkUnit(s32 x, s32 z);
 u8 Scene_GetPrevious();
 BOOL SceneId_IsTown(u32 a);
-void Scene_SavePlayerPos(s32 unused, s32 add);
-BOOL SceneWarp_RequestExit(s32 unused, s32 id);
 VillagerState *Villager_GetState(VillagerData *a);
 void VillagerState_ResetRole(VillagerState *e);
 void VillagerState_SetRole(VillagerState *e, s32 role);
@@ -931,9 +930,9 @@ void HouseVisitVillager::execVisitLeave() {
             HouseVisit_SetFinished(this);
             if (wantsToLeave != 0) {
                 Scene_SavePlayerPos(0, 0);  // (the first argument is unused)
-                SceneWarp_RequestExit(0, 6);
+                SceneWarp_RequestExit(Scene_GetWarpRequest(), 6);
             } else {
-                SceneWarp_RequestExit(0, 0);
+                SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
             }
         }
     }

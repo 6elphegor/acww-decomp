@@ -58,6 +58,7 @@
 #include "proto/main/unk_020411dc.h"
 #include "gfx/ScreenTransition.h"
 #include "talk/MsgRequest.h"
+#include "proto/main/unk_020b4828.h"
 
 class FtrContact;
 
@@ -3858,10 +3859,6 @@ typedef Unk_ov004_02220314_Bits Bits;
 extern "C" {
 extern void *gCommManager;
 
-s32 Scene_GetWarpRequest(void);
-void SceneWarp_RequestExit(s32 a, s32 b);
-void SceneExit_SnapPos(s32 a, s32 b, V3 *v, V3 *w);
-s32 SceneExit_GetDoor(s32 a, s32 b, s32 *c, s16 *d);
 s32 Scene_GetCurrent(void);
 void PlayerActor_StepTowardPose(Obj *o, s32 a, s32 b, s32 c);
 void Vec_Sub(V3 *o, V3 *a, V3 *b);
@@ -4048,7 +4045,7 @@ extern "C" s32 PlayerActor_RequestLeaveRoom(Obj *o, s32 a, s32 b) {
     s32 h = o->exitIndex;
     if (h != -1) {
         s16 x;
-        s32 y;
+        u32 y;
         if (SceneExit_GetDoor(Scene_GetWarpRequest(), h, &y, &x) == 0) {
             return 0;
         }
@@ -4331,8 +4328,6 @@ s32 PlayerActor_GetPlayerData(Obj *o);
 s32 PlayerActor_GetHairStyle(Obj *o);
 s32 PlayerActor_GetHairColor(Obj *o);
 s32 TalkRequest_FinishSceneEntry(void);
-s32 Scene_GetWarpRequest(void);
-void SceneWarp_RequestExit(s32 a, s32 b);
 void PlayerActor_StepAlpha(Obj *o, u32 a, u32 b);
 
 void PlayerActor_HaircutFinishUpdate(Obj *o);
@@ -4724,8 +4719,6 @@ extern void *gCommManager;
 
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 TalkRequest_FinishSceneEntry();
-s32 Scene_GetWarpRequest();
-void SceneWarp_RequestExit(s32 a, s32 b);
 s32 Scene_InHouseRoom();
 s32 Scene_InVillagerHouse();
 s32 PlayerActor_StepTowardPose(Obj *o, s32 a, s32 b, s32 c);
@@ -5181,8 +5174,6 @@ s32 PlayerActor_Decelerate(s32 a, s32 b);
 s32 PlayerActor_Accelerate(s32 a, s32 b);
 void PlayerActor_TurnAngle(void *a, s32 b);
 s32 Scene_InHouseRoom();
-s32 Scene_GetWarpRequest();
-void SceneWarp_RequestExit(s32 a, s32 b);
 s32 BlockMap_GetItemPtrAtPos(void *a, V3 *v, u32 b);
 s32 Item_IsNormalItem(s32 a);
 void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);

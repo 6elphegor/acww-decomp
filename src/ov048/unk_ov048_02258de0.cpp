@@ -65,6 +65,7 @@
 #include "proto/main/unk_020b7190.h"
 #include "proto/ov004/unk_ov004_022257e4.h"
 #include "proto/ov048/unk_ov048_02258de0.h"
+#include "proto/main/unk_020b4828.h"
 
 
 class ActorTalkRequest;
@@ -97,13 +98,8 @@ s32 func_02133150(s32, s32);
 s32 Talk_IsInOwnTown();
 u32 Clock_GetTimeOfDay();
 void * FriendList_GetEntries(void *);
-void * Scene_GetWarpRequest();
-s32 SceneWarp_RequestFade(void *, s32, s32, s32);
 void FieldPos_ToUnit(s32 *, s32 *, VecFx32 *);
-s32 Scene_SetSavedPos(void *, s32, VecFx32 *, s32, s32, s32, s32);
 void Camera_SaveView();
-s32 SceneWarp_RequestAt(void *, s32, VecFx32 *, s32, s32, s32, s32);
-void SceneWarp_RequestExit(void *, s32);
 s32 Math_CountDownU8(void *);
 s32 Camera_SetMode15();
 s32 Camera_SetMode14();

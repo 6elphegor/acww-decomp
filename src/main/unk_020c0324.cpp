@@ -48,6 +48,7 @@
 #include "proto/main/unk_0209eb94.h"
 #include "proto/main/unk_020b7190.h"
 #include "proto/main/unk_020c0324.h"
+#include "proto/main/unk_020b4828.h"
 
 
 class SpNpcKatie;
@@ -67,8 +68,6 @@ BOOL TownMap_FindBuildingAbovePos(VecFx32 *a, s32 b, s32 c, s32 d);
 void TownMap_IsPosWalkable(VecFx32 *a, s32 b);
 s32 Vec_DistXZ(void *a, void *b);
 BOOL Math_CountDownU16(void *a);
-s32 Scene_GetWarpRequest(void);
-void SceneWarp_RequestExit(s32 a, s32 b);
 void Camera_SetMode19(void);
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;

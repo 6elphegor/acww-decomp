@@ -29,6 +29,7 @@
 #include "proto/main/unk_020411dc.h"
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov004/unk_ov004_0221e7a8.h"
+#include "proto/main/unk_020b4828.h"
 
 struct TalkRequestList {
     TalkRequestEntry *head;
@@ -61,8 +62,6 @@ void List_Remove(void *l, void *t);
 BOOL TalkRequest_IsActive();
 void TalkRequest_SetTalkTarget(u32 v);
 void TalkRequest_FinishCurrent();
-u32 Scene_GetWarpRequest();
-void SceneWarp_RequestExit(u32 a, u32 b);
 Character *Character_FindInteractionTarget(Character *o);
 BOOL TalkRequest_AcquireHostLock(TalkRequestEntry *t);
 

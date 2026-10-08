@@ -52,6 +52,7 @@
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov004/unk_ov004_02218988.h"
 #include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/main/unk_020b4828.h"
 
 class FleaMarketBuyerVillagerTalk;
 class FleaMarketBuyerVillager;
@@ -101,9 +102,6 @@ VillagerMemory *Villager_FindMemory(void *a, void *b);
 s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 void TalkRequest_SetTargetDone(void *);
-void SceneWarp_RequestExit(s32, s32);
-s32 Scene_GetWarpRequest();
-void Scene_SavePlayerPos(s32, s32);
 s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 void NpcActor_FindFreeUnitNear(VecFx32 *out, NpcActor *self, VecFx32 *in);
 s32 Vec_Equal(VecFx32 *a, VecFx32 *b);

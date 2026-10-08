@@ -41,6 +41,7 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/ov004/unk_ov004_02228dcc.h"
 #include "proto/ov045/unk_02258de0.h"
+#include "proto/main/unk_020b4828.h"
 
 class SpNpcKatrina;
 class SpNpcKatrinaTalk;
@@ -63,8 +64,6 @@ u32 VillagerState_GetMood(VillagerState *e);
 void VillagerState_AddMoodTimer(VillagerState *e, s32 v);
 void VillagerState_SetMoodTimer(VillagerState *e, u16 v);
 void VillagerState_SetMood(VillagerState *e, u32 v);
-u8 *Scene_GetWarpRequest(void);
-BOOL SceneWarp_RequestExit(u8 *request, s32 id);  // (defined with s32: it is the warp request)
 BOOL Model_GetJointWorldMtx(void *model, Mtx43 *out, s32 joint);
 u8 Math_CountDownU8(u8 *p);
 extern u16 data_020c6cc8;

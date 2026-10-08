@@ -21,6 +21,7 @@
 #include "proto/main/unk_020850e0.h"
 #include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020b0e60.h"
+#include "proto/main/unk_020b4828.h"
 
 
 class EventAnnouncer : public GameProc {
@@ -69,16 +70,12 @@ void Event_RefreshToday(s32);
 void EventWeekSlots_ClearWeek(void *);
 s32 Scene_GetCurrent(void);
 void Clock_GetDateTime(void *);
-s32 Scene_GetWarpRequest(void);
-void SceneWarp_RequestExit(s32, s32);
 s32 TalkRequestFlags_IsEventWarpStarted(void);
 s32 TalkRequest_AddEventWarp(void);
 s32 TalkRequestFlags_IsEventWarpReady(void);
 s32 TownBlockMap_Get(void);
 s32 Town_FindGulliverShip(s32, void *);
 s32 Town_FindTownHall(s32, void *, s32, s32);
-void Scene_SavePlayerPos(s32, s32);
-void SceneWarp_RequestAt(s32, s32, void *, s32, ...);
 s32 Event_GetStateAt(s32, void *, s32);
 s32 Event_GetState(s32, void *, s32);
 s32 TalkRequestFlags_IsSceneHold(void);
@@ -420,7 +417,7 @@ extern "C" BOOL EventAnnounce_RequestWarp(void)
 
 extern "C" void EventAnnounce_RunWarp(EventAnnouncer *)
 {
-    u8 buf[0x10];
+    VecFx32 pos;
     s32 r;
     if (TalkRequestFlags_IsEventWarpStarted() == 0) {
         if (TalkRequest_AddEventWarp() == 0) {
@@ -435,13 +432,13 @@ extern "C" void EventAnnounce_RunWarp(EventAnnouncer *)
             r = TownBlockMap_Get();
             if (r != 0) {
                 if (sEventAnnounceState.msgIndex == 14) {
-                    r = Town_FindGulliverShip(r, buf);
+                    r = Town_FindGulliverShip(r, &pos);
                 } else {
-                    r = Town_FindTownHall(r, buf, 0, 0);
+                    r = Town_FindTownHall(r, &pos, 0, 0);
                 }
                 if (r != 0) {
                     Scene_SavePlayerPos(Scene_GetWarpRequest(), 0);
-                    SceneWarp_RequestAt(Scene_GetWarpRequest(), 0x31, buf, 0x400000, 0, 2, 2);
+                    SceneWarp_RequestAt(Scene_GetWarpRequest(), 0x31, &pos, 0x400000, 0, 2, 2);
                     data_021c1b3c->sceneFade.prepareEventWarp(sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
                     sEventAnnounceState.announceState = 4;
                     sEventAnnounceBusy = 1;

@@ -52,6 +52,7 @@
 #include "proto/ov003/unk_ov003_022187f8.h"
 #include "proto/ov003/unk_ov003_022187fc.h"
 #include "proto/ov009/unk_ov009_0225b880.h"
+#include "proto/main/unk_020b4828.h"
 
 typedef void (BuildingActor::*Unk_ov009_0225c290_Fn)();
 typedef BOOL (BuildingActor::*Unk_ov009_0225c360_Fn)();
@@ -98,13 +99,10 @@ s16 Math_Atan2(s32 x, s32 y);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
-u8 *Scene_GetWarpRequest(void);
 void Camera_SetMode3(void);
 BOOL TalkRequest_SetTargetDone(Character *c);  // (defined with u32: it is the Character)
 s32 Scene_GetCurrent(void);
-BOOL SceneWarp_RequestExit(u8 *request, s32 id);  // (defined with s32: it is the warp request)
 s32 Ground_GetDefaultY(void);
-BOOL Scene_SetTownReturnPos(u8 *unused, s32 id, VecFx32 *pos, u32 w, s16 s, s32 p, s32 q);  // (likewise)
 BOOL Item_IsNookShop(u16 *);
 BOOL TalkRequestFlags_IsResetti(void);
 BOOL TalkRequest_AddPlayerTalk6(Character *c, s32 b);  // (likewise)
@@ -1401,7 +1399,7 @@ void BuildingActor::execEntryWarp() {
             if (SceneWarp_RequestExit(Scene_GetWarpRequest(), r)) {
                 v.y = Ground_GetDefaultY();
                 v.z = v.z + 0x1000;
-                u8 *o = Scene_GetWarpRequest();
+                SceneWarp *o = Scene_GetWarpRequest();
                 s32 k = Scene_GetCurrent();
                 Scene_SetTownReturnPos(o, k, &v, 0xf000000, (s16)(ang + 0x8000), gridX, gridZ);
                 Building_SetLastEntranceType(getEntranceType());
