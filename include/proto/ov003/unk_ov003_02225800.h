@@ -83,23 +83,11 @@ s32 FieldInsect_GetKindAndAlarm(u8 *out, u32 idx);
 #ifndef PROTO_LOCAL_FieldInsect_IsTreeKind
 BOOL FieldInsect_IsTreeKind(u32 idx);
 #endif
-#ifndef PROTO_LOCAL_FieldInsect_UpdateAll
-void FieldInsect_UpdateAll(void *a);
-#endif
-#ifndef PROTO_LOCAL_SpecialInsect_UpdateAll
-void SpecialInsect_UpdateAll(void *a);
-#endif
-#ifndef PROTO_LOCAL_HeldInsect_UpdateAll
-void HeldInsect_UpdateAll(void *a);
-#endif
 #ifndef PROTO_LOCAL_HeldInsect_Release
 void HeldInsect_Release(s32 idx, s32 v);
 #endif
 #ifndef PROTO_LOCAL_HeldInsect_GetStage
 u32 HeldInsect_GetStage(s32 idx);
-#endif
-#ifndef PROTO_LOCAL_Insect_IsTreeKindForCulling
-BOOL Insect_IsTreeKindForCulling(s32 a, s32 t);
 #endif
 #ifndef PROTO_LOCAL_HeldInsect_Start
 void HeldInsect_Start(s32 t, s32 idx);
@@ -134,9 +122,6 @@ void Insect_EnableTrashFlies(void);
 #ifndef PROTO_LOCAL_Insect_Spawn
 BOOL Insect_Spawn(void *obj, s32 kind, u8 sub, s32 flag);
 #endif
-#ifndef PROTO_LOCAL_Insect_TrySpawnRandom
-s32 Insect_TrySpawnRandom(void *a, s32 b, s8 c, u32 d);
-#endif
 #ifndef PROTO_LOCAL_HeldInsect_SetHandMatrix
 BOOL HeldInsect_SetHandMatrix(s32 idx, s16 *p, Mtx43 *q, s32 flag);
 #endif
@@ -152,11 +137,8 @@ BOOL Insect_RollKind(u8 *out);
 #ifndef PROTO_LOCAL_Insect_GetTimeSlot
 s32 Insect_GetTimeSlot();
 #endif
-#ifndef PROTO_LOCAL_Insect_TickFrame
-void Insect_TickFrame(Insect *self);
-#endif
 #ifndef PROTO_LOCAL_Insect_PickSpecialSpawn
-BOOL Insect_PickSpecialSpawn(u8 *a, u8 *b, s32 c);
+BOOL Insect_PickSpecialSpawn(s8 *a, s8 *b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_Insect_IsAllowedOnline
 BOOL Insect_IsAllowedOnline(s32 a);
@@ -311,17 +293,35 @@ s32 FieldInsect_GetPosAndKind(VecFx32Ctor *out, u32 idx);
 #ifndef PROTO_LOCAL_Insect_UpdateSpawning
 void Insect_UpdateSpawning(InsectManager *self);
 #endif
+#ifndef PROTO_LOCAL_FieldInsect_UpdateAll
+void FieldInsect_UpdateAll(InsectManager *a);
+#endif
+#ifndef PROTO_LOCAL_SpecialInsect_UpdateAll
+void SpecialInsect_UpdateAll(InsectManager *a);
+#endif
+#ifndef PROTO_LOCAL_HeldInsect_UpdateAll
+void HeldInsect_UpdateAll(InsectManager *a);
+#endif
+#ifndef PROTO_LOCAL_Insect_IsTreeKindForCulling
+BOOL Insect_IsTreeKindForCulling(InsectManager *a, s32 t);
+#endif
 #ifndef PROTO_LOCAL_InsectPool_UpdateInViewOfPlayer
 void InsectPool_UpdateInViewOfPlayer(InsectManager *obj, s32 flag, s32 idx, s32 x, s32 z);
 #endif
 #ifndef PROTO_LOCAL_InsectPool_UpdateInView
 void InsectPool_UpdateInView(InsectManager *obj, s32 flag);
 #endif
+#ifndef PROTO_LOCAL_Insect_TrySpawnRandom
+s32 Insect_TrySpawnRandom(InsectManager *a, s32 b, u8 c, u32 d);
+#endif
 #ifndef PROTO_LOCAL_Insect_SpawnBeeSwarm
 void Insect_SpawnBeeSwarm(VecFx32Ctor *v);
 #endif
 #ifndef PROTO_LOCAL_Insect_IsAtWateringPoint
 BOOL Insect_IsAtWateringPoint(VecFx32 *p);
+#endif
+#ifndef PROTO_LOCAL_Insect_TickFrame
+void Insect_TickFrame(Insect *self);
 #endif
 #ifndef PROTO_LOCAL_Insect_SetAnimSpeed
 void Insect_SetAnimSpeed(Insect *self, u32 v);

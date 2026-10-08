@@ -20,6 +20,7 @@ typedef struct TreeLeafFx TreeLeafFx;
 typedef struct TreeLeafFxCbs TreeLeafFxCbs;
 #endif
 #ifdef __cplusplus
+#include "field/FieldUnitPos.h"
 #include "gfx/EffectSplEmitter.h"
 #include "gfx/NNSG3dRS.h"
 #include "gfx/VecFx32.h"
@@ -983,11 +984,26 @@ void TreeAnimSet_ProcessRequest(TreeAnimSet *a, TreeAnimRequest *o);
 #ifndef PROTO_LOCAL_TreeAnimSet_Request
 void TreeAnimSet_Request(TreeAnimSet *a, s32 id, s32 *pos, s32 c, s32 d);
 #endif
+#ifndef PROTO_LOCAL_TreeAnim_Init
+void TreeAnim_Init(TreeAnim *o);
+#endif
+#ifndef PROTO_LOCAL_TreeAnim_Update
+void TreeAnim_Update(TreeAnim *o);
+#endif
+#ifndef PROTO_LOCAL_TreeAnim_Draw
+void TreeAnim_Draw(TreeAnim *o);
+#endif
+#ifndef PROTO_LOCAL_TreeAnim_Release
+void TreeAnim_Release(TreeAnim *o);
+#endif
 #ifndef PROTO_LOCAL_TreeAnim_Begin
 void TreeAnim_Begin(TreeAnim *o, s32 flag);
 #endif
 #ifndef PROTO_LOCAL_Tree_GetDropSide
 s32 Tree_GetDropSide(s32 aid, VecFx32 *p);
+#endif
+#ifndef PROTO_LOCAL_TreeAnim_DropItems
+void TreeAnim_DropItems(TreeAnim *self, void *cell);
 #endif
 #ifndef PROTO_LOCAL_TreeAnim_Reset
 void TreeAnim_Reset(TreeAnim *self);
@@ -1007,6 +1023,15 @@ char *TreeAnimSet_GetAnimPath(TreeAnimSet *self, u32 a, u32 b);
 #ifndef PROTO_LOCAL_TreeAnimRequest_Resolve
 void TreeAnimRequest_Resolve(TreeAnimRequest *self);
 #endif
+#ifndef PROTO_LOCAL_FieldItemFx_ReleasePending
+void FieldItemFx_ReleasePending(FieldItemFx *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_Finish
+void FieldItemFx_Finish(FieldItemFx *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_Clear
+void FieldItemFx_Clear(FieldItemFx *self);
+#endif
 #ifndef PROTO_LOCAL_FieldItemFx_UpdateToss
 void FieldItemFx_UpdateToss(FieldItemFx *self);
 #endif
@@ -1016,32 +1041,59 @@ void FieldItemFx_UpdateHoleOpen(FieldItemFx *self);
 #ifndef PROTO_LOCAL_FieldItemFx_UpdateHoleClose
 void FieldItemFx_UpdateHoleClose(FieldItemFx *self);
 #endif
+#ifndef PROTO_LOCAL_FieldItemFx_InitPop
+void FieldItemFx_InitPop(FieldItemFx *self, FieldUnitPos *p);
+#endif
 #ifndef PROTO_LOCAL_FieldItemFx_UpdatePop
 void FieldItemFx_UpdatePop(FieldItemFx *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_InitTreeDrop
+void FieldItemFx_InitTreeDrop(FieldItemFx *self, FieldUnitPos *p, VecFx32 *q, s32 skip);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_UpdateTreeDrop
 void FieldItemFx_UpdateTreeDrop(FieldItemFx *self);
 #endif
+#ifndef PROTO_LOCAL_FieldItemFx_InitTreeDropFloat
+void FieldItemFx_InitTreeDropFloat(FieldItemFx *self, FieldUnitPos *p, VecFx32 *q);
+#endif
 #ifndef PROTO_LOCAL_FieldItemFx_UpdateTreeDropFloat
 void FieldItemFx_UpdateTreeDropFloat(FieldItemFx *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_InitBeeHiveDrop
+void FieldItemFx_InitBeeHiveDrop(FieldItemFx *self, FieldUnitPos *unit, VecFx32 *p);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_UpdateBeeHiveDrop
 void FieldItemFx_UpdateBeeHiveDrop(FieldItemFx *self);
 #endif
+#ifndef PROTO_LOCAL_FieldItemFx_InitDigUpTree
+void FieldItemFx_InitDigUpTree(FieldItemFx *self, FieldUnitPos *p, u32 ang);
+#endif
 #ifndef PROTO_LOCAL_FieldItemFx_UpdateDigUpTree
 void FieldItemFx_UpdateDigUpTree(FieldItemFx *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_InitPlant
+void FieldItemFx_InitPlant(FieldItemFx *self, FieldUnitPos *p, VecFx32 *q, u32 w);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_UpdatePlant
 void FieldItemFx_UpdatePlant(FieldItemFx *self);
 #endif
+#ifndef PROTO_LOCAL_FieldItemFx_InitHoleShrink
+void FieldItemFx_InitHoleShrink(FieldItemFx *self, FieldUnitPos *p);
+#endif
 #ifndef PROTO_LOCAL_FieldItemFx_UpdateHoleShrink
 void FieldItemFx_UpdateHoleShrink(FieldItemFx *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_InitStrikeShake
+void FieldItemFx_InitStrikeShake(FieldItemFx *self, FieldUnitPos *p);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_UpdateStrikeShake
 void FieldItemFx_UpdateStrikeShake(FieldItemFx *self);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_SplashPosCallback
 void FieldItemFx_SplashPosCallback(EffectModel *p);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_InitBalloonDrop
+void FieldItemFx_InitBalloonDrop(FieldItemFx *self, VecFx32 *p);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_UpdateBalloonDrop
 void FieldItemFx_UpdateBalloonDrop(FieldItemFx *self);
