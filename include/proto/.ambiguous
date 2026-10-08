@@ -62,8 +62,6 @@ NNSG2dCharCanvas
 OSIrqCallbackInfo
 Obj
 ObjShift
-PMDest
-PMFlag
 PMWork
 PadState
 Pair
@@ -88,6 +86,7 @@ SlotEnt
 SndBuf
 SndHeap
 SndWork
+StrBuf
 Strm
 StrmEnt
 TPCalibInternal
