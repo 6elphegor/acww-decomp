@@ -4,16 +4,20 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_022723b8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "net/DwcFriendControl.h"
 #include "net/DwcMatchControl.h"
 #include "net/DwcMatchUserKey.h"
+struct DwcMatchServerLock;
+#ifndef __cplusplus
+typedef struct DwcMatchServerLock DwcMatchServerLock;
+#endif
 #ifdef __cplusplus
+#include "net/qr2.h"
+#include "net/sb_internal.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-#ifndef PROTO_LOCAL_sDwcMatchServerLock
-extern u8 sDwcMatchServerLock[4];
 #endif
 #ifndef PROTO_LOCAL_sDwcMatchUserFilter
 extern void *sDwcMatchUserFilter;
@@ -37,7 +41,7 @@ BOOL DwcMatch_IsServerLocked(void);
 void DwcMatch_ClearServerLock(void);
 #endif
 #ifndef PROTO_LOCAL_DwcMatch_InitControl
-void DwcMatch_InitControl(DwcMatchControl *a0, void *a1, Unk_ov065_02290814_Sub *a2, void *a3, char *a4, char *a5, u8 *a6, u32 a7);
+void DwcMatch_InitControl(DwcMatchControl *a0, void *a1, Unk_ov065_02290814_Sub *a2, void *a3, char *a4, char *a5, DwcFriendData *a6, u32 a7);
 #endif
 #ifndef PROTO_LOCAL_DwcMatch_StartQr2
 s32 DwcMatch_StartQr2(u32 a);
@@ -125,9 +129,6 @@ s32 DwcMatch_StartServerQuery(u32 a);
 #endif
 #ifndef PROTO_LOCAL_DwcMatch_BuildServerFilter
 void DwcMatch_BuildServerFilter(char *buf, u32 x, u32 y, u32 z);
-#endif
-#ifndef PROTO_LOCAL_DwcMatch_StartNatNegotiation
-s32 DwcMatch_StartNatNegotiation(u32 a, u32 b, void *c);
 #endif
 #ifndef PROTO_LOCAL_DwcMatch_SendNnRequest
 s32 DwcMatch_SendNnRequest(DwcNnRequest *p);
@@ -261,35 +262,20 @@ s32 DwcMatch_HandleNnResult(s32 a);
 #ifndef PROTO_LOCAL_DwcMatch_HandleGt2Result
 s32 DwcMatch_HandleGt2Result(s32 a);
 #endif
-#ifndef PROTO_LOCAL_DwcMatch_OnServerBrowserEvent
-void DwcMatch_OnServerBrowserEvent(void *list, s32 mode, void *c);
-#endif
 #ifndef PROTO_LOCAL_DwcMatch_Nop
 void DwcMatch_Nop(void *a);
 #endif
 #ifndef PROTO_LOCAL_DwcMatch_EvaluateServers
 BOOL DwcMatch_EvaluateServers(u32 a);
 #endif
-#ifndef PROTO_LOCAL_DwcMatch_OnQr2ServerKey
-void DwcMatch_OnQr2ServerKey(s32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_DwcMatch_OnQr2PlayerKey
-void DwcMatch_OnQr2PlayerKey(void);
-#endif
-#ifndef PROTO_LOCAL_DwcMatch_OnQr2TeamKey
-void DwcMatch_OnQr2TeamKey(void);
-#endif
-#ifndef PROTO_LOCAL_DwcMatch_OnQr2KeyList
-void DwcMatch_OnQr2KeyList(s32 a, u32 b);
-#endif
 #ifndef PROTO_LOCAL_DwcMatch_OnQr2Count
-s32 DwcMatch_OnQr2Count(void);
+s32 DwcMatch_OnQr2Count(s32 type, void *userData);
 #endif
 #ifndef PROTO_LOCAL_DwcMatch_OnQr2Error
-s32 DwcMatch_OnQr2Error(s32 a);
+void DwcMatch_OnQr2Error(s32 a, const char *message, void *userData);
 #endif
 #ifndef PROTO_LOCAL_DwcMatch_OnQr2PublicAddress
-void DwcMatch_OnQr2PublicAddress(u32 a, u32 b);
+void DwcMatch_OnQr2PublicAddress(u32 a, u32 b, void *userData);
 #endif
 #ifndef PROTO_LOCAL_DwcMatch_OnQr2NnRequest
 void DwcMatch_OnQr2NnRequest(u32 a, void *ud);
@@ -315,8 +301,29 @@ s32 DwcFriend_GetStatusString(void *a, char *b);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sDwcMatchServerLock
+extern DwcMatchServerLock sDwcMatchServerLock;
+#endif
 #ifndef PROTO_LOCAL_sDwcMatchUserKeys
 extern DwcMatchUserKey sDwcMatchUserKeys[0x738 / 12];
+#endif
+#ifndef PROTO_LOCAL_DwcMatch_StartNatNegotiation
+s32 DwcMatch_StartNatNegotiation(u32 a, u32 b, _SBServer *c);
+#endif
+#ifndef PROTO_LOCAL_DwcMatch_OnServerBrowserEvent
+void DwcMatch_OnServerBrowserEvent(_ServerBrowser *list, s32 mode, _SBServer *c);
+#endif
+#ifndef PROTO_LOCAL_DwcMatch_OnQr2ServerKey
+void DwcMatch_OnQr2ServerKey(u32 a, qr2_buffer_s *b, void *userData);
+#endif
+#ifndef PROTO_LOCAL_DwcMatch_OnQr2PlayerKey
+void DwcMatch_OnQr2PlayerKey(u32 key, s32 index, qr2_buffer_s *b, void *userData);
+#endif
+#ifndef PROTO_LOCAL_DwcMatch_OnQr2TeamKey
+void DwcMatch_OnQr2TeamKey(u32 key, s32 index, qr2_buffer_s *b, void *userData);
+#endif
+#ifndef PROTO_LOCAL_DwcMatch_OnQr2KeyList
+void DwcMatch_OnQr2KeyList(s32 a, qr2_keybuffer_s *b, void *userData);
 #endif
 }
 #endif

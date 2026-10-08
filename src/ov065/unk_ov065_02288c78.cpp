@@ -120,7 +120,6 @@ s32 TableEnter(void *, void *);
 s32 TableCount(void *);
 s32 TableFree(void *);
 HashImplementation *TableNew2(s32, s32, s32, void *, void *, void *);
-s32 inet_addr(s32);
 s32 recvfrom(s32, void *, s32, s32, void *, void *);
 s32 closesocket(s32);
 s32 CanReceiveOnSocket(s32);
@@ -140,7 +139,6 @@ s32 SBServerGetPing(void *);
 s32 StringHash(void *, s32);
 s32 SBServerListCleanup(void *);
 s32 SBServerListDisconnect(void *);
-s32 SBServerListConnectAndQuery(void *, char *, s32, s32, s32);
 s32 SBServerListInit(void *, s32, s32, s32, s32, s32, void *, void *);
 s32 NTSLengthSB(char *, s32);
 char *SBRefStr(SBServerList *, const char *);
@@ -154,8 +152,6 @@ s32 SBServerListFindServer(void *c, _SBServer *key);
 void SBServerListAppendServer(void *, _SBServer *);
 void SBServerListSort(void *c, s32 a, char *b, u32 mode);
 s32 ProcessIncomingData(void *);
-s32 SBSendNatNegotiateCookieToServer(void *, s32, s32, s32);
-s32 SBSendMessageToServer(void *, s32, s32, s32, s32);
 
 s32 SBServerAddKeyValue(_SBServer *a, char *k, char *v);
 char *mytok(char *s, s32 ch);
@@ -163,7 +159,11 @@ s32 CheckValidKey(char *s);
 char *SBServerGetStringValueA(void *a, char *k, char *d);
 s32 ServerBrowserHalt(void *o);
 s32 ServerBrowserThink(void *o);
-s32 ServerBrowserBeginUpdate2(void *o, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
+s32 ServerBrowserBeginUpdate2(_ServerBrowser *o, s32 a, s32 b, u8 *data, s32 n, const char *c, s32 d, s32 e);
+s32 inet_addr(const char *a);  // (unk_ov065_022789fc.cpp)
+s32 SBServerListConnectAndQuery(SBServerList *ctx, const char *user, const char *pass, u32 flags, u32 extra);  // (unk_ov065_02289444.cpp)
+s32 SBSendMessageToServer(SBServerList *c, u32 a1, u32 a2, u8 *data, s32 len);
+s32 SBSendNatNegotiateCookieToServer(SBServerList *c, u32 a1, u32 a2, u32 ip);
 void EngineCallback(void *, s32, _SBServer *, _ServerBrowser *);
 void ListCallback(SBServerList *, s32, _SBServer *, _ServerBrowser *);
 s32 SBListThink(void *);
@@ -177,8 +177,7 @@ s32 RefStringHash(void **, s32);
 
 namespace F02288e2c {
 extern "C" {
-s32 ServerBrowserBeginUpdate2(void *op, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e) {
-    _ServerBrowser *o = (_ServerBrowser *)op;
+s32 ServerBrowserBeginUpdate2(_ServerBrowser *o, s32 a, s32 b, u8 *data, s32 n, const char *c, s32 d, s32 e) {
     char buf[0x100] = {0};
     s32 i;
     s32 j;
@@ -214,7 +213,7 @@ s32 ServerBrowserBeginUpdate2(void *op, s32 a, s32 b, u8 *data, s32 n, s32 c, s3
 
 namespace F02288e2c {
 extern "C" {
-s32 ServerBrowserLimitUpdateA(void *o, s32 a, s32 b, u8 *c, s32 e, s32 f, s32 g) {
+s32 ServerBrowserLimitUpdateA(_ServerBrowser *o, s32 a, s32 b, u8 *c, s32 e, const char *f, s32 g) {
     return ServerBrowserBeginUpdate2(o, a, b, c, e, f, 0x80, g);
 }
 }
@@ -222,7 +221,7 @@ s32 ServerBrowserLimitUpdateA(void *o, s32 a, s32 b, u8 *c, s32 e, s32 f, s32 g)
 
 namespace F02288e2c {
 extern "C" {
-s32 ServerBrowserSendMessageToServerA(_ServerBrowser *o, s32 a, u16 b, s32 c, s32 e) {
+s32 ServerBrowserSendMessageToServerA(_ServerBrowser *o, const char *a, u16 b, u8 *c, s32 e) {
     s32 x = inet_addr(a);
     return SBSendMessageToServer(&o->list, x, Unk_ov065_02289044_Htons(b), c, e);
 }
@@ -231,7 +230,7 @@ s32 ServerBrowserSendMessageToServerA(_ServerBrowser *o, s32 a, u16 b, s32 c, s3
 
 namespace F02288e2c {
 extern "C" {
-s32 ServerBrowserSendNatNegotiateCookieToServerA(_ServerBrowser *o, s32 a, u16 b, s32 c) {
+s32 ServerBrowserSendNatNegotiateCookieToServerA(_ServerBrowser *o, const char *a, u16 b, s32 c) {
     s32 x = inet_addr(a);
     return SBSendNatNegotiateCookieToServer(&o->list, x, Unk_ov065_02289044_Htons(b), c);
 }
@@ -480,8 +479,8 @@ BOOL SBServerHasPrivateAddress(_SBServer *o) {
 
 namespace F02288e2c {
 extern "C" {
-s32 SBServerGetPrivateInetAddress(s32 *o) {
-    return o[2];
+u32 SBServerGetPrivateInetAddress(_SBServer *o) {
+    return o->privateip;
 }
 }
 }

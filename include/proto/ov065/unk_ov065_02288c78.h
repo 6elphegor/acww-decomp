@@ -18,12 +18,6 @@ extern char *data_ov065_0228e928[2];
 #ifndef PROTO_LOCAL_thestr
 extern char *thestr;
 #endif
-#ifndef PROTO_LOCAL_ServerBrowserBeginUpdate2
-s32 ServerBrowserBeginUpdate2(void *op, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
-#endif
-#ifndef PROTO_LOCAL_ServerBrowserLimitUpdateA
-s32 ServerBrowserLimitUpdateA(void *o, s32 a, s32 b, u8 *c, s32 e, s32 f, s32 g);
-#endif
 #ifndef PROTO_LOCAL_ServerBrowserThink
 s32 ServerBrowserThink(void *o);
 #endif
@@ -48,9 +42,6 @@ char *SBServerGetStringValueA(void *a, char *k, char *d);
 #ifndef PROTO_LOCAL_SBServerGetIntValueA
 s32 SBServerGetIntValueA(void *a, char *b, s32 c);
 #endif
-#ifndef PROTO_LOCAL_SBServerGetPrivateInetAddress
-s32 SBServerGetPrivateInetAddress(s32 *o);
-#endif
 #ifndef PROTO_LOCAL_CheckValidKey
 s32 CheckValidKey(char *s);
 #endif
@@ -69,11 +60,17 @@ extern "C" {
 #ifndef PROTO_LOCAL_g_SBRefStrList
 extern HashImplementation *g_SBRefStrList;
 #endif
+#ifndef PROTO_LOCAL_ServerBrowserBeginUpdate2
+s32 ServerBrowserBeginUpdate2(_ServerBrowser *o, s32 a, s32 b, u8 *data, s32 n, const char *c, s32 d, s32 e);
+#endif
+#ifndef PROTO_LOCAL_ServerBrowserLimitUpdateA
+s32 ServerBrowserLimitUpdateA(_ServerBrowser *o, s32 a, s32 b, u8 *c, s32 e, const char *f, s32 g);
+#endif
 #ifndef PROTO_LOCAL_ServerBrowserSendMessageToServerA
-s32 ServerBrowserSendMessageToServerA(_ServerBrowser *o, s32 a, u16 b, s32 c, s32 e);
+s32 ServerBrowserSendMessageToServerA(_ServerBrowser *o, const char *a, u16 b, u8 *c, s32 e);
 #endif
 #ifndef PROTO_LOCAL_ServerBrowserSendNatNegotiateCookieToServerA
-s32 ServerBrowserSendNatNegotiateCookieToServerA(_ServerBrowser *o, s32 a, u16 b, s32 c);
+s32 ServerBrowserSendNatNegotiateCookieToServerA(_ServerBrowser *o, const char *a, u16 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_ServerBrowserRemoveServer
 void ServerBrowserRemoveServer(_ServerBrowser *o, _SBServer *key);
@@ -119,6 +116,9 @@ u16 SBServerGetPublicQueryPortNBO(_SBServer *o);
 #endif
 #ifndef PROTO_LOCAL_SBServerHasPrivateAddress
 BOOL SBServerHasPrivateAddress(_SBServer *o);
+#endif
+#ifndef PROTO_LOCAL_SBServerGetPrivateInetAddress
+u32 SBServerGetPrivateInetAddress(_SBServer *o);
 #endif
 #ifndef PROTO_LOCAL_SBServerGetPrivateQueryPort
 u16 SBServerGetPrivateQueryPort(_SBServer *o);
