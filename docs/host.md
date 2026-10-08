@@ -354,7 +354,7 @@ constant-initialised (constexpr constructor) or initialise it in StaticInit). `m
 variables in `HostOverlay_Init()`, first thing in `main()`; `FS_StartOverlay` restores overlay N's variables and
 runs its StaticInits in link order. Objects of classes with default constructors are constructed at start-up too
 (their constructors only set their members) and again at every load. Overlays that share an address range on the
-DS keep separate variables here; each is reset on its own load. 332 units with 2961 variables, 15 StaticInits.
+DS keep separate variables here; each is reset on its own load. 332 units with 2959 variables, 15 StaticInits.
 Debugging: `ACWW_OVLOG=1` lists each load (the bytes the reset undoes, by variable), `ACWW_OVRESET=0` restores the
 earlier behaviour (every overlay's StaticInits once at start-up, no reset), `ACWW_OVRESET=-4,9` that for the overlays
 listed. ov004's information points use the divider registers (`MuseumInfoPoint_InitFromDef`: `FX_Div`), so virtual

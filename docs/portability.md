@@ -293,7 +293,8 @@ After phase 1 the runtime has no ucontext, no x86 decoding and no `-mno-red-zone
     0xa5; read-only ones through `mprotect`), and with `ACWW_GUARDS=1` compares them every frame and reports a changed
     one (variable, object, frame, the first changed byte's address for a gdb hardware watchpoint), then restores it.
     `--only LO-HI` gives only some variables guards (bisecting a layout dependence). 9063 guards on i386 in the DS
-    order (4665 data, 2822 read-only, 1576 bss), 9060 after the drop. The variant's gbss starts at 0x02080000 (its gdata
+    order (4665 data, 2822 read-only, 1576 bss), 9070 after the drop and the merge of 3.2 (DTCM's variables are
+    ordinary ones now; the same on x86-64). The variant's gbss starts at 0x02080000 (its gdata
     is larger); `host_guards_init` checks that gbss still ends below the main arena.
 
     Found and fixed (each a separate commit; the writers from gdb watchpoints):
@@ -309,22 +310,30 @@ After phase 1 the runtime has no ucontext, no x86 decoding and no `-mno-red-zone
       members' sizes, 4 bytes short of the struct on x86-64 (alignment of the FSFile member): the `info` pointer was
       stored past the end. Now `NNSSndArc` (include/nnsys/snd_arc.h), also the type of unk_0210b448.c's and
       unk_0210b1b0.c's `Arc`.
-    - **A read past an end:** `TvSound_GetMaxSize` looped over sTvSoundSizes until the address of data_020c6190, the
-      next variable in the DS layout. Without the DS order the TV sound heap got another size: the new-game save
-      script's sound changed from frame ~27870 and the continue run crashed at frame 4290. Found by bisecting with
-      `--only` (the guard after sTvSoundSizes alone changed the sound; 6 rounds of 4 runs). It uses the table's bounds.
+    - **Reads past an end** (the guards don't see reads; these showed up as differences once the DS order was gone,
+      and were found by bisecting the guard variant with `--only` and by gdb watchpoints):
+      - `TvSound_GetMaxSize` looped over sTvSoundSizes until the address of data_020c6190, the next variable in the
+        DS layout: the TV sound heap got another size, and the new-game save script's sound changed from frame ~27870
+        (the guard after sTvSoundSizes alone changed it; 6 rounds of 4 runs). It uses the table's bounds now.
+      - The house rooms' exits: `sRoomSceneEntryList = {&data_ov004_0225893c, 3}`, but the three SceneWarp entries
+        were three variables (symbols.txt names each) with sRoomCommonProfileCount between them. Leaving the house in
+        the continue run read exit 2 from whatever followed: a fade type of 39, an index past
+        sTransitionTypeTable, a jump into the middle of `TownEval_EvaluateAcre` at frame 4290. Now
+        `SceneWarp sRoomSceneEntries[3]`; the 32 other scene warp lists were checked: arrays of their counts.
 
-    Checks. The guard variant over quick, play, the town script, the save script and the continue run (i386; x86-64:
-    quick, play, town) reports **0 overruns** after the fixes (before: 3 on i386, 4 on x86-64). Fills 0xa5, 0x00, 0x5a
-    and 0xff give the same quick and play output (reads past an end there would show as differences). With the drop
-    (no order.ld ordering, no `-fdata-sections`, no `-malign-data=abi`; tools/host_order.py deleted; the partial link
-    keeps a 3-line `game.ld` that names `gdata`/`gbss` until 3.3): oracle quick and play identical (i386 with the
-    captures, x86-64 with modern's own run), the save, continue and town scripts identical to modern's (screenshots,
-    sound, save files), x86-64 also with `ACWW_HIGHMEM=1`. Two things seen on the way, not layout bugs: the x86-64
-    guard variant hung once in the attract demo because the per-frame check restored a guard the 4-byte-short sound
-    archive had stored its pointer in (gone with that fix); and it crashed in `HappyRoom_Evaluate` in the town
-    script - the room score sources' struct-return bug fixed on modern in 549c0c7c (stack layout decides whether it
-    shows).
+    Checks (after merging modern 7291e665, steps 3.0-3.2). The guard variant over quick, play, the town script, the
+    save script and the continue run (i386) and quick, play, town (x86-64) reports **0 overruns** (before the fixes:
+    3 variables on i386, 4 on x86-64); with fills 0xa5 and 0x5a the long scripts give the same output as modern's
+    build, and quick and play the same with 0xa5, 0x00, 0x5a and 0xff. With the drop (no order.ld ordering, no
+    `-fdata-sections`, no `-malign-data=abi`; tools/host_order.py deleted; the partial link keeps a 3-line `game.ld`
+    that names `gdata`/`gbss` until 3.3): oracle quick and play identical (i386 with the captures, x86-64 with
+    modern's own run), the save, continue and town scripts identical to modern's build (screenshots, sound, save
+    files; i386, and town on x86-64), x86-64 also with `ACWW_HIGHMEM=1` and `=2`. Before the two read fixes the
+    unordered build differed in the save script's sound and crashed in the continue run: the layout changed
+    behaviour only through these reads. Two things seen on the way, not layout bugs: the x86-64 guard variant hung
+    once in the attract demo because the per-frame check restored a guard the 4-byte-short sound archive had stored
+    its pointer in (gone with that fix); and it crashed in `HappyRoom_Evaluate` in the town script - the room score
+    sources' struct-return bug fixed on modern in 549c0c7c (stack layout decides whether it shows).
 16. **2.9** Overlay reset without the linker:
     - generate `overlay_table.c` with each overlay's variables (`{&var, sizeof var}`, from config symbols.txt and the overlay units), the pristine copy taken per variable;
     - make the 98 overlay constructors explicit (a generated `OvNNN_StaticInit()` per overlay calling the units' init functions, or the objects made constant-initialised).
