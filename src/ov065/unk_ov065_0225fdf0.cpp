@@ -555,7 +555,11 @@ s32 SockCore_SendTo(File *self, u8 *buf, s32 len, s32 a4, u32 a5, u32 a6);
 s32 SockCore_CmdShutdown(Unk_ov065_02260488_Msg *m);
 s32 SockCore_Shutdown(File *self);
 void SockCore_FreeClosedSockets();
-void SockCore_StopCommandThread(void *q);
+void SockCore_StopCommandThread(OSMessageQueue *q, OSThread *thread);
+// (a pipe's command queue and thread; a socket without that pipe has none)
+extern "C++" template <class Pipe> inline void SockCore_StopPipe(Pipe *p) {
+    SockCore_StopCommandThread(p != NULL ? &p->msgQueue : NULL, p != NULL ? &p->thread : NULL);
+}
 void SockCore_Free(File *self);
 s32 SockCore_CmdClose(Unk_ov065_02260488_Msg *m);
 s32 SockCore_Close(File *self);
@@ -792,8 +796,8 @@ void SockCore_Free(File *self) {
         self->flags = 0;
         BOOL local = Unk_ov065_02260488_Local(self);
         if (local) {
-            SockCore_StopCommandThread(self->sendPipe);
-            SockCore_StopCommandThread(self->recvPipe);
+            SockCore_StopPipe(self->sendPipe);
+            SockCore_StopPipe(self->recvPipe);
         } else if (self->sockType == 1) {
             Unk_ov065_02260488_Msg *p = (Unk_ov065_02260488_Msg *)self->recvPipe->head;
             if (p != NULL) {
@@ -807,9 +811,9 @@ void SockCore_Free(File *self) {
             self->recvPipe->tail = 0;
             self->recvPipe->head = 0;
             OS_WakeupThread(&self->recvPipe->waitQueue);
-            SockCore_StopCommandThread(self->recvPipe);
+            SockCore_StopPipe(self->recvPipe);
         } else if (self->sockType == 2) {
-            SockCore_StopCommandThread(self->sendPipe);
+            SockCore_StopPipe(self->sendPipe);
         }
         u32 irq = OS_DisableInterrupts();
         SockCore_RemoveFromOpenList(self);
@@ -819,10 +823,10 @@ void SockCore_Free(File *self) {
     }
 }
 
-void SockCore_StopCommandThread(void *q) {
+void SockCore_StopCommandThread(OSMessageQueue *q, OSThread *thread) {
     if (q != NULL) {
         void *msg;
-        OS_JoinThread((u8 *)q + 0x20);
+        OS_JoinThread(thread);
         u32 irq = OS_DisableInterrupts();
         OS_DisableScheduler();
         if (OS_ReceiveMessage(q, &msg, 0)) {

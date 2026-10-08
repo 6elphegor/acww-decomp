@@ -65,7 +65,7 @@ char *qr2_registered_key_list[0xfe] = {
     data_ov065_0228e420,
 };
 
-void qr2_register_keyA(s32 i, u32 v) {
+void qr2_register_keyA(s32 i, const char *v) {
     if (i >= 0x32 && i <= 0xfe) {
         qr2_registered_key_list[i] = (char *)v;
     }

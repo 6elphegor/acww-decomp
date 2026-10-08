@@ -15,4 +15,11 @@ struct FxVec3 : VecFx32Copy {
     ~FxVec3();
 };
 
+// The same vector for a global whose __sinit only registers the destructor (FxVec3's, 0x02000c8c: the symbol is
+// aliased in modern/gen/provides.ld): ov003's sWateringPos.
+class FxVec3NoCtor : public VecFx32Copy {
+public:
+    ~FxVec3NoCtor();
+};
+
 #endif // GAME_FXVEC3_H

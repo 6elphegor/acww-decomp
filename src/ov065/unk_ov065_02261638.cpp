@@ -1278,7 +1278,7 @@ void Tcp_SendFinAck(Sess *s, u32 x) {
 
 void Tcp_SendReset(u8 *a, u8 *b, u32 c, u32 d) {
     Sess *g = &sTcpResetSoc;
-    MI_CpuFill8(g, 0, 0x64);
+    MI_CpuFill8(g, 0, sizeof(*g));
     g->localPort = BS16(*(u16 *)(b + 2));
     g->remotePort = BS16(*(u16 *)b);
     g->remoteAddr = Swap32(a + 0xc);

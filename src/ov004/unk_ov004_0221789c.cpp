@@ -34,6 +34,7 @@
 #include "talk/TalkWindowState.h"
 #include "town/BlockMap.h"
 #include "room/FtrActorGrid.h"
+#include "game/TouchPicker.h"
 #include "save/VillagerData.h"
 #include "npc/VillagerDataProfileView.h"
 #include "proto/autoload_2/unk_020e8558.h"
@@ -97,8 +98,8 @@ VillagerMemory *Villager_FindOrCreateMemory(VillagerMemory *t, void *b);
 VillagerMemory *Villager_FindMemory(void *a, void *b);
 void VillagerMemory_RecordTalk(VillagerMemory *self, void *a, u8 *b, u8 *c);
 s32 Item_GetPrice(u16 *o);
-void *Scene_GetTouchPicker();
-BOOL TouchPick_GetGroundPos(void *picker, VecFx32 *out);
+TouchPicker *Scene_GetTouchPicker();  // (defined in src/main/unk_020b4828.cpp returning u8 *)
+BOOL TouchPick_GetGroundPos(TouchPickResult *picker, VecFx32 *out);
 s32 FtrActor_GetFtrIndex(FtrActor *self);
 }
 

@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "npc/VillagerState.h"
 #include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "npc/VillagerClothModel.h"
@@ -112,7 +113,7 @@ void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32 *v);
 u8 Math_CountDownU8(u8 *p);
 void VillagerStates_SetFleaMarketBuyer(s32);
 s32 VillagerState_ResetRole(void *);
-void *Villager_GetState(void *);
+VillagerState *Villager_GetState(void *);
 void VillagerState_SetRole(void *, u32);
 u8 Scene_GetPrevious();
 s32 SceneId_IsTownUnk31(u32 scene);
