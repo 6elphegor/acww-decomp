@@ -194,8 +194,6 @@ extern s8 *sWifiApUsbKey1Ptr;
 extern s8 *sWifiApUsbKey2Ptr;
 extern s8 *sWifiApNdwcshapKey1Ptr;
 extern s8 *sWifiApNdwcshapKey2Ptr;
-extern u8 sWifiApUsbKeyPermTable[];
-extern u8 sWifiApUsbKeySBox[];
 extern u8 sWifiApNdwcshapPermTable[];
 
 extern "C" {
@@ -321,10 +319,10 @@ void WifiAp_DeriveUsbApWepKey(u8 *a, u8 *b) {
     MI_CpuCopy8(b, tmp, 13);
     {
         u8 *pt;
-        u8 *pk;
+        const u8 *pk;
         i = 0;
         pt = tmp;
-        pk = (u8 *)sWifiApUsbKeyPermTable;
+        pk = sWifiApUsbKeyPermTable;
         for (; i < 13; i++) {
             b[*pk] = *pt;
             pt++;
