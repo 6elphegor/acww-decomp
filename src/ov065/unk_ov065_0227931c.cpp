@@ -87,9 +87,6 @@ s32 ghiResizeBuffer(GHIBuffer *o, s32 n);
 
 namespace Nc {
 
-typedef void (*ghttpPostCallback)(u32, u32, u32, u32, u32, u32);
-typedef void (*ghttpProgressCallback)(u32, u32, u32, u32, u32, u32, u32);
-typedef s32 (*ghttpCompletedCallback)(u32, u32, u32, u32, u32);
 typedef s32 (*GsHttpDecryptFn)(GHIConnection *, void *, u8 *, s32 *, u8 *, s32 *);
 typedef void (*GsHttpEncryptCleanupFn)(GHIConnection *, void *);
 
@@ -102,7 +99,7 @@ extern s32 ghiNextUniqueID;
 extern u32 ghiThrottleTimeDelay;
 extern s32 ghiThrottleBufferSize;
 
-u32 ArrayLength(u32);
+u32 ArrayLength(DArrayImplementation *);
 s32 send(s32, u8 *, s32, s32);
 s32 recv(s32, u8 *, s32, s32);
 s32 GOAGetLastError(s32);
@@ -132,7 +129,7 @@ s32 ghiDoSend(GHIConnection *self, u8 *buf, s32 len);
 }
 extern "C" {
 void ghiCallPostCallback(GHIConnection *self);
-void ghiCallProgressCallback(GHIConnection *self, u32 p1, u32 p2);
+void ghiCallProgressCallback(GHIConnection *self, char *p1, u32 p2);
 void ghiCallCompletedCallback(GHIConnection *self);
 s32 ghiTrySendThenBuffer(GHIConnection *self, u8 *buf, s32 len);
 s32 ghiDoSend(GHIConnection *self, u8 *buf, s32 len);
@@ -212,10 +209,10 @@ extern "C" {
 s32 ghttpPostAddStringA(void *a, const char *b, const char *c);
 s32 ghttpNewPost();
 void ghttpThink();
-s32 ghttpPostExA(const char *a, const char *b, GHIPost *c, u32 d, s32 e, u32 f, u32 g, u32 h);
-s32 ghttpPostA(const char *a, GHIPost *b, s32 c, u32 d, u32 e);
-s32 ghttpGetExA(const char *a, const char *b, void *c, s32 d, GHIPost *e, u32 f, s32 g, u32 h, u32 i, u32 j);
-s32 ghttpGetA(const char *a, s32 b, u32 c, u32 d);
+s32 ghttpPostExA(const char *a, const char *b, GHIPost *c, u32 d, s32 e, ghttpProgressCallback f, ghttpCompletedCallback g, void *h);
+s32 ghttpPostA(const char *a, GHIPost *b, s32 c, ghttpCompletedCallback d, void *e);
+s32 ghttpGetExA(const char *a, const char *b, void *c, s32 d, GHIPost *e, u32 f, s32 g, ghttpProgressCallback h, ghttpCompletedCallback i, void *j);
+s32 ghttpGetA(const char *a, s32 b, ghttpCompletedCallback c, void *d);
 void ghttpCleanup();
 void ghttpStartup();
 }
@@ -257,7 +254,7 @@ void ghttpCleanup() {
 
 namespace Nm {
 extern "C" {
-s32 ghttpGetA(const char *a, s32 b, u32 c, u32 d) {
+s32 ghttpGetA(const char *a, s32 b, ghttpCompletedCallback c, void *d) {
     return ghttpGetExA(a, 0, 0, 0, 0, 0, b, 0, c, d);
 }
 }
@@ -265,7 +262,7 @@ s32 ghttpGetA(const char *a, s32 b, u32 c, u32 d) {
 
 namespace Nm {
 extern "C" {
-s32 ghttpGetExA(const char *a, const char *b, void *c, s32 d, GHIPost *e, u32 f, s32 g, u32 h, u32 i, u32 j) {
+s32 ghttpGetExA(const char *a, const char *b, void *c, s32 d, GHIPost *e, u32 f, s32 g, ghttpProgressCallback h, ghttpCompletedCallback i, void *j) {
     GHIConnection *conn;
     if (a == 0 || *a == 0) {
         return -1;
@@ -298,8 +295,8 @@ s32 ghttpGetExA(const char *a, const char *b, void *c, s32 d, GHIPost *e, u32 f,
     }
     conn->post = e;
     conn->blocking = g;
-    conn->progressCallback = (ghttpProgressCallback)h;
-    conn->completedCallback = (ghttpCompletedCallback)i;
+    conn->progressCallback = h;
+    conn->completedCallback = i;
     conn->callbackParam = j;
     conn->throttle = f;
     conn->userBufferSupplied = (c != 0) ? 1 : 0;
@@ -335,7 +332,7 @@ s32 ghttpGetExA(const char *a, const char *b, void *c, s32 d, GHIPost *e, u32 f,
 
 namespace Nm {
 extern "C" {
-s32 ghttpPostA(const char *a, GHIPost *b, s32 c, u32 d, u32 e) {
+s32 ghttpPostA(const char *a, GHIPost *b, s32 c, ghttpCompletedCallback d, void *e) {
     return ghttpPostExA(a, 0, b, 0, c, 0, d, e);
 }
 }
@@ -343,7 +340,7 @@ s32 ghttpPostA(const char *a, GHIPost *b, s32 c, u32 d, u32 e) {
 
 namespace Nm {
 extern "C" {
-s32 ghttpPostExA(const char *a, const char *b, GHIPost *c, u32 d, s32 e, u32 f, u32 g, u32 h) {
+s32 ghttpPostExA(const char *a, const char *b, GHIPost *c, u32 d, s32 e, ghttpProgressCallback f, ghttpCompletedCallback g, void *h) {
     GHIConnection *conn;
     if (a == 0 || *a == 0) {
         return -1;
@@ -373,8 +370,8 @@ s32 ghttpPostExA(const char *a, const char *b, GHIPost *c, u32 d, s32 e, u32 f, 
     }
     conn->post = c;
     conn->blocking = e;
-    conn->progressCallback = (ghttpProgressCallback)f;
-    conn->completedCallback = (ghttpCompletedCallback)g;
+    conn->progressCallback = f;
+    conn->completedCallback = g;
     conn->callbackParam = h;
     conn->throttle = d;
     if (c != 0) {
@@ -850,13 +847,13 @@ namespace Nc {
 extern "C" {
 void ghiCallCompletedCallback(GHIConnection *self) {
     if (self->completedCallback != 0) {
-        u32 a;
+        char *a;
         u32 b;
         if (self->type != 0) {
             a = 0;
             b = 0;
         } else {
-            a = (u32)self->getFileBuffer.data;
+            a = self->getFileBuffer.data;
             b = self->fileBytesReceived;
         }
         s32 r = self->completedCallback(self->request, self->result, a, b, self->callbackParam);
@@ -870,7 +867,7 @@ void ghiCallCompletedCallback(GHIConnection *self) {
 
 namespace Nc {
 extern "C" {
-void ghiCallProgressCallback(GHIConnection *self, u32 p1, u32 p2) {
+void ghiCallProgressCallback(GHIConnection *self, char *p1, u32 p2) {
     if (self->progressCallback != 0) {
         self->progressCallback(self->request, self->state, p1, p2, self->fileBytesReceived, self->totalSize, self->callbackParam);
     }
@@ -882,7 +879,7 @@ namespace Nc {
 extern "C" {
 void ghiCallPostCallback(GHIConnection *self) {
     if (self->postingState.callback != 0) {
-        u32 a = ArrayLength((u32)self->postingState.states);
+        u32 a = ArrayLength(self->postingState.states);
         self->postingState.callback(self->request, self->postingState.bytesPosted, self->postingState.totalBytes, self->postingState.index, a, self->callbackParam);
     }
 }

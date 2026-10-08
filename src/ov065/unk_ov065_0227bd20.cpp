@@ -27,7 +27,7 @@ extern "C" {
 s32 strncmp(const char *, const char *, s32);
 char *goastrdup(const char *);
 void gpiSetErrorString(void *, const char *);
-s32 gpiSendBuddyMessage(void *, s32, s32, s32);
+s32 gpiSendBuddyMessage(GPConnection *, s32, s32, const char *);
 s32 gpiDeleteBuddy(void *, s32);
 s32 gpiAuthBuddyRequest(void *, s32);
 s32 gpiSetInfos(void *, s32, s32);
@@ -47,12 +47,12 @@ namespace Nc {
 extern "C" {
 
 
-typedef s32 (*GsGpConnectCallback)(GPConnection *, void *, s32);
+typedef s32 (*GsGpConnectCallback)(GPConnection *, void *, void *);
 
 void gpiDisconnect(GPConnection *, s32);
 void gpiSetErrorString(GPConnection *, const char *);
 s32 gpiConnect(GPConnection *, const char *, const char *, const char *, const char *, const char *,
-                        const char *, s32, s32, s32, s32, GsGpConnectCallback, s32);
+                        const char *, const char *, s32, s32, s32, GPCallback, void *);
 s32 gpiCheckConnect(GPConnection *);
 void msleep(s32);
 s32 gpiFindOperationByID(GPConnection *, GPIOperation **, s32);
@@ -151,7 +151,7 @@ s32 gpSetCallback(GPConnection *h, s32 i, GPCallback x, void *y) {
 
 namespace Nc {
 extern "C" {
-s32 gpConnectPreAuthenticatedA(GPConnection *h, char *a, char *b, s32 c, s32 d, GsGpConnectCallback cb, s32 e) {
+s32 gpConnectPreAuthenticatedA(GPConnection *h, char *a, char *b, s32 c, s32 d, GsGpConnectCallback cb, void *e) {
     GPIConnection *ctx;
     if (h == NULL || (ctx = *h) == NULL) {
         return 2;
@@ -172,7 +172,7 @@ s32 gpConnectPreAuthenticatedA(GPConnection *h, char *a, char *b, s32 c, s32 d, 
         return 0;
     }
     return gpiConnect(h, "", "", "",
-                               "", a, b, 0, c, 0, d, cb, e);
+                               "", a, b, NULL, c, 0, d, (GPCallback)cb, e);
 }
 }
 }
@@ -551,7 +551,7 @@ s32 gpSetStatusA(GPConnection *h, s32 v, const char *s1, const char *s2) {
 
 namespace Nb {
 extern "C" {
-s32 gpSendBuddyMessageA(GPConnection *h, s32 a, s32 b) {
+s32 gpSendBuddyMessageA(GPConnection *h, s32 a, const char *b) {
     GPIConnection *c;
     if (h == NULL || (c = *h) == NULL) {
         return 2;

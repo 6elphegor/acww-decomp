@@ -11,7 +11,6 @@
 #include "net/gpiInfo.h"
 
 #include "types64.h"
-#define PROTO_LOCAL_sNasBase64AlphabetPtr  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02114410.h"
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128030.h"
@@ -28,7 +27,7 @@
 extern "C" {
 void *sDwcControl;
 u32 data_ov065_02290674;
-u32 sDwcConnTable[32];
+void *sDwcConnTable[32]; // the GT2 connection of each slot
 u8 sDwcConnInfo[0x100];
 }
 
@@ -44,21 +43,20 @@ extern u8 data_ov065_0228bbac[];
 extern u8 data_ov065_0228bbb4[];
 extern u8 data_ov065_0228bae4[];
 extern u8 data_ov065_0228bb10[];
-extern s8 *sNasBase64AlphabetPtr;
 extern u32 data_ov065_02290674;
 extern DwcControl *sDwcControl;
-extern u32 sDwcConnTable[];
+extern void *sDwcConnTable[];
 void NetCheck_StartThread();
 void DwcHttp_Abort();
 void NasAuth_Abort();
 void DwcHttp_Destroy();
 void NasAuth_Destroy();
 void NetCheck_ThreadMain();
-s32 gt2GetRemoteIP(void *c);
+s32 gt2GetRemoteIP(void *connection);
 u32 GOAGetLastError();
 void DwcCore_SetError(s32, s32);
 s32 DwcMatch_IsInactive();
-DwcConnInfo *gt2GetConnectionData(s32);
+DwcConnInfo *gt2GetConnectionData(void *connection);
 u32 DwcConn_RemoveAid(u32);
 void DwcMatch_UpdateServerStatus();
 void DwcMatch_UpdateValidAidCount();
@@ -66,7 +64,7 @@ void DwcMatch_OnClientDisconnected(u32);
 s32 DwcMatch_OnConnectionClosed(s32, s32, u32);
 void DwcMatch_RemoveMemberAt(s32, s32);
 void DwcFriend_SetOwnStatus(s32, void *, s32);
-void qr2_send_statechanged(u32);
+void qr2_send_statechanged(void *qrec);
 u32 DwcFriend_FindIndexByProfileId(u32);
 void DwcMatch_ResetPlayerCounts();
 s32 DwcCore_SetState(s32);
@@ -85,9 +83,9 @@ u32 func_0213335c(u32, u32);
 void strncpy(void *, void *, u32);
 s32 strtoul(void *, u32, u32);
 void DwcConn_OnGt2SocketError(void *socket);
-void DwcConn_OnGt2Ping(s32 a, s32 b);
-void DwcConn_OnGt2Closed(s32 a0, s32 a1);
-void DwcConn_OnGt2Receive(s32 a, s32 b, s32 c, s32 d);
+void DwcConn_OnGt2Ping(void *a, s32 b);
+void DwcConn_OnGt2Closed(void *a0, s32 a1);
+void DwcConn_OnGt2Receive(void *a, void *b, s32 c, s32 d);
 void DwcMatch_OnGpBuddyMessage(void *a, u32 *b, u32 c);
 void DwcCore_OnGpError(s32 a, u32 *b);
 void DwcMatch_OnMatchDone(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4);
@@ -100,7 +98,7 @@ namespace F022700e4 {
 
 extern "C" {
 extern DwcControl *sDwcControl;
-extern u32 sDwcConnTable[32];
+extern void *sDwcConnTable[32];
 extern DwcConnInfo sDwcConnInfo[32];
 void DwcConn_OnGt2SocketError(void *socket);
 void DwcMatch_OnMatchDone();
@@ -111,20 +109,20 @@ void DwcFriend_OnBuddyStatus();
 void DwcMatch_OnGt2ConnectAttempt();
 void DwcMatch_OnUnrecognizedPacket();
 void DwcFriend_OnUpdateDone(s32 a, s32 b);
-u8 *gt2GetConnectionData(u32 v);
+DwcConnInfo *gt2GetConnectionData(void *connection);
 void DwcLogin_Fail(s32 a, s32 b);
 void DwcFriend_ResetTimer();
 void DwcFriend_SetOwnStatus(s32 a, void *b, s32 c);
-void gt2CloseAllConnectionsHard(u32 a);
+void gt2CloseAllConnectionsHard(void *socket);
 void DwcFriend_Fail(s32 a, s32 b);
 void DwcMatch_Fail(s32 a, s32 b);
 u32 DwcFriend_GetProfileId(s32 a);
-s32 gpIsBuddy(void *a, u32 b);
-void gpGetBuddyIndex(void *a, u32 b, s32 *c);
-void gpGetBuddyStatus(void *a, s32 b, void *c);
-void DwcMatch_StartClient(u32 a, void (*b)(), s32 c, s32 d, s32 e);
-void DwcMatch_StartGameServer(u32 a, void (*b)(), s32 c, s32 d, s32 e);
-void DwcFriend_StartUpdate(void *a, void *b, void (*c)(s32, s32), s32 d, s32 e, s32 f, s32 g, s32 h);
+s32 gpIsBuddy(void *connection, s32 profile);
+s32 gpGetBuddyIndex(void *connection, s32 profile, void *index);
+s32 gpGetBuddyStatus(void *connection, s32 index, void *status);
+s32 DwcMatch_StartClient(u32 a, DwcMatchedScCallback b, void *c, DwcNewClientCallback d, void *e);
+void DwcMatch_StartGameServer(u32 a, DwcMatchedScCallback b, void *c, DwcNewClientCallback d, void *e);
+void DwcFriend_StartUpdate(char *a, char *b, void (*c)(s32, u32, s32), s32 d, DwcFriendStatusCallback e, s32 f, DwcFriendDeleteCallback g, s32 h);
 u32 gpInitialize(void *a, u32 b, s32 c);
 s32 gpSetCallback(void *a, s32 b, GPCallback c, void *d);
 void DwcLogin_Begin();
@@ -132,10 +130,10 @@ void DwcLogin_Process();
 void DwcFriend_Process();
 void DwcMatch_Process(s32 a);
 void qr2_shutdown(void *q);
-void gt2CloseConnectionHard(u32 a);
-s32 gt2CreateSocket(void *a, u32 b, u32 c, u32 d, void (*e)(void *));
-void gt2Listen(u32 a, void (*b)());
-void gt2SetUnrecognizedMessageCallback(u32 a, void (*b)());
+void gt2CloseConnectionHard(void *connection);
+s32 gt2CreateSocket(void *socket, char *localAddress, s32 outgoingBufferSize, s32 incomingBufferSize, void *errorCallback);
+void gt2Listen(void *socket, void *callback);
+void gt2SetUnrecognizedMessageCallback(void *socket, void *callback);
 s32 DwcMatch_GetAidList(u8 **out);
 s32 DwcMatch_GetValidAidList(u8 **out);
 s32 DwcMatch_RemoveMemberAt(s32 a, s32 b);
@@ -152,17 +150,17 @@ s32 DwcConn_HandleGt2Result(s32 x);
 s32 DwcCore_HandleGpResult(s32 x);
 u32 DwcConn_AidListToBitmap(u8 *p, s32 n);
 u32 DwcConn_IsAidConnected(u32 v);
-u32 DwcConn_GetSlotIndex(u32 v);
-u32 DwcConn_FindConnectionByAid(u32 v);
-u32 *DwcConn_GetSlot(u32 idx);
+u32 DwcConn_GetSlotIndex(void *v);
+void *DwcConn_FindConnectionByAid(u32 v);
+void **DwcConn_GetSlot(u32 idx);
 s32 DwcConn_GetAidList(u8 **out);
 void DwcConn_ClearTables();
 void DwcLogin_OnLoginDone(s32 a, s32 b);
 u32 DwcConn_RemoveAid(u32 c);
 DwcConnInfo *DwcConn_GetConnInfo(u32 idx);
-u32 *DwcConn_FindSlotByProfileId(u32 key, s32 n);
+void **DwcConn_FindSlotByProfileId(u32 key, s32 n);
 s32 DwcConn_FindFreeSlot();
-u32 DwcConn_GetAid(u32 v);
+u32 DwcConn_GetAid(void *v);
 s32 DwcConn_CreateGt2Socket();
 s32 DwcCore_GetState();
 u32 DwcConn_IsAidValid(u32 bit);
@@ -172,9 +170,9 @@ s32 DwcConn_GetConnectionCount();
 s32 DwcConn_CloseConnection(u32 a);
 s32 DwcConn_CloseAllConnections();
 void DwcConn_SetClosedCallback(s32 a, s32 b);
-void DwcMatch_ConnectToFriendServer(s32 a, DwcMatchedScCallback cb, s32 arg, s32 d, s32 e);
-void DwcMatch_SetupGameServer(s32 a, DwcMatchedScCallback b, s32 c, s32 d, s32 e);
-s32 DwcFriend_UpdateServersAsync(char *s, DwcDoneCallback f1, s32 f2, s32 f3, s32 p5, s32 p6, s32 p7);
+void DwcMatch_ConnectToFriendServer(s32 a, DwcMatchedScCallback cb, void *arg, DwcNewClientCallback d, void *e);
+void DwcMatch_SetupGameServer(s32 a, DwcMatchedScCallback b, void *c, DwcNewClientCallback d, void *e);
+s32 DwcFriend_UpdateServersAsync(char *s, DwcDoneCallback f1, s32 f2, DwcFriendStatusCallback f3, s32 p5, DwcFriendDeleteCallback p6, s32 p7);
 void DwcLogin_Start(s32 a, s32 b, DwcDoneCallback c, s32 d);
 void DwcCore_Process();
 }
@@ -203,7 +201,7 @@ extern DwcLoginControl *sDwcLoginControl;
 extern DwcNasLoginCallback sDwcLoginDoneCallback;
 extern u8 data_ov065_0228c818[];
 void qr2_shutdown(void *);
-void ServerBrowserFree(void *);
+s32 ServerBrowserFree(void *sb);
 s32 gpSetCallback(void *, s32, GPCallback, void *);
 void gpProcess(void *);
 void gpDestroy(void *);
@@ -215,7 +213,7 @@ void DwcConn_OnGt2Receive(void);
 void DwcConn_OnGt2Closed(void);
 void DwcConn_OnGt2Ping(void);
 void DwcConn_ClearTables(void);
-void DwcLogin_InitControl(void *, void *, void *, void *, u32, void *, s32);
+void DwcLogin_InitControl(void *mem, DwcUserData *a, GPConnection *b, u32 c, u32 d, DwcLoginResultCallback e, u32 f);
 void DwcLogin_OnLoginDone(void);
 void DwcFriend_InitControl(void *, void *, void *, void *, void *);
 void DwcMatch_InitControl(void *, void *, void *, void *, void *, void *, void *, void *);
@@ -224,7 +222,7 @@ void DWCi_Acc_LoginIdToUserName(void *, u32, void *);
 s32 gpSetInfosA(void *, s32, void *);
 s32 gpGetInfo(void *, u32, s32, s32, GPCallback, void *);
 s32 gpDisconnect(void *);
-s32 gpConnectPreAuthenticatedA(void *, void *, void *, s32, s32, void *, s32);
+s32 gpConnectPreAuthenticatedA(void *, void *, void *, s32, s32, void *, void *);
 void DWCi_Acc_SetLoginIdToUserData(void *, void *, u32);
 s32 NasAuth_GetState(void);
 void NasAuth_GetResult(s32 *);
@@ -289,8 +287,8 @@ void DwcCore_Init(DwcControl *g, DwcUserData *a1, void *a2, const char *a3, cons
     sDwcControl->gt2ReceivedCallback = (void *)DwcConn_OnGt2Receive;
     sDwcControl->gt2ClosedCallback = (void *)DwcConn_OnGt2Closed;
     sDwcControl->gt2PingCallback = (void *)DwcConn_OnGt2Ping;
-    sDwcControl->gt2SendBufferSize = a5 != NULL ? a5 : (void *)0x2000;
-    sDwcControl->gt2RecvBufferSize = a6 != NULL ? a6 : (void *)0x2000;
+    sDwcControl->gt2SendBufferSize = a5 != NULL ? (s32)(uptr)a5 : 0x2000;
+    sDwcControl->gt2RecvBufferSize = a6 != NULL ? (s32)(uptr)a6 : 0x2000;
     sDwcControl->gpConnection = NULL;
     sDwcControl->userData = a1;
     sDwcControl->state = 0;
@@ -312,8 +310,8 @@ void DwcCore_Init(DwcControl *g, DwcUserData *a1, void *a2, const char *a3, cons
     sDwcControl->closedCallback = 0;
     sDwcControl->closedCallbackArg = 0;
     DwcConn_ClearTables();
-    DwcLogin_InitControl(&sDwcControl->loginControl, a1, &sDwcControl->gpConnection, a2, a1->gameCode,
-                        (void *)DwcLogin_OnLoginDone, 0);
+    DwcLogin_InitControl(&sDwcControl->loginControl, a1, &sDwcControl->gpConnection, (u32)(uptr)a2, a1->gameCode,
+                        (DwcLoginResultCallback)DwcLogin_OnLoginDone, 0);
     DwcFriend_InitControl(&sDwcControl->friendControl, &sDwcControl->gpConnection, &sDwcControl->buddyRequestText, a7,
                         a8);
     DwcMatch_InitControl(&sDwcControl->matchControl, &sDwcControl->gpConnection, sDwcControl,
@@ -456,7 +454,7 @@ void DwcCore_Process() {
         DwcNet_ProcessSend();
         DwcFriend_Process();
         s = G;
-        if (*(volatile u8 *)(HOST_AT(s, 0x351, matchControl.matchType, 0)) == 2 || *(volatile u8 *)(HOST_AT(s, 0x351, matchControl.matchType, 0)) == 3) {
+        if (s->matchControl.matchType == 2 || s->matchControl.matchType == 3) {
             DwcMatch_Process(1);
         } else if (s->transportSocket != 0) {
             DwcMatch_Process(0);
@@ -488,7 +486,7 @@ void DwcLogin_Start(s32 a, s32 b, DwcDoneCallback c, s32 d) {
             return;
         }
         DwcCore_SetState(1);
-        GSIStartAvailableCheckA(*(u32 *)((u8 *)G + 0x54));
+        GSIStartAvailableCheckA(G->gameName);
     }
 }
 }
@@ -496,7 +494,7 @@ void DwcLogin_Start(s32 a, s32 b, DwcDoneCallback c, s32 d) {
 
 namespace F022700e4 {
 extern "C" {
-s32 DwcFriend_UpdateServersAsync(char *s, DwcDoneCallback f1, s32 f2, s32 f3, s32 p5, s32 p6, s32 p7) {
+s32 DwcFriend_UpdateServersAsync(char *s, DwcDoneCallback f1, s32 f2, DwcFriendStatusCallback f3, s32 p5, DwcFriendDeleteCallback p6, s32 p7) {
     s32 n;
     if (G == 0 || DwcCore_HasError() != 0 || G->state < 3 || G->state == 4) {
         return 0;
@@ -515,7 +513,7 @@ s32 DwcFriend_UpdateServersAsync(char *s, DwcDoneCallback f1, s32 f2, s32 f3, s3
     G->updateCallback = f1;
     G->updateCallbackArg = f2;
     DwcCore_SetState(4);
-    DwcFriend_StartUpdate(G->loginControl.authToken, G->loginControl.authChallenge, DwcFriend_OnUpdateDone, 0, f3, p5, p6, p7);
+    DwcFriend_StartUpdate(G->loginControl.authToken, G->loginControl.authChallenge, (void (*)(s32, u32, s32))DwcFriend_OnUpdateDone, 0, f3, p5, p6, p7);
     return 1;
 }
 }
@@ -523,14 +521,14 @@ s32 DwcFriend_UpdateServersAsync(char *s, DwcDoneCallback f1, s32 f2, s32 f3, s3
 
 namespace F022700e4 {
 extern "C" {
-void DwcMatch_SetupGameServer(s32 a, DwcMatchedScCallback b, s32 c, s32 d, s32 e) {
+void DwcMatch_SetupGameServer(s32 a, DwcMatchedScCallback b, void *c, DwcNewClientCallback d, void *e) {
     if (DwcCore_HasError() == 0 && G->state == 3) {
         DwcConn_ClearTables();
         G->serverMatchCallback = b;
         G->serverMatchCallbackArg = c;
         G->myAid = 0;
         DwcCore_SetState(5);
-        DwcMatch_StartGameServer((u8)(a - 1), DwcMatch_OnMatchDone, 0, d, e);
+        DwcMatch_StartGameServer((u8)(a - 1), (DwcMatchedScCallback)DwcMatch_OnMatchDone, 0, d, e);
     }
 }
 }
@@ -538,7 +536,7 @@ void DwcMatch_SetupGameServer(s32 a, DwcMatchedScCallback b, s32 c, s32 d, s32 e
 
 namespace F022700e4 {
 extern "C" {
-void DwcMatch_ConnectToFriendServer(s32 a, DwcMatchedScCallback cb, s32 arg, s32 d, s32 e) {
+void DwcMatch_ConnectToFriendServer(s32 a, DwcMatchedScCallback cb, void *arg, DwcNewClientCallback d, void *e) {
     s32 v = -1;
     GPBuddyStatus buf;
     if (DwcCore_HasError() == 0 && G->state == 3) {
@@ -556,7 +554,7 @@ void DwcMatch_ConnectToFriendServer(s32 a, DwcMatchedScCallback cb, s32 arg, s32
             if (buf.status != 6) {
                 FAIL710()
             } else {
-                DwcMatch_StartClient(t, DwcMatch_OnMatchDone, 0, d, e);
+                DwcMatch_StartClient(t, (DwcMatchedScCallback)DwcMatch_OnMatchDone, 0, d, e);
             }
         }
     }
@@ -582,14 +580,14 @@ s32 DwcConn_CloseAllConnections() {
     if (G == 0 || DwcCore_HasError() != 0 || (s = G, s->state != 5 && s->state != 6)) {
         return -1;
     }
-    if (*(HOST_AT(s, 0x349, matchControl.numClients, 0)) == 0) {
+    if (s->matchControl.numClients == 0) {
         DwcFriend_SetOwnStatus(1, (void *)"", 0);
         NNFreeNegotiateList();
         DwcCore_SetState(3);
         return 1;
     }
     s->isClosingAll = 1;
-    gt2CloseAllConnectionsHard((u32)G->transportSocket);
+    gt2CloseAllConnectionsHard(G->transportSocket);
     G->isClosingAll = 0;
     return 0;
 }
@@ -599,7 +597,7 @@ s32 DwcConn_CloseAllConnections() {
 namespace F022700e4 {
 extern "C" {
 s32 DwcConn_CloseConnection(u32 a) {
-    u32 r;
+    void *r;
     if (G == 0 || DwcCore_HasError() != 0 || (G->state != 5 && G->state != 6)) {
         return -1;
     }
@@ -702,12 +700,12 @@ s32 DwcConn_CreateGt2Socket() {
     }
     h = (u16)(DwcNet_Rand32(0x4000) + 0xc000);
     s = G;
-    r = gt2CreateSocket(G, gt2AddressToString(0, h, 0), *(u32 *)(HOST_AT(s, 0x14, gt2SendBufferSize, 0)), *(u32 *)(HOST_AT(s, 0x18, gt2RecvBufferSize, 0)), DwcConn_OnGt2SocketError);
+    r = gt2CreateSocket(&G->transportSocket, gt2AddressToString(0, h, 0), s->gt2SendBufferSize, s->gt2RecvBufferSize, (void *)DwcConn_OnGt2SocketError);
     if (DwcConn_HandleGt2Result(r) != 0) {
         return r;
     }
-    gt2Listen((u32)G->transportSocket, DwcMatch_OnGt2ConnectAttempt);
-    gt2SetUnrecognizedMessageCallback((u32)G->transportSocket, DwcMatch_OnUnrecognizedPacket);
+    gt2Listen(G->transportSocket, (void *)DwcMatch_OnGt2ConnectAttempt);
+    gt2SetUnrecognizedMessageCallback(G->transportSocket, (void *)DwcMatch_OnUnrecognizedPacket);
     return r;
 }
 }
@@ -715,16 +713,16 @@ s32 DwcConn_CreateGt2Socket() {
 
 namespace F022700e4 {
 extern "C" {
-u32 DwcConn_FindConnectionByAid(u32 v) {
+void *DwcConn_FindConnectionByAid(u32 v) {
     s32 i;
-    u32 *p;
+    void **p;
     if (G == 0) {
         return 0;
     }
     for (i = 0, p = sDwcConnTable; i < 0x20; p++, i++) {
         if (*p != 0) {
-            u8 *r = gt2GetConnectionData(*p);
-            if (v == r[1]) {
+            DwcConnInfo *r = gt2GetConnectionData(*p);
+            if (v == r->aid) {
                 return sDwcConnTable[i];
             }
         }
@@ -736,16 +734,16 @@ u32 DwcConn_FindConnectionByAid(u32 v) {
 
 namespace F022700e4 {
 extern "C" {
-u32 DwcConn_GetAid(u32 v) {
-    return gt2GetConnectionData(v)[1];
+u32 DwcConn_GetAid(void *v) {
+    return gt2GetConnectionData(v)->aid;
 }
 }
 }
 
 namespace F022700e4 {
 extern "C" {
-u32 DwcConn_GetSlotIndex(u32 v) {
-    return gt2GetConnectionData(v)[0];
+u32 DwcConn_GetSlotIndex(void *v) {
+    return gt2GetConnectionData(v)->slotIndex;
 }
 }
 }
@@ -754,7 +752,7 @@ namespace F022700e4 {
 extern "C" {
 s32 DwcConn_FindFreeSlot() {
     s32 i;
-    u32 *p;
+    void **p;
     for (i = 0, p = sDwcConnTable; i < 0x20; p++, i++) {
         if (*p == 0) {
             return i;
@@ -769,16 +767,16 @@ namespace F022700e4 {
 extern "C" {
 void DwcConn_ClearTables() {
     volatile u32 a = 0;
-    MIi_CpuClear32(a, sDwcConnTable, 0x80);
+    MIi_CpuClear32(a, sDwcConnTable, sizeof(sDwcConnTable));
     volatile u32 b = 0;
-    MIi_CpuClear32(b, sDwcConnInfo, 0x100);
+    MIi_CpuClear32(b, sDwcConnInfo, sizeof(sDwcConnInfo));
 }
 }
 }
 
 namespace F022700e4 {
 extern "C" {
-u32 *DwcConn_GetSlot(u32 idx) {
+void **DwcConn_GetSlot(u32 idx) {
     return &sDwcConnTable[idx];
 }
 }
@@ -786,17 +784,17 @@ u32 *DwcConn_GetSlot(u32 idx) {
 
 namespace F022700e4 {
 extern "C" {
-u32 *DwcConn_FindSlotByProfileId(u32 key, s32 n) {
+void **DwcConn_FindSlotByProfileId(u32 key, s32 n) {
     u8 i;
     for (i = 0; i < n; i++) {
-        if (key == *(u32 *)((u8 *)G + i * 4 + 0x430)) {
+        if (key == G->matchControl.memberProfileIds[i]) {
             break;
         }
     }
     if (i >= n) {
         return 0;
     }
-    return DwcConn_GetSlot(DwcConn_GetSlotIndex(DwcConn_FindConnectionByAid(*((u8 *)G + i + 0x5f4))));
+    return DwcConn_GetSlot(DwcConn_GetSlotIndex(DwcConn_FindConnectionByAid(G->matchControl.aids[i])));
 }
 }
 }
@@ -813,11 +811,11 @@ namespace F022700e4 {
 extern "C" {
 u32 DwcConn_IsAidConnected(u32 v) {
     s32 i;
-    u32 *p;
+    void **p;
     for (i = 0, p = sDwcConnTable; i < 0x20; p++, i++) {
         if (*p != 0) {
-            u8 *r = gt2GetConnectionData(*p);
-            if (v == r[1]) {
+            DwcConnInfo *r = gt2GetConnectionData(*p);
+            if (v == r->aid) {
                 return 1;
             }
         }
@@ -1022,11 +1020,10 @@ void DwcMatch_OnMatchDone(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4) {
         if (i <= *(volatile u8 *)&g->matchControl.numClients) {
             h = g;
             do {
-                if (h->ownProfileId == g->matchControl.memberProfileIds[0]) {
+                if (h->ownProfileId == h->matchControl.memberProfileIds[i]) {
                 sDwcControl->myAid = sDwcControl->matchControl.aids[i];
                 break;
                 }
-                g = (DwcControl *)(HOST_AT(g, 4, gt2ConnectedCallback, 0));
                 i++;
             } while (i <= *(volatile u8 *)&h->matchControl.numClients);
         }
@@ -1068,15 +1065,15 @@ void DwcMatch_OnGpBuddyMessage(void *a, u32 *b, u32 c) {
 
     s = (char *)b[2];
     if (DwcFriend_HandleAuthorizedMessage(a, b, c) == 0) {
-        if (memcmp(s, (void *)"GPCM", STD_GetStringLength((void *)"GPCM")) == 0) {
-            s += STD_GetStringLength((void *)"GPCM");
+        if (memcmp(s, "GPCM", STD_GetStringLength("GPCM")) == 0) {
+            s += STD_GetStringLength("GPCM");
             e = strchr(s, 0x76);
             n = e - s;
             strncpy(buf, s, n);
             if (n <= 10) {
                 if (strtoul(buf, 0, 10) == 3) {
                     s += n + 1;
-                    if (memcmp(s, (void *)"MAT", STD_GetStringLength((void *)"MAT")) == 0) {
+                    if (memcmp(s, "MAT", STD_GetStringLength("MAT")) == 0) {
                         g = sDwcControl;
                         if (g->state != 5) {
                             if (g->state != 6) {
@@ -1086,7 +1083,7 @@ void DwcMatch_OnGpBuddyMessage(void *a, u32 *b, u32 c) {
                                 goto fin;
                             }
                         }
-                        char *t = s + STD_GetStringLength((void *)"MAT");
+                        char *t = s + STD_GetStringLength("MAT");
                         DwcMatch_OnGpMatchCommand(a, b[0], t);
                     }
                 }
@@ -1100,7 +1097,7 @@ fin:;
 
 namespace F0226f7c8 {
 extern "C" {
-void DwcConn_OnGt2Receive(s32 a, s32 b, s32 c, s32 d) {
+void DwcConn_OnGt2Receive(void *a, void *b, s32 c, s32 d) {
     DwcNet_OnReceive(a, b, c, d);
 }
 }
@@ -1108,7 +1105,7 @@ void DwcConn_OnGt2Receive(s32 a, s32 b, s32 c, s32 d) {
 
 namespace F0226f7c8 {
 extern "C" {
-void DwcConn_OnGt2Closed(s32 a0, s32 a1) {
+void DwcConn_OnGt2Closed(void *a0, s32 a1) {
     u32 r5;
     s32 r4;
     s32 r7;
@@ -1229,7 +1226,7 @@ skip1:
 
 namespace F0226f7c8 {
 extern "C" {
-void DwcConn_OnGt2Ping(s32 a, s32 b) {
+void DwcConn_OnGt2Ping(void *a, s32 b) {
     DwcNet_OnPing(a, b);
 }
 }

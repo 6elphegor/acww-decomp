@@ -11,14 +11,14 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_gti2GetResponse
-char *gti2GetResponse(char *out, char *in);
-#endif
 #ifndef PROTO_LOCAL_sGsPersistXorKey
 extern char *sGsPersistXorKey;
 #endif
 #ifndef PROTO_LOCAL_CloseStatsConnection
 void CloseStatsConnection();
+#endif
+#ifndef PROTO_LOCAL_data_ov065_02291104
+extern char data_ov065_02291104[0x100];
 #endif
 #ifndef PROTO_LOCAL_value_for_key
 char *value_for_key(char *s, char *key);
@@ -38,12 +38,18 @@ void ClosePendingCallbacks(void);
 #ifndef PROTO_LOCAL_gpiDebug
 void gpiDebug(void *h, const char *fmt, ...);
 #endif
+#ifndef PROTO_LOCAL_data_ov065_02291204
+extern char data_ov065_02291204[0x100];
+#endif
 #ifdef __cplusplus
 }
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_gti2GetResponse
+u8 *gti2GetResponse(u8 *out, u8 *in);
+#endif
 #ifndef PROTO_LOCAL_rcvmax
 extern s32 rcvmax;
 #endif
@@ -52,9 +58,6 @@ BOOL gti2CheckResponse(u8 *a, u8 *b);
 #endif
 #ifndef PROTO_LOCAL_data_ov065_0228df7c
 extern u8 data_ov065_0228df7c[16];
-#endif
-#ifndef PROTO_LOCAL_data_ov065_02291104
-extern u8 data_ov065_02291104[0x100];
 #endif
 #ifndef PROTO_LOCAL_PersistThink
 s32 PersistThink();
@@ -112,9 +115,6 @@ extern volatile s32 data_ov065_022910fc;
 #endif
 #ifndef PROTO_LOCAL_strzcpy
 void strzcpy(char *dst, const char *src, s32 n);
-#endif
-#ifndef PROTO_LOCAL_data_ov065_02291204
-extern u8 data_ov065_02291204[0x100];
 #endif
 }
 #endif

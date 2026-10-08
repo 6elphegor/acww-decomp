@@ -165,15 +165,6 @@ extern "C" {
 extern SpNpcRoverActEntry sSpNpcRoverActTable[3];
 extern SpNpcRoverTalkScript sSpNpcRoverTalkScripts[4];
 extern ActorProfile sSpNpcRoverProfile;
-void _ZN14SpNpcRoverTalk15waitTagModeStopEv();
-void _ZN14SpNpcRoverTalk11waitLidOpenEv();
-void _ZN14SpNpcRoverTalk10runTagModeEv();
-void _ZN10SpNpcRover10setupAct01Ev();
-void _ZN10SpNpcRover10setupAct00Ev();
-void _ZN10SpNpcRover9mainAct02Ev();
-void _ZN10SpNpcRover10setupAct02Ev();
-void _ZN10SpNpcRover9mainAct00Ev();
-void _ZN10SpNpcRover9mainAct01Ev();
 }
 
 extern "C" char sSpNpcRoverKey[] = "sp_etc_sequence1";
@@ -420,7 +411,7 @@ void SpNpcRoverTalk::waitTagModeStop() {
 }
 
 void SpNpcRover::applyReceivedData() {
-    TownExchangeRecord *r4 = TownExchange_GetForAid(4);
+    TownExchangeRecord *r4 = static_cast<TownExchangeRecord *>(TownExchange_GetForAid(4));
     u32 st = recv.letters.exchangeKind;
     if (st == 2) {
         MI_CpuCopy8(&recv.letters, data_021ecfa8, 0xf8);
@@ -470,7 +461,7 @@ void SpNpcRover::onInteractionEvent(u32 a, u8) {
 
 void SpNpcRover::prepareTagData() {
     Constellation_PrepareExchange();
-    TownExchangeRecord *r4 = TownExchange_GetForAid(4);
+    TownExchangeRecord *r4 = static_cast<TownExchangeRecord *>(TownExchange_GetForAid(4));
     MI_CpuCopy8(r4, &send.record, sizeof(TownExchangeRecord));
     send.letters.exchangeKind = 1;
     TownExchange_Clear(r4);

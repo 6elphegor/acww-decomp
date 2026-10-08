@@ -66,7 +66,7 @@ void gpiSetError(void *, s32, const char *);
 s32 gpiValueForKey(const char *, const char *, char *, s32);
 s32 gpiCheckForError(void *, const char *, s32);
 s32 gpiInitSearchData(void *, void *, s32);
-s32 gpiStartSearch(void *, void *, s32, s32, s32);
+s32 gpiStartSearch(void *, void *, s32, void *, void *);
 s32 gpiStartProfileSearch(void *, void *);
 s32 gpiSendTransferReply(void *, s32 *, s32, s32, const char *);
 }

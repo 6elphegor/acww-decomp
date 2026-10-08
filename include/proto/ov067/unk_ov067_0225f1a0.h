@@ -278,7 +278,7 @@ s32 Wlx_IsParent(void);
 u16 Wlx_GetConnectedMask(void);
 #endif
 #ifndef PROTO_LOCAL_Wlx_RegisterData
-void Wlx_RegisterData(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5);
+void Wlx_RegisterData(u32 a0, void (*a1)(u32, void *), u8 *a2, u32 a3, u8 *a4, u32 a5);
 #endif
 #ifndef PROTO_LOCAL_WlxRole_NextIsParent
 s32 WlxRole_NextIsParent(WlxRole *p);
@@ -302,7 +302,7 @@ void WlxWm_RequestState(WlxWmWork *x, u32 v);
 void WlxBlock_Reset(WlxBlock *w, u32 a, u32 b);
 #endif
 #ifndef PROTO_LOCAL_WlxBlock_StartSend
-void WlxBlock_StartSend(WlxBlock *w, u32 p, u32 q, u32 r, u32 s);
+void WlxBlock_StartSend(WlxBlock *w, u8 *p, u32 q, u8 *r, u32 s);
 #endif
 #ifndef PROTO_LOCAL_WlxBlock_FindEntry
 void *WlxBlock_FindEntry(WlxBlock *w, void *start, u32 key, u32 flag);

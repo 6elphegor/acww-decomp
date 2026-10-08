@@ -10,7 +10,12 @@
 struct WlxBlockEntry {
     u32 ggid;
     void (*doneCallback)(u32, void *);
-    u32 bufferInfo[8];
+    u8 *sendData; // (bufferInfo[0..7] in the DS layout)
+    u32 sendSize;
+    u32 unk_10[2];
+    u8 *recvData;
+    u32 recvBufSize;
+    u32 unk_20[2];
 };
 
 struct WlxBlock {
@@ -20,12 +25,12 @@ struct WlxBlock {
     u8 ackSeq;
     u8 ackKind;
     u16 ackSegment;
-    u32 sendData;
+    u8 *sendData;
     u32 sendSize;
     u32 unk_10;
     u16 sendCheck;
     u16 unk_16;
-    u32 recvData;
+    u8 *recvData;
     u32 recvSize;
     u32 recvBufSize;
     u16 recvCheck;
@@ -489,13 +494,13 @@ static inline u32 Clz(u32 x) {
 
 
 extern "C" void Wlx_SelectNextEntry(void) {
-    u32 *r;
-    r = (u32 *)WlxBlock_FindEntry(&sWlx->block, (void *)sWlx->block.curEntry, 0, 0);
+    WlxBlockEntry *r;
+    r = (WlxBlockEntry *)WlxBlock_FindEntry(&sWlx->block, sWlx->block.curEntry, 0, 0);
     if (r == NULL) {
-        r = (u32 *)WlxBlock_FindEntry(&sWlx->block, 0, 0, 1);
+        r = (WlxBlockEntry *)WlxBlock_FindEntry(&sWlx->block, 0, 0, 1);
     }
     WlxBlock_SetCurrent(&sWlx->block, r);
-    sWlx->parentParam.ggid = *r;
+    sWlx->parentParam.ggid = r->ggid;
 }
 
 extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
@@ -519,8 +524,8 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
     case 6:
         ret = WlxBlock_SelectByBeacon(&sWlx->block, (u32 *)arg);
         if (ret != 0) {
-            u32 *e = (u32 *)WlxBlock_GetCurrent(&sWlx->block);
-            sWlx->parentParam.ggid = e[0];
+            WlxBlockEntry *e = (WlxBlockEntry *)WlxBlock_GetCurrent(&sWlx->block);
+            sWlx->parentParam.ggid = e->ggid;
         }
         break;
     case 0: {
@@ -580,7 +585,7 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
         }
         break;
     case 9: {
-        u32 *e = (u32 *)WlxBlock_GetCurrent(&sWlx->block);
+        WlxBlockEntry *e = (WlxBlockEntry *)WlxBlock_GetCurrent(&sWlx->block);
         s32 f = Wlx_IsParent();
         u32 x, y, idx;
         if (f != 0) {
@@ -610,7 +615,7 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
             r->mac45 = q[2];
         }
         if (Wlx_GetState() == 3 && e != NULL) {
-            WlxBlock_StartSend(&sWlx->block, e[2], e[3], e[6], e[7]);
+            WlxBlock_StartSend(&sWlx->block, e->sendData, e->sendSize, e->recvData, e->recvBufSize);
         } else {
             sWlx->block.reqKind = 5;
         }
@@ -763,7 +768,7 @@ extern "C" u16 Wlx_GetConnectedMask(void) {
     return r;
 }
 
-extern "C" void Wlx_RegisterData(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5) {
+extern "C" void Wlx_RegisterData(u32 a0, void (*a1)(u32, void *), u8 *a2, u32 a3, u8 *a4, u32 a5) {
     s32 ie = OS_DisableInterrupts();
     WlxBlockEntry *e = (WlxBlockEntry *)WlxBlock_FindEntry(&sWlx->block, 0, a0, 1);
     if (e == NULL) {
@@ -772,11 +777,11 @@ extern "C" void Wlx_RegisterData(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5)
             Fatal_Trap();
         } else {
             e->ggid = a0;
-            e->doneCallback = (void (*)(u32, void *))a1;
-            e->bufferInfo[0] = a2;
-            e->bufferInfo[1] = a3;
-            e->bufferInfo[4] = a4;
-            e->bufferInfo[5] = a5;
+            e->doneCallback = a1;
+            e->sendData = a2;
+            e->sendSize = a3;
+            e->recvData = a4;
+            e->recvBufSize = a5;
         }
     }
     OS_RestoreInterrupts(ie);
@@ -1448,7 +1453,7 @@ extern "C" void WlxBlock_Reset(WlxBlock *w, u32 a, u32 b) {
     w->numRecvSegments = 0;
 }
 
-extern "C" void WlxBlock_StartSend(WlxBlock *w, u32 p, u32 q, u32 r, u32 s) {
+extern "C" void WlxBlock_StartSend(WlxBlock *w, u8 *p, u32 q, u8 *r, u32 s) {
     if (w->reqKind != 0) {
         return;
     }
@@ -1538,7 +1543,7 @@ extern "C" void WlxBlock_BuildSend(WlxBlock *w, WlxMpPacket *msg) {
             if (rem > seg) {
                 rem = seg;
             }
-            MI_CpuCopy8((void *)(w->sendData + off), p, rem);
+            MI_CpuCopy8(w->sendData + off, p, rem);
             break;
         }
         }
@@ -1577,7 +1582,7 @@ extern "C" void WlxBlock_StoreSegment(WlxBlock *w, s32 idx, void *src) {
     if (rem > seg) {
         rem = seg;
     }
-    MI_CpuCopy8(src, (void *)(w->recvData + off), rem);
+    MI_CpuCopy8(src, w->recvData + off, rem);
     *slot |= bit;
     w->numMissingSegments = w->numMissingSegments - 1;
     if (w->numMissingSegments == 0) {
@@ -1652,9 +1657,9 @@ extern "C" BOOL WlxBlock_Receive(WlxBlock *w, WlxMpPacket *msg) {
                 if (w->ackKind == 4) {
                     WlxBlockEntry *cb = w->curEntry;
                     void (*fn)(u32, void *) = cb->doneCallback;
-                    u32 *e = (u32 *)WlxBlock_GetCurrent(w);
+                    WlxBlockEntry *e = (WlxBlockEntry *)WlxBlock_GetCurrent(w);
                     struct {
-                        u32 a;
+                        u8 *a;
                         u32 b;
                         u32 c;
                         u16 d;
@@ -1678,7 +1683,7 @@ extern "C" BOOL WlxBlock_Receive(WlxBlock *w, WlxMpPacket *msg) {
                     if (fn != 0) {
                         fn(5, &l);
                     }
-                    if (e[0] != 0) {
+                    if (e->ggid != 0) {
                         WlxBlock_SetCurrent(w, e);
                     }
                     if (w->sendData == 0) {

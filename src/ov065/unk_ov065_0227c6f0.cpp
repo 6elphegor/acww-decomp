@@ -14,12 +14,11 @@
 extern "C" {
 
 
-typedef s32 (*GsGpConnectCallback)(GPConnection *, void *, s32);
 
 void gpiDisconnect(GPConnection *, s32);
 void gpiSetErrorString(GPConnection *, const char *);
 s32 gpiConnect(GPConnection *, const char *, const char *, const char *, const char *, const char *,
-                        const char *, s32, s32, s32, s32, GsGpConnectCallback, s32);
+                        const char *, const char *, s32, s32, s32, GPCallback, void *);
 s32 gpiCheckConnect(GPConnection *);
 void msleep(s32);
 s32 gpiFindOperationByID(GPConnection *, GPIOperation **, s32);
@@ -235,9 +234,9 @@ s32 gpiProcessConnectionManager(GPConnection *h) {
                 char *q = c->inputBuffer;
                 char *f = strstr(q, "\\id\\");
                 if (f != NULL) {
-                    q = (char *)atol(f + 4);
-                    if (gpiFindOperationByID(h, &rec, (s32)q) == 0) {
-                        gpiDebug(h, "No matching operation found for id %d\n", q);
+                    s32 id = atol(f + 4);
+                    if (gpiFindOperationByID(h, &rec, id) == 0) {
+                        gpiDebug(h, "No matching operation found for id %d\n", id);
                     } else {
                         r = gpiProcessOperation(h, rec, c->inputBuffer);
                         if (r != 0) {

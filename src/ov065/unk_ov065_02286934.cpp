@@ -210,7 +210,7 @@ namespace N02287200 { extern "C" {
 void *AddNegotiator(void) {
     Ent z = {0};
     if (negotiateList == NULL) {
-        negotiateList = ArrayNew(0x40, 4, (void *)GsNatNeg_FreeEntry);
+        negotiateList = ArrayNew(sizeof(Ent), 4, (void *)GsNatNeg_FreeEntry);
     }
     ArrayAppend(negotiateList, &z);
     return ArrayNth(negotiateList, ArrayLength(negotiateList) - 1);
@@ -424,7 +424,7 @@ extern "C" s32 ResolveServers() {
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" s32 NNBeginNegotiationWithSocket(u32 a, u32 b, s32 c, s32 d, void *e, void *f) {
+extern "C" s32 NNBeginNegotiationWithSocket(u32 a, u32 b, s32 c, NegotiateProgressFunc d, NegotiateCompletedFunc e, void *f) {
     if (__GSIACResult != 1) {
         return 2;
     }
@@ -438,8 +438,8 @@ extern "C" s32 NNBeginNegotiationWithSocket(u32 a, u32 b, s32 c, s32 d, void *e,
     ctx->gameSock = a;
     ctx->clientindex = c;
     ctx->cookie = b;
-    ctx->progressCallback = (NegotiateProgressFunc)d;
-    ctx->completedCallback = (NegotiateCompletedFunc)e;
+    ctx->progressCallback = d;
+    ctx->completedCallback = e;
     ctx->userdata = f;
     ctx->negotiateSock = socket(2, 2, 0);
     ctx->retryCount = 0;

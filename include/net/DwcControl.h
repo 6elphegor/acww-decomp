@@ -48,8 +48,8 @@ struct DwcControl {
     /* 0x008 */ void *gt2ReceivedCallback;
     /* 0x00c */ void *gt2ClosedCallback;
     /* 0x010 */ void *gt2PingCallback;
-    /* 0x014 */ void *gt2SendBufferSize;
-    /* 0x018 */ void *gt2RecvBufferSize;
+    /* 0x014 */ s32 gt2SendBufferSize;
+    /* 0x018 */ s32 gt2RecvBufferSize;
     /* 0x01c */ GPConnection gpConnection;
     /* 0x020 */ void *userData;
     /* 0x024 */ s32 state;
@@ -59,8 +59,8 @@ struct DwcControl {
     /* 0x02e */ u16 unk_2e;
     /* 0x030 */ u32 ownProfileId;
     /* 0x034 */ u8 buddyRequestText[0x20];
-    /* 0x054 */ void *gameName;
-    /* 0x058 */ void *secretKey;
+    /* 0x054 */ char *gameName;
+    /* 0x058 */ char *secretKey;
     /* 0x05c */ DwcDoneCallback loginCallback;
     /* 0x060 */ s32 loginCallbackArg;
     /* 0x064 */ DwcDoneCallback updateCallback;
@@ -68,7 +68,7 @@ struct DwcControl {
     /* 0x06c */ DwcMatchedCallback matchCallback;
     /* 0x070 */ s32 matchCallbackArg;
     /* 0x074 */ DwcMatchedScCallback serverMatchCallback;
-    /* 0x078 */ s32 serverMatchCallbackArg;
+    /* 0x078 */ void *serverMatchCallbackArg;
     /* 0x07c */ DwcConnectionClosedCallback closedCallback;
     /* 0x080 */ s32 closedCallbackArg;
     /* 0x084 */ DwcLoginControl loginControl;

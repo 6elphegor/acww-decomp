@@ -1337,7 +1337,7 @@ extern "C" void Net_StartOv067(void *a, void *b, u32 n) {
     data_021f48c0 = Net_Alloc(0xa000, 32);
     Wlx_Init(data_021f48c0, (void *)Net_OnWlxStopped, 2);
     Wlx_SetPacketSizes(60, 60, 1);
-    Wlx_RegisterData(data_021f48b8, (void *)Net_OnWlxExchangeDone, a, n, (u32)b, n);
+    Wlx_RegisterData((u32)(uptr)data_021f48b8, (void (*)(u32, void *))Net_OnWlxExchangeDone, (u8 *)a, n, (u8 *)b, n);
 }
 
 extern "C" s32 Net_WlxStartExchange(void *p) {

@@ -62,9 +62,9 @@ void FIFOClear(List *l);
 Ent *FIFOGetFirst(List *l);
 void FIFOAddFront(List *l, Ent *e);
 void FIFOAddRear(List *l, Ent *e);
-void KeyValCompareKey(u32 *a, u32 *b);
-u32 KeyValHashKey(u32 *p, u32 n);
-void KeyValFree(u32 *p);
+s32 KeyValCompareKey(SBKeyValuePair *a, SBKeyValuePair *b);
+u32 KeyValHashKey(SBKeyValuePair *p, u32 n);
+void KeyValFree(SBKeyValuePair *p);
 u32 StringHash(u8 *s, u32 n);
 
 void QEStartQuery(Mgr *m, Ent *e) {

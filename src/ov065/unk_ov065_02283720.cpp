@@ -88,7 +88,7 @@ void gpiSetError(void *, s32, const char *);
 s32 gpiValueForKey(const char *, const char *, char *, s32);
 s32 gpiCheckForError(void *, const char *, s32);
 s32 gpiInitSearchData(void *, void *, s32);
-s32 gpiStartSearch(void *, void *, s32, s32, s32);
+s32 gpiStartSearch(void *, void *, s32, void *, void *);
 s32 gpiStartProfileSearch(void *, void *);
 s32 gpiSendTransferReply(void *, s32 *, s32, s32, const char *);
 }
@@ -184,13 +184,13 @@ s32 gti2VerifyChallenge(u8 *);
 }
 
 namespace N022838c4 { extern "C" {
-char *gti2GetResponse(char *out, char *in) {
+u8 *gti2GetResponse(u8 *out, u8 *in) {
     s32 ok;
     s32 klen;
     s32 i;
     s32 j;
     klen = STD_GetStringLength("3b8dd8995f7c40a9a5c5b7dd5b481341");
-    ok = gti2VerifyChallenge((u8 *)in);
+    ok = gti2VerifyChallenge(in);
     i = 0;
     j = 0;
     for (; i < 0x20; i++) {
@@ -250,7 +250,7 @@ void CloseStatsConnection() {
 }
 } }
 
-extern "C" { u8 data_ov065_02291104[0x100]; } //@
+extern "C" { char data_ov065_02291104[0x100]; } //@ (the game name)
 namespace N022838c4 { extern "C" {
 s32 PersistThink() {
     s32 r;
@@ -552,6 +552,6 @@ void gpiDebug(void *h, const char *fmt, ...) {
 }
 } }
 
-extern "C" { u8 data_ov065_02291204[0x100]; } //@
+extern "C" { char data_ov065_02291204[0x100]; } //@ (the secret key)
 
 extern "C" { DArrayImplementation *serverreqs; } //@

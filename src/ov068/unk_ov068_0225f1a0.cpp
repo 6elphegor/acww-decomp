@@ -890,114 +890,10 @@ namespace nsD {
 extern "C" {
 extern s16 data_020c6cc0;
 extern s16 data_020c905c;
-void _ZN21FieldVillagerAiStates15execAdmireCatchEP13FieldVillager();
-void _ZN21FieldVillagerAiStates16admireCatchStep1EP13FieldVillager();
-void _ZN21FieldVillagerAiStates16admireCatchStep0EP13FieldVillager();
-void _ZN21FieldVillagerAiStates16enterAdmireCatchEP13FieldVillager();
-void _ZN21FieldVillagerAiStates12execPushTalkEP13FieldVillager();
-void _ZN21FieldVillagerAiStates13pushTalkStep1EP13FieldVillager();
-void _ZN21FieldVillagerAiStates13pushTalkStep0EP13FieldVillager();
-void _ZN21FieldVillagerAiStates13enterPushTalkEP13FieldVillager();
-void _ZN21FieldVillagerAiStates11execHitTalkEP13FieldVillager();
-void _ZN21FieldVillagerAiStates12hitTalkStep2EP13FieldVillager();
-void _ZN21FieldVillagerAiStates12hitTalkStep1EP13FieldVillager();
-void _ZN21FieldVillagerAiStates12hitTalkStep0EP13FieldVillager();
-void _ZN21FieldVillagerAiStates12enterHitTalkEP13FieldVillager();
-void _ZN21FieldVillagerAiStates10execPushedEP13FieldVillager();
-void _ZN21FieldVillagerAiStates11pushedStep1EP13FieldVillager();
-void _ZN21FieldVillagerAiStates11pushedStep0EP13FieldVillager();
-void _ZN21FieldVillagerAiStates11enterPushedEP13FieldVillager();
-void _ZN21FieldVillagerAiStates12execHitByNetEP13FieldVillager();
-void _ZN21FieldVillagerAiStates13hitByNetStep2EP13FieldVillager();
-void _ZN21FieldVillagerAiStates13hitByNetStep1EP13FieldVillager();
-void _ZN21FieldVillagerAiStates13hitByNetStep0EP13FieldVillager();
-void _ZN21FieldVillagerAiStates13enterHitByNetEP13FieldVillager();
-void _ZN21FieldVillagerAiStates19execPitfallClimbOutEP13FieldVillager();
-void _ZN21FieldVillagerAiStates20enterPitfallClimbOutEP13FieldVillager();
-void _ZN21FieldVillagerAiStates11execPitfallEP13FieldVillager();
-void _ZN21FieldVillagerAiStates12pitfallStep4EP13FieldVillager();
-void _ZN21FieldVillagerAiStates12pitfallStep3EP13FieldVillager();
-void _ZN21FieldVillagerAiStates12pitfallStep2EP13FieldVillager();
-void _ZN21FieldVillagerAiStates12pitfallStep1EP13FieldVillager();
-void _ZN21FieldVillagerAiStates12pitfallStep0EP13FieldVillager();
-void _ZN21FieldVillagerAiStates12enterPitfallEP13FieldVillager();
-void _ZN21FieldVillagerAiStates12enterInHouseEP13FieldVillager();
-void _ZN21FieldVillagerAiStates13execGoInHouseEP13FieldVillager();
-void _ZN21FieldVillagerAiStates14goInHouseStep2EP13FieldVillager();
-void _ZN21FieldVillagerAiStates14goInHouseStep1EP13FieldVillager();
-void _ZN21FieldVillagerAiStates14goInHouseStep0EP13FieldVillager();
-void _ZN21FieldVillagerAiStates14enterGoInHouseEP13FieldVillager();
-void _ZN21FieldVillagerAiStates13execOffscreenEP13FieldVillager();
-void _ZN21FieldVillagerAiStates14enterOffscreenEP13FieldVillager();
-void _ZN21FieldVillagerAiStates10execWanderEP13FieldVillager();
-void _ZN22FieldVillagerAiPutAway15execPutAwayItemEP13FieldVillager();
-void _ZN22FieldVillagerAiPutAway16putAwayItemStep1EP13FieldVillager();
-void _ZN22FieldVillagerAiPutAway16putAwayItemStep0EP13FieldVillager();
-void _ZN22FieldVillagerAiPutAway16enterPutAwayItemEP13FieldVillager();
-void _ZN22FieldVillagerAiTakeOut15execTakeOutItemEP13FieldVillager();
-void _ZN22FieldVillagerAiTakeOut16takeOutItemStep1EP13FieldVillager();
-void _ZN22FieldVillagerAiTakeOut16takeOutItemStep0EP13FieldVillager();
-void _ZN22FieldVillagerAiTakeOut16enterTakeOutItemEP13FieldVillager();
-void _ZN29FieldVillagerAiBirthdayInvite18execBirthdayInviteEP13FieldVillager();
-void _ZN29FieldVillagerAiBirthdayInvite19birthdayInviteStep2EP13FieldVillager();
-void _ZN29FieldVillagerAiBirthdayInvite19birthdayInviteStep1EP13FieldVillager();
-void _ZN29FieldVillagerAiBirthdayInvite19birthdayInviteStep0EP13FieldVillager();
-void _ZN29FieldVillagerAiBirthdayInvite19enterBirthdayInviteEP13FieldVillager();
-void _ZN27FieldVillagerAiBirthdayWait16execBirthdayWaitEP13FieldVillager();
-void _ZN27FieldVillagerAiBirthdayWait17enterBirthdayWaitEP13FieldVillager();
-void _ZN27FieldVillagerAiPlayerStates15execFleaRemovedEP13FieldVillager();
-void _ZN27FieldVillagerAiPlayerStates16fleaRemovedStep1EP13FieldVillager();
-void _ZN27FieldVillagerAiPlayerStates16fleaRemovedStep0EP13FieldVillager();
-void _ZN27FieldVillagerAiPlayerStates16enterFleaRemovedEP13FieldVillager();
-void _ZN27FieldVillagerAiPlayerStates12execJoinTalkEP13FieldVillager();
-void _ZN27FieldVillagerAiPlayerStates13enterJoinTalkEP13FieldVillager();
-void _ZN27FieldVillagerAiPlayerStates14execFaceTalkerEP13FieldVillager();
-void _ZN27FieldVillagerAiPlayerStates15faceTalkerStep0EP13FieldVillager();
-void _ZN27FieldVillagerAiPlayerStates15enterFaceTalkerEP13FieldVillager();
-void _ZN27FieldVillagerAiPlayerStates12execApproachEP13FieldVillager();
-void _ZN27FieldVillagerAiPlayerStates13approachStep4EP13FieldVillager();
-void _ZN27FieldVillagerAiPlayerStates13approachStep3EP13FieldVillager();
-void _ZN27FieldVillagerAiPlayerStates13approachStep2EP13FieldVillager();
-void _ZN27FieldVillagerAiPlayerStates13approachStep1EP13FieldVillager();
-void _ZN27FieldVillagerAiPlayerStates13approachStep0EP13FieldVillager();
-void _ZN27FieldVillagerAiPlayerStates13enterApproachEP13FieldVillager();
-void _ZN23FieldVillagerAiReaction12execReactionEP13FieldVillager();
-void _ZN23FieldVillagerAiReaction13reactionStep1EP13FieldVillager();
-void _ZN23FieldVillagerAiReaction13reactionStep0EP13FieldVillager();
-void _ZN23FieldVillagerAiReaction13enterReactionEP13FieldVillager();
-void _ZN19FieldVillagerAiChat8execChatEP13FieldVillager();
-void _ZN19FieldVillagerAiChat9chatStep3EP13FieldVillager();
-void _ZN19FieldVillagerAiChat9chatStep2EP13FieldVillager();
-void _ZN19FieldVillagerAiChat9chatStep1EP13FieldVillager();
-void _ZN19FieldVillagerAiChat9chatStep0EP13FieldVillager();
-void _ZN19FieldVillagerAiChat9enterChatEP13FieldVillager();
-void _ZN19FieldVillagerAiChat23tryChatAdoptAblePatternEP13FieldVillager();
-void _ZN19FieldVillagerAiChat24tryChatRevertCatchphraseEP13FieldVillager();
-void _ZN19FieldVillagerAiChat20tryChatRevertClothesEP13FieldVillager();
-void _ZN19FieldVillagerAiChat18tryChatSpreadShirtEP13FieldVillager();
-void _ZN19FieldVillagerAiChat24tryChatSpreadCatchphraseEP13FieldVillager();
-void _ZN19FieldVillagerAiChat14tryChatNeutralEP13FieldVillager();
-void _ZN19FieldVillagerAiChat21tryChatMoodByRelationEP13FieldVillager();
-void _ZN19FieldVillagerAiTalk8execTalkEP13FieldVillager();
-void _ZN19FieldVillagerAiTalk9talkStep1EP13FieldVillager();
-void _ZN19FieldVillagerAiTalk9talkStep0EP13FieldVillager();
-void _ZN19FieldVillagerAiTalk9enterTalkEP13FieldVillager();
-void _ZN25FieldVillagerAiLeaveHouse14execLeaveHouseEP13FieldVillager();
-void _ZN25FieldVillagerAiLeaveHouse15leaveHouseStep1EP13FieldVillager();
-void _ZN25FieldVillagerAiLeaveHouse15leaveHouseStep0EP13FieldVillager();
-void _ZN25FieldVillagerAiLeaveHouse15enterLeaveHouseEP13FieldVillager();
-void _ZN21FieldVillagerAiAbsent10execAbsentEP13FieldVillager();
-void _ZN21FieldVillagerAiAbsent11absentStep1EP13FieldVillager();
-void _ZN21FieldVillagerAiAbsent11absentStep0EP13FieldVillager();
-void _ZN21FieldVillagerAiAbsent11enterAbsentEP13FieldVillager();
-void _ZN22FieldVillagerAiInHouse11execInHouseEP13FieldVillager();
-void _ZN22FieldVillagerAiInHouse12inHouseStep1EP13FieldVillager();
-void _ZN22FieldVillagerAiInHouse12inHouseStep0EP13FieldVillager();
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa10[2] = {(void *)_ZN21FieldVillagerAiStates12pitfallStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1007,7 +903,6 @@ u32 sReactionStepsGuard;
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f958[2] = {(void *)_ZN27FieldVillagerAiPlayerStates15execFleaRemovedEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1017,7 +912,6 @@ extern const s8 sChatRevertClothesDeltas[8] = {-56, -68, -40, -20, 0, 0, 0, 0};
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f980[2] = {(void *)_ZN19FieldVillagerAiChat14tryChatNeutralEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1027,17 +921,14 @@ extern const u8 sChatNoPlayerMoods[4] = {0x02, 0x03, 0x01, 0x00};
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f938[2] = {(void *)_ZN21FieldVillagerAiStates16admireCatchStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f900[2] = {(void *)_ZN22FieldVillagerAiTakeOut16takeOutItemStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f970[2] = {(void *)_ZN19FieldVillagerAiChat21tryChatMoodByRelationEP13FieldVillager, 0};
 }
 }
 namespace ns_02265324 {
@@ -1047,7 +938,6 @@ void *data_ov068_0226f878[2] = {(void *)FieldVillagerAi_EnterWander, 0};
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f850[2] = {(void *)_ZN21FieldVillagerAiStates13hitByNetStep2EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1082,7 +972,6 @@ u32 sHitTalkStepsGuard;
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb58[2] = {(void *)_ZN27FieldVillagerAiPlayerStates14execFaceTalkerEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1092,7 +981,6 @@ extern const s8 sChatRevertCatchphraseDeltas[8] = {-10, -18, -28, -14, -2, 0, 0,
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f920[2] = {(void *)_ZN27FieldVillagerAiPlayerStates16fleaRemovedStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1107,20 +995,19 @@ ns_02263600::Fn_22638c0 sTalkSteps[2];
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f830[2] = {(void *)_ZN19FieldVillagerAiTalk8execTalkEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
 FieldVillagerAiState sFieldVillagerAiTable[8] = {
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f878, *(FieldVillagerAiStateFn *)data_ov068_0226f868},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f890, *(FieldVillagerAiStateFn *)data_ov068_0226f888},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f898, *(FieldVillagerAiStateFn *)data_ov068_0226fb40},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f8a8, *(FieldVillagerAiStateFn *)data_ov068_0226f8b0},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f8b8, *(FieldVillagerAiStateFn *)data_ov068_0226fb50},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f8c0, *(FieldVillagerAiStateFn *)data_ov068_0226f830},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f8c8, *(FieldVillagerAiStateFn *)data_ov068_0226f818},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f8e8, *(FieldVillagerAiStateFn *)data_ov068_0226f8f0}};
+    {*(FieldVillagerAiStateFn *)data_ov068_0226f878, reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::execWander)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::enterOffscreen), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::execOffscreen)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::enterGoInHouse), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::execGoInHouse)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::enterInHouse), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiInHouse::execInHouse)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiLeaveHouse::enterLeaveHouse), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiLeaveHouse::execLeaveHouse)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiTalk::enterTalk), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiTalk::execTalk)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiReaction::enterReaction), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiReaction::execReaction)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPlayerStates::enterApproach), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPlayerStates::execApproach)}};
 }
 }
 namespace nsD {
@@ -1130,7 +1017,6 @@ extern const s8 sChatMoodByRelationDeltas[8] = {2, 8, 16, 10, 6, 0, 0, 0};
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f960[2] = {(void *)_ZN21FieldVillagerAiAbsent11enterAbsentEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1140,22 +1026,18 @@ u32 sChatStepsGuard;
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb48[2] = {(void *)_ZN19FieldVillagerAiChat8execChatEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9e0[2] = {(void *)_ZN21FieldVillagerAiStates12pitfallStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb38[2] = {(void *)_ZN27FieldVillagerAiPlayerStates12execJoinTalkEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb30[2] = {(void *)_ZN21FieldVillagerAiStates13pushTalkStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1165,20 +1047,19 @@ extern const u8 sChatCatchphraseMoods[4] = {0x01, 0x03, 0x02, 0x00};
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb20[2] = {(void *)_ZN21FieldVillagerAiStates14goInHouseStep2EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
 FieldVillagerAiState sFieldVillagerAiTable2[8] = {
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f8f8, *(FieldVillagerAiStateFn *)data_ov068_0226fb58},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f918, *(FieldVillagerAiStateFn *)data_ov068_0226fb48},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f928, *(FieldVillagerAiStateFn *)data_ov068_0226fb38},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f940, *(FieldVillagerAiStateFn *)data_ov068_0226f958},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f960, *(FieldVillagerAiStateFn *)data_ov068_0226fb18},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f968, *(FieldVillagerAiStateFn *)data_ov068_0226fb08},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226fb00, *(FieldVillagerAiStateFn *)data_ov068_0226faf8},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226faf0, *(FieldVillagerAiStateFn *)data_ov068_0226f988}};
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPlayerStates::enterFaceTalker), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPlayerStates::execFaceTalker)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiChat::enterChat), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiChat::execChat)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPlayerStates::enterJoinTalk), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPlayerStates::execJoinTalk)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPlayerStates::enterFleaRemoved), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPlayerStates::execFleaRemoved)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiAbsent::enterAbsent), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiAbsent::execAbsent)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiBirthdayWait::enterBirthdayWait), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiBirthdayWait::execBirthdayWait)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiBirthdayInvite::enterBirthdayInvite), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiBirthdayInvite::execBirthdayInvite)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiTakeOut::enterTakeOutItem), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiTakeOut::execTakeOutItem)}};
 }
 }
 namespace nsD {
@@ -1198,17 +1079,14 @@ ns_02260f90::Fn_2260f90 sPutAwayItemSteps[2];
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb00[2] = {(void *)_ZN29FieldVillagerAiBirthdayInvite19enterBirthdayInviteEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226faf8[2] = {(void *)_ZN29FieldVillagerAiBirthdayInvite18execBirthdayInviteEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226faf0[2] = {(void *)_ZN22FieldVillagerAiTakeOut16enterTakeOutItemEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1218,7 +1096,6 @@ Unk_ov068_0226fb80_Fn data_ov068_0226fa68 = &FieldVillager::drawDefault;
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fae0[2] = {(void *)_ZN21FieldVillagerAiStates14goInHouseStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1229,14 +1106,14 @@ u32 sTalkStepsGuard;
 namespace nsD {
 extern "C" {
 FieldVillagerAiState sFieldVillagerAiTable3[8] = {
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f990, *(FieldVillagerAiStateFn *)data_ov068_0226fad8},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226fad0, *(FieldVillagerAiStateFn *)data_ov068_0226fac8},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226fac0, *(FieldVillagerAiStateFn *)data_ov068_0226fab8},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226fab0, *(FieldVillagerAiStateFn *)data_ov068_0226f9c8},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f9d0, *(FieldVillagerAiStateFn *)data_ov068_0226faa0},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226fa98, *(FieldVillagerAiStateFn *)data_ov068_0226fa90},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f9e8, *(FieldVillagerAiStateFn *)data_ov068_0226fa80},
-    {*(FieldVillagerAiStateFn *)data_ov068_0226f9f8, *(FieldVillagerAiStateFn *)data_ov068_0226fa00}};
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPutAway::enterPutAwayItem), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPutAway::execPutAwayItem)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::enterPitfall), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::execPitfall)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::enterPitfallClimbOut), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::execPitfallClimbOut)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::enterHitByNet), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::execHitByNet)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::enterHitTalk), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::execHitTalk)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::enterPushed), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::execPushed)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::enterPushTalk), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::execPushTalk)},
+    {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::enterAdmireCatch), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::execAdmireCatch)}};
 }
 }
 namespace nsD {
@@ -1246,22 +1123,18 @@ ns_02262294::Fn_2262294 sReactionSteps[2];
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226faa8[2] = {(void *)_ZN27FieldVillagerAiPlayerStates13approachStep2EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fab0[2] = {(void *)_ZN21FieldVillagerAiStates13enterHitByNetEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fac0[2] = {(void *)_ZN21FieldVillagerAiStates20enterPitfallClimbOutEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fac8[2] = {(void *)_ZN21FieldVillagerAiStates11execPitfallEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1271,32 +1144,26 @@ u32 sApproachStepsGuard;
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb08[2] = {(void *)_ZN27FieldVillagerAiBirthdayWait16execBirthdayWaitEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb28[2] = {(void *)_ZN27FieldVillagerAiPlayerStates13approachStep4EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb40[2] = {(void *)_ZN21FieldVillagerAiStates13execGoInHouseEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa90[2] = {(void *)_ZN21FieldVillagerAiStates10execPushedEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa88[2] = {(void *)_ZN27FieldVillagerAiPlayerStates13approachStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa80[2] = {(void *)_ZN21FieldVillagerAiStates12execPushTalkEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1306,7 +1173,6 @@ extern const u8 sChatEmotions[8] = {0x14, 0x15, 0x16, 0x19, 0x1b, 0x04, 0x0b, 0x
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa78[2] = {(void *)_ZN21FieldVillagerAiStates12pitfallStep4EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1316,17 +1182,14 @@ u32 sFaceTalkerStepsGuard;
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8b8[2] = {(void *)_ZN25FieldVillagerAiLeaveHouse15enterLeaveHouseEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f808[2] = {(void *)_ZN27FieldVillagerAiPlayerStates15faceTalkerStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa58[2] = {(void *)_ZN21FieldVillagerAiStates12pitfallStep4EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1336,12 +1199,10 @@ u32 sTakeOutItemStepsGuard;
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa50[2] = {(void *)_ZN23FieldVillagerAiReaction13reactionStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa48[2] = {(void *)_ZN21FieldVillagerAiStates12hitTalkStep2EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1351,7 +1212,6 @@ u32 sAbsentStepsGuard;
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa38[2] = {(void *)_ZN19FieldVillagerAiChat9chatStep3EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1361,7 +1221,6 @@ u32 sInHouseStepsGuard;
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f898[2] = {(void *)_ZN21FieldVillagerAiStates14enterGoInHouseEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1376,7 +1235,6 @@ ns_02263600::Fn_2263cf0 sAbsentSteps[2];
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f890[2] = {(void *)_ZN21FieldVillagerAiStates14enterOffscreenEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1396,7 +1254,6 @@ ns_02261900::Fn_2261c38 sApproachSteps[5];
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f840[2] = {(void *)_ZN27FieldVillagerAiPlayerStates16fleaRemovedStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1421,17 +1278,14 @@ ns_02264000::Fn_226410c sGoInHouseSteps[3];
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9d8[2] = {(void *)_ZN19FieldVillagerAiChat23tryChatAdoptAblePatternEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9d0[2] = {(void *)_ZN21FieldVillagerAiStates12enterHitTalkEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9c8[2] = {(void *)_ZN21FieldVillagerAiStates12execHitByNetEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1441,22 +1295,18 @@ ns_0225fc60::Fn_2260450 sHitByNetSteps[3];
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9b8[2] = {(void *)_ZN21FieldVillagerAiStates12hitTalkStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9b0[2] = {(void *)_ZN19FieldVillagerAiChat20tryChatRevertClothesEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9a8[2] = {(void *)_ZN19FieldVillagerAiChat18tryChatSpreadShirtEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9a0[2] = {(void *)_ZN22FieldVillagerAiPutAway16putAwayItemStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1466,27 +1316,22 @@ extern const u8 data_ov068_0226f13c[8] = {0x00, 0x14, 0x46, 0x14, 0x1e, 0x00, 0x
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f998[2] = {(void *)_ZN19FieldVillagerAiChat24tryChatSpreadCatchphraseEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f990[2] = {(void *)_ZN22FieldVillagerAiPutAway16enterPutAwayItemEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f988[2] = {(void *)_ZN22FieldVillagerAiTakeOut15execTakeOutItemEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8f0[2] = {(void *)_ZN27FieldVillagerAiPlayerStates12execApproachEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f978[2] = {(void *)_ZN22FieldVillagerAiPutAway16putAwayItemStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1496,7 +1341,6 @@ u32 sPutAwayItemStepsGuard;
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f968[2] = {(void *)_ZN27FieldVillagerAiBirthdayWait17enterBirthdayWaitEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1511,7 +1355,6 @@ extern const u8 sChatTopicWeights[8] = {0x0f, 0x0a, 0x0f, 0x14, 0x0a, 0x0f, 0x0f
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f918[2] = {(void *)_ZN19FieldVillagerAiChat9enterChatEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1521,17 +1364,14 @@ u32 sGoInHouseStepsGuard;
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f928[2] = {(void *)_ZN27FieldVillagerAiPlayerStates13enterJoinTalkEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f858[2] = {(void *)_ZN19FieldVillagerAiTalk9talkStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f860[2] = {(void *)_ZN29FieldVillagerAiBirthdayInvite19birthdayInviteStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1546,7 +1386,6 @@ ns_02260f90::Fn_2261290 sTakeOutItemSteps[2];
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9f8[2] = {(void *)_ZN21FieldVillagerAiStates16enterAdmireCatchEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1556,17 +1395,14 @@ ns_0225fc60::Fn_2260290 sPushedSteps[2];
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb18[2] = {(void *)_ZN21FieldVillagerAiAbsent10execAbsentEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa28[2] = {(void *)_ZN19FieldVillagerAiChat9chatStep2EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa60[2] = {(void *)_ZN23FieldVillagerAiReaction13reactionStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1576,27 +1412,22 @@ u32 sAdmireCatchStepsGuard;
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa98[2] = {(void *)_ZN21FieldVillagerAiStates11enterPushedEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fad0[2] = {(void *)_ZN21FieldVillagerAiStates12enterPitfallEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fab8[2] = {(void *)_ZN21FieldVillagerAiStates19execPitfallClimbOutEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fad8[2] = {(void *)_ZN22FieldVillagerAiPutAway15execPutAwayItemEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb10[2] = {(void *)_ZN21FieldVillagerAiStates14goInHouseStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1606,17 +1437,14 @@ u32 sFleaRemovedStepsGuard;
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8d0[2] = {(void *)_ZN29FieldVillagerAiBirthdayInvite19birthdayInviteStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8c8[2] = {(void *)_ZN23FieldVillagerAiReaction13enterReactionEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8c0[2] = {(void *)_ZN19FieldVillagerAiTalk9enterTalkEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1631,27 +1459,22 @@ ns_02262294::Fn_2262548 sChatOutcomes[7];
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8a8[2] = {(void *)_ZN21FieldVillagerAiStates12enterInHouseEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8a0[2] = {(void *)_ZN21FieldVillagerAiStates11pushedStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f820[2] = {(void *)_ZN21FieldVillagerAiAbsent11absentStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa20[2] = {(void *)_ZN19FieldVillagerAiChat9chatStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f838[2] = {(void *)_ZN25FieldVillagerAiLeaveHouse15leaveHouseStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1661,7 +1484,6 @@ ns_02263600::Fn_2263a40 sLeaveHouseSteps[2];
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f848[2] = {(void *)_ZN25FieldVillagerAiLeaveHouse15leaveHouseStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1686,17 +1508,14 @@ ActorProfile sFieldVillagerProfile = {(void *(*)())FieldVillager_Create, 0x84, 0
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f880[2] = {(void *)_ZN29FieldVillagerAiBirthdayInvite19birthdayInviteStep2EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8d8[2] = {(void *)_ZN22FieldVillagerAiTakeOut16takeOutItemStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8e8[2] = {(void *)_ZN27FieldVillagerAiPlayerStates13enterApproachEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1706,7 +1525,6 @@ extern const u8 sChatDurations[20] = {0xf0, 0x00, 0x00, 0x00, 0xa0, 0x00, 0x00, 
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f908[2] = {(void *)_ZN21FieldVillagerAiStates11pushedStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1726,27 +1544,22 @@ ns_022605f4::Fn_2260944 sPitfallSteps[5];
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f948[2] = {(void *)_ZN22FieldVillagerAiInHouse12inHouseStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9e8[2] = {(void *)_ZN21FieldVillagerAiStates13enterPushTalkEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa08[2] = {(void *)_ZN19FieldVillagerAiChat9chatStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa18[2] = {(void *)_ZN21FieldVillagerAiStates12hitTalkStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa70[2] = {(void *)_ZN27FieldVillagerAiPlayerStates13approachStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1756,7 +1569,6 @@ extern const u8 sApproachAnimFx[8] = {0x45, 0x00, 0x04, 0x00, 0x4f, 0x00, 0x1d, 
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fae8[2] = {(void *)_ZN27FieldVillagerAiPlayerStates13approachStep3EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1766,7 +1578,6 @@ ns_0225fc60::Fn_225fd54 sAdmireCatchSteps[2];
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f800[2] = {(void *)_ZN21FieldVillagerAiStates13pushTalkStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1776,7 +1587,6 @@ u32 sPitfallClimbOutStepsGuard;
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8b0[2] = {(void *)_ZN22FieldVillagerAiInHouse11execInHouseEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1791,7 +1601,6 @@ extern const u8 sSimCatchClassWeights[8] = {0x0a, 0x05, 0x05, 0x00, 0x50, 0x00, 
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa00[2] = {(void *)_ZN21FieldVillagerAiStates15execAdmireCatchEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1801,17 +1610,14 @@ ns_02261900::Fn_2261900 sFleaRemovedSteps[2];
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9c0[2] = {(void *)_ZN19FieldVillagerAiChat24tryChatRevertCatchphraseEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8e0[2] = {(void *)_ZN19FieldVillagerAiTalk9talkStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8f8[2] = {(void *)_ZN27FieldVillagerAiPlayerStates15enterFaceTalkerEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1821,22 +1627,18 @@ u32 sPushTalkStepsGuard;
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f930[2] = {(void *)_ZN21FieldVillagerAiAbsent11absentStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f940[2] = {(void *)_ZN27FieldVillagerAiPlayerStates16enterFleaRemovedEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa30[2] = {(void *)_ZN21FieldVillagerAiStates12pitfallStep2EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226faa0[2] = {(void *)_ZN21FieldVillagerAiStates11execHitTalkEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1846,22 +1648,18 @@ extern const u8 sChatClothesMoods[4] = {0x01, 0x03, 0x02, 0x00};
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f810[2] = {(void *)_ZN21FieldVillagerAiStates13hitByNetStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f818[2] = {(void *)_ZN23FieldVillagerAiReaction12execReactionEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f888[2] = {(void *)_ZN21FieldVillagerAiStates13execOffscreenEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f868[2] = {(void *)_ZN21FieldVillagerAiStates10execWanderEP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1876,7 +1674,6 @@ u32 sPushedStepsGuard;
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa40[2] = {(void *)_ZN21FieldVillagerAiStates12pitfallStep3EP13FieldVillager, 0};
 }
 }
 namespace nsD {
@@ -1896,22 +1693,18 @@ extern const u8 sFleaRemovedHoldFrames[4] = {0x58, 0x02, 0x00, 0x00};
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f950[2] = {(void *)_ZN22FieldVillagerAiInHouse12inHouseStep0EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb50[2] = {(void *)_ZN25FieldVillagerAiLeaveHouse14execLeaveHouseEP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f828[2] = {(void *)_ZN21FieldVillagerAiStates13hitByNetStep1EP13FieldVillager, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9f0[2] = {(void *)_ZN21FieldVillagerAiStates16admireCatchStep1EP13FieldVillager, 0};
 }
 }
 namespace ns_02265d34 {
@@ -3576,9 +3369,9 @@ s32 FieldVillagerAiStates::execGoInHouse(FieldVillager *o) {
     using namespace ns_02264000;
     u32 gv_ = sGoInHouseStepsGuard;
     if ((gv_ & 1) == 0) {
-        sGoInHouseSteps[0] = *(Fn_226410c *)data_ov068_0226fae0;
-        sGoInHouseSteps[1] = *(Fn_226410c *)data_ov068_0226fb10;
-        sGoInHouseSteps[2] = *(Fn_226410c *)data_ov068_0226fb20;
+        sGoInHouseSteps[0] = &FieldVillagerAiStates::goInHouseStep0;
+        sGoInHouseSteps[1] = &FieldVillagerAiStates::goInHouseStep1;
+        sGoInHouseSteps[2] = &FieldVillagerAiStates::goInHouseStep2;
         sGoInHouseStepsGuard = gv_ | 1;
     }
     if (step < 3) {
@@ -3680,8 +3473,8 @@ s32 FieldVillagerAiInHouse::execInHouse(FieldVillager *o) {
     using namespace ns_02263600;
     u32 gv_ = sInHouseStepsGuard;
     if ((gv_ & 1) == 0) {
-        sInHouseSteps[0] = *(Fn_2263e4c *)data_ov068_0226f950;
-        sInHouseSteps[1] = *(Fn_2263e4c *)data_ov068_0226f948;
+        sInHouseSteps[0] = &FieldVillagerAiInHouse::inHouseStep0;
+        sInHouseSteps[1] = &FieldVillagerAiInHouse::inHouseStep1;
         sInHouseStepsGuard = gv_ | 1;
     }
     if (step < 2) {
@@ -3728,8 +3521,8 @@ s32 FieldVillagerAiAbsent::execAbsent(FieldVillager *o) {
     using namespace ns_02263600;
     u32 gv_ = sAbsentStepsGuard;
     if ((gv_ & 1) == 0) {
-        sAbsentSteps[0] = *(Fn_2263cf0 *)data_ov068_0226f930;
-        sAbsentSteps[1] = *(Fn_2263cf0 *)data_ov068_0226f820;
+        sAbsentSteps[0] = &FieldVillagerAiAbsent::absentStep0;
+        sAbsentSteps[1] = &FieldVillagerAiAbsent::absentStep1;
         sAbsentStepsGuard = gv_ | 1;
     }
     if (step < 2) {
@@ -3819,8 +3612,8 @@ s32 FieldVillagerAiLeaveHouse::execLeaveHouse(FieldVillager *o) {
     using namespace ns_02263600;
     u32 gv_ = sLeaveHouseStepsGuard;
     if ((gv_ & 1) == 0) {
-        sLeaveHouseSteps[0] = *(Fn_2263a40 *)data_ov068_0226f838;
-        sLeaveHouseSteps[1] = *(Fn_2263a40 *)data_ov068_0226f848;
+        sLeaveHouseSteps[0] = &FieldVillagerAiLeaveHouse::leaveHouseStep0;
+        sLeaveHouseSteps[1] = &FieldVillagerAiLeaveHouse::leaveHouseStep1;
         sLeaveHouseStepsGuard = gv_ | 1;
     }
     if (step < 2) {
@@ -3868,8 +3661,8 @@ s32 FieldVillagerAiTalk::execTalk(FieldVillager *o) {
     using namespace ns_02263600;
     u32 gv_ = sTalkStepsGuard;
     if ((gv_ & 1) == 0) {
-        sTalkSteps[0] = *(Fn_22638c0 *)data_ov068_0226f858;
-        sTalkSteps[1] = *(Fn_22638c0 *)data_ov068_0226f8e0;
+        sTalkSteps[0] = &FieldVillagerAiTalk::talkStep0;
+        sTalkSteps[1] = &FieldVillagerAiTalk::talkStep1;
         sTalkStepsGuard = gv_ | 1;
     }
     if (step < 2) {
@@ -4599,13 +4392,13 @@ void FieldVillagerAiChat::pickChatOutcome(FieldVillager *o) {
     using namespace ns_02262294;
     u32 gv_ = sChatOutcomesGuard;
     if ((gv_ & 1) == 0) {
-        sChatOutcomes[0] = *(Fn_2262548 *)data_ov068_0226f970;
-        sChatOutcomes[1] = *(Fn_2262548 *)data_ov068_0226f980;
-        sChatOutcomes[2] = *(Fn_2262548 *)data_ov068_0226f998;
-        sChatOutcomes[3] = *(Fn_2262548 *)data_ov068_0226f9a8;
-        sChatOutcomes[4] = *(Fn_2262548 *)data_ov068_0226f9b0;
-        sChatOutcomes[5] = *(Fn_2262548 *)data_ov068_0226f9c0;
-        sChatOutcomes[6] = *(Fn_2262548 *)data_ov068_0226f9d8;
+        sChatOutcomes[0] = &FieldVillagerAiChat::tryChatMoodByRelation;
+        sChatOutcomes[1] = &FieldVillagerAiChat::tryChatNeutral;
+        sChatOutcomes[2] = &FieldVillagerAiChat::tryChatSpreadCatchphrase;
+        sChatOutcomes[3] = &FieldVillagerAiChat::tryChatSpreadShirt;
+        sChatOutcomes[4] = &FieldVillagerAiChat::tryChatRevertClothes;
+        sChatOutcomes[5] = &FieldVillagerAiChat::tryChatRevertCatchphrase;
+        sChatOutcomes[6] = &FieldVillagerAiChat::tryChatAdoptAblePattern;
         sChatOutcomesGuard = gv_ | 1;
     }
     FieldVillager *p = static_cast<FieldVillager *>(static_cast<VillagerActor *>(o)->talkPartner);
@@ -4657,10 +4450,10 @@ s32 FieldVillagerAiChat::execChat(FieldVillager *o) {
     using namespace ns_02262294;
     u32 gv_ = sChatStepsGuard;
     if ((gv_ & 1) == 0) {
-        sChatSteps[0] = *(Fn_2262414 *)data_ov068_0226fa08;
-        sChatSteps[1] = *(Fn_2262414 *)data_ov068_0226fa20;
-        sChatSteps[2] = *(Fn_2262414 *)data_ov068_0226fa28;
-        sChatSteps[3] = *(Fn_2262414 *)data_ov068_0226fa38;
+        sChatSteps[0] = &FieldVillagerAiChat::chatStep0;
+        sChatSteps[1] = &FieldVillagerAiChat::chatStep1;
+        sChatSteps[2] = &FieldVillagerAiChat::chatStep2;
+        sChatSteps[3] = &FieldVillagerAiChat::chatStep3;
         sChatStepsGuard = gv_ | 1;
     }
     if (step < 4) {
@@ -4731,8 +4524,8 @@ s32 FieldVillagerAiReaction::execReaction(FieldVillager *o) {
     using namespace ns_02262294;
     u32 gv_ = sReactionStepsGuard;
     if ((gv_ & 1) == 0) {
-        sReactionSteps[0] = *(Fn_2262294 *)data_ov068_0226fa50;
-        sReactionSteps[1] = *(Fn_2262294 *)data_ov068_0226fa60;
+        sReactionSteps[0] = &FieldVillagerAiReaction::reactionStep0;
+        sReactionSteps[1] = &FieldVillagerAiReaction::reactionStep1;
         sReactionStepsGuard = gv_ | 1;
     }
     if (step < 2) {
@@ -4911,11 +4704,11 @@ s32 FieldVillagerAiPlayerStates::execApproach(FieldVillager *o) {
     using namespace ns_02261900;
     u32 gv_ = sApproachStepsGuard;
     if ((gv_ & 1) == 0) {
-        sApproachSteps[0] = *(Fn_2261c38 *)data_ov068_0226fa70;
-        sApproachSteps[1] = *(Fn_2261c38 *)data_ov068_0226fa88;
-        sApproachSteps[2] = *(Fn_2261c38 *)data_ov068_0226faa8;
-        sApproachSteps[3] = *(Fn_2261c38 *)data_ov068_0226fae8;
-        sApproachSteps[4] = *(Fn_2261c38 *)data_ov068_0226fb28;
+        sApproachSteps[0] = &FieldVillagerAiPlayerStates::approachStep0;
+        sApproachSteps[1] = &FieldVillagerAiPlayerStates::approachStep1;
+        sApproachSteps[2] = &FieldVillagerAiPlayerStates::approachStep2;
+        sApproachSteps[3] = &FieldVillagerAiPlayerStates::approachStep3;
+        sApproachSteps[4] = &FieldVillagerAiPlayerStates::approachStep4;
         sApproachStepsGuard = gv_ | 1;
     }
     if (step < 5) {
@@ -4950,7 +4743,7 @@ s32 FieldVillagerAiPlayerStates::execFaceTalker(FieldVillager *o) {
     using namespace ns_02261900;
     u32 gv_ = sFaceTalkerStepsGuard;
     if ((gv_ & 1) == 0) {
-        sFaceTalkerSteps[0] = *(Fn_2261ae8 *)data_ov068_0226f808;
+        sFaceTalkerSteps[0] = &FieldVillagerAiPlayerStates::faceTalkerStep0;
         sFaceTalkerStepsGuard = gv_ | 1;
     }
     if (step < 1) {
@@ -5009,8 +4802,8 @@ s32 FieldVillagerAiPlayerStates::execFleaRemoved(FieldVillager *o) {
     using namespace ns_02261900;
     u32 gv_ = sFleaRemovedStepsGuard;
     if ((gv_ & 1) == 0) {
-        sFleaRemovedSteps[0] = *(Fn_2261900 *)data_ov068_0226f920;
-        sFleaRemovedSteps[1] = *(Fn_2261900 *)data_ov068_0226f840;
+        sFleaRemovedSteps[0] = &FieldVillagerAiPlayerStates::fleaRemovedStep0;
+        sFleaRemovedSteps[1] = &FieldVillagerAiPlayerStates::fleaRemovedStep1;
         sFleaRemovedStepsGuard = gv_ | 1;
     }
     if (step < 2) {
@@ -5116,9 +4909,9 @@ s32 FieldVillagerAiBirthdayInvite::execBirthdayInvite(FieldVillager *o) {
     using namespace ns_02260f90;
     u32 gv_ = sBirthdayInviteStepsGuard;
     if ((gv_ & 1) == 0) {
-        sBirthdayInviteSteps[0] = *(Fn_2261574 *)data_ov068_0226f860;
-        sBirthdayInviteSteps[1] = *(Fn_2261574 *)data_ov068_0226f8d0;
-        sBirthdayInviteSteps[2] = *(Fn_2261574 *)data_ov068_0226f880;
+        sBirthdayInviteSteps[0] = &FieldVillagerAiBirthdayInvite::birthdayInviteStep0;
+        sBirthdayInviteSteps[1] = &FieldVillagerAiBirthdayInvite::birthdayInviteStep1;
+        sBirthdayInviteSteps[2] = &FieldVillagerAiBirthdayInvite::birthdayInviteStep2;
         sBirthdayInviteStepsGuard = gv_ | 1;
     }
     if (step < 3) {
@@ -5199,8 +4992,8 @@ s32 FieldVillagerAiTakeOut::execTakeOutItem(FieldVillager *o) {
     using namespace ns_02260f90;
     u32 gv_ = sTakeOutItemStepsGuard;
     if ((gv_ & 1) == 0) {
-        sTakeOutItemSteps[0] = *(Fn_2261290 *)data_ov068_0226f8d8;
-        sTakeOutItemSteps[1] = *(Fn_2261290 *)data_ov068_0226f900;
+        sTakeOutItemSteps[0] = &FieldVillagerAiTakeOut::takeOutItemStep0;
+        sTakeOutItemSteps[1] = &FieldVillagerAiTakeOut::takeOutItemStep1;
         sTakeOutItemStepsGuard = gv_ | 1;
     }
     if (step < 2) {
@@ -5289,8 +5082,8 @@ s32 FieldVillagerAiPutAway::execPutAwayItem(FieldVillager *o) {
     using namespace ns_02260f90;
     u32 gv_ = sPutAwayItemStepsGuard;
     if ((gv_ & 1) == 0) {
-        sPutAwayItemSteps[0] = *(Fn_2260f90 *)data_ov068_0226f978;
-        sPutAwayItemSteps[1] = *(Fn_2260f90 *)data_ov068_0226f9a0;
+        sPutAwayItemSteps[0] = &FieldVillagerAiPutAway::putAwayItemStep0;
+        sPutAwayItemSteps[1] = &FieldVillagerAiPutAway::putAwayItemStep1;
         sPutAwayItemStepsGuard = gv_ | 1;
     }
     if (step < 2) {
@@ -5509,11 +5302,11 @@ s32 FieldVillagerAiStates::execPitfall(FieldVillager *o) {
     using namespace ns_022605f4;
     u32 gv_ = sPitfallStepsGuard;
     if ((gv_ & 1) == 0) {
-        sPitfallSteps[0] = *(Fn_2260944 *)data_ov068_0226f9e0;
-        sPitfallSteps[1] = *(Fn_2260944 *)data_ov068_0226fa10;
-        sPitfallSteps[2] = *(Fn_2260944 *)data_ov068_0226fa30;
-        sPitfallSteps[3] = *(Fn_2260944 *)data_ov068_0226fa40;
-        sPitfallSteps[4] = *(Fn_2260944 *)data_ov068_0226fa58;
+        sPitfallSteps[0] = &FieldVillagerAiStates::pitfallStep0;
+        sPitfallSteps[1] = &FieldVillagerAiStates::pitfallStep1;
+        sPitfallSteps[2] = &FieldVillagerAiStates::pitfallStep2;
+        sPitfallSteps[3] = &FieldVillagerAiStates::pitfallStep3;
+        sPitfallSteps[4] = &FieldVillagerAiStates::pitfallStep4;
         sPitfallStepsGuard = gv_ | 1;
     }
     if (step < 5) {
@@ -5579,7 +5372,7 @@ s32 FieldVillagerAiStates::execPitfallClimbOut(FieldVillager *o) {
     using namespace ns_022605f4;
     u32 gv_ = sPitfallClimbOutStepsGuard;
     if ((gv_ & 1) == 0) {
-        sPitfallClimbOutSteps[0] = *(Fn_226071c *)data_ov068_0226fa78;
+        sPitfallClimbOutSteps[0] = &FieldVillagerAiStates::pitfallStep4;
         sPitfallClimbOutStepsGuard = gv_ | 1;
     }
     if (step < 1) {
@@ -5677,9 +5470,9 @@ s32 FieldVillagerAiStates::execHitByNet(FieldVillager *o) {
     using namespace ns_0225fc60;
     u32 gv_ = sHitByNetStepsGuard;
     if ((gv_ & 1) == 0) {
-        sHitByNetSteps[0] = *(Fn_2260450 *)data_ov068_0226f810;
-        sHitByNetSteps[1] = *(Fn_2260450 *)data_ov068_0226f828;
-        sHitByNetSteps[2] = *(Fn_2260450 *)data_ov068_0226f850;
+        sHitByNetSteps[0] = &FieldVillagerAiStates::hitByNetStep0;
+        sHitByNetSteps[1] = &FieldVillagerAiStates::hitByNetStep1;
+        sHitByNetSteps[2] = &FieldVillagerAiStates::hitByNetStep2;
         sHitByNetStepsGuard = gv_ | 1;
     }
     if (step < 3) {
@@ -5733,8 +5526,8 @@ s32 FieldVillagerAiStates::execPushed(FieldVillager *o) {
     using namespace ns_0225fc60;
     u32 gv_ = sPushedStepsGuard;
     if ((gv_ & 1) == 0) {
-        sPushedSteps[0] = *(Fn_2260290 *)data_ov068_0226f8a0;
-        sPushedSteps[1] = *(Fn_2260290 *)data_ov068_0226f908;
+        sPushedSteps[0] = &FieldVillagerAiStates::pushedStep0;
+        sPushedSteps[1] = &FieldVillagerAiStates::pushedStep1;
         sPushedStepsGuard = gv_ | 1;
     }
     if (step < 2) {
@@ -5799,9 +5592,9 @@ s32 FieldVillagerAiStates::execHitTalk(FieldVillager *o) {
     using namespace ns_0225fc60;
     u32 gv_ = sHitTalkStepsGuard;
     if ((gv_ & 1) == 0) {
-        sHitTalkSteps[0] = *(Fn_2260068 *)data_ov068_0226f9b8;
-        sHitTalkSteps[1] = *(Fn_2260068 *)data_ov068_0226fa18;
-        sHitTalkSteps[2] = *(Fn_2260068 *)data_ov068_0226fa48;
+        sHitTalkSteps[0] = &FieldVillagerAiStates::hitTalkStep0;
+        sHitTalkSteps[1] = &FieldVillagerAiStates::hitTalkStep1;
+        sHitTalkSteps[2] = &FieldVillagerAiStates::hitTalkStep2;
         sHitTalkStepsGuard = gv_ | 1;
     }
     if (step < 3) {
@@ -5845,8 +5638,8 @@ s32 FieldVillagerAiStates::execPushTalk(FieldVillager *o) {
     using namespace ns_0225fc60;
     u32 gv_ = sPushTalkStepsGuard;
     if ((gv_ & 1) == 0) {
-        sPushTalkSteps[0] = *(Fn_225ff18 *)data_ov068_0226fb30;
-        sPushTalkSteps[1] = *(Fn_225ff18 *)data_ov068_0226f800;
+        sPushTalkSteps[0] = &FieldVillagerAiStates::pushTalkStep0;
+        sPushTalkSteps[1] = &FieldVillagerAiStates::pushTalkStep1;
         sPushTalkStepsGuard = gv_ | 1;
     }
     if (step < 2) {
@@ -5892,8 +5685,8 @@ s32 FieldVillagerAiStates::execAdmireCatch(FieldVillager *o) {
     using namespace ns_0225fc60;
     u32 gv_ = sAdmireCatchStepsGuard;
     if ((gv_ & 1) == 0) {
-        sAdmireCatchSteps[0] = *(Fn_225fd54 *)data_ov068_0226f938;
-        sAdmireCatchSteps[1] = *(Fn_225fd54 *)data_ov068_0226f9f0;
+        sAdmireCatchSteps[0] = &FieldVillagerAiStates::admireCatchStep0;
+        sAdmireCatchSteps[1] = &FieldVillagerAiStates::admireCatchStep1;
         sAdmireCatchStepsGuard = gv_ | 1;
     }
     if (step < 2) {
@@ -5902,16 +5695,15 @@ s32 FieldVillagerAiStates::execAdmireCatch(FieldVillager *o) {
     return 0;
 }
 
-namespace ns_0225fc60 {
-extern "C" {
-BOOL _ZN13FieldVillager18acceptsInteractionEPv(u8 *o) {
-    if (((NpcTalkCtrl *)(o + 0x618))->isBusy() != 0 || ((VillagerActor *)(o))->isFlag834() != 0) {
+BOOL FieldVillager::acceptsInteraction(void *) {
+    using namespace ns_0225fc60;
+    if (talkCtrl.isBusy() != 0 || isFlag834() != 0) {
         return FALSE;
     }
-    if (o[0xa00] != 0) {
+    if (isInPitfall != 0) {
         void *p = PlayerActor_GetCharacter(4);
         if (p != 0) {
-            s32 v = ((NpcActor *)(o))->getRelativeAngleTo((NpcActor *)(p));
+            s32 v = getRelativeAngleTo((NpcActor *)(p));
             if (v < 0) {
                 v = (s16)-v;
             }
@@ -5922,22 +5714,18 @@ BOOL _ZN13FieldVillager18acceptsInteractionEPv(u8 *o) {
     }
     return TRUE;
 }
-}
-}
 
-namespace ns_0225fc60 {
-extern "C" {
-BOOL _ZN13FieldVillager28acceptsInteractionOutOfRangeEPv(FieldVillager *o, s32 x) {
+BOOL FieldVillager::acceptsInteractionOutOfRange(void *other) {
+    using namespace ns_0225fc60;
+    Character *x = (Character *)other;
     s16 k = sTalkFacingArc;
-    u32 v = FieldVillager_GetMood(o);
+    u32 v = FieldVillager_GetMood(this);
     BOOL r = FALSE;
-    if (o->acceptsInteraction((void *)x) != 0 && ((VillagerActor *)(o))->isFlag834() == 0 && FieldVillagerAi_IsState(&o->ai, r) != 0 && v <= 1 &&
-        ((NpcActor *)(o))->isNear((NpcActor *)(x), 0x5000) == 0 && ((NpcActor *)(o))->isNear((NpcActor *)(x), 0xe000) != 0 && ((Character *)(o))->isInFacingArcOf((Character *)(x), (s16)-k, k) != 0) {
+    if (acceptsInteraction(x) != 0 && isFlag834() == 0 && FieldVillagerAi_IsState(&ai, r) != 0 && v <= 1 &&
+        isNear((NpcActor *)(x), 0x5000) == 0 && isNear((NpcActor *)(x), 0xe000) != 0 && isInFacingArcOf(x, (s16)-k, k) != 0) {
         r = TRUE;
     }
     return r;
-}
-}
 }
 
 void FieldVillager::onInteractionEvent(u32 idx, u8 v) {

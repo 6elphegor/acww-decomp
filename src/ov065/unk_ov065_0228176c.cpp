@@ -59,7 +59,7 @@ s32 SetSendBufferSize(s32, s32);
 s32 SetReceiveBufferSize(s32, s32);
 s32 SetSockBlocking(s32, s32);
 s32 goastrdup(s32);
-s32 gpiSendBuddyMessage(GPConnection *, s32, s32, s32);
+s32 gpiSendBuddyMessage(GPConnection *, s32, s32, const char *);
 s32 gpiSendServerBuddyMessage(GPConnection *, s32, s32, const char *);
 s32 gpiClipBufferToPosition(GPConnection *, char **);
 s32 gpiReadMessageFromBuffer(GPConnection *, char **, s32 *, s32 *, s32 *);

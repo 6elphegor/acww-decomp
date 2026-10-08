@@ -119,7 +119,7 @@ char *goastrdup(const char *);
 s32 ghiDoReceive(void *, u8 *, s32 *);
 s32 ghiAppendDataToBuffer(void *, u8 *, s32);
 void ghiResetBuffer(void *);
-void ghiCallProgressCallback(void *, u32, u32);
+void ghiCallProgressCallback(void *, char *, u32);
 s32 GOAGetLastError(s32);
 s32 ghiProcessIncomingFileData(void *, u8 *, s32);
 void fclose(s32);
@@ -191,7 +191,7 @@ s32 ghiAppendCharToBuffer(GHIBuffer *, s32);
 s32 ghiAppendHeaderToBuffer(GHIBuffer *, const char *, const char *);
 s32 ghiAppendDataToBuffer(void *, const char *, s32);
 s32 ghiCallPostCallback(GHIConnection *);
-s32 ghiCallProgressCallback(GHIConnection *, s32, s32);
+void ghiCallProgressCallback(GHIConnection *, char *, u32);
 s32 ghiDoReceive(GHIConnection *, char *, s32 *);
 s32 ghiPostDoPosting(GHIConnection *);
 s32 ghiPostCleanupState(GHIConnection *);
@@ -252,7 +252,7 @@ extern "C" {
 s32 strncmp(const char *, const char *, s32);
 char *goastrdup(const char *);
 void gpiSetErrorString(void *, const char *);
-s32 gpiSendBuddyMessage(void *, s32, s32, s32);
+s32 gpiSendBuddyMessage(void *, s32, s32, const char *);
 s32 gpiDeleteBuddy(void *, s32);
 s32 gpiAuthBuddyRequest(void *, s32);
 s32 gpiSetInfos(void *, s32, s32);
@@ -677,7 +677,7 @@ s32 ghiDeliverIncomingFileData(GHIConnection *self, char *p, s32 n) {
         a = p;
         b = n;
     }
-    ghiCallProgressCallback(self, (s32)a, b);
+    ghiCallProgressCallback(self, a, b);
     return 1;
 }
 }
@@ -1036,7 +1036,7 @@ GHIPost *ghiNewPost(void) {
         k--;
     } while (k != NULL);
     t->autoFree = 1;
-    t->data = ArrayNew(0x18, 0, (ArrayElementFreeFn)ghiPostDataFree);
+    t->data = ArrayNew(sizeof(GHIPostData), 0, (ArrayElementFreeFn)ghiPostDataFree);
     if (t->data == NULL) {
         GsUtil_Free(t);
         return NULL;
@@ -1259,7 +1259,7 @@ s32 ghiPostInitState(GHIConnection *self) {
     self->postingState.callback = self->post->callback;
     self->postingState.param = self->post->param;
     n = ArrayLength(self->post->data);
-    self->postingState.states = ArrayNew(0x10, n, NULL);
+    self->postingState.states = ArrayNew(sizeof(GHIPostState), n, NULL);
     if (self->postingState.states == NULL) {
         return 0;
     }
@@ -1443,13 +1443,13 @@ s32 ghiPostStateDoPosting(GHIPostState *st, GHIConnection *c, s32 first) {
             if (p->type == 0) {
                 OS_SPrintf(buf, "%sContent-Disposition: form-data; name=\"%s\"\r\n\r\n", first != 0 ? "--Qr4G823s23d---<<><><<<>--7d118e0536\r\n" : "\r\n--Qr4G823s23d---<<><><<<>--7d118e0536\r\n", p->name);
             } else if (p->type == 1 || p->type == 2) {
-                s32 a, b;
+                char *a, *b;
                 if (p->type == 1) {
-                    a = (s32)p->data.fileDisk.reportFilename;
-                    b = (s32)p->data.fileDisk.contentType;
+                    a = p->data.fileDisk.reportFilename;
+                    b = p->data.fileDisk.contentType;
                 } else {
-                    a = (s32)p->data.fileMemory.reportFilename;
-                    b = (s32)p->data.fileMemory.contentType;
+                    a = p->data.fileMemory.reportFilename;
+                    b = p->data.fileMemory.contentType;
                 }
                 OS_SPrintf(buf, "%sContent-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\nContent-Type: %s\r\n\r\n", first != 0 ? "--Qr4G823s23d---<<><><<<>--7d118e0536\r\n" : "\r\n--Qr4G823s23d---<<><><<<>--7d118e0536\r\n", p->name, a, b);
             }

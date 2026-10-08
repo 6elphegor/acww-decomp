@@ -55,7 +55,7 @@ extern u32 sDwcLoginDoneArg;
 extern DwcLoginControl *sDwcLoginControl;
 extern DwcNasLoginCallback sDwcLoginDoneCallback;
 void qr2_shutdown(void *);
-void ServerBrowserFree(void *);
+s32 ServerBrowserFree(void *sb);
 s32 gpSetCallback(void *, s32, GPCallback, void *);
 void gpProcess(void *);
 void gpDestroy(void *);
@@ -67,7 +67,7 @@ void DwcConn_OnGt2Receive(void);
 void DwcConn_OnGt2Closed(void);
 void DwcConn_OnGt2Ping(void);
 void DwcConn_ClearTables(void);
-void DwcLogin_InitControl(void *, void *, void *, void *, u32, void *, s32);
+void DwcLogin_InitControl(void *mem, DwcUserData *a, GPConnection *b, u32 c, u32 d, DwcLoginResultCallback e, u32 f);
 void DwcLogin_OnLoginDone(void);
 void DwcFriend_InitControl(void *, void *, void *, void *, void *);
 void DwcMatch_InitControl(void *, void *, void *, void *, void *, void *, void *, void *);
@@ -76,7 +76,7 @@ void DWCi_Acc_LoginIdToUserName(void *, u32, void *);
 s32 gpSetInfosA(void *, s32, void *);
 s32 gpGetInfo(void *, u32, s32, s32, GPCallback, void *);
 s32 gpDisconnect(void *);
-s32 gpConnectPreAuthenticatedA(void *, void *, void *, s32, s32, void *, s32);
+s32 gpConnectPreAuthenticatedA(void *, void *, void *, s32, s32, void *, void *);
 void DWCi_Acc_SetLoginIdToUserData(void *, void *, u32);
 s32 NasAuth_GetState(void);
 void NasAuth_GetResult(s32 *);
@@ -148,8 +148,8 @@ s32 gpProcess(void *);
 s32 gpAuthBuddyRequest(void *, s32);
 s32 gpDenyBuddyRequest(void *, s32);
 s32 gpSendBuddyRequestA(void *, s32, s32);
-s32 gpGetBuddyIndex(void *, s32, s32 *);
-s32 gpGetBuddyStatus(void *, s32, void *);
+s32 gpGetBuddyIndex(void *connection, s32 profile, void *index);
+s32 gpGetBuddyStatus(void *connection, s32 index, void *status);
 s32 gpGetNumBuddies(void *, s32 *);
 s32 gpDeleteBuddy(void *, s32);
 s32 gpProfileSearchA(void *, char *, char *, char *, char *, char *, s32, s32, GPCallback, void *);
@@ -163,7 +163,7 @@ void DwcFriend_DeleteEntry(DwcFriendData *, s32, s32);
 s32 DwcFriend_RemoveDuplicates(DwcFriendData *, s32, s32);
 void DwcLogin_Process(void);
 void DwcLogin_Begin(void);
-void DwcLogin_InitControl(void *mem, void *a, void *b, void *c, void *d, void *e, void *f);
+void DwcLogin_InitControl(void *mem, DwcUserData *a, GPConnection *b, u32 c, u32 d, DwcLoginResultCallback e, u32 f);
 void *DwcFriend_GetControlField20(void);
 void DwcFriend_OnAuthorizedInfo(void *x, GPGetInfoResponseArg *p);
 void DwcFriend_OnBuddyRequestInfo(void *x, GPGetInfoResponseArg *p);
@@ -215,14 +215,14 @@ s32 DwcMatch_HandleNnResult(s32, s32);
 s32 DwcMatch_HandleNnStartResult();
 s32 DwcMatch_SendNnRequest(void *);
 s32 DwcMatch_Fail(s32, s32);
-s32 gt2Connect(u32, s32, s32, char *, s32, s32, s32, s32);
+s32 gt2Connect(void *socket, void **connection, char *remoteAddress, char *message, s32 len, s32 timeout, void *callbacks, s32 blocking);
 s32 DwcMatch_CancelNewClient(u32);
 s32 DwcMatch_RestartAfterNnFailure(u32);
 s32 DwcMatch_HandleCommand(u32, u32, u32, u32, void *, s32);
 s32 gpSetStatusA(GPConnection *, s32, char *, char *);
 s32 gpDeleteBuddy(void *, s32);
-s32 gpIsBuddy(void *, s32);
-s32 gpGetBuddyStatus(void *, s32, GPBuddyStatus *);
+s32 gpIsBuddy(void *connection, s32 profile);
+s32 gpGetBuddyStatus(void *connection, s32 index, void *status);
 s32 gpGetInfo(void *, s32, s32, s32, GPCallback, void *);
 s32 DwcFriend_GetStatus(void *, u8 *, u8 *, char *);
 s32 DwcFriend_GetStatusString(void *, char *);
@@ -237,7 +237,7 @@ void DwcFriend_ResetTimer();
 void DwcFriend_OnBuddyStatus(void *a, u32 *b);
 s32 DwcFriend_HandleAuthorizedMessage(void *a, u32 *b);
 void DwcFriend_OnBuddyRequest(void *a, u32 *b);
-void DwcFriend_StartUpdate(s32 a, s32 b, void (*c)(s32, u32, s32), s32 d, void (*e)(s32, s32, char *, s32), s32 f, void (*g)(void), void (*h)(void));
+void DwcFriend_StartUpdate(char *a, char *b, void (*c)(s32, u32, s32), s32 d, DwcFriendStatusCallback e, s32 f, DwcFriendDeleteCallback g, s32 h);
 void DwcFriend_Process();
 void DwcFriend_InitControl(DwcFriendControl *a, GPConnection *b, s32 c, DwcFriendData *d, s32 e);
 void DwcFriend_DeleteFriend(void *p);
@@ -303,11 +303,11 @@ s32 DwcFriend_GetStatusData(void *a, u8 *b, u8 *c, char *d, s32 *out) {
         *out = -1;
         return r;
     }
-    *out = NasBase64_Decode(buf, STD_GetStringLength(buf), NULL, 0);
+    *out = NasBase64_Decode((s8 *)buf, STD_GetStringLength(buf), NULL, 0);
     if (d == NULL || (t = *out) == -1) {
         return r;
     }
-    NasBase64_Decode(buf, STD_GetStringLength(buf), d, t);
+    NasBase64_Decode((s8 *)buf, STD_GetStringLength(buf), (u8 *)d, t);
     return r;
 }
 }
@@ -340,7 +340,7 @@ BOOL DwcFriend_SetStatusData(void *a, s32 b) {
     if (sDwcFriendControl == NULL || DwcLogin_IsLoggedIn() == 0) {
         return FALSE;
     }
-    n = NasBase64_Encode(a, b, buf, 0xff);
+    n = NasBase64_Encode((u8 *)a, b, (u8 *)buf, 0xff);
     if (n == -1) {
         return FALSE;
     }
@@ -455,14 +455,13 @@ void DwcFriend_Process() {
 
 namespace F02271da0 {
 extern "C" {
-void DwcFriend_StartUpdate(s32 a, s32 b, void (*c)(s32, u32, s32), s32 d, void (*e)(s32, s32, char *, s32), s32 f,
-                         void (*g)(void), void (*h)(void)) {
+void DwcFriend_StartUpdate(char *a, char *b, void (*c)(s32, u32, s32), s32 d, DwcFriendStatusCallback e, s32 f, DwcFriendDeleteCallback g, s32 h) {
     sDwcFriendControl->updateCallback = c;
     sDwcFriendControl->updateCallbackArg = d;
     sDwcFriendControl->statusCallback = e;
     sDwcFriendControl->statusCallbackArg = f;
-    sDwcFriendControl->deleteCallback = (DwcFriendDeleteCallback)g;
-    sDwcFriendControl->deleteCallbackArg = (s32)h;
+    sDwcFriendControl->deleteCallback = g;
+    sDwcFriendControl->deleteCallbackArg = h;
     sDwcFriendControl->isListChanged = 0;
     sDwcFriendControl->syncPhase = 0;
     sDwcFriendControl->updateStep = 0;
@@ -660,9 +659,8 @@ void DwcFriend_SyncList(DwcFriendData *arr, s32 n)
                 DwcFriend_HandleGpResult(gpGetBuddyStatus(sDwcFriendControl->gpConnection, idx, &out));
                 for (j = 0; j < n; j++) {
                     if (out.profileId == DwcFriend_GetProfileId(j)) {
-                        s32 off = j * 12;
-                        if (DWC_IsBuddyFriendData((void *)((u32)arr + off)) == 0) {
-                            DwcFriendData *e = (DwcFriendData *)((u8 *)arr + off);
+                        if (DWC_IsBuddyFriendData(&arr[j]) == 0) {
+                            DwcFriendData *e = &arr[j];
                             DWC_SetGsProfileId(e, out.profileId);
                             DWCi_SetBuddyFriendData(e);
                             sDwcFriendControl->isListChanged = 1;
@@ -692,7 +690,7 @@ void DwcFriend_SyncList(DwcFriendData *arr, s32 n)
         } else {
             if (DWC_GetGsProfileId((void *)DwcLogin_GetUserData(), &arr[sDwcFriendControl->syncIndex]) == -1) {
                 DWC_LoginIdToUserName((void *)DwcLogin_GetUserData(), &arr[sDwcFriendControl->syncIndex], buf);
-                gpProfileSearchA(sDwcFriendControl->gpConnection, 0, 0, 0, 0, buf, 0, 0, (GPCallback)DwcFriend_OnProfileSearch, (void *)(sptr)sDwcFriendControl->syncIndex);
+                gpProfileSearchA(sDwcFriendControl->gpConnection, 0, 0, 0, 0, (char *)buf, 0, 0, (GPCallback)DwcFriend_OnProfileSearch, (void *)(sptr)sDwcFriendControl->syncIndex);
                 sDwcFriendControl->syncPhase = 2;
                 return;
             }
@@ -938,7 +936,7 @@ void DwcFriend_OnBuddyRequestInfo(void *x, GPGetInfoResponseArg *p)
             if (DWC_GetFriendDataType(&sDwcFriendControl->friendList[i]) == 1) {
                 u8 buf[24];
                 DWC_LoginIdToUserName((void *)DwcLogin_GetUserData(), &sDwcFriendControl->friendList[i], buf);
-                if (strcmp(buf, HOST_AT(p, 0x8e, lastname[0], 0)) == 0) {
+                if (strcmp((char *)buf, p->lastname) == 0) {
                     gpAuthBuddyRequest(x, p->profile);
                     DWC_SetGsProfileId(&sDwcFriendControl->friendList[i], p->profile);
                     found = 1;
@@ -975,7 +973,7 @@ void DwcFriend_OnAuthorizedInfo(void *x, GPGetInfoResponseArg *p)
         for (; i < sDwcFriendControl->numFriends; i++) {
             if (DWC_GetFriendDataType(&sDwcFriendControl->friendList[i]) == 1) {
                 DWC_LoginIdToUserName((void *)DwcLogin_GetUserData(), &sDwcFriendControl->friendList[i], buf);
-                if (strcmp(buf, HOST_AT(p, 0x8e, lastname[0], 0)) == 0) {
+                if (strcmp((char *)buf, p->lastname) == 0) {
                     DWC_SetGsProfileId(&sDwcFriendControl->friendList[i], p->profile);
                     DWCi_SetBuddyFriendData(&sDwcFriendControl->friendList[i]);
                     found = 1;
@@ -1010,17 +1008,17 @@ void *DwcFriend_GetControlField20(void)
 
 namespace F02271488 {
 extern "C" {
-void DwcLogin_InitControl(void *mem, void *a, void *b, void *c, void *d, void *e, void *f)
+void DwcLogin_InitControl(void *mem, DwcUserData *a, GPConnection *b, u32 c, u32 d, DwcLoginResultCallback e, u32 f)
 {
     sDwcLoginControl = (DwcLoginControl *)mem;
-    MI_CpuFill8(sDwcLoginControl, 0, 0x264);
-    sDwcLoginControl->gpConnection = (GPConnection *)b;
+    MI_CpuFill8(sDwcLoginControl, 0, sizeof(DwcLoginControl));
+    sDwcLoginControl->gpConnection = b;
     sDwcLoginControl->state = 0;
-    sDwcLoginControl->productId = (u32)c;
-    sDwcLoginControl->gameCode = (u32)d;
-    sDwcLoginControl->resultCallback = (DwcLoginResultCallback)e;
-    sDwcLoginControl->resultCallbackArg = (u32)f;
-    sDwcLoginControl->userData = (DwcUserData *)a;
+    sDwcLoginControl->productId = c;
+    sDwcLoginControl->gameCode = d;
+    sDwcLoginControl->resultCallback = e;
+    sDwcLoginControl->resultCallbackArg = f;
+    sDwcLoginControl->userData = a;
 }
 }
 }

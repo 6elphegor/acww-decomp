@@ -20,23 +20,28 @@ extern "C" {
 DwcNetChannelTable *sDwcNetChannels;
 MATHRandContext32 sDwcNetRandState;
 
-s32 DwcConn_GetAid(s32);
-s32 DwcConn_FindConnectionByAid(s32);
+u32 DwcConn_GetAid(void *connection);
+void *DwcConn_FindConnectionByAid(u32 aid);
 void DwcCore_SetError(s32, s32);
 s32 DwcCore_HasError(void);
 s32 DwcConn_GetAidList(u8 **);
 s32 DwcConn_GetMyAid(void);
 s32 DwcConn_IsAidValid(s32);
 s32 DwcConn_IsAidConnected(s32);
-s32 gt2GetOutgoingBufferFreeSpace(s32);
-s32 gt2GetConnectionState(s32);
-s32 gt2Ping(s32);
-void gt2Send(s32, void *, s32, s32);
+s32 gt2GetOutgoingBufferFreeSpace(void *connection);
+s32 gt2GetConnectionState(void *connection);
+s32 gt2Ping(void *connection);
+void gt2Send(void *connection, void *message, s32 len, s32 reliable);
 void DwcMatch_OnSyncPacket(u32 a, s32 b, u8 *c);
 void MI_CpuCopy8(void *, void *, s32);
 void MI_CpuFill8(void *, s32, s32);
 void strncpy(void *, const void *, s32);
 void OS_GetMacAddress(void *);
+// (the GT2 callbacks below take the GT2 connection)
+void DwcNet_OnReceive(void *a, void *b, s32 c, s32 d);
+void DwcNet_OnPing(void *a, s32 b);
+void DwcNet_RecvReliable(void *a, void *buf, s32 n);
+void DwcNet_RecvUnreliable(void *a, void *buf, s32 n);
 
 }
 
@@ -135,7 +140,7 @@ BOOL DwcNet_SetRecvBuffer(s32 id, u8 *buf, s32 n) {
 }
 
 void DwcNet_PingAid(s32 id) {
-    s32 h = DwcConn_FindConnectionByAid(id);
+    void *h = DwcConn_FindConnectionByAid(id);
     if (id != DwcConn_GetMyAid() && h != 0 && gt2GetConnectionState(h) == 1 && DwcCore_HasError() == 0) {
         gt2Ping(h);
     }
@@ -192,7 +197,7 @@ void DwcNet_InitChannelTable(void *p) {
     sDwcNetChannels->maxChunkSize = 0x5b9;
 }
 
-void DwcNet_OnReceive(s32 a, void *b, s32 c, s32 d) {
+void DwcNet_OnReceive(void *a, void *b, s32 c, s32 d) {
     DwcNetChannelTable *g = sDwcNetChannels;
     if (g != NULL && b != NULL && c != 0) {
         if (d != 0) {
@@ -203,7 +208,7 @@ void DwcNet_OnReceive(s32 a, void *b, s32 c, s32 d) {
     }
 }
 
-void DwcNet_OnPing(s32 a, s32 b) {
+void DwcNet_OnPing(void *a, s32 b) {
     if (sDwcNetChannels->pingCallback != NULL) {
         sDwcNetChannels->pingCallback(b, DwcConn_GetAid(a));
     }
@@ -296,7 +301,7 @@ void DwcNet_SendToAid(s32 id, void *buf, s32 n, s32 f) {
     gt2Send(DwcConn_FindConnectionByAid(id), buf, n, f);
 }
 
-void DwcNet_RecvReliable(s32 a, void *buf, s32 n) {
+void DwcNet_RecvReliable(void *a, void *buf, s32 n) {
     s32 id = DwcConn_GetAid(a);
     switch (DwcNet_GetRecvState(id)) {
     case 0: {
@@ -327,7 +332,7 @@ void DwcNet_RecvReliable(s32 a, void *buf, s32 n) {
     }
 }
 
-void DwcNet_RecvUnreliable(s32 a, void *buf, s32 n) {
+void DwcNet_RecvUnreliable(void *a, void *buf, s32 n) {
     s32 id = DwcConn_GetAid(a);
     DwcNetChannel *r = &sDwcNetChannels->channels[id];
     if (r->recvBuffer != NULL && r->recvBufSize >= n) {

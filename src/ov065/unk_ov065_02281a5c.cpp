@@ -59,7 +59,7 @@ void gpiSetError(void *, s32, const char *);
 s32 gpiValueForKey(const char *, const char *, char *, s32);
 s32 gpiCheckForError(void *, const char *, s32);
 s32 gpiInitSearchData(void *, void *, s32);
-s32 gpiStartSearch(void *, void *, s32, s32, s32);
+s32 gpiStartSearch(void *, void *, s32, GPCallback, void *);
 s32 gpiStartProfileSearch(void *, void *);
 s32 gpiSendTransferReply(void *, s32 *, s32, s32, const char *);
 }
@@ -211,7 +211,7 @@ s32 gpiInitSearchData(void *h0, void *out, s32 p2) {
     return 0;
 }
 
-s32 gpiStartSearch(void *h0, void *cn, s32 p2, s32 p3, s32 p4) {
+s32 gpiStartSearch(void *h0, void *cn, s32 p2, GPCallback p3, void *p4) {
     GPConnection *h = (GPConnection *)h0;
     GPIOperation *o;
     s32 r;
@@ -508,7 +508,7 @@ again:
             s32 t = s1.more;
             pr1 = node->callback;
             if (pr1.p.callback != 0) {
-                ((void (*)(GPConnection *, void *, s32))pr1.p.callback)(h, &s1, pr1.p.param);
+                pr1.p.callback(h, &s1, pr1.p.param);
             }
             if (t == 0x600 && s1.more == 0x600) {
                 r = gpiProfileSearch(h, c->nick, c->uniquenick, c->email, c->firstname, c->lastname, c->icquin, s1.numMatches + c->skip, node->blocking, node->callback.p.callback, node->callback.p.param);
@@ -874,7 +874,7 @@ s32 gpiInitProfiles(GPConnection *h) {
     GPIConnection *c = *h;
     c->numBuddies = 0;
     c->numProfiles = 0;
-    c->profileTable = TableNew(0x1c, 4, gpiProfilesTableHash, gpiProfilesTableCompare, gpiProfilesTableFree);
+    c->profileTable = TableNew(sizeof(GPIProfile), 4, gpiProfilesTableHash, gpiProfilesTableCompare, gpiProfilesTableFree);
     if (c->profileTable != 0) {
         return 1;
     }

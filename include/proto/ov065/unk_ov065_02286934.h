@@ -65,7 +65,7 @@ u32 ResolveServer(const char *name, const char *s);
 s32 ResolveServers();
 #endif
 #ifndef PROTO_LOCAL_NNBeginNegotiationWithSocket
-s32 NNBeginNegotiationWithSocket(u32 a, u32 b, s32 c, s32 d, void *e, void *f);
+s32 NNBeginNegotiationWithSocket(u32 a, u32 b, s32 c, NegotiateProgressFunc d, NegotiateCompletedFunc e, void *f);
 #endif
 #ifndef PROTO_LOCAL_matchup2ip
 extern u32 matchup2ip;

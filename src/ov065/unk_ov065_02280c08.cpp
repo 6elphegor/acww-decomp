@@ -125,7 +125,7 @@ s32 SetSendBufferSize(s32, s32);
 s32 SetReceiveBufferSize(s32, s32);
 s32 SetSockBlocking(s32, s32);
 s32 goastrdup(s32);
-s32 gpiSendBuddyMessage(GPConnection *, s32, s32, s32);
+s32 gpiSendBuddyMessage(GPConnection *, s32, s32, const char *);
 s32 gpiSendServerBuddyMessage(GPConnection *, s32, s32, const char *);
 s32 gpiClipBufferToPosition(GPConnection *, GPIBuffer *);
 s32 gpiReadMessageFromBuffer(GPConnection *, GPIBuffer *, s32 *, s32 *, s32 *);
@@ -442,7 +442,7 @@ s32 gpiProcessPeerConnected(GPConnection *h, GPIPeer *n) {
                 }
                 break;
             case 0x66:
-                gpiSendBuddyMessage(h, n->profile, 0x67, (s32)"1");
+                gpiSendBuddyMessage(h, n->profile, 0x67, "1");
                 break;
             case 0xc8:
             case 0xc9:
@@ -643,7 +643,7 @@ GPIPeer *gpiAddPeer(GPConnection *h, s32 a, s32 b) {
     n->profile = a;
     n->timeout = time(0) + 0x12c;
     n->pnext = c->peerList;
-    n->messages = ArrayNew(0x18, 0, gpiFreeMessage);
+    n->messages = ArrayNew(sizeof(GPIMessage), 0, gpiFreeMessage);
     c->peerList = n;
     return n;
 }
@@ -690,13 +690,13 @@ s32 gpiPeerStartConnect(void *h, GPIPeer *n) {
         return 3;
     }
     GsGpPeer_SetSocketBuffers(n->sock);
-    u32 ad = (u32)&sa;
+    SockAddrIn *ad = &sa;
     ((u32 *)ad)[0] = 0;
     ((u32 *)ad)[1] = 0;
     sa.family = 2;
     sa.addr = p->buddyStatus->ip;
     sa.port = p->buddyStatus->port;
-    if (connect(n->sock, (SockAddrIn *)ad, 8) == -1) {
+    if (connect(n->sock, ad, 8) == -1) {
         e = GOAGetLastError(n->sock);
         if (e != -6 && e != -0x1a && e != -0x4c) {
             gpiSetError(h, 5, "There was an error connecting a socket.");
