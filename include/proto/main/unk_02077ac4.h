@@ -30,7 +30,9 @@ typedef struct VillagerAnimHeapPool VillagerAnimHeapPool;
 #include "save/TownId.h"
 #include "save/VillagerData.h"
 #include "talk/EncodedString.h"
+#include "talk/EncodedString10.h"
 #include "talk/MsgString.h"
+#include "town/BlockMap.h"
 class PlayerData;
 #endif
 
@@ -41,10 +43,10 @@ extern "C" {
 extern u8 sVillagerLetterPath[0x28];
 #endif
 #ifndef PROTO_LOCAL_VillagerInfo_Get
-u8 *VillagerInfo_Get(u32 n);
+const u8 *VillagerInfo_Get(u32 n);
 #endif
 #ifndef PROTO_LOCAL_SpNpc_GetInfo
-u8 *SpNpc_GetInfo(u16 *p);
+const u8 *SpNpc_GetInfo(u16 *p);
 #endif
 #ifndef PROTO_LOCAL_Npc_GetVoiceType
 u32 Npc_GetVoiceType(u16 *p);
@@ -62,16 +64,16 @@ u8 FurnitureTaste_GetTextIndex(u8 *p);
 u32 Date_GetStarSign(u32 a, u32 b);
 #endif
 #ifndef PROTO_LOCAL_Date_GetStarSignOf
-u32 Date_GetStarSignOf(u8 *p);
+u32 Date_GetStarSignOf(const u8 *p);
 #endif
 #ifndef PROTO_LOCAL_Town_GetMaxOutdoorVillagers
 u32 Town_GetMaxOutdoorVillagers();
 #endif
 #ifndef PROTO_LOCAL_Personality_GetSleepHours
-u8 *Personality_GetSleepHours(u32 idx);
+const u8 *Personality_GetSleepHours(u32 idx);
 #endif
 #ifndef PROTO_LOCAL_Personality_IsAsleep
-BOOL Personality_IsAsleep(u32 idx, void *buf);
+BOOL Personality_IsAsleep(u32 idx, ClockDateTime *buf);
 #endif
 #ifndef PROTO_LOCAL_HousePos_Clear
 void HousePos_Clear(u8 *p);
@@ -84,39 +86,6 @@ void HousePos_Set(u8 *p, u8 a, u8 b);
 #endif
 #ifndef PROTO_LOCAL_HousePos_SetFromUnit
 void HousePos_SetFromUnit(u8 *out, s32 *in);
-#endif
-#ifndef PROTO_LOCAL_VillagerMemory_Construct
-u8 *VillagerMemory_Construct(u8 *self);
-#endif
-#ifndef PROTO_LOCAL_VillagerMemory_Destruct
-u8 *VillagerMemory_Destruct(u8 *self);
-#endif
-#ifndef PROTO_LOCAL_VillagerMemory_Clear
-void VillagerMemory_Clear(u8 *self);
-#endif
-#ifndef PROTO_LOCAL_VillagerMemory_IsUsed
-BOOL VillagerMemory_IsUsed(void *p);
-#endif
-#ifndef PROTO_LOCAL_VillagerMemory_InitForPlayer
-BOOL VillagerMemory_InitForPlayer(u8 *self, void *a, u8 *b, u8 *c);
-#endif
-#ifndef PROTO_LOCAL_VillagerMemory_GetTalkDate
-u8 *VillagerMemory_GetTalkDate(u8 *p);
-#endif
-#ifndef PROTO_LOCAL_VillagerMemory_GetTownId
-u8 *VillagerMemory_GetTownId(u8 *p);
-#endif
-#ifndef PROTO_LOCAL_VillagerMemory_GetPlayerId
-void *VillagerMemory_GetPlayerId(void *p);
-#endif
-#ifndef PROTO_LOCAL_Villager_SendBirthdayLetter
-void Villager_SendBirthdayLetter(void *t, void *p, void *q);
-#endif
-#ifndef PROTO_LOCAL_Villager_SendNewYearLetter
-void Villager_SendNewYearLetter(void *t, void *p, void *q);
-#endif
-#ifndef PROTO_LOCAL_Villager_SendByeLetter
-void Villager_SendByeLetter(void *t, void *p);
 #endif
 #ifndef PROTO_LOCAL_Villager_GetDefaultShirt
 void Villager_GetDefaultShirt(u16 *out, void *idx);
@@ -131,13 +100,10 @@ s32 VillagerMemory_IsFormerResident(void *a, void *townId, void *players);
 s32 VillagerMemory_IsOtherTown(void *a, u16 *p, void *c);
 #endif
 #ifndef PROTO_LOCAL_Villager_IsMoreAttachedThan
-BOOL Villager_IsMoreAttachedThan(void *a, void *b, void *c);
+BOOL Villager_IsMoreAttachedThan(void *a, void *b, ClockDateTime *c);
 #endif
 #ifndef PROTO_LOCAL_Villager_GetNicknameFor
 void Villager_GetNicknameFor(void *a, void *b, void *c);
-#endif
-#ifndef PROTO_LOCAL_Villagers_ShareNickname
-void Villagers_ShareNickname(void *a, void *b, void *c);
 #endif
 #ifndef PROTO_LOCAL_Villager_DiscardItem
 BOOL Villager_DiscardItem(u16 *p);
@@ -151,110 +117,14 @@ void Villager_GetPackedFurniture(u16 *out, void *a, u16 *in);
 #ifndef PROTO_LOCAL_Villager_IsHouseAvailable
 BOOL Villager_IsHouseAvailable();
 #endif
-#ifndef PROTO_LOCAL_Villager_HasFlea
-BOOL Villager_HasFlea(void *self);
-#endif
-#ifndef PROTO_LOCAL_Villager_RemoveFlea
-void Villager_RemoveFlea(void *self);
-#endif
-#ifndef PROTO_LOCAL_Villager_IsGreeter
-BOOL Villager_IsGreeter(void *self);
-#endif
-#ifndef PROTO_LOCAL_Villager_StartMovingOut
-void Villager_StartMovingOut(void *a, void *b);
-#endif
-#ifndef PROTO_LOCAL_Villager_StartMovingIn
-void Villager_StartMovingIn(void *a, void *b);
-#endif
-#ifndef PROTO_LOCAL_Villager_IsMoveTimeReached
-s32 Villager_IsMoveTimeReached(void *a, void *b);
-#endif
-#ifndef PROTO_LOCAL_Villager_ShareTrendWith
-void Villager_ShareTrendWith(void *a, void *b);
-#endif
-#ifndef PROTO_LOCAL_Villager_RecordPlayerActivity
-void Villager_RecordPlayerActivity(void *a, u32 kind, s32 v);
-#endif
-#ifndef PROTO_LOCAL_Villager_UpdateTrendDays
-void Villager_UpdateTrendDays(void *a, ClockDateTime *b);
-#endif
-#ifndef PROTO_LOCAL_Villager_InitPlanDateA
-void Villager_InitPlanDateA(void *a, void *b);
-#endif
-#ifndef PROTO_LOCAL_Villager_InitPlanDateB
-void Villager_InitPlanDateB(void *a, void *b);
-#endif
-#ifndef PROTO_LOCAL_Villager_UpdatePlan
-s32 Villager_UpdatePlan(void *a, ClockDateTime *b);
-#endif
-#ifndef PROTO_LOCAL_Villager_UpdatePlanState
-s32 Villager_UpdatePlanState(void *a, void *b, void *c, ClockDateTime *d);
-#endif
-#ifndef PROTO_LOCAL_Villager_UpdatePlanErrand
-void Villager_UpdatePlanErrand(void *a);
-#endif
-#ifndef PROTO_LOCAL_Villager_CanGoOutdoors
-s32 Villager_CanGoOutdoors(void *a);
-#endif
 #ifndef PROTO_LOCAL_Villager_ClearTalkedToday
 void Villager_ClearTalkedToday(u8 *p);
-#endif
-#ifndef PROTO_LOCAL_Villager_IsAsleep
-s32 Villager_IsAsleep(void *a, void *b);
-#endif
-#ifndef PROTO_LOCAL_Villager_SetFleaMarketVisited
-void Villager_SetFleaMarketVisited(void *a, void *b);
-#endif
-#ifndef PROTO_LOCAL_Villager_UpdateVisitorRecord
-s32 Villager_UpdateVisitorRecord(void *a, void *b);
-#endif
-#ifndef PROTO_LOCAL_Villager_SendLetter4
-s32 Villager_SendLetter4(void *a, u32 b, u32 c, void *d, void *e, u16 *f);
-#endif
-#ifndef PROTO_LOCAL_Villager_SendLetter
-s32 Villager_SendLetter(void *a, u32 b, void *c, void *d, u16 *e);
-#endif
-#ifndef PROTO_LOCAL_Villager_InitTalkUrge
-void Villager_InitTalkUrge(void *self, void *x);
-#endif
-#ifndef PROTO_LOCAL_Villager_CanSeekPlayer
-BOOL Villager_CanSeekPlayer(void *self);
-#endif
-#ifndef PROTO_LOCAL_Villager_RaiseTalkUrge
-void Villager_RaiseTalkUrge(void *self, void *x);
-#endif
-#ifndef PROTO_LOCAL_Villager_IsTalkUrgeFull
-BOOL Villager_IsTalkUrgeFull(void *self, void *x);
-#endif
-#ifndef PROTO_LOCAL_Villager_ClearTalkUrge
-void Villager_ClearTalkUrge(void *self);
-#endif
-#ifndef PROTO_LOCAL_Villager_HalveTalkUrge
-void Villager_HalveTalkUrge(void *self);
-#endif
-#ifndef PROTO_LOCAL_Villager_DoubleTalkUrge
-void Villager_DoubleTalkUrge(void *self);
-#endif
-#ifndef PROTO_LOCAL_Villager_AddTalkUrge
-void Villager_AddTalkUrge(void *self, s32 d);
-#endif
-#ifndef PROTO_LOCAL_SaveVillagers_Construct
-u8 *SaveVillagers_Construct(u8 *self);
-#endif
-#ifndef PROTO_LOCAL_SaveVillagers_Destruct
-u8 *SaveVillagers_Destruct(u8 *self);
-#endif
-#ifndef PROTO_LOCAL_SaveVillagers_Clear
-void SaveVillagers_Clear(u8 *self);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_IsValidIndex
 BOOL SaveVillagers_IsValidIndex(u32 n);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_IsOccupied
 BOOL SaveVillagers_IsOccupied(u8 *base, s32 idx);
-#endif
-#ifndef PROTO_LOCAL_SaveVillagers_Find
-u8 *SaveVillagers_Find(u8 *base, u16 *x);
 #endif
 #ifndef PROTO_LOCAL_Text_TrimmedLength
 s32 Text_TrimmedLength(u8 *s, s32 n);
@@ -295,32 +165,8 @@ BOOL SpeciesBits_Test(s32 n, u32 *bits);
 #ifndef PROTO_LOCAL_SpeciesBits_Set
 void SpeciesBits_Set(u32 *bits, s32 n);
 #endif
-#ifndef PROTO_LOCAL_SpeciesBits_Clear
-void SpeciesBits_Clear(s32 unused, u32 *bits, s32 n);
-#endif
 #ifndef PROTO_LOCAL_SpeciesBits_AllEligibleSet
 BOOL SpeciesBits_AllEligibleSet(u32 *bits);
-#endif
-#ifndef PROTO_LOCAL_SaveVillagers_ShouldStartMoveOut
-BOOL SaveVillagers_ShouldStartMoveOut(u8 *self, u8 *x);
-#endif
-#ifndef PROTO_LOCAL_SaveVillagers_PickMoveOutCandidate
-s32 SaveVillagers_PickMoveOutCandidate(u8 *self);
-#endif
-#ifndef PROTO_LOCAL_SaveVillagers_TryStartMoveOut
-void SaveVillagers_TryStartMoveOut(u8 *self, u8 *x);
-#endif
-#ifndef PROTO_LOCAL_SaveVillagers_RefreshPlanStates
-void SaveVillagers_RefreshPlanStates(u8 *self);
-#endif
-#ifndef PROTO_LOCAL_SaveVillagers_UpdatePlansNow
-void SaveVillagers_UpdatePlansNow(u8 *self);
-#endif
-#ifndef PROTO_LOCAL_SaveVillagers_DailyUpdate
-void SaveVillagers_DailyUpdate(u8 *self, s32 flag);
-#endif
-#ifndef PROTO_LOCAL_SaveVillagers_DailyFurnitureUpdate
-void SaveVillagers_DailyFurnitureUpdate(u8 *self);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_PlaceMissingHouses
 void SaveVillagers_PlaceMissingHouses(u8 *self);
@@ -349,12 +195,6 @@ u8 *SaveVillagers_FindFriendOf(u8 *self, u8 *p);
 #ifndef PROTO_LOCAL_SaveVillagers_FindEnemyOf
 u8 *SaveVillagers_FindEnemyOf(u8 *self, u8 *p);
 #endif
-#ifndef PROTO_LOCAL_Villager_GetPlayerErrandKind
-s32 Villager_GetPlayerErrandKind(u8 *self, u8 *p, u8 *r4);
-#endif
-#ifndef PROTO_LOCAL_Villager_GetErrandKind
-s32 Villager_GetErrandKind(u8 *self, u8 *p, u8 *r5);
-#endif
 #ifndef PROTO_LOCAL_SaveVillagers_ShouldAssignErrands
 BOOL SaveVillagers_ShouldAssignErrands(u8 *self);
 #endif
@@ -365,10 +205,10 @@ void VillagerStates_ResetErrands();
 void SaveVillagers_AssignErrands(void *bb);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_UpdateErrands
-void SaveVillagers_UpdateErrands(void *b);
+void SaveVillagers_UpdateErrands(u8 *b);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_UpdatePlayerErrandKind15
-void SaveVillagers_UpdatePlayerErrandKind15(void *unused, void *q);
+void SaveVillagers_UpdatePlayerErrandKind15(void *unused, ClockDateTime *q);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_DailyVillagerUpdate
 void SaveVillagers_DailyVillagerUpdate(u8 *p, s32 q);
@@ -380,7 +220,7 @@ s32 SaveVillagers_GetUnk3830Index(void *p);
 s32 SaveVillagers_PickSickVillager(void *pp, u32 idx);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_CanSomeoneGetSick
-BOOL SaveVillagers_CanSomeoneGetSick(void *p);
+BOOL SaveVillagers_CanSomeoneGetSick(u8 *p);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_AdvanceSickDay
 void SaveVillagers_AdvanceSickDay(void *pp);
@@ -410,7 +250,7 @@ void SaveVillagers_ApplyBadFortune(void *self0);
 void SaveVillagers_GiveFortuneGreeting(void *self0, void *p);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_ApplyGoodFortune
-void SaveVillagers_ApplyGoodFortune(void *self, void *p);
+void SaveVillagers_ApplyGoodFortune(u8 *self, void *p);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_UpdateRoomInfo
 void SaveVillagers_UpdateRoomInfo(void *self, s32 idx);
@@ -494,19 +334,19 @@ void VillagerRelations_Clear(void *p);
 BOOL VillagerRelations_IsValidIndex(void *a, u32 i);
 #endif
 #ifndef PROTO_LOCAL_VillagerRelations_PairIndex
-s32 VillagerRelations_PairIndex(u8 *a, s32 b, s32 c);
+s32 VillagerRelations_PairIndex(s8 *a, s32 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_VillagerRelations_ResetSlot
-void VillagerRelations_ResetSlot(u8 *a, s32 x);
+void VillagerRelations_ResetSlot(s8 *a, s32 x);
 #endif
 #ifndef PROTO_LOCAL_VillagerRelations_AddAt
 void VillagerRelations_AddAt(s8 *a, s32 i, s32 d);
 #endif
 #ifndef PROTO_LOCAL_VillagerRelations_Add
-void VillagerRelations_Add(u8 *a, s32 p, s32 q, s32 r);
+void VillagerRelations_Add(s8 *a, s32 p, s32 q, s32 r);
 #endif
 #ifndef PROTO_LOCAL_VillagerRelations_GetStored
-s32 VillagerRelations_GetStored(u8 *a, s32 p, s32 q);
+s32 VillagerRelations_GetStored(s8 *a, s32 p, s32 q);
 #endif
 #ifndef PROTO_LOCAL_Relation_GetPersonalityScore
 s32 Relation_GetPersonalityScore(void *a, void *p, void *q);
@@ -615,9 +455,6 @@ void *Field_FindPlayerAtUnit(s32 x, s32 y);
 #endif
 #ifndef PROTO_LOCAL_Field_IsUnitOccupied
 BOOL Field_IsUnitOccupied(s32 a, s32 b);
-#endif
-#ifndef PROTO_LOCAL_TownMap_IsUnitWalkable
-BOOL TownMap_IsUnitWalkable(s32 x, s32 y, void *grid);
 #endif
 #ifndef PROTO_LOCAL_TownMap_FindBuildingAbove
 BOOL TownMap_FindBuildingAbove(s32 x, s32 y, s32 h, s32 *px, s32 *py);
@@ -734,7 +571,7 @@ extern u8 sVillagerLetter4Path[0x28];
 extern u8 sErrandVillagerDone[8];
 #endif
 #ifndef PROTO_LOCAL_sSpeciesCandidateBits
-extern u8 sSpeciesCandidateBits[0x14];
+extern u32 sSpeciesCandidateBits[5];
 #endif
 #ifdef __cplusplus
 }
@@ -769,17 +606,50 @@ BOOL Villager_GetDefaultCatchphrase(MsgString *buf, u32 x);
 #ifndef PROTO_LOCAL_Villager_GetDefaultCatchphraseEncoded
 BOOL Villager_GetDefaultCatchphraseEncoded(EncodedString *self, u32 x);
 #endif
+#ifndef PROTO_LOCAL_VillagerMemory_Construct
+VillagerMemory *VillagerMemory_Construct(VillagerMemory *self);
+#endif
+#ifndef PROTO_LOCAL_VillagerMemory_Destruct
+VillagerMemory *VillagerMemory_Destruct(VillagerMemory *self);
+#endif
+#ifndef PROTO_LOCAL_VillagerMemory_Clear
+void VillagerMemory_Clear(VillagerMemory *self);
+#endif
+#ifndef PROTO_LOCAL_VillagerMemory_IsUsed
+BOOL VillagerMemory_IsUsed(VillagerMemory *p);
+#endif
+#ifndef PROTO_LOCAL_VillagerMemory_InitForPlayer
+BOOL VillagerMemory_InitForPlayer(VillagerMemory *self, PlayerId *a, TownId *b, ClockDateTime *c);
+#endif
 #ifndef PROTO_LOCAL_VillagerMemory_RecordTalk
-void VillagerMemory_RecordTalk(VillagerMemory *self, void *a, u8 *b, u8 *c);
+void VillagerMemory_RecordTalk(VillagerMemory *self, PlayerId *a, TownId *b, ClockDateTime *c);
+#endif
+#ifndef PROTO_LOCAL_VillagerMemory_GetTalkDate
+ClockDateTime *VillagerMemory_GetTalkDate(VillagerMemory *p);
 #endif
 #ifndef PROTO_LOCAL_VillagerMemory_UpdateTalkStreak
-BOOL VillagerMemory_UpdateTalkStreak(VillagerMemory *self, u8 *p);
+BOOL VillagerMemory_UpdateTalkStreak(VillagerMemory *self, ClockDateTime *p);
 #endif
 #ifndef PROTO_LOCAL_VillagerMemory_AddStreakFriendship
 void VillagerMemory_AddStreakFriendship(VillagerMemory *p);
 #endif
+#ifndef PROTO_LOCAL_VillagerMemory_GetTownId
+TownId *VillagerMemory_GetTownId(VillagerMemory *p);
+#endif
+#ifndef PROTO_LOCAL_VillagerMemory_GetPlayerId
+PlayerId *VillagerMemory_GetPlayerId(VillagerMemory *p);
+#endif
 #ifndef PROTO_LOCAL_VillagerMemory_MatchesPlayer
-BOOL VillagerMemory_MatchesPlayer(TownId *a, TownId *b);
+BOOL VillagerMemory_MatchesPlayer(PlayerId *a, PlayerId *b);
+#endif
+#ifndef PROTO_LOCAL_Villager_SendBirthdayLetter
+void Villager_SendBirthdayLetter(VillagerData *t, void *p, void *q);
+#endif
+#ifndef PROTO_LOCAL_Villager_SendNewYearLetter
+void Villager_SendNewYearLetter(VillagerData *t, void *p, void *q);
+#endif
+#ifndef PROTO_LOCAL_Villager_SendByeLetter
+void Villager_SendByeLetter(VillagerData *t, void *p);
 #endif
 #ifndef PROTO_LOCAL_Villager_GetUmbrella
 void Villager_GetUmbrella(u16 *out, VillagerData *o);
@@ -788,13 +658,13 @@ void Villager_GetUmbrella(u16 *out, VillagerData *o);
 void Villager_SetCatchphraseFromMsg(VillagerData *a, MsgString *b);
 #endif
 #ifndef PROTO_LOCAL_Villager_SetCatchphraseEncoded
-void Villager_SetCatchphraseEncoded(VillagerData *a, void *b);
+void Villager_SetCatchphraseEncoded(VillagerData *a, EncodedString10 *b);
 #endif
 #ifndef PROTO_LOCAL_Villager_SetCatchphrase
 void Villager_SetCatchphrase(VillagerData *a, void *b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_Villager_GetBirthday
-u8 *Villager_GetBirthday(VillagerData *a);
+const u8 *Villager_GetBirthday(VillagerData *a);
 #endif
 #ifndef PROTO_LOCAL_Villager_GetUpcomingBirthdayDay
 s32 Villager_GetUpcomingBirthdayDay(VillagerData *a, s32 b, u8 *c);
@@ -812,19 +682,19 @@ u32 Villager_GetAnimalKind(VillagerData *a);
 u32 Villager_GetInfoByte2(VillagerData *a);
 #endif
 #ifndef PROTO_LOCAL_Villager_GetFashionTaste
-u8 *Villager_GetFashionTaste(VillagerData *a);
+const u8 *Villager_GetFashionTaste(VillagerData *a);
 #endif
 #ifndef PROTO_LOCAL_Villager_GetInfo
-u8 *Villager_GetInfo(VillagerData *a);
+const u8 *Villager_GetInfo(VillagerData *a);
 #endif
 #ifndef PROTO_LOCAL_Villager_GetFurnitureTaste
-u8 *Villager_GetFurnitureTaste(VillagerData *t, u32 i);
+const u8 *Villager_GetFurnitureTaste(VillagerData *t, u32 i);
 #endif
 #ifndef PROTO_LOCAL_Villager_GetFurnitureTasteScore
 u8 Villager_GetFurnitureTasteScore(VillagerData *a, u16 *b);
 #endif
 #ifndef PROTO_LOCAL_Villager_GetInfo3a
-u8 *Villager_GetInfo3a(VillagerData *a);
+const u8 *Villager_GetInfo3a(VillagerData *a);
 #endif
 #ifndef PROTO_LOCAL_Villager_IsValidMemoryIndex
 BOOL Villager_IsValidMemoryIndex(VillagerMemory *t, u32 i);
@@ -848,7 +718,7 @@ s32 Villager_FindMemoryIndexById(VillagerMemory *t, void *id);
 s32 Villager_GetMaxFriendship(VillagerMemory *t);
 #endif
 #ifndef PROTO_LOCAL_Villager_GetMinutesSinceLastTalk
-s32 Villager_GetMinutesSinceLastTalk(VillagerMemory *t, void *o);
+s32 Villager_GetMinutesSinceLastTalk(VillagerMemory *t, ClockDateTime *o);
 #endif
 #ifndef PROTO_LOCAL_Villager_PickMemoryToReplace
 s32 Villager_PickMemoryToReplace(VillagerMemory *t, s32 (*cb)(void *, void *, void *));
@@ -869,7 +739,7 @@ VillagerMemory *Villager_GetMemorySlotForNew(VillagerMemory *t);
 VillagerMemory *Villager_FindOrCreateMemory(VillagerMemory *t, void *b);
 #endif
 #ifndef PROTO_LOCAL_Villager_CollectOtherMemories
-s32 Villager_CollectOtherMemories(VillagerMemory *t, VillagerMemory **out, void *id, s32 mode);
+s32 Villager_CollectOtherMemories(VillagerMemory *t, VillagerMemory **out, void *id0, s32 mode);
 #endif
 #ifndef PROTO_LOCAL_Villager_CountMemories
 s32 Villager_CountMemories(VillagerMemory *t);
@@ -879,6 +749,9 @@ VillagerMemory *Villager_SetNicknameFromMsgFor(void *a, void *b, void *c);
 #endif
 #ifndef PROTO_LOCAL_Villager_SetNicknameFor
 VillagerMemory *Villager_SetNicknameFor(void *a, void *b, u32 c, void *d);
+#endif
+#ifndef PROTO_LOCAL_Villagers_ShareNickname
+void Villagers_ShareNickname(VillagerData *a, void *b, void *c);
 #endif
 #ifndef PROTO_LOCAL_Villager_PlaceItemInHouse
 BOOL Villager_PlaceItemInHouse(VillagerData *a, u16 *b);
@@ -944,7 +817,7 @@ s32 Villager_GetWhereabouts(VillagerData *a);
 void *Villager_GetPlan(VillagerData *a);
 #endif
 #ifndef PROTO_LOCAL_Villager_GetTrend
-s32 Villager_GetTrend(VillagerData *a, s32 b);
+s32 Villager_GetTrend(VillagerData *a, MsgString *out);
 #endif
 #ifndef PROTO_LOCAL_Villager_GetResidentStatus
 s32 Villager_GetResidentStatus(VillagerData *a);
@@ -977,7 +850,7 @@ void Villager_GetFriendName(void *a, MsgString *b);
 void Villager_GetEnemyName(void *a, MsgString *b);
 #endif
 #ifndef PROTO_LOCAL_Villager_GetRandomOtherName
-void Villager_GetRandomOtherName(void *a, MsgString *b);
+void Villager_GetRandomOtherName(VillagerData *a, MsgString *b);
 #endif
 #ifndef PROTO_LOCAL_ImpressionCond_PlayerFaceFlag
 BOOL ImpressionCond_PlayerFaceFlag(PlayerData *a, s32 b, s32 c);
@@ -1169,7 +1042,7 @@ BOOL ImpressionCond_Always(PlayerData *, s32, s32 );
 u32 Impression_Evaluate(PlayerData *a, s32 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_Villager_UpdateImpression
-u32 Villager_UpdateImpression(void *self, VillagerMemory *r, PlayerData *p);
+u32 Villager_UpdateImpression(VillagerData *self, VillagerMemory *r, PlayerData *p);
 #endif
 #ifndef PROTO_LOCAL_Villager_GetImpressionText
 void Villager_GetImpressionText(void *self, MsgString *out, PlayerData *p);
@@ -1198,6 +1071,15 @@ void Villager_PickRandomReceivedItem(u16 *out, VillagerData *self);
 #ifndef PROTO_LOCAL_Villager_GetMostValuableReceivedItem
 void Villager_GetMostValuableReceivedItem(u16 *out, VillagerData *self);
 #endif
+#ifndef PROTO_LOCAL_Villager_HasFlea
+BOOL Villager_HasFlea(VillagerData *self);
+#endif
+#ifndef PROTO_LOCAL_Villager_RemoveFlea
+void Villager_RemoveFlea(VillagerData *self);
+#endif
+#ifndef PROTO_LOCAL_Villager_IsGreeter
+BOOL Villager_IsGreeter(VillagerData *self);
+#endif
 #ifndef PROTO_LOCAL_Villager_GetFurnitureTasteIndex
 u32 Villager_GetFurnitureTasteIndex(VillagerData *self);
 #endif
@@ -1207,14 +1089,113 @@ void Villager_NextFurnitureTaste(VillagerData *self);
 #ifndef PROTO_LOCAL_Villager_IsFreeOfPlayerErrands
 BOOL Villager_IsFreeOfPlayerErrands(VillagerData *a);
 #endif
+#ifndef PROTO_LOCAL_Villager_StartMovingOut
+void Villager_StartMovingOut(VillagerData *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_Villager_StartMovingIn
+void Villager_StartMovingIn(VillagerData *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_Villager_IsMoveTimeReached
+s32 Villager_IsMoveTimeReached(VillagerData *a, ClockDateTime *b);
+#endif
+#ifndef PROTO_LOCAL_Villager_ShareTrendWith
+void Villager_ShareTrendWith(VillagerData *a, VillagerData *b);
+#endif
+#ifndef PROTO_LOCAL_Villager_RecordPlayerActivity
+void Villager_RecordPlayerActivity(VillagerData *a, u32 kind, s32 v);
+#endif
+#ifndef PROTO_LOCAL_Villager_UpdateTrendDays
+void Villager_UpdateTrendDays(VillagerData *a, ClockDateTime *b);
+#endif
+#ifndef PROTO_LOCAL_Villager_InitPlanDateA
+void Villager_InitPlanDateA(VillagerData *a, ClockDateTime *b);
+#endif
+#ifndef PROTO_LOCAL_Villager_InitPlanDateB
+void Villager_InitPlanDateB(VillagerData *a, ClockDateTime *b);
+#endif
+#ifndef PROTO_LOCAL_Villager_UpdatePlan
+s32 Villager_UpdatePlan(VillagerData *a, ClockDateTime *b);
+#endif
+#ifndef PROTO_LOCAL_Villager_UpdatePlanState
+s32 Villager_UpdatePlanState(VillagerData *a, void *b, void *c, ClockDateTime *d);
+#endif
+#ifndef PROTO_LOCAL_Villager_UpdatePlanErrand
+void Villager_UpdatePlanErrand(VillagerData *a);
+#endif
+#ifndef PROTO_LOCAL_Villager_CanGoOutdoors
+s32 Villager_CanGoOutdoors(VillagerData *a);
+#endif
+#ifndef PROTO_LOCAL_Villager_PickShownFurniture
+void Villager_PickShownFurniture(VillagerData *p);
+#endif
+#ifndef PROTO_LOCAL_Villager_IsFurnitureShown
+s32 Villager_IsFurnitureShown(VillagerData *p, s32 n);
+#endif
+#ifndef PROTO_LOCAL_Villager_HideFurniture
+void Villager_HideFurniture(VillagerData *p, s32 n);
+#endif
+#ifndef PROTO_LOCAL_Villager_IsAsleep
+s32 Villager_IsAsleep(VillagerData *a, ClockDateTime *b);
+#endif
+#ifndef PROTO_LOCAL_Villager_SetFleaMarketVisited
+void Villager_SetFleaMarketVisited(VillagerData *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_Villager_UpdateVisitorRecord
+s32 Villager_UpdateVisitorRecord(VillagerData *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_Villager_SendLetter4
+s32 Villager_SendLetter4(void *a, u32 b, u32 c, void *d, VillagerId *e, u16 *f);
+#endif
+#ifndef PROTO_LOCAL_Villager_SendLetter
+s32 Villager_SendLetter(void *a, u32 b, void *c, VillagerId *d, u16 *e);
+#endif
+#ifndef PROTO_LOCAL_Villager_InitTalkUrge
+void Villager_InitTalkUrge(VillagerData *self, void *x);
+#endif
+#ifndef PROTO_LOCAL_Villager_CanSeekPlayer
+BOOL Villager_CanSeekPlayer(VillagerData *self);
+#endif
+#ifndef PROTO_LOCAL_Villager_RaiseTalkUrge
+void Villager_RaiseTalkUrge(VillagerData *self, void *x);
+#endif
+#ifndef PROTO_LOCAL_Villager_IsTalkUrgeFull
+BOOL Villager_IsTalkUrgeFull(VillagerData *self, void *x);
+#endif
+#ifndef PROTO_LOCAL_Villager_ClearTalkUrge
+void Villager_ClearTalkUrge(VillagerData *self);
+#endif
+#ifndef PROTO_LOCAL_Villager_HalveTalkUrge
+void Villager_HalveTalkUrge(VillagerData *self);
+#endif
+#ifndef PROTO_LOCAL_Villager_DoubleTalkUrge
+void Villager_DoubleTalkUrge(VillagerData *self);
+#endif
+#ifndef PROTO_LOCAL_Villager_AddTalkUrge
+void Villager_AddTalkUrge(VillagerData *self, s32 d);
+#endif
+#ifndef PROTO_LOCAL_SaveVillagers_Construct
+SaveVillagers *SaveVillagers_Construct(SaveVillagers *self);
+#endif
+#ifndef PROTO_LOCAL_SaveVillagers_Destruct
+SaveVillagers *SaveVillagers_Destruct(SaveVillagers *self);
+#endif
+#ifndef PROTO_LOCAL_SaveVillagers_Clear
+void SaveVillagers_Clear(SaveVillagers *self);
+#endif
 #ifndef PROTO_LOCAL_SaveVillagers_FindIndex
 s32 SaveVillagers_FindIndex(u8 *base, VillagerId *p);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_Get
 VillagerData *SaveVillagers_Get(void *base, s32 idx);
 #endif
+#ifndef PROTO_LOCAL_SaveVillagers_Find
+u8 *SaveVillagers_Find(u8 *base, VillagerId *x);
+#endif
+#ifndef PROTO_LOCAL_SpeciesBits_Clear
+void SpeciesBits_Clear(SaveVillagers *unused, u32 *bits, s32 n);
+#endif
 #ifndef PROTO_LOCAL_SaveVillagers_UpdateHistory
-void SaveVillagers_UpdateHistory(void *bits, SaveVillagers *p0);
+void SaveVillagers_UpdateHistory(u32 *bits, SaveVillagers *p0);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_PickNewSpecies
 s32 SaveVillagers_PickNewSpecies(SaveVillagers *self, u32 idx, s32 flag);
@@ -1235,13 +1216,13 @@ s32 SaveVillagers_IsOutdoors(SaveVillagers *self, VillagerId *o);
 void SaveVillagers_UpdatePlans(SaveVillagers *self);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_CanMoveIn
-s32 SaveVillagers_CanMoveIn(SaveVillagers *self, void *p);
+s32 SaveVillagers_CanMoveIn(SaveVillagers *self, ClockDateTime *p);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_PickMoveInSpecies
 s32 SaveVillagers_PickMoveInSpecies(SaveVillagers *self);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_TryRandomMoveIn
-void SaveVillagers_TryRandomMoveIn(SaveVillagers *self, void *out);
+void SaveVillagers_TryRandomMoveIn(SaveVillagers *self, ClockDateTime *out);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_FindBySpecies
 void *SaveVillagers_FindBySpecies(SaveVillagers *self, u32 id);
@@ -1253,25 +1234,46 @@ void SaveVillagers_SetLastMovedIn(SaveVillagers *self, s8 v);
 void SaveVillagers_SetLastMovedInById(SaveVillagers *self, VillagerId *o);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_MoveIn
-void SaveVillagers_MoveIn(SaveVillagers *self, void *a, s32 idx, void *b, u8 c, void *out);
+void SaveVillagers_MoveIn(SaveVillagers *self, VillagerData *a, s32 idx, VillagerData *b, u8 c, ClockDateTime *out);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_MoveOut
-void SaveVillagers_MoveOut(SaveVillagers *self, void *a, void *b, s32 idx, void *out);
+void SaveVillagers_MoveOut(SaveVillagers *self, VillagerData *a, VillagerData *b, s32 idx, ClockDateTime *out);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_ProcessTransfer
-void SaveVillagers_ProcessTransfer(SaveVillagers *self, void *arg);
+void SaveVillagers_ProcessTransfer(SaveVillagers *self, ClockDateTime *arg);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_FindMovingOut
 s32 SaveVillagers_FindMovingOut(SaveVillagers *self);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_FindMovingOutDue
-s32 SaveVillagers_FindMovingOutDue(SaveVillagers *self, void *name);
+s32 SaveVillagers_FindMovingOutDue(SaveVillagers *self, ClockDateTime *name);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_FindJustMovedIn
 s32 SaveVillagers_FindJustMovedIn(VillagerData *p);
 #endif
+#ifndef PROTO_LOCAL_SaveVillagers_ShouldStartMoveOut
+BOOL SaveVillagers_ShouldStartMoveOut(SaveVillagers *self, ClockDateTime *x);
+#endif
+#ifndef PROTO_LOCAL_SaveVillagers_PickMoveOutCandidate
+s32 SaveVillagers_PickMoveOutCandidate(SaveVillagers *self);
+#endif
+#ifndef PROTO_LOCAL_SaveVillagers_TryStartMoveOut
+void SaveVillagers_TryStartMoveOut(SaveVillagers *self, ClockDateTime *x);
+#endif
 #ifndef PROTO_LOCAL_SaveVillagers_UpdatePlanStates
-void SaveVillagers_UpdatePlanStates(u8 *self, ClockDateTimeRaw *x);
+void SaveVillagers_UpdatePlanStates(SaveVillagers *self, ClockDateTimeRaw *x);
+#endif
+#ifndef PROTO_LOCAL_SaveVillagers_RefreshPlanStates
+void SaveVillagers_RefreshPlanStates(SaveVillagers *self);
+#endif
+#ifndef PROTO_LOCAL_SaveVillagers_UpdatePlansNow
+void SaveVillagers_UpdatePlansNow(SaveVillagers *self);
+#endif
+#ifndef PROTO_LOCAL_SaveVillagers_DailyUpdate
+void SaveVillagers_DailyUpdate(SaveVillagers *self, s32 flag);
+#endif
+#ifndef PROTO_LOCAL_SaveVillagers_DailyFurnitureUpdate
+void SaveVillagers_DailyFurnitureUpdate(SaveVillagers *self);
 #endif
 #ifndef PROTO_LOCAL_HousePos_FindNthValid
 s32 HousePos_FindNthValid(HousePos *p, s32 n, u32 k);
@@ -1279,17 +1281,86 @@ s32 HousePos_FindNthValid(HousePos *p, s32 n, u32 k);
 #ifndef PROTO_LOCAL_VillagerStates_GetEntry
 VillagerState *VillagerStates_GetEntry(u32 a);
 #endif
+#ifndef PROTO_LOCAL_Villager_GetPlayerErrandKind
+s32 Villager_GetPlayerErrandKind(u8 *self, u8 *p, PlayerData *r4);
+#endif
+#ifndef PROTO_LOCAL_Villager_GetErrandKind
+s32 Villager_GetErrandKind(u8 *self, u8 *p, PlayerData *r5);
+#endif
 #ifndef PROTO_LOCAL_SaveVillagers_GetUnk3830
 SickVillagerRecord *SaveVillagers_GetUnk3830(void *p);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_IsNicknameCooldownOver
-BOOL SaveVillagers_IsNicknameCooldownOver(SaveVillagers *self, void *p);
+BOOL SaveVillagers_IsNicknameCooldownOver(SaveVillagers *self, u8 *p);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_SetNicknameDate
 void SaveVillagers_SetNicknameDate(SaveVillagers *self, void *p);
 #endif
+#ifndef PROTO_LOCAL_SaveVillagers_ClearTuneRequester
+void SaveVillagers_ClearTuneRequester(SaveVillagers *self);
+#endif
+#ifndef PROTO_LOCAL_SaveVillagers_SetTuneRequester
+void SaveVillagers_SetTuneRequester(SaveVillagers *self, VillagerId *u);
+#endif
+#ifndef PROTO_LOCAL_SaveVillagers_IsTuneRequester
+BOOL SaveVillagers_IsTuneRequester(SaveVillagers *self, VillagerId *u);
+#endif
 #ifndef PROTO_LOCAL_SaveVillagers_PickFleaVillager
 void SaveVillagers_PickFleaVillager(u8 *p, PlayerId *a1);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_Construct
+void OutdoorSchedule_Construct(OutdoorSchedule *p);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_Clear
+void OutdoorSchedule_Clear(OutdoorSchedule *self);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_ClearOutdoor
+void OutdoorSchedule_ClearOutdoor(OutdoorSchedule *self);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_SetOutdoorSlot
+BOOL OutdoorSchedule_SetOutdoorSlot(OutdoorSchedule *self, u32 i, s32 v);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_FindOutdoorSlotImpl
+s32 OutdoorSchedule_FindOutdoorSlotImpl(OutdoorSchedule *self, s32 x);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_RemoveOutdoor
+void OutdoorSchedule_RemoveOutdoor(OutdoorSchedule *self, s32 x);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_Remove
+void OutdoorSchedule_Remove(OutdoorSchedule *self, s32 x);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_FindOutdoorSlot
+s32 OutdoorSchedule_FindOutdoorSlot(OutdoorSchedule *a, s32 b);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_ForceReroll
+void OutdoorSchedule_ForceReroll(OutdoorSchedule *p);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_IsRerollDue
+BOOL OutdoorSchedule_IsRerollDue(OutdoorSchedule *self, ClockDateTime *out);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_PickRandom
+void OutdoorSchedule_PickRandom(OutdoorSchedule *self, s8 *out, s32 *cnt, s8 *list, u8 *players, s32 limit);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_AssignIndoor
+void OutdoorSchedule_AssignIndoor(OutdoorSchedule *self, s8 *list, s32 *cnt, VillagerState *slots);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_AssignOutdoor
+void OutdoorSchedule_AssignOutdoor(OutdoorSchedule *self, s8 *list, s32 *cnt, VillagerState *slots, s32 n);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_AddBirthdayVisitor
+void OutdoorSchedule_AddBirthdayVisitor(OutdoorSchedule *self, s8 *out, s32 *cnt, s8 *list, u8 *players);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_ApplySleep
+void OutdoorSchedule_ApplySleep(OutdoorSchedule *self, u8 *p, ClockDateTime *x);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_Reroll
+void OutdoorSchedule_Reroll(OutdoorSchedule *self, u8 *p);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_Apply
+void OutdoorSchedule_Apply(OutdoorSchedule *self, u8 *p);
+#endif
+#ifndef PROTO_LOCAL_OutdoorSchedule_Update
+void OutdoorSchedule_Update(OutdoorSchedule *self, u8 *p, s32 keep);
 #endif
 #ifndef PROTO_LOCAL_SaveVillagers_NotifyPlayerActivity
 void SaveVillagers_NotifyPlayerActivity(u32 kind, VecFx32 *p);
@@ -1408,8 +1479,11 @@ VillagerState *VillagerStateTable_GetEntry(VillagerStateTable *m, s32 i);
 #ifndef PROTO_LOCAL_VillagerStateTable_ResetRuntime
 void VillagerStateTable_ResetRuntime(VillagerState *e);
 #endif
+#ifndef PROTO_LOCAL_TownMap_IsUnitWalkable
+BOOL TownMap_IsUnitWalkable(s32 x, s32 y, BlockMap *grid);
+#endif
 #ifndef PROTO_LOCAL_TownMap_IsPosWalkable
-BOOL TownMap_IsPosWalkable(VecFx32 *a, void *grid);
+BOOL TownMap_IsPosWalkable(VecFx32 *a, BlockMap *grid);
 #endif
 #ifndef PROTO_LOCAL_TownMap_FindBuildingAbovePos
 BOOL TownMap_FindBuildingAbovePos(VecFx32 *a, s32 h, s32 *px, s32 *py);

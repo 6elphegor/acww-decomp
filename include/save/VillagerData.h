@@ -6,8 +6,11 @@
 #include "save/TownId.h"
 #include "save/Pattern.h"
 #include "item/Letter.h"
+#include "sys/ClockDateTime.h"
 
 class LetterView;
+class PlayerId;
+class EncodedString;
 
 // A villager's save record (0x700 bytes; eight in SaveVillagers) and its memories of the players (0x68 bytes each).
 // Methods defined in src/main/unk_02077ac4.cpp. The members are kept as the DS bytes (copied and cleared as blocks;
@@ -17,7 +20,9 @@ struct VillagerMemory {
     u8 nickname[8];
     u8 compliment[0x10];
     u8 greeting[0x10];
-    u8 unk_3e[0x14];
+    u8 unk_3e[2];
+    ClockDateTimeWords talkDate;  // the last talk (VillagerMemory_GetTalkDate)
+    TownId town;             // the player's town (VillagerMemory_GetTownId)
     u16 receivedItem;
     s8 friendship;
     u8 impression;
@@ -41,6 +46,8 @@ struct VillagerMemory {
         u16 f15 : 1;
     } flags;
     u8 unk_66[2];
+
+    PlayerId *asPlayerId() { return (PlayerId *)player; }  // (the player's id, kept as the save bytes)
 
     BOOL hasFortuneGreeting();
     void clearFortuneGreeting();
@@ -73,16 +80,16 @@ struct VillagerMemory {
     u16 *getReceivedItem();
     void setReceivedItem(u16 *p);
     void setGreeting(void *src, s32 n);
-    void getGreetingEncoded(void *out);
+    void getGreetingEncoded(EncodedString *out);
     void getGreeting(void *out);
     BOOL hasGreeting();
     void setCompliment(void *src, s32 n);
-    void getComplimentEncoded(void *out);
+    void getComplimentEncoded(EncodedString *out);
     void getCompliment(void *out);
     BOOL hasCompliment();
     void setNickname(void *src, s32 n);
     void setNicknameFromMsg(void *out);
-    void getNicknameEncoded(void *out);
+    void getNicknameEncoded(EncodedString *out);
     void getNickname(void *out);
     void setLetterReceived();
     BOOL isLetterReceived();
@@ -103,7 +110,8 @@ struct VillagerData {
     u16 receivedItems[4];
     TownId movedFromTown;
     u8 catchphrase[0xa];
-    u32 housePos;
+    u8 housePos[2];           // x, z in acres (HousePos_*); 0xff 0xff: none
+    u16 shownFurnitureMask;   // the furniture shown in the house (Villager_PickShownFurniture)
     u16 shirt;
     u8 wallpaper;
     u8 carpet;
@@ -117,10 +125,10 @@ struct VillagerData {
 
     s32 receiveLetterFrom(LetterView *letter);
     // profile: letter, catchphrase, shirt, umbrella (src/main/unk_02077ac4.cpp)
-    void getCatchphraseEncoded(void *p);
+    void getCatchphraseEncoded(EncodedString *p);
     void getCatchphrase(MsgString *p, void *q);
     void clearCatchphrase();
-    void *getInfo28();
+    const void *getInfo28();
     s32 findFreeSlot(s32 n);  // the first of n villagers from this one without a villager
     void setUmbrella(u16 *p);
     void setShirt(u16 *p);
@@ -142,19 +150,33 @@ struct VillagerData {
     VillagerData();
 };
 
+// Which villagers are outdoors (OutdoorSchedule_*, src/main/unk_02077ac4.cpp): the villagers in the order they go
+// out (indices, -1: none), the ones outdoors now and the time of the last reroll
+struct OutdoorSchedule {
+    s8 order[8];
+    s8 outdoorSlots[4];
+    ClockDateTimeWords lastReroll;
+};
+
 // Villager save block (gSaveVillagers, SaveData::villagers: 0x38f4 bytes)
 struct SaveVillagers {
       VillagerData villagers[8];
-      u32 relations[7];
-      u32 outdoorSchedule[41];
+      s8 relations[0x1c];       // the relation scores of the 28 pairs of villagers (VillagerRelations_*)
+      OutdoorSchedule outdoorSchedule;
+      u8 sickVillager[0x90];    // 0x3830 SickVillagerRecord (SaveVillagers_GetUnk3830)
       u8 nicknameDate[4];       // 0x38c0 SaveVillagers_SetNicknameDate / IsNicknameCooldownOver
-      u32 lastMoveDate[2];
-      u32 lastMoveOutDate[2];
+      ClockDateTimeWords lastMoveDate;
+      ClockDateTimeWords lastMoveOutDate;
       u32 speciesHistory[5];
       s8 lastMovedOutSpecies;
       s8 lastMovedInIndex;
       s8 lastSickIndex;
-      u8 unk_38eb[3];           // 0x38ec: the town tune request bits (SaveVillagersTuneView)
+      u8 unk_38eb;
+      struct {
+          u16 unk0 : 1;
+          u16 tuneRequested : 1;
+          u16 tuneRequester : 3;  // the villager who asked for a new town tune
+      } tune;                   // 0x38ec
       u8 furnitureDropDate[4];  // 0x38ee (Clock_GetDate)
       u8 pad_38f2[2];
 };
