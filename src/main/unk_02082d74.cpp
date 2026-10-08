@@ -220,7 +220,7 @@ extern u8 gSaveVillagers[];
 extern BlockMap *gSceneBlockMap;
 s32 Scene_GetCurrent();
 s32 Scene_InTown();
-s32 Field_ClearObjectFcFdAt(VecFx32 *v);
+void Field_ClearObjectFcFdAt(VecFx32 *v);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 void *VillagerStates_GetEntry(s32 i);

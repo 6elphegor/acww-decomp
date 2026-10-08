@@ -1,4 +1,5 @@
 #include "types.h"
+#include "field/MoneyRockState.h"
 #include "town/TownState.h"
 #include "town/TownEventRecord.h"
 #include "town/TownBlockMap.h"
@@ -14,7 +15,7 @@
 // Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
 // size order (linkprep check); the original file is this one or another file between those neighbours.
 
-u8 data_021c47bc[8];
+MoneyRockState data_021c47bc;
 
 
 struct ItemId {
