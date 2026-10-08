@@ -1840,3 +1840,14 @@ extern "C" const u8 sDesignTabSlotX[16] = {0x28, 0x60, 0x98, 0xd0, 0x38, 0x70, 0
 extern "C" const u8 sDesignTabSlotY[16] = {0x7c, 0x7c, 0x7c, 0x7c, 0xa4, 0xa4, 0xa4, 0xa4, 0xb0, 0x30, 0x30, 0x30, 0x50, 0x50, 0x50, 0x50};
 
 extern "C" const u16 sDesignTabTargetTileY[7] = {4, 4, 4, 8, 8, 8, 8};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov121_02292360) {
+    HOST_OVERLAY_VAR(sDesignTabProfile),
+    HOST_OVERLAY_VAR(sDesignTabIconCell),
+    HOST_OVERLAY_VAR(sDesignTabTargetFrameCells),
+    HOST_OVERLAY_VAR(sDesignItemBase),
+    HOST_OVERLAY_VARS_END
+};

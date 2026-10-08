@@ -169,6 +169,17 @@ extern "C" char data_ov003_022312a4[12] = "obj_check2";
 extern "C" char data_ov003_022312b0[12] = "obj_check1";
 extern "C" char data_ov003_022312bc[12] = "obj_check0";
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
 
-
-
+HOST_OVERLAY_VARS(unk_ov003_02214dfc) {
+    HOST_OVERLAY_VAR(data_ov003_02235228),
+    HOST_OVERLAY_VAR(data_ov003_0223524c),
+    HOST_OVERLAY_VAR(data_ov003_02235204),
+    HOST_OVERLAY_VAR(sGateHouseProfile),
+    HOST_OVERLAY_VAR(sGateHouseModelNames),
+    HOST_OVERLAY_VAR(data_ov003_022312a4),
+    HOST_OVERLAY_VAR(data_ov003_022312b0),
+    HOST_OVERLAY_VAR(data_ov003_022312bc),
+    HOST_OVERLAY_VARS_END
+};

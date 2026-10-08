@@ -1,4 +1,5 @@
 #include "gfx/MatTexVramTask.h"
+#include "host_overlay_vars.h"
 #include "gfx/ModelAnim.h"
 #include "item/DateSeededRandomSource.h"
 // mwcc-version: 1.2/base
@@ -295,3 +296,19 @@ extern "C" u32 SewingMachine_GetFrame() {
     }
     return 0;
 }
+
+// Run when the overlay is loaded (modern/host/overlay.c), as the DS's __sinit: the default constructors of
+// the unit's objects.
+extern "C" void StaticInit_unk_ov004_02228700(void) {
+    HOST_STATIC_CONSTRUCT(sSewingMachineCloth);
+}
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02228700) {
+    HOST_OVERLAY_VAR(sSewingMachineProfile),
+    HOST_OVERLAY_VAR(sSewingMachine),
+    HOST_OVERLAY_VAR(sSewingMachineCloth),
+    HOST_OVERLAY_VARS_END
+};

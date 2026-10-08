@@ -378,3 +378,13 @@ void SpNpcTortimer::onInteractionEvent(u32 a, u8 b) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov080_022713c0) {
+    HOST_OVERLAY_VAR(sSpNpcTortimerActTable),
+    HOST_OVERLAY_VAR(sSpNpcTortimerTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerModelPath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerProfile),
+    HOST_OVERLAY_VARS_END
+};

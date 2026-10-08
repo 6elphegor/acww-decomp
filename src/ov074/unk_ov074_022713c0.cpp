@@ -720,3 +720,20 @@ void SpNpcBlancaFaceTexture::release(Heap *heap) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov074_022713c0) {
+    HOST_OVERLAY_VAR(data_ov074_022726e4),
+    HOST_OVERLAY_VAR(data_ov074_022726f4),
+    HOST_OVERLAY_VAR(data_ov074_022726e0),
+    HOST_OVERLAY_VAR(data_ov074_022726f8),
+    HOST_OVERLAY_VAR(sSpNpcBlancaProfile),
+    HOST_OVERLAY_VAR(data_ov074_022726e8),
+    HOST_OVERLAY_VAR(data_ov074_022726f0),
+    HOST_OVERLAY_VAR(sSpNpcBlancaFaceMaterialName),
+    HOST_OVERLAY_VAR(sSpNpcBlancaModelPath),
+    HOST_OVERLAY_VAR(sSpNpcBlancaActTable),
+    HOST_OVERLAY_VAR(sSpNpcBlancaSidestepOffsets),
+    HOST_OVERLAY_VARS_END
+};

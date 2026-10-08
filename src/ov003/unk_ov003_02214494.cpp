@@ -381,3 +381,17 @@ void ReddTent::execTentWarp() {
         }
     }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_02214494) {
+    HOST_OVERLAY_VAR(data_ov003_02235144),
+    HOST_OVERLAY_VAR(data_ov003_02235160),
+    HOST_OVERLAY_VAR(data_ov003_0223514c),
+    HOST_OVERLAY_VAR(data_ov003_02235158),
+    HOST_OVERLAY_VAR(data_ov003_0223515c),
+    HOST_OVERLAY_VAR(data_ov003_02235148),
+    HOST_OVERLAY_VAR(sReddTentProfile),
+    HOST_OVERLAY_VARS_END
+};

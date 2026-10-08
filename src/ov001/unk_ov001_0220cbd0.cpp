@@ -61,3 +61,11 @@ u16 *WfcMsg_GetStringWithDigit(WfcMsgBank *t, u32 i, s32 j, u32 v) {
 }
 }
 #pragma thumb reset
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0220cbd0) {
+    HOST_OVERLAY_VAR(sWfcMsgPool),
+    HOST_OVERLAY_VARS_END
+};

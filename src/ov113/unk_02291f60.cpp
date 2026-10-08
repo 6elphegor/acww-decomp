@@ -959,3 +959,12 @@ BOOL BbsReadMenu::moveFocusByPad(u32 pad) {
     }
     return FALSE;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_02291f60) {
+    HOST_OVERLAY_VAR(data_ov113_022935c8),
+    HOST_OVERLAY_VAR(data_ov113_022936a0),
+    HOST_OVERLAY_VARS_END
+};

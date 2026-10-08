@@ -948,3 +948,21 @@ BOOL HouseVisitVillager::canPlayTalkMelody() {
     }
     return FALSE;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov068_0226dbe8) {
+    HOST_OVERLAY_VAR(sHouseVisitVillager),
+    HOST_OVERLAY_VAR(data_ov068_022712a8),
+    HOST_OVERLAY_VAR(sHouseVisitMsgFileName),
+    HOST_OVERLAY_VAR(sHouseVisitVillagerProfile),
+    HOST_OVERLAY_VAR(data_ov068_02271298),
+    HOST_OVERLAY_VAR(data_ov068_022712b0),
+    HOST_OVERLAY_VAR(data_ov068_022712a0),
+    HOST_OVERLAY_VAR(data_ov068_0227129c),
+    HOST_OVERLAY_VAR(data_ov068_02270a3c),
+    HOST_OVERLAY_VAR(data_ov068_022712a4),
+    HOST_OVERLAY_VAR(data_ov068_022712b8),
+    HOST_OVERLAY_VARS_END
+};

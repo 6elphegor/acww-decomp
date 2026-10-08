@@ -190,3 +190,11 @@ extern "C" void WfcTopMenu_HighlightSelection() {
     WfcUtil_RequestPaletteLine(sWfcTopMenuPalette, v, v);
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0220d760) {
+    HOST_OVERLAY_VAR(sWfcTopMenuSel),
+    HOST_OVERLAY_VAR(sWfcTopMenuPalette),
+    HOST_OVERLAY_VARS_END
+};

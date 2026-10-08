@@ -748,3 +748,17 @@ u32 KatrinaEncodedString16::capacity() { return 0x10; }
 
 u8 *KatrinaEncodedString16::data() { return unk_0e; }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_02258de0) {
+    HOST_OVERLAY_VAR(sSpNpcKatrinaModelPath),
+    HOST_OVERLAY_VAR(sSpNpcKatrinaTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcKatrinaMsgKey),
+    HOST_OVERLAY_VAR(sSpNpcKatrinaKey),
+    HOST_OVERLAY_VAR(sSpNpcKatrinaTalkScripts),
+    HOST_OVERLAY_VAR(sSpNpcKatrinaActTable),
+    HOST_OVERLAY_VAR(sSpNpcKatrinaInstance),
+    HOST_OVERLAY_VAR(sSpNpcKatrinaProfile),
+    HOST_OVERLAY_VARS_END
+};

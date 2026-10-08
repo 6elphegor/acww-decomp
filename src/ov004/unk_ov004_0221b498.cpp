@@ -545,3 +545,18 @@ extern "C" SpNpcSableActEntry sSpNpcSableActTable[7] = {
     {&SpNpcSable::setupAct05, &SpNpcSable::mainAct05},
     {&SpNpcSable::setupAct06, &SpNpcSable::mainAct06},
 };
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0221b498) {
+    HOST_OVERLAY_VAR(data_ov004_0224cd04),
+    HOST_OVERLAY_VAR(data_ov004_0224cd14),
+    HOST_OVERLAY_VAR(data_ov004_0224cd24),
+    HOST_OVERLAY_VAR(sSpNpcSableMsgFiles),
+    HOST_OVERLAY_VAR(sSpNpcSableModelPath),
+    HOST_OVERLAY_VAR(sSpNpcSableTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcSableProfile),
+    HOST_OVERLAY_VAR(sSpNpcSableActTable),
+    HOST_OVERLAY_VARS_END
+};

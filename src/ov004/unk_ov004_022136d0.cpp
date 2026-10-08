@@ -264,3 +264,20 @@ extern "C" void RoomBoardSign_Spawn(void *a, s32 b, s32 c, s32 d) {
     Actor::spawn(0x17, 0, a, loc, 0);
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_022136d0) {
+    HOST_OVERLAY_VAR(data_ov004_0225017c),
+    HOST_OVERLAY_VAR(data_ov004_02250184),
+    HOST_OVERLAY_VAR(data_ov004_02250188),
+    HOST_OVERLAY_VAR(data_ov004_02250170),
+    HOST_OVERLAY_VAR(sRoomBoardSigns),
+    HOST_OVERLAY_VAR(sRoomBoardSignProfile),
+    HOST_OVERLAY_VAR(sRoomBoardSignSpawnRadius),
+    HOST_OVERLAY_VAR(sRoomBoardSignSpawnMsg),
+    HOST_OVERLAY_VAR(data_ov004_02250180),
+    HOST_OVERLAY_VAR(sRoomBoardSignCount),
+    HOST_OVERLAY_VAR(data_ov004_02250174),
+    HOST_OVERLAY_VARS_END
+};

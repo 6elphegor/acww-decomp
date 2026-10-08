@@ -694,3 +694,11 @@ extern "C" const u8 sBirthdayCursorDownTable[4] = {2, 2, 2, 0};
 extern "C" const s32 sBirthdayCursorYTable[3] = {0x78, 0x78, 0};
 
 extern "C" ProcProfile sBirthdayMenuProfile = {(void *(*)())BirthdayMenu_Create, 0xb0, 0xb4};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_02295380) {
+    HOST_OVERLAY_VAR(sBirthdayMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

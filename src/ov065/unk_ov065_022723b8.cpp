@@ -4586,3 +4586,16 @@ s32 DwcFriend_GetStatusString(void *a, char *b) {
 
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_022723b8) {
+    HOST_OVERLAY_VAR(sDwcMatchServerLock),
+    HOST_OVERLAY_VAR(sDwcMatchUserFilter),
+    HOST_OVERLAY_VAR(sDwcMatchSyncOption),
+    HOST_OVERLAY_VAR(sDwcMatch),
+    HOST_OVERLAY_VAR(sDwcMatchValidAids),
+    HOST_OVERLAY_VAR(sDwcMatchUserKeys),
+    HOST_OVERLAY_VARS_END
+};

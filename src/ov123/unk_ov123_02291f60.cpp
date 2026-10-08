@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_overlay_vars.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
@@ -1653,6 +1654,9 @@ s32 PatternEditorMenu::findSpanEnd(s32 x, s32 y, s32 v) {
     return 31;
 }extern "C" GXOamAttr *sPatternEditorToolCursors[12] = {(GXOamAttr *)data_ov123_0229594c, (GXOamAttr *)data_ov123_0229593c, (GXOamAttr *)data_ov123_0229595c, (GXOamAttr *)data_ov123_02295858, (GXOamAttr *)data_ov123_022958b8, 0, (GXOamAttr *)&data_ov123_022958c0, (GXOamAttr *)&data_ov123_022958c0, (GXOamAttr *)data_ov123_02295850, (GXOamAttr *)data_ov123_02295800, (GXOamAttr *)data_ov123_02295800, (GXOamAttr *)data_ov123_02295800};
 
+// PatternEditorMenu::floodFill's static q, initialised at its first use after the overlay was loaded
+Unk_ov123_02293010_Q PatternEditorMenu_floodFill_q[64];
+u8 PatternEditorMenu_floodFill_q_init;
 void PatternEditorMenu::floodFill(u8 x, u8 y, u32 tgt) {
     u32 cur;
     s32 head;
@@ -1664,18 +1668,21 @@ void PatternEditorMenu::floodFill(u8 x, u8 y, u32 tgt) {
     getCanvas();
     cur = getPixel(x, y);
     if (cur != tgt) {
-        static Unk_ov123_02293010_Q q[64];
+        if (!PatternEditorMenu_floodFill_q_init) {
+            HOST_STATIC_CONSTRUCT(PatternEditorMenu_floodFill_q);
+            PatternEditorMenu_floodFill_q_init = 1;
+        }
         s32 tail;
         head = 0;
         tail = 1;
-        q[0].a = x;
-        q[0].b = x;
-        q[0].c = y;
+        PatternEditorMenu_floodFill_q[0].a = x;
+        PatternEditorMenu_floodFill_q[0].b = x;
+        PatternEditorMenu_floodFill_q[0].c = y;
         m = *(const u32 *)(sPatternEditorSineTable + 0x140);
         do {
-            s32 a = q[head].a;
-            b = q[head].b;
-            s32 yy = q[head].c;
+            s32 a = PatternEditorMenu_floodFill_q[head].a;
+            b = PatternEditorMenu_floodFill_q[head].b;
+            s32 yy = PatternEditorMenu_floodFill_q[head].c;
             head = (head + 1) & m;
             if (tgt != getPixel(a, yy)) {
                 left = findSpanStart(a, yy, cur);
@@ -1692,9 +1699,9 @@ void PatternEditorMenu::floodFill(u8 x, u8 y, u32 tgt) {
                             xs = 0xff;
                         } else {
                             s32 r = findSpanEnd(t, ym, cur);
-                            q[tail].a = t;
-                            q[tail].b = r;
-                            q[tail].c = ym;
+                            PatternEditorMenu_floodFill_q[tail].a = t;
+                            PatternEditorMenu_floodFill_q[tail].b = r;
+                            PatternEditorMenu_floodFill_q[tail].c = ym;
                             tail = (tail + 1) & m;
                             xs = r + 2;
                         }
@@ -1708,9 +1715,9 @@ void PatternEditorMenu::floodFill(u8 x, u8 y, u32 tgt) {
                             left = 0xff;
                         } else {
                             s32 r = findSpanEnd(t, y1, cur);
-                            q[tail].a = t;
-                            q[tail].b = r;
-                            q[tail].c = y1;
+                            PatternEditorMenu_floodFill_q[tail].a = t;
+                            PatternEditorMenu_floodFill_q[tail].b = r;
+                            PatternEditorMenu_floodFill_q[tail].c = y1;
                             tail = (tail + 1) & m;
                             left = r + 2;
                         }
@@ -2379,3 +2386,34 @@ void PatternEditorMenu::setFlags(u32 mask) { flags = flags | mask; }
 
 void PatternEditorMenu::clearFlags(u32 mask) { flags = flags & ~mask; }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov123_02291f60) {
+    HOST_OVERLAY_VAR(sPatternEditorMenuProfile),
+    HOST_OVERLAY_VAR(data_ov123_0229594c),
+    HOST_OVERLAY_VAR(data_ov123_0229596c),
+    HOST_OVERLAY_VAR(data_ov123_02295840),
+    HOST_OVERLAY_VAR(data_ov123_02295828),
+    HOST_OVERLAY_VAR(data_ov123_0229591c),
+    HOST_OVERLAY_VAR(data_ov123_022958b8),
+    HOST_OVERLAY_VAR(data_ov123_022958c0),
+    HOST_OVERLAY_VAR(data_ov123_02295a94),
+    HOST_OVERLAY_VAR(data_ov123_02295a24),
+    HOST_OVERLAY_VAR(data_ov123_02295b24),
+    HOST_OVERLAY_VAR(data_ov123_02295848),
+    HOST_OVERLAY_VAR(data_ov123_02295900),
+    HOST_OVERLAY_VAR(data_ov123_0229595c),
+    HOST_OVERLAY_VAR(data_ov123_0229590c),
+    HOST_OVERLAY_VAR(data_ov123_02295830),
+    HOST_OVERLAY_VAR(data_ov123_0229593c),
+    HOST_OVERLAY_VAR(data_ov123_02295858),
+    HOST_OVERLAY_VAR(data_ov123_02295850),
+    HOST_OVERLAY_VAR(data_ov123_02295800),
+    HOST_OVERLAY_VAR(sStampBitmaps),
+    HOST_OVERLAY_VAR(data_ov123_022958a8),
+    HOST_OVERLAY_VAR(sPatternEditorToolCursors),
+    HOST_OVERLAY_VAR(PatternEditorMenu_floodFill_q),
+    HOST_OVERLAY_VAR(PatternEditorMenu_floodFill_q_init),
+    HOST_OVERLAY_VARS_END
+};

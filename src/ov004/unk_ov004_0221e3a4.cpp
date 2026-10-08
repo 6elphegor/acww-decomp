@@ -182,3 +182,15 @@ extern "C" SpNpcTortimer2ActEntry sSpNpcTortimer2ActTable[2] = {
     {&SpNpcTortimer2::setupAct01, &SpNpcTortimer2::mainAct01},
 };
 extern "C" SpNpcTortimer2 *volatile sSpNpcTortimer2 = 0;
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0221e3a4) {
+    HOST_OVERLAY_VAR(sSpNpcTortimer2ModelPath),
+    HOST_OVERLAY_VAR(sSpNpcTortimer2TexturePath),
+    HOST_OVERLAY_VAR(sSpNpcTortimer2Profile),
+    HOST_OVERLAY_VAR(sSpNpcTortimer2ActTable),
+    HOST_OVERLAY_VAR(sSpNpcTortimer2),
+    HOST_OVERLAY_VARS_END
+};

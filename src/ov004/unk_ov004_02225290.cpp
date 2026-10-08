@@ -243,3 +243,11 @@ extern "C" void BarberMachine_Start() {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02225290) {
+    HOST_OVERLAY_VAR(sBarberMachineProfile),
+    HOST_OVERLAY_VAR(sBarberMachine),
+    HOST_OVERLAY_VARS_END
+};

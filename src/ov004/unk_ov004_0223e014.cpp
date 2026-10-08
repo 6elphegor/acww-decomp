@@ -538,3 +538,12 @@ const s32 sResidentCursorExtraOffset[2] = {-6, -14};
 const s32 sResidentCursorOffsets[4][2] = {{-15, -12}, {-8, -12}, {-19, -14}, {-11, -14}};
 const Vec2 sResidentExtraLabelPos = {15, -92};
 const Vec2 sResidentLabelOffsets[4] = {{-5, -5}, {5, -5}, {-5, 0}, {5, 0}};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0223e014) {
+    HOST_OVERLAY_VAR(sResidentSelectProfile),
+    HOST_OVERLAY_VAR(sResidentSelectStates),
+    HOST_OVERLAY_VARS_END
+};

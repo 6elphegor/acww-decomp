@@ -333,3 +333,14 @@ void WfcTextEdit_ReturnToInput() {
 }
 }
 #pragma thumb reset
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02213424) {
+    HOST_OVERLAY_VAR(sWfcTextEditTitleMsgs),
+    HOST_OVERLAY_VAR(sWfcTextEditConfirmMsgs),
+    HOST_OVERLAY_VAR(sWfcTextEditStoreFuncs),
+    HOST_OVERLAY_VAR(sWfcTextEdit),
+    HOST_OVERLAY_VARS_END
+};

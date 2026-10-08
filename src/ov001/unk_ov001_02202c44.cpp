@@ -459,7 +459,18 @@ extern "C" void Aoss_Free(void *a) {
     sAossFreeFunc(a);
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
 
-
-
-
+HOST_OVERLAY_VARS(unk_ov001_02202c44) {
+    HOST_OVERLAY_VAR(sAossWlanWork),
+    HOST_OVERLAY_VAR(sAossFreeFunc),
+    HOST_OVERLAY_VAR(sAossAllocFunc),
+    HOST_OVERLAY_VAR(sAossProgressCb),
+    HOST_OVERLAY_VAR(sAossMsgQueue),
+    HOST_OVERLAY_VAR(sAossRateTable),
+    HOST_OVERLAY_VAR(sAossMsgArray),
+    HOST_OVERLAY_VAR(sAossBssDesc),
+    HOST_OVERLAY_VAR(sAossWepDesc),
+    HOST_OVERLAY_VARS_END
+};

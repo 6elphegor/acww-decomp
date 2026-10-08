@@ -955,3 +955,20 @@ extern "C" SpNpcBrewsterActEntry sSpNpcBrewsterActTable[8] = {
     {&SNB::setupAct07, &SNB::mainAct07},
 };
 extern "C" SpNpcBrewster *sSpNpcBrewster = 0;
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0221c01c) {
+    HOST_OVERLAY_VAR(data_ov004_0224cec8),
+    HOST_OVERLAY_VAR(data_ov004_0224cf6c),
+    HOST_OVERLAY_VAR(data_ov004_0224cf78),
+    HOST_OVERLAY_VAR(sSpNpcBrewsterModelPath),
+    HOST_OVERLAY_VAR(sSpNpcBrewsterTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcBrewsterProfile),
+    HOST_OVERLAY_VAR(sSpNpcBrewsterMsgFiles),
+    HOST_OVERLAY_VAR(sSpNpcBrewsterTalkScripts),
+    HOST_OVERLAY_VAR(sSpNpcBrewsterActTable),
+    HOST_OVERLAY_VAR(sSpNpcBrewster),
+    HOST_OVERLAY_VARS_END
+};

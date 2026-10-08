@@ -1762,3 +1762,12 @@ extern "C" Unk_ov102_02297580_Ent sChestPageTabSprites[18] = {
     {0x406000bf, 0x0000511e},
     {0x406000c1, 0xffff111e},
 };
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov102_02294c40) {
+    HOST_OVERLAY_VAR(sChestMenuProfile),
+    HOST_OVERLAY_VAR(sChestPageTabSprites),
+    HOST_OVERLAY_VARS_END
+};

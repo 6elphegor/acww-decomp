@@ -511,4 +511,17 @@ void SpNpcCornimer::onInteractionEvent(u32 a, u8 b) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
 
+HOST_OVERLAY_VARS(unk_ov087_022713c0) {
+    HOST_OVERLAY_VAR(data_ov087_02271d84),
+    HOST_OVERLAY_VAR(sSpNpcCornimerTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcCornimerProfile),
+    HOST_OVERLAY_VAR(sSpNpcCornimerFortuneStrKey),
+    HOST_OVERLAY_VAR(sSpNpcCornimerActTable),
+    HOST_OVERLAY_VAR(sSpNpcCornimerModelPath),
+    HOST_OVERLAY_VAR(sSpNpcCornimerFortuneStr2Key),
+    HOST_OVERLAY_VAR(data_ov087_02271d80),
+    HOST_OVERLAY_VARS_END
+};

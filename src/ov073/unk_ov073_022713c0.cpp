@@ -770,3 +770,22 @@ void SpNpcJoan::onInteractionEvent(u32 a, u8) {
         break;
     }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov073_022713c0) {
+    HOST_OVERLAY_VAR(data_ov073_02272584),
+    HOST_OVERLAY_VAR(data_ov073_02272598),
+    HOST_OVERLAY_VAR(sSpNpcJoanTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcJoanKey),
+    HOST_OVERLAY_VAR(sSpNpcJoanModelPath),
+    HOST_OVERLAY_VAR(data_ov073_0227258c),
+    HOST_OVERLAY_VAR(sSpNpcJoanProfile),
+    HOST_OVERLAY_VAR(data_ov073_02272594),
+    HOST_OVERLAY_VAR(data_ov073_02272580),
+    HOST_OVERLAY_VAR(data_ov073_02272588),
+    HOST_OVERLAY_VAR(sSpNpcJoanActTable),
+    HOST_OVERLAY_VAR(sSpNpcJoanSidestepOffsets),
+    HOST_OVERLAY_VARS_END
+};

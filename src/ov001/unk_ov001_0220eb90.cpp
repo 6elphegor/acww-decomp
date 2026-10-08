@@ -241,3 +241,13 @@ extern "C" void WfcOptions_HighlightSelection() {
 
 extern "C" const u8 data_ov001_02229fc0[3] = {1, 2, 3};
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0220eb90) {
+    HOST_OVERLAY_VAR(sWfcOptionsChosen),
+    HOST_OVERLAY_VAR(sWfcOptionsPalette),
+    HOST_OVERLAY_VAR(sWfcOptionsSel),
+    HOST_OVERLAY_VAR(sWfcOptionsSprite),
+    HOST_OVERLAY_VARS_END
+};

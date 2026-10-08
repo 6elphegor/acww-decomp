@@ -29,3 +29,14 @@ u8 data_ov065_0228c2f0[128] = {
 };
 SslRootCa sRootCaThawteServer = {data_ov065_0228c270, 0x80, data_ov065_0228c2f0, 3, data_ov065_0228c258};
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0228c258) {
+    HOST_OVERLAY_VAR(data_ov065_0228c258),
+    HOST_OVERLAY_VAR(data_ov065_0228c270),
+    HOST_OVERLAY_VAR(data_ov065_0228c2f0),
+    HOST_OVERLAY_VAR(sRootCaThawteServer),
+    HOST_OVERLAY_VARS_END
+};

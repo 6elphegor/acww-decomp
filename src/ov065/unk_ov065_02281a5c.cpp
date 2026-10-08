@@ -884,3 +884,11 @@ s32 gpiInitProfiles(GPConnection *h) {
 
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_02281a5c) {
+    HOST_OVERLAY_VAR(Nb::data_ov065_0228dadc),
+    HOST_OVERLAY_VARS_END
+};

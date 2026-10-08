@@ -130,3 +130,10 @@ void WfcList_PushFront(WfcListNode *head, WfcListNode *node)
     WfcList_InsertBefore(head->next, node);
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_022266b0) {
+    HOST_OVERLAY_VAR(sWfcOamBuf),
+    HOST_OVERLAY_VARS_END
+};

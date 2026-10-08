@@ -879,3 +879,13 @@ void FIFOClear(List *l) {
 }
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_02288c78) {
+    HOST_OVERLAY_VAR(data_ov065_0228e928),
+    HOST_OVERLAY_VAR(g_SBRefStrList),
+    HOST_OVERLAY_VAR(thestr),
+    HOST_OVERLAY_VARS_END
+};

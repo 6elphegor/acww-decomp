@@ -704,3 +704,11 @@ extern "C" const u8 sTimeSelectCursorRightTable[3] = {1, 1, 2};
 extern "C" const u8 sTimeSelectCursorUpTable[3] = {0, 1, 1};
 
 extern "C" const u8 sTimeSelectCursorDownTable[3] = {2, 2, 2};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov136_02295380) {
+    HOST_OVERLAY_VAR(sTimeSelectMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

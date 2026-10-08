@@ -73,3 +73,12 @@ extern "C" void WfcUtil_BgPaletteTask(void *task) {
     MIi_CpuCopy16(sWfcPaletteCopy.src, (void *)0x5000000, 0x200);
     WfcTask_RequestDelete(1, task);
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0221cd74) {
+    HOST_OVERLAY_VAR(sWfcBgMap),
+    HOST_OVERLAY_VAR(sWfcPaletteCopy),
+    HOST_OVERLAY_VARS_END
+};

@@ -556,3 +556,11 @@ void BankMenu::setFlags(u32 mask) {
 extern "C" const s32 sBankMenuCursorXTable[3] = {0xc8, 0xc8, 0};
 
 extern "C" const s32 sBankMenuCursorYTable[3] = {0x48, 0x70, 0};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov132_022936c0) {
+    HOST_OVERLAY_VAR(sBankMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

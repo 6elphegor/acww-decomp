@@ -685,3 +685,17 @@ extern "C" void NNProcessData(u8 *pkt, s32 len, SockAddrIn *sa) {
     }
 }
 } }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_02286934) {
+    HOST_OVERLAY_VAR(Matchup1Hostname),
+    HOST_OVERLAY_VAR(negotiateList),
+    HOST_OVERLAY_VAR(matchup1ip),
+    HOST_OVERLAY_VAR(data_ov065_02291548),
+    HOST_OVERLAY_VAR(NNMagicData),
+    HOST_OVERLAY_VAR(matchup2ip),
+    HOST_OVERLAY_VAR(Matchup2Hostname),
+    HOST_OVERLAY_VARS_END
+};

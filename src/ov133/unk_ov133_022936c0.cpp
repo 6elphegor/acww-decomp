@@ -1260,3 +1260,13 @@ extern "C" const s32 sFriendCodeCursorYTable[12] = {0x68, 0x68, 0x68, 0x78, 0x78
 extern "C" const u32 sKeyRowY[12] = {0xc, 0xc, 0xc, 0xe, 0xe, 0xe, 0x10, 0x10, 0x10, 0x12, 0x12, 0x12};
 
 extern "C" ProcProfile sFriendCodeMenuProfile = {(void *(*)())FriendCodeMenu_Create, 0xb4, 0xb8};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov133_022936c0) {
+    HOST_OVERLAY_VAR(sFriendCodeKeySeIds),
+    HOST_OVERLAY_VAR(sCaretCells),
+    HOST_OVERLAY_VAR(sFriendCodeMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

@@ -221,3 +221,18 @@ extern "C" VillagerBoard *VillagerBoard_Get(s32 i) {
     return 0;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_022048c0) {
+    HOST_OVERLAY_VAR(data_ov003_02234f80),
+    HOST_OVERLAY_VAR(data_ov003_02234f64),
+    HOST_OVERLAY_VAR(data_ov003_02234f68),
+    HOST_OVERLAY_VAR(data_ov003_02234f70),
+    HOST_OVERLAY_VAR(data_ov003_02234f6c),
+    HOST_OVERLAY_VAR(data_ov003_02234f74),
+    HOST_OVERLAY_VAR(sVillagerBoardCount),
+    HOST_OVERLAY_VAR(sVillagerBoardProfile),
+    HOST_OVERLAY_VAR(sVillagerBoards),
+    HOST_OVERLAY_VARS_END
+};

@@ -40,7 +40,6 @@ typedef VecFx32 V3;
 
 struct FxVec3 : VecFx32Copy {
     FxVec3() {}
-    ~FxVec3();
 };
 
 struct MtxFx43 {

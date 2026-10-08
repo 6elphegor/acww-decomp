@@ -3098,3 +3098,56 @@ done:
 
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_02261638) {
+    HOST_OVERLAY_VAR(data_ov065_0228f3c0),
+    HOST_OVERLAY_VAR(sIpRecvThreadStack),
+    HOST_OVERLAY_VAR(sIpFragTable),
+    HOST_OVERLAY_VAR(sTimerThreadTxBuf),
+    HOST_OVERLAY_VAR(sTimerThreadRxBuf),
+    HOST_OVERLAY_VAR(sIpTimerThread),
+    HOST_OVERLAY_VAR(sIpRecvThread),
+    HOST_OVERLAY_VAR(sTimerThreadSoc),
+    HOST_OVERLAY_VAR(sTcpResetSoc),
+    HOST_OVERLAY_VAR(sArpCache),
+    HOST_OVERLAY_VAR(data_ov065_0228ec1c),
+    HOST_OVERLAY_VAR(sIpRandState),
+    HOST_OVERLAY_VAR(sLlcSnapHeader),
+    HOST_OVERLAY_VAR(sDhcpHostName),
+    HOST_OVERLAY_VAR(sDnsServers),
+    HOST_OVERLAY_VAR(sBroadcastMac),
+    HOST_OVERLAY_VAR(sOwnMac),
+    HOST_OVERLAY_VAR(sRecvRingSize),
+    HOST_OVERLAY_VAR(sDhcpServerId),
+    HOST_OVERLAY_VAR(sRecvRingWaiter),
+    HOST_OVERLAY_VAR(sDhcpRequestedIp),
+    HOST_OVERLAY_VAR(sDhcpLeaseTime),
+    HOST_OVERLAY_VAR(sAddrConfiguredCallback),
+    HOST_OVERLAY_VAR(sIpTimerStopRequest),
+    HOST_OVERLAY_VAR(sIpFree),
+    HOST_OVERLAY_VAR(sIpIdleCallback),
+    HOST_OVERLAY_VAR(sRecvRingWrite),
+    HOST_OVERLAY_VAR(sGateway),
+    HOST_OVERLAY_VAR(sDhcpRetryTime),
+    HOST_OVERLAY_VAR(sRecvRingRead),
+    HOST_OVERLAY_VAR(sRecvRingBuf),
+    HOST_OVERLAY_VAR(sIpStackStatus),
+    HOST_OVERLAY_VAR(sIcmpEchoReplyEnabled),
+    HOST_OVERLAY_VAR(sIpLinkCheckCallback),
+    HOST_OVERLAY_VAR(sIpThreadPriority),
+    HOST_OVERLAY_VAR(sNetmask),
+    HOST_OVERLAY_VAR(sIpStackFlags),
+    HOST_OVERLAY_VAR(sIpAlloc),
+    HOST_OVERLAY_VAR(gOwnIp),
+    HOST_OVERLAY_VAR(sIpYieldMode),
+    HOST_OVERLAY_VAR(sIpIdCounter),
+    HOST_OVERLAY_VAR(sIcmpSeq),
+    HOST_OVERLAY_VAR(sMss),
+    HOST_OVERLAY_VAR(sNextEphemeralPort),
+    HOST_OVERLAY_VAR(sLinkSendError),
+    HOST_OVERLAY_VAR(sArpConflict),
+    HOST_OVERLAY_VARS_END
+};

@@ -1784,11 +1784,8 @@ extern "C" const TalkStartMsg sSpNpcNookShopTopicTable[31] = {
     {sSpNpcNookShopTwinsKey, 0x34}, {sSpNpcNookShopTwinsKey, 0x57}, {sSpNpcNookShopSequence5_1Key, 0x0c},
 };
 
-void SpNpcNookShopTalk::onArbeitMessageEnd() {
-    PlayerErrands *h = PlayerData_GetCurrent()->getErrands();
-    PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0));
-    nextMsg = 0xff;
-    static SpNpcNookShopArbeitMessageEndHandler tbl[24] = {
+// SpNpcNookShopTalk::onArbeitMessageEnd's static tbl
+SpNpcNookShopArbeitMessageEndHandler SpNpcNookShopTalk_onArbeitMessageEnd_tbl[24] = {
         {0x00, &SpNpcNookShopTalk::arbeitGiveUniform},
         {0x03, &SpNpcNookShopTalk::arbeitPresentUniform},
         {0x04, &SpNpcNookShopTalk::arbeitPresentUniform},
@@ -1814,11 +1811,15 @@ void SpNpcNookShopTalk::onArbeitMessageEnd() {
         {0x36, &SpNpcNookShopTalk::arbeitFinish},
         {0x0c, &SpNpcNookShopTalk::arbeitPushPlayerBack},
     };
+void SpNpcNookShopTalk::onArbeitMessageEnd() {
+    PlayerErrands *h = PlayerData_GetCurrent()->getErrands();
+    PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0));
+    nextMsg = 0xff;
     s32 i = 0;
     u8 *p = &msgIndex;
-    SpNpcNookShopArbeitMessageEndHandler *t = tbl;
+    SpNpcNookShopArbeitMessageEndHandler *t = SpNpcNookShopTalk_onArbeitMessageEnd_tbl;
     for (; (u32)i < 0x18; i++) {
-        u32 a = tbl[i].id;
+        u32 a = SpNpcNookShopTalk_onArbeitMessageEnd_tbl[i].id;
         u32 b = *p;
         if (a == b) {
             (this->*t[i].f)(h);
@@ -3233,3 +3234,31 @@ extern "C" char data_ov050_0225e258[] = "npc_sp/model/rcd.nsbmd";
 extern "C" char data_ov050_0225e270[] = "npc_sp/model/lrc.nsbmd";
 
 extern "C" char data_ov050_0225e228[] = "npc_sp/model/rcc.nsbmd";
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov050_02258de0) {
+    HOST_OVERLAY_VAR(sSpNpcNookShopDramaKey),
+    HOST_OVERLAY_VAR(sSpNpcNookShopTexturePaths),
+    HOST_OVERLAY_VAR(sSpNpcNookShopModelPaths),
+    HOST_OVERLAY_VAR(sSpNpcNookShopKey),
+    HOST_OVERLAY_VAR(SpNpcNookShopTalk_onArbeitMessageEnd_tbl),
+    HOST_OVERLAY_VAR(data_ov050_0225e2d0),
+    HOST_OVERLAY_VAR(data_ov050_0225e2ec),
+    HOST_OVERLAY_VAR(data_ov050_0225e308),
+    HOST_OVERLAY_VAR(data_ov050_0225e324),
+    HOST_OVERLAY_VAR(data_ov050_0225e340),
+    HOST_OVERLAY_VAR(sSpNpcNookShopActTable),
+    HOST_OVERLAY_VAR(sSpNpcNookShopTwinsKey),
+    HOST_OVERLAY_VAR(sSpNpcNookShopProfile),
+    HOST_OVERLAY_VAR(sSpNpcTimmyProfile),
+    HOST_OVERLAY_VAR(sSpNpcTommyProfile),
+    HOST_OVERLAY_VAR(sSpNpcNookShopSequence5_1Key),
+    HOST_OVERLAY_VAR(data_ov050_0225e210),
+    HOST_OVERLAY_VAR(data_ov050_0225e240),
+    HOST_OVERLAY_VAR(data_ov050_0225e258),
+    HOST_OVERLAY_VAR(data_ov050_0225e270),
+    HOST_OVERLAY_VAR(data_ov050_0225e228),
+    HOST_OVERLAY_VARS_END
+};

@@ -120,3 +120,10 @@ void WfcVram_FreeObjChar(WfcVramBlock *p)
     WfcPool_Put(b->heaps[z].nodePool, p);
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02226994) {
+    HOST_OVERLAY_VAR(sWfcVram),
+    HOST_OVERLAY_VARS_END
+};

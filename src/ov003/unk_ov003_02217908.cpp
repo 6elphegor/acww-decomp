@@ -178,3 +178,16 @@ extern "C" void FieldGround_PlayEnvSe(SndEnvChannel *p, VecFx32 *v, u32 a) {
 extern "C" void FieldGround_ReleaseEnvChannel(SndEnvChannel *p) {
     p->callRelease();
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_02217908) {
+    HOST_OVERLAY_VAR(data_ov003_02235460),
+    HOST_OVERLAY_VAR(data_ov003_02235474),
+    HOST_OVERLAY_VAR(data_ov003_02235470),
+    HOST_OVERLAY_VAR(data_ov003_0223546c),
+    HOST_OVERLAY_VAR(data_ov003_02235468),
+    HOST_OVERLAY_VAR(data_ov003_02235464),
+    HOST_OVERLAY_VARS_END
+};

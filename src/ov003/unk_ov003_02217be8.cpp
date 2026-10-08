@@ -566,3 +566,22 @@ BOOL FieldGroundBlock::release() {
     model.clearResource();
     return TRUE;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_02217be8) {
+    HOST_OVERLAY_VAR(data_ov003_022354a4),
+    HOST_OVERLAY_VAR(data_ov003_022354a8),
+    HOST_OVERLAY_VAR(data_ov003_02235498),
+    HOST_OVERLAY_VAR(data_ov003_022354a0),
+    HOST_OVERLAY_VAR(data_ov003_0223549c),
+    HOST_OVERLAY_VAR(data_ov003_022354ac),
+    HOST_OVERLAY_VAR(data_ov003_02235490),
+    HOST_OVERLAY_VAR(data_ov003_02235494),
+    HOST_OVERLAY_VAR(data_ov003_022323f4),
+    HOST_OVERLAY_VAR(data_ov003_02232400),
+    HOST_OVERLAY_VAR(sWaterMatNames),
+    HOST_OVERLAY_VAR(sFieldGroundProfile),
+    HOST_OVERLAY_VARS_END
+};

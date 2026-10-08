@@ -289,3 +289,14 @@ u32 SslCert_ParseTime(const u8 *p, s32 mode)
 }
 
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_022671a0) {
+    HOST_OVERLAY_VAR(sSslMd5WordIndex),
+    HOST_OVERLAY_VAR(sSslMd5Padding),
+    HOST_OVERLAY_VAR(sSslMd5SineTable),
+    HOST_OVERLAY_VAR(sSslSessionCache),
+    HOST_OVERLAY_VARS_END
+};

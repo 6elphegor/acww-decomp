@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_overlay_vars.h"
 #include "gfx/Model.h"
 #include "proto/main/unk_0202fa70.h"
 #include "snd/SndSeEmitter.h"
@@ -525,62 +526,25 @@ extern "C" {
 FishShadow sFishShadows[6];
 FishFinModel sFishFinModel;
 FishCatch sFishCatches[4];
-void *data_ov003_02257a7c = (void *)gSceneBlockMap;
+void *data_ov003_02257a7c;  // initialised by StaticInit_unk_ov003_0221ffb8 (gSceneBlockMap at the load)
 BottleThrowStateOwner sBottleThrowStateOwner;
 BottleThrow sBottleThrows[4];
-BottleThrowStateEntry sBottleThrowStates[3] = {
-    {*(StFn_f9 *)data_ov003_022348a0},
-    {*(StFn_f9 *)data_ov003_02234868},
-    {*(StFn_f9 *)data_ov003_022348a8},
-};
-FishSizeClassParams sFishSizeClassParams[8] = {
-    {0x3c, 0x40, 0xa, 0x14, 0x28, 0x64, 0x14, 0xa, 0x5, 0x3e, 0x5d, data_ov003_022348b0[0], data_ov003_022348b0[1], 0xdc, 0x8c},
-    {0x3c, 0x42, 0xf, 0x1e, 0x28, 0x64, 0x14, 0xa, 0x5, 0x48, 0x69, data_ov003_022348b0[2], data_ov003_022348b0[3], 0xe6, 0x82},
-    {0x46, 0x48, 0x14, 0x28, 0x28, 0x64, 0x14, 0xa, 0x5, 0x50, 0x85, data_ov003_022348b0[4], data_ov003_022348b0[5], 0xf0, 0x82},
-    {0x55, 0x56, 0x19, 0x32, 0x28, 0x64, 0x14, 0xa, 0x5, 0x55, 0x96, data_ov003_022348b0[6], data_ov003_022348b0[7], 0xff, 0x78},
-    {0x6e, 0x70, 0x1e, 0x3c, 0x28, 0x64, 0x14, 0xa, 0x5, 0x5c, 0xb7, data_ov003_022348b0[8], data_ov003_022348b0[9], 0x109, 0x78},
-    {0x7d, 0x80, 0x23, 0x46, 0x28, 0x64, 0x14, 0xa, 0x5, 0x64, 0xc3, data_ov003_022348b0[10], data_ov003_022348b0[11], 0x113, 0x78},
-    {0x96, 0x9a, 0x28, 0x50, 0x28, 0x64, 0x14, 0xa, 0x5, 0x6e, 0xd5, data_ov003_022348b0[12], data_ov003_022348b0[13], 0x11d, 0x78},
-    {0x55, 0x56, 0x19, 0x32, 0x28, 0x64, 0x14, 0xa, 0x5, 0x5d, 0x9b, data_ov003_022348b0[14], data_ov003_022348b0[15], 0xff, 0x78},
-};
-FishCatchStateEntry sFishCatchStates[5] = {
-    {*(Fn_f6 *)data_ov003_022347b0},
-    {*(Fn_f6 *)data_ov003_02234890},
-    {*(Fn_f6 *)data_ov003_02234888},
-    {*(Fn_f6 *)data_ov003_02234880},
-    {*(Fn_f6 *)data_ov003_02234878},
-};
+BottleThrowStateEntry sBottleThrowStates[3];  // initialised by StaticInit_unk_ov003_0221ffb8
+FishSizeClassParams sFishSizeClassParams[8];  // initialised by StaticInit_unk_ov003_0221ffb8
+FishCatchStateEntry sFishCatchStates[5];  // initialised by StaticInit_unk_ov003_0221ffb8
 char *sFishShadowAnimPath = sFishShadowAnimPathStr;
 char *sFishFinTexAnimPath = sFishFinTexAnimPathStr;
 void *data_ov003_02234820[2] = {(void *)FishShadow_BiteIdle, 0};
 void *data_ov003_022347b0[2] = {(void *)FishCatch_StateIdle, 0};
-FishAiStateEntry sFishShadowAiTable[2] = {
-    {*(Fn_f9 *)data_ov003_02234838, *(Fn_f9 *)data_ov003_02234840},
-    {*(Fn_f9 *)data_ov003_02234808, *(Fn_f9 *)data_ov003_02234800},
-};
+FishAiStateEntry sFishShadowAiTable[2];  // initialised by StaticInit_unk_ov003_0221ffb8
 s32 sBottleDriftSpeed = 0x11f;
-FishMoveStateEntry sFishShadowMoveStates[6] = {
-    {*(Fn_f9 *)data_ov003_022347f0},
-    {*(Fn_f9 *)data_ov003_022347e8},
-    {*(Fn_f9 *)data_ov003_022347e0},
-    {*(Fn_f9 *)data_ov003_022347b8},
-    {*(Fn_f9 *)data_ov003_022347c8},
-    {*(Fn_f9 *)data_ov003_022347d0},
-};
+FishMoveStateEntry sFishShadowMoveStates[6];  // initialised by StaticInit_unk_ov003_0221ffb8
 void *data_ov003_02234830[2] = {(void *)FishShadow_BiteApproach, 0};
 void *data_ov003_02234838[2] = {(void *)FishShadow_AppearFree, 0};
 void *data_ov003_02234898[2] = {(void *)FishShadow_BiteTug, 0};
 void *data_ov003_022348a0[2] = {(void *)BottleThrow_StateIdle, 0};
 void *data_ov003_022348a8[2] = {(void *)BottleThrow_StateDrift, 0};
-FishBiteStateEntry sFishBiteStates[8] = {
-    {*(Fn_f8 *)data_ov003_02234820},
-    {*(Fn_f8 *)data_ov003_02234830},
-    {*(Fn_f8 *)data_ov003_02234858},
-    {*(Fn_f8 *)data_ov003_022347a0},
-    {*(Fn_f8 *)data_ov003_02234898},
-    {*(Fn_f8 *)data_ov003_02234810},
-    {*(Fn_f8 *)data_ov003_022347f8},
-};
+FishBiteStateEntry sFishBiteStates[8];  // initialised by StaticInit_unk_ov003_0221ffb8
 void *data_ov003_022347a0[2] = {(void *)FishShadow_BiteNibble, 0};
 s32 sBottleSinkStep = 0x14;
 void *data_ov003_02234888[2] = {(void *)FishCatch_StateHold, 0};
@@ -626,13 +590,67 @@ FishSight sFishSightFishingRod[5] = {{0x14, 0x1554}, {0x14, 0x1c72}, {0x16, 0x23
 char sFishFinModelPathStr[] = "/fish/03/fish_hire.nsbmd";
 void *data_ov003_02234818[2] = {(void *)FishShadow_ExecSwim, 0};
 void *data_ov003_02234848[2] = {(void *)FishShadow_EnterOutOfView, 0};
-FishShadowStateEntry sFishShadowStates[5] = {
-    {*(Unk_ov003_0222144c_Fn_f4 *)data_ov003_022347c0, *(Unk_ov003_0222144c_Fn_f4 *)data_ov003_022347d8},
-    {*(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234870, *(Unk_ov003_0222144c_Fn_f4 *)data_ov003_022347a8},
-    {*(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234828, *(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234790},
-    {*(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234850, *(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234818},
-    {*(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234848, *(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234798},
-};
+FishShadowStateEntry sFishShadowStates[5];  // initialised by StaticInit_unk_ov003_0221ffb8
+
+// Run when the overlay is loaded (modern/host/overlay.c), as the DS's __sinit: the initialisers the compiler
+// doesn't make constant data.
+extern "C" void StaticInit_unk_ov003_0221ffb8(void) {
+    HOST_STATIC_CONSTRUCT(sFishShadows);
+    HOST_STATIC_CONSTRUCT(sFishFinModel);
+    HOST_STATIC_CONSTRUCT(sFishCatches);
+    data_ov003_02257a7c = (void *)gSceneBlockMap;
+    HOST_STATIC_CONSTRUCT(sBottleThrows);
+    HOST_STATIC_INIT_ARRAY(sBottleThrowStates, {
+        {*(StFn_f9 *)data_ov003_022348a0},
+        {*(StFn_f9 *)data_ov003_02234868},
+        {*(StFn_f9 *)data_ov003_022348a8},
+    });
+    HOST_STATIC_INIT_ARRAY(sFishSizeClassParams, {
+        {0x3c, 0x40, 0xa, 0x14, 0x28, 0x64, 0x14, 0xa, 0x5, 0x3e, 0x5d, data_ov003_022348b0[0], data_ov003_022348b0[1], 0xdc, 0x8c},
+        {0x3c, 0x42, 0xf, 0x1e, 0x28, 0x64, 0x14, 0xa, 0x5, 0x48, 0x69, data_ov003_022348b0[2], data_ov003_022348b0[3], 0xe6, 0x82},
+        {0x46, 0x48, 0x14, 0x28, 0x28, 0x64, 0x14, 0xa, 0x5, 0x50, 0x85, data_ov003_022348b0[4], data_ov003_022348b0[5], 0xf0, 0x82},
+        {0x55, 0x56, 0x19, 0x32, 0x28, 0x64, 0x14, 0xa, 0x5, 0x55, 0x96, data_ov003_022348b0[6], data_ov003_022348b0[7], 0xff, 0x78},
+        {0x6e, 0x70, 0x1e, 0x3c, 0x28, 0x64, 0x14, 0xa, 0x5, 0x5c, 0xb7, data_ov003_022348b0[8], data_ov003_022348b0[9], 0x109, 0x78},
+        {0x7d, 0x80, 0x23, 0x46, 0x28, 0x64, 0x14, 0xa, 0x5, 0x64, 0xc3, data_ov003_022348b0[10], data_ov003_022348b0[11], 0x113, 0x78},
+        {0x96, 0x9a, 0x28, 0x50, 0x28, 0x64, 0x14, 0xa, 0x5, 0x6e, 0xd5, data_ov003_022348b0[12], data_ov003_022348b0[13], 0x11d, 0x78},
+        {0x55, 0x56, 0x19, 0x32, 0x28, 0x64, 0x14, 0xa, 0x5, 0x5d, 0x9b, data_ov003_022348b0[14], data_ov003_022348b0[15], 0xff, 0x78},
+    });
+    HOST_STATIC_INIT_ARRAY(sFishCatchStates, {
+        {*(Fn_f6 *)data_ov003_022347b0},
+        {*(Fn_f6 *)data_ov003_02234890},
+        {*(Fn_f6 *)data_ov003_02234888},
+        {*(Fn_f6 *)data_ov003_02234880},
+        {*(Fn_f6 *)data_ov003_02234878},
+    });
+    HOST_STATIC_INIT_ARRAY(sFishShadowAiTable, {
+        {*(Fn_f9 *)data_ov003_02234838, *(Fn_f9 *)data_ov003_02234840},
+        {*(Fn_f9 *)data_ov003_02234808, *(Fn_f9 *)data_ov003_02234800},
+    });
+    HOST_STATIC_INIT_ARRAY(sFishShadowMoveStates, {
+        {*(Fn_f9 *)data_ov003_022347f0},
+        {*(Fn_f9 *)data_ov003_022347e8},
+        {*(Fn_f9 *)data_ov003_022347e0},
+        {*(Fn_f9 *)data_ov003_022347b8},
+        {*(Fn_f9 *)data_ov003_022347c8},
+        {*(Fn_f9 *)data_ov003_022347d0},
+    });
+    HOST_STATIC_INIT_ARRAY(sFishBiteStates, {
+        {*(Fn_f8 *)data_ov003_02234820},
+        {*(Fn_f8 *)data_ov003_02234830},
+        {*(Fn_f8 *)data_ov003_02234858},
+        {*(Fn_f8 *)data_ov003_022347a0},
+        {*(Fn_f8 *)data_ov003_02234898},
+        {*(Fn_f8 *)data_ov003_02234810},
+        {*(Fn_f8 *)data_ov003_022347f8},
+    });
+    HOST_STATIC_INIT_ARRAY(sFishShadowStates, {
+        {*(Unk_ov003_0222144c_Fn_f4 *)data_ov003_022347c0, *(Unk_ov003_0222144c_Fn_f4 *)data_ov003_022347d8},
+        {*(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234870, *(Unk_ov003_0222144c_Fn_f4 *)data_ov003_022347a8},
+        {*(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234828, *(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234790},
+        {*(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234850, *(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234818},
+        {*(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234848, *(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234798},
+    });
+}
 char *sFishFinModelPath = sFishFinModelPathStr;
 u8 data_ov003_022348b0[16] = {0x1b, 0x21, 0x25, 0x35, 0x2f, 0x41, 0x39, 0x55, 0x3e, 0x5f, 0x48, 0x6b, 0x5e, 0x87, 0x23, 0x55};
 void *data_ov003_02234878[2] = {(void *)FishCatch_StateEnd, 0};
@@ -4357,3 +4375,79 @@ extern "C" BOOL FishShadow_GetPos(VecFx32 *out, s32 id)
     out->z = q->z;
     return TRUE;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_0221ffb8) {
+    HOST_OVERLAY_VAR(sFishShadows),
+    HOST_OVERLAY_VAR(sFishFinModel),
+    HOST_OVERLAY_VAR(sFishCatches),
+    HOST_OVERLAY_VAR(data_ov003_02257a7c),
+    HOST_OVERLAY_VAR(sBottleThrowStateOwner),
+    HOST_OVERLAY_VAR(sBottleThrows),
+    HOST_OVERLAY_VAR(sBottleThrowStates),
+    HOST_OVERLAY_VAR(sFishSizeClassParams),
+    HOST_OVERLAY_VAR(sFishCatchStates),
+    HOST_OVERLAY_VAR(sFishShadowAnimPath),
+    HOST_OVERLAY_VAR(sFishFinTexAnimPath),
+    HOST_OVERLAY_VAR(data_ov003_02234820),
+    HOST_OVERLAY_VAR(data_ov003_022347b0),
+    HOST_OVERLAY_VAR(sFishShadowAiTable),
+    HOST_OVERLAY_VAR(sBottleDriftSpeed),
+    HOST_OVERLAY_VAR(sFishShadowMoveStates),
+    HOST_OVERLAY_VAR(data_ov003_02234830),
+    HOST_OVERLAY_VAR(data_ov003_02234838),
+    HOST_OVERLAY_VAR(data_ov003_02234898),
+    HOST_OVERLAY_VAR(data_ov003_022348a0),
+    HOST_OVERLAY_VAR(data_ov003_022348a8),
+    HOST_OVERLAY_VAR(sFishBiteStates),
+    HOST_OVERLAY_VAR(data_ov003_022347a0),
+    HOST_OVERLAY_VAR(sBottleSinkStep),
+    HOST_OVERLAY_VAR(data_ov003_02234888),
+    HOST_OVERLAY_VAR(sFishShadowAnimPathStr),
+    HOST_OVERLAY_VAR(sFishRodParams),
+    HOST_OVERLAY_VAR(data_ov003_02234870),
+    HOST_OVERLAY_VAR(data_ov003_022347c8),
+    HOST_OVERLAY_VAR(sFieldFishManagerProfile),
+    HOST_OVERLAY_VAR(data_ov003_02234858),
+    HOST_OVERLAY_VAR(data_ov003_02234850),
+    HOST_OVERLAY_VAR(sFishFinAnimPathStr),
+    HOST_OVERLAY_VAR(sFishSightGoldenRod),
+    HOST_OVERLAY_VAR(data_ov003_02234798),
+    HOST_OVERLAY_VAR(data_ov003_022347b8),
+    HOST_OVERLAY_VAR(sFishBiteWindowGoldenRod),
+    HOST_OVERLAY_VAR(sFishBiteWindowFishingRod),
+    HOST_OVERLAY_VAR(sFishCastSplashTimer),
+    HOST_OVERLAY_VAR(sFishShadowModelPathStr),
+    HOST_OVERLAY_VAR(data_ov003_02234790),
+    HOST_OVERLAY_VAR(data_ov003_02234800),
+    HOST_OVERLAY_VAR(data_ov003_022347f8),
+    HOST_OVERLAY_VAR(data_ov003_02234890),
+    HOST_OVERLAY_VAR(data_ov003_022347e8),
+    HOST_OVERLAY_VAR(data_ov003_022347e0),
+    HOST_OVERLAY_VAR(data_ov003_022347d8),
+    HOST_OVERLAY_VAR(data_ov003_022347d0),
+    HOST_OVERLAY_VAR(data_ov003_02234880),
+    HOST_OVERLAY_VAR(sFishPullJitter),
+    HOST_OVERLAY_VAR(data_ov003_02234808),
+    HOST_OVERLAY_VAR(sFishFinAnimPath),
+    HOST_OVERLAY_VAR(sFishFinTexAnimPathStr),
+    HOST_OVERLAY_VAR(data_ov003_02234828),
+    HOST_OVERLAY_VAR(data_ov003_022347a8),
+    HOST_OVERLAY_VAR(data_ov003_022347c0),
+    HOST_OVERLAY_VAR(sFishShadowModelPath),
+    HOST_OVERLAY_VAR(data_ov003_022347f0),
+    HOST_OVERLAY_VAR(sFishSightFishingRod),
+    HOST_OVERLAY_VAR(sFishFinModelPathStr),
+    HOST_OVERLAY_VAR(data_ov003_02234818),
+    HOST_OVERLAY_VAR(data_ov003_02234848),
+    HOST_OVERLAY_VAR(sFishShadowStates),
+    HOST_OVERLAY_VAR(sFishFinModelPath),
+    HOST_OVERLAY_VAR(data_ov003_022348b0),
+    HOST_OVERLAY_VAR(data_ov003_02234878),
+    HOST_OVERLAY_VAR(data_ov003_02234840),
+    HOST_OVERLAY_VAR(data_ov003_02234810),
+    HOST_OVERLAY_VAR(data_ov003_02234868),
+    HOST_OVERLAY_VARS_END
+};

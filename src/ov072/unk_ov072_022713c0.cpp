@@ -754,3 +754,21 @@ void SpNpcGulliver::onInteractionEvent(u32 a, u8) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov072_022713c0) {
+    HOST_OVERLAY_VAR(data_ov072_02272590),
+    HOST_OVERLAY_VAR(data_ov072_02272580),
+    HOST_OVERLAY_VAR(data_ov072_0227258c),
+    HOST_OVERLAY_VAR(data_ov072_02272594),
+    HOST_OVERLAY_VAR(data_ov072_02272584),
+    HOST_OVERLAY_VAR(data_ov072_02272588),
+    HOST_OVERLAY_VAR(sSpNpcGulliverKey),
+    HOST_OVERLAY_VAR(sSpNpcGulliverTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcGulliverModelPath),
+    HOST_OVERLAY_VAR(sSpNpcGulliverTalkScripts),
+    HOST_OVERLAY_VAR(sSpNpcGulliverActTable),
+    HOST_OVERLAY_VAR(sSpNpcGulliverProfile),
+    HOST_OVERLAY_VARS_END
+};

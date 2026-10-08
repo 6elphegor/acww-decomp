@@ -62,3 +62,12 @@ void WifiLink_AddRssiSample(s32 v) {
 }
 
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0226aca8) {
+    HOST_OVERLAY_VAR(sWifiRssiCount),
+    HOST_OVERLAY_VAR(sWifiRssiSamples),
+    HOST_OVERLAY_VARS_END
+};

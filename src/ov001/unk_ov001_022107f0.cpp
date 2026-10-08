@@ -153,3 +153,12 @@ void WfcTransferConfirm_OnTransferError(u32 event) {
     sWfcTransferConfirmError = 1;
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_022107f0) {
+    HOST_OVERLAY_VAR(sWfcTransferConfirmAccepted),
+    HOST_OVERLAY_VAR(sWfcTransferConfirmError),
+    HOST_OVERLAY_VARS_END
+};

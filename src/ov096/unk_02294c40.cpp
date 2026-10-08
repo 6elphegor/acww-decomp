@@ -3771,3 +3771,10 @@ void PocketMenu::clearFlags(u32 mask) { stateFlags = stateFlags & ~mask; }
 
 // destructor is implicit (member destructors run in reverse order)
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_02294c40) {
+    HOST_OVERLAY_VAR(sPocketMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

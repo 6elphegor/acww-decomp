@@ -503,3 +503,12 @@ u8 *SockCore_StartCommandThread(u8 *area, OSMessageQueue *queue, OSThread *threa
     return r;
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0225f5c8) {
+    HOST_OVERLAY_VAR(sSockConnectInProgressError),
+    HOST_OVERLAY_VAR(sSockUdpDropCount),
+    HOST_OVERLAY_VARS_END
+};

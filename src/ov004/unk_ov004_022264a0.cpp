@@ -724,3 +724,18 @@ extern "C" void CafeCoffeeSet_SetFlagEF8(void) {
         g->partVisible[8] = 1;
     }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_022264a0) {
+    HOST_OVERLAY_VAR(sCafeCoffeeSet),
+    HOST_OVERLAY_VAR(data_ov004_02250d2c),
+    HOST_OVERLAY_VAR(data_ov004_02250d44),
+    HOST_OVERLAY_VAR(data_ov004_02250d5c),
+    HOST_OVERLAY_VAR(data_ov004_02250cd8),
+    HOST_OVERLAY_VAR(data_ov004_02250cf0),
+    HOST_OVERLAY_VAR(data_ov004_02250d08),
+    HOST_OVERLAY_VAR(sCafeCoffeeSetProfile),
+    HOST_OVERLAY_VARS_END
+};

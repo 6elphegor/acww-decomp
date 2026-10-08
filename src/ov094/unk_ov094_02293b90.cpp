@@ -574,3 +574,16 @@ BOOL LetterGrid_TestBit(u32 *bits, s32 i)
 }
 
 }  // extern "C"
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov094_02293b90) {
+    HOST_OVERLAY_VAR(sLetterGridColumnX),
+    HOST_OVERLAY_VAR(sLetterIconSprite),
+    HOST_OVERLAY_VAR(sLetterIconPalettes),
+    HOST_OVERLAY_VAR(sLetterMarkSprites),
+    HOST_OVERLAY_VAR(sLetterIconChars),
+    HOST_OVERLAY_VAR(data_ov094_02294c14),
+    HOST_OVERLAY_VARS_END
+};

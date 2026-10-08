@@ -1796,3 +1796,11 @@ BOOL ShopSellMenu::testFlags(u32 mask) {
 void ShopSellMenu::setFlags(u32 mask) { stateFlags |= mask; }
 
 void ShopSellMenu::clearFlags(u32 mask) { stateFlags &= ~mask; }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov100_02294c40) {
+    HOST_OVERLAY_VAR(sShopSellMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

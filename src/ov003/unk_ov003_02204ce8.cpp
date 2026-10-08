@@ -12320,3 +12320,22 @@ extern "C" BOOL PlayerActor_FieldInteractAt(PlayerActor *self, s32 a) {
 }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_02204ce8) {
+    HOST_OVERLAY_VAR(data_ov003_02230af0),
+    HOST_OVERLAY_VAR(sFishEscapeSpeed),
+    HOST_OVERLAY_VAR(data_ov003_02230ae8),
+    HOST_OVERLAY_VAR(sFishCastFarDist),
+    HOST_OVERLAY_VAR(data_ov003_02230ae0),
+    HOST_OVERLAY_VAR(data_ov003_02230adc),
+    HOST_OVERLAY_VAR(data_ov003_02230ad8),
+    HOST_OVERLAY_VAR(data_ov003_02230ad4),
+    HOST_OVERLAY_VAR(data_ov003_02230ad0),
+    HOST_OVERLAY_VAR(sFishCastNearDist),
+    HOST_OVERLAY_VAR(data_ov003_02230ac8),
+    HOST_OVERLAY_VAR(data_ov003_02230ac4),
+    HOST_OVERLAY_VAR(data_ov003_02230ac0),
+    HOST_OVERLAY_VARS_END
+};

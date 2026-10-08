@@ -448,3 +448,10 @@ extern "C" void TownMapImage_FinishGlobal(void *a, TownMapMarkers *b) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov117_02292360) {
+    HOST_OVERLAY_VAR(sTownMapImage),
+    HOST_OVERLAY_VARS_END
+};

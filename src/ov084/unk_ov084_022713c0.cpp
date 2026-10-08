@@ -491,3 +491,17 @@ void SpNpcTortimerFireworks::onInteractionEvent(u32 v, u8) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov084_022713c0) {
+    HOST_OVERLAY_VAR(data_ov084_02271d44),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFireworksTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFireworksProfile),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFireworksFortuneStrKey),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFireworksActTable),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFireworksModelPath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFireworksFortuneStr2Key),
+    HOST_OVERLAY_VAR(data_ov084_02271d40),
+    HOST_OVERLAY_VARS_END
+};

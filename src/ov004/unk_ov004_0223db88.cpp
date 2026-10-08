@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "host_overlay_vars.h"
 #include "gfx/VecFx32.h"
 
 #include "Unk_020d8c7c.h"
@@ -93,6 +94,7 @@ public:
 // Static Rec objects of __sinit: ctor = MuseumInfoPoint_InitFromDef (plain function), dtor = the 2-byte function at 0x223e010
 extern "C" Rec *MuseumInfoPoint_InitFromDef(Rec *r, const MuseumInfoPointDef *d);
 struct MuseumInfoPoint : Rec {
+    MuseumInfoPoint() {}
     MuseumInfoPoint(const MuseumInfoPointDef &d) { MuseumInfoPoint_InitFromDef(this, &d); }
     ~MuseumInfoPoint();
 };
@@ -197,14 +199,14 @@ const MuseumInfoPointDef sMuseumFishPointDefs23[4] = {
     {{40192, 5120, 41216}, 1, 1, -1, data_ov004_022441bc, 8},
     {{98816, 5120, 41216}, 1, 1, -1, data_ov004_022441dc, 9},
 };
-MuseumInfoPoint sMuseumFishPoints23[4] = {MuseumInfoPoint(sMuseumFishPointDefs23[0]), MuseumInfoPoint(sMuseumFishPointDefs23[1]), MuseumInfoPoint(sMuseumFishPointDefs23[2]), MuseumInfoPoint(sMuseumFishPointDefs23[3])};
+MuseumInfoPoint sMuseumFishPoints23[4];  // initialised by StaticInit_unk_ov004_0223db88
 const u8 data_ov004_0224412c[1] = {0x1};
 const u8 data_ov004_022441e8[10] = {0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2b, 0x2c};
 const MuseumInfoPointDef sMuseumFishPointDefs24[2] = {
     {{27136, 5120, 90112}, 1, 1, -1, data_ov004_022441e8, 10},
     {{105728, 5120, 90112}, 1, 1, -1, data_ov004_022441f4, 11},
 };
-MuseumInfoPoint sMuseumFishPoints24[2] = {MuseumInfoPoint(sMuseumFishPointDefs24[0]), MuseumInfoPoint(sMuseumFishPointDefs24[1])};
+MuseumInfoPoint sMuseumFishPoints24[2];  // initialised by StaticInit_unk_ov004_0223db88
 const u8 data_ov004_022440cc[1] = {0xf};
 const u8 data_ov004_02244168[3] = {0xd, 0xe, 0xf};
 const u8 data_ov004_02244140[2] = {0x1e, 0x1f};
@@ -237,7 +239,7 @@ const MuseumInfoPointDef sMuseumFossilPointDefs25[12] = {
     {{118784, 4096, 28672}, 1, 3, -1, data_ov004_022440c4, 1},
     {{126976, 4096, 28672}, 1, 3, -1, data_ov004_02244108, 1},
 };
-MuseumInfoPoint sMuseumFossilPoints25[12] = {MuseumInfoPoint(sMuseumFossilPointDefs25[0]), MuseumInfoPoint(sMuseumFossilPointDefs25[1]), MuseumInfoPoint(sMuseumFossilPointDefs25[2]), MuseumInfoPoint(sMuseumFossilPointDefs25[3]), MuseumInfoPoint(sMuseumFossilPointDefs25[4]), MuseumInfoPoint(sMuseumFossilPointDefs25[5]), MuseumInfoPoint(sMuseumFossilPointDefs25[6]), MuseumInfoPoint(sMuseumFossilPointDefs25[7]), MuseumInfoPoint(sMuseumFossilPointDefs25[8]), MuseumInfoPoint(sMuseumFossilPointDefs25[9]), MuseumInfoPoint(sMuseumFossilPointDefs25[10]), MuseumInfoPoint(sMuseumFossilPointDefs25[11])};
+MuseumInfoPoint sMuseumFossilPoints25[12];  // initialised by StaticInit_unk_ov004_0223db88
 const u8 data_ov004_022440f0[1] = {0x10};
 const u8 data_ov004_02244110[1] = {0x5};
 const u8 data_ov004_02244184[6] = {0xe, 0x19, 0x1e, 0x25, 0x33, 0x34};
@@ -251,13 +253,13 @@ const u8 data_ov004_02244100[1] = {0x6};
 const u8 data_ov004_02244194[6] = {0x12, 0x13, 0x14, 0x21, 0x22, 0x26};
 const u8 data_ov004_022441d0[9] = {0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8};
 const u8 data_ov004_022440d0[1] = {0x12};
-MuseumInfoPoint sMuseumFossilPoints26[12] = {MuseumInfoPoint(sMuseumFossilPointDefs26[0]), MuseumInfoPoint(sMuseumFossilPointDefs26[1]), MuseumInfoPoint(sMuseumFossilPointDefs26[2]), MuseumInfoPoint(sMuseumFossilPointDefs26[3]), MuseumInfoPoint(sMuseumFossilPointDefs26[4]), MuseumInfoPoint(sMuseumFossilPointDefs26[5]), MuseumInfoPoint(sMuseumFossilPointDefs26[6]), MuseumInfoPoint(sMuseumFossilPointDefs26[7]), MuseumInfoPoint(sMuseumFossilPointDefs26[8]), MuseumInfoPoint(sMuseumFossilPointDefs26[9]), MuseumInfoPoint(sMuseumFossilPointDefs26[10]), MuseumInfoPoint(sMuseumFossilPointDefs26[11])};
+MuseumInfoPoint sMuseumFossilPoints26[12];  // initialised by StaticInit_unk_ov004_0223db88
 ProcProfile sMuseumRoomProfile = {(void *(*)())MuseumRoom_Create, 0x51, 0x58};
 const u8 data_ov004_022440ec[1] = {0xb};
 const u8 data_ov004_02244104[1] = {0};
 const u8 data_ov004_0224417c[6] = {0, 0x1, 0x2, 0x3, 0x4, 0x8};
 const u8 data_ov004_022440c4[1] = {0x8};
-MuseumInfoPoint sMuseumInsectPoints27[4] = {MuseumInfoPoint(sMuseumInsectPointDefs27[0]), MuseumInfoPoint(sMuseumInsectPointDefs27[1]), MuseumInfoPoint(sMuseumInsectPointDefs27[2]), MuseumInfoPoint(sMuseumInsectPointDefs27[3])};
+MuseumInfoPoint sMuseumInsectPoints27[4];  // initialised by StaticInit_unk_ov004_0223db88
 const u8 data_ov004_0224415c[3] = {0x20, 0x21, 0x22};
 const u8 data_ov004_022440fc[1] = {0x11};
 const MuseumInfoPointDef sMuseumFossilPointDefs26[12] = {
@@ -277,7 +279,7 @@ const MuseumInfoPointDef sMuseumFossilPointDefs26[12] = {
 const u8 data_ov004_0224411c[1] = {0xc};
 const u8 data_ov004_02244138[1] = {0x9};
 const u8 data_ov004_02244134[1] = {0x7};
-MuseumInfoPoint sMuseumInsectPoints28[5] = {MuseumInfoPoint(sMuseumInsectPointDefs28[0]), MuseumInfoPoint(sMuseumInsectPointDefs28[1]), MuseumInfoPoint(sMuseumInsectPointDefs28[2]), MuseumInfoPoint(sMuseumInsectPointDefs28[3]), MuseumInfoPoint(sMuseumInsectPointDefs28[4])};
+MuseumInfoPoint sMuseumInsectPoints28[5];  // initialised by StaticInit_unk_ov004_0223db88
 const u8 data_ov004_022440c8[1] = {0xa};
 const u8 data_ov004_02244158[3] = {0x12, 0x13, 0x14};
 const u8 data_ov004_022440e0[1] = {0x6};
@@ -312,7 +314,19 @@ ProcProfile sMuseumRoomUnk53Profile = {(void *(*)())MuseumRoomUnk53_Create, 0x53
 const u8 data_ov004_0224419c[6] = {0x5, 0x6, 0x7, 0xf, 0x30, 0x32};
 const u8 data_ov004_0224414c[3] = {0x2d, 0x2e, 0x2f};
 const u8 data_ov004_0224410c[1] = {0x9};
-MuseumInfoPoint sMuseumPaintingPoints29[20] = {MuseumInfoPoint(sMuseumPaintingPointDefs29[0]), MuseumInfoPoint(sMuseumPaintingPointDefs29[1]), MuseumInfoPoint(sMuseumPaintingPointDefs29[2]), MuseumInfoPoint(sMuseumPaintingPointDefs29[3]), MuseumInfoPoint(sMuseumPaintingPointDefs29[4]), MuseumInfoPoint(sMuseumPaintingPointDefs29[5]), MuseumInfoPoint(sMuseumPaintingPointDefs29[6]), MuseumInfoPoint(sMuseumPaintingPointDefs29[7]), MuseumInfoPoint(sMuseumPaintingPointDefs29[8]), MuseumInfoPoint(sMuseumPaintingPointDefs29[9]), MuseumInfoPoint(sMuseumPaintingPointDefs29[10]), MuseumInfoPoint(sMuseumPaintingPointDefs29[11]), MuseumInfoPoint(sMuseumPaintingPointDefs29[12]), MuseumInfoPoint(sMuseumPaintingPointDefs29[13]), MuseumInfoPoint(sMuseumPaintingPointDefs29[14]), MuseumInfoPoint(sMuseumPaintingPointDefs29[15]), MuseumInfoPoint(sMuseumPaintingPointDefs29[16]), MuseumInfoPoint(sMuseumPaintingPointDefs29[17]), MuseumInfoPoint(sMuseumPaintingPointDefs29[18]), MuseumInfoPoint(sMuseumPaintingPointDefs29[19])};
+MuseumInfoPoint sMuseumPaintingPoints29[20];  // initialised by StaticInit_unk_ov004_0223db88
+
+// Run when the overlay is loaded (modern/host/overlay.c), as the DS's __sinit: each information point built from its
+// definition (MuseumInfoPoint(def), in definition order).
+extern "C" void StaticInit_unk_ov004_0223db88(void) {
+    for (u32 i = 0; i < sizeof sMuseumFishPoints23 / sizeof sMuseumFishPoints23[0]; i++) MuseumInfoPoint_InitFromDef(&sMuseumFishPoints23[i], &sMuseumFishPointDefs23[i]);
+    for (u32 i = 0; i < sizeof sMuseumFishPoints24 / sizeof sMuseumFishPoints24[0]; i++) MuseumInfoPoint_InitFromDef(&sMuseumFishPoints24[i], &sMuseumFishPointDefs24[i]);
+    for (u32 i = 0; i < sizeof sMuseumFossilPoints25 / sizeof sMuseumFossilPoints25[0]; i++) MuseumInfoPoint_InitFromDef(&sMuseumFossilPoints25[i], &sMuseumFossilPointDefs25[i]);
+    for (u32 i = 0; i < sizeof sMuseumFossilPoints26 / sizeof sMuseumFossilPoints26[0]; i++) MuseumInfoPoint_InitFromDef(&sMuseumFossilPoints26[i], &sMuseumFossilPointDefs26[i]);
+    for (u32 i = 0; i < sizeof sMuseumInsectPoints27 / sizeof sMuseumInsectPoints27[0]; i++) MuseumInfoPoint_InitFromDef(&sMuseumInsectPoints27[i], &sMuseumInsectPointDefs27[i]);
+    for (u32 i = 0; i < sizeof sMuseumInsectPoints28 / sizeof sMuseumInsectPoints28[0]; i++) MuseumInfoPoint_InitFromDef(&sMuseumInsectPoints28[i], &sMuseumInsectPointDefs28[i]);
+    for (u32 i = 0; i < sizeof sMuseumPaintingPoints29 / sizeof sMuseumPaintingPoints29[0]; i++) MuseumInfoPoint_InitFromDef(&sMuseumPaintingPoints29[i], &sMuseumPaintingPointDefs29[i]);
+}
 const u8 data_ov004_02244108[1] = {0x1};
 const u8 data_ov004_022441a4[7] = {0xc, 0xd, 0x1b, 0x1c, 0x1d, 0x36, 0x37};
 const u8 data_ov004_022440d4[1] = {0x13};
@@ -446,6 +460,12 @@ MuseumFossilRoom::MuseumFossilRoom() {}
 
 MuseumFossilRoom::~MuseumFossilRoom() {}
 
+// MuseumFossilRoom::setupExhibits's static sa, initialised at its first use after the overlay was loaded
+ItemId MuseumFossilRoom_setupExhibits_sa;
+u8 MuseumFossilRoom_setupExhibits_sa_init;
+// MuseumFossilRoom::setupExhibits's static sb, initialised at its first use after the overlay was loaded
+ItemId MuseumFossilRoom_setupExhibits_sb;
+u8 MuseumFossilRoom_setupExhibits_sb_init;
 BOOL MuseumFossilRoom::setupExhibits() {
     s32 y, x;
     BlockMap *m = gSceneBlockMap;
@@ -463,14 +483,20 @@ BOOL MuseumFossilRoom::setupExhibits() {
                         k2 = TRUE;
                     }
                     if (!k2) {
-                        static ItemId sa(0x4a54);
-                        static ItemId sb(0xfff1);
+                        if (!MuseumFossilRoom_setupExhibits_sa_init) {
+                            HOST_STATIC_INIT(MuseumFossilRoom_setupExhibits_sa, ItemId(0x4a54));
+                            MuseumFossilRoom_setupExhibits_sa_init = 1;
+                        }
+                        if (!MuseumFossilRoom_setupExhibits_sb_init) {
+                            HOST_STATIC_INIT(MuseumFossilRoom_setupExhibits_sb, ItemId(0xfff1));
+                            MuseumFossilRoom_setupExhibits_sb_init = 1;
+                        }
                         s32 w = Ftr_GetUnk05(p);
                         u16 v = 0xfff1;
                         if (w == 0) {
-                            v = sa.id;
+                            v = MuseumFossilRoom_setupExhibits_sa.id;
                         } else {
-                            v = sb.id;
+                            v = MuseumFossilRoom_setupExhibits_sb.id;
                         }
                         BlockMap_SetItem(m, &v, 0, 0, x, y, 0);
                     }
@@ -494,3 +520,24 @@ BOOL MuseumRoomUnk53::setupExhibits() {
 }
 
 const u8 data_ov004_022440f8[1] = {0x5};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0223db88) {
+    HOST_OVERLAY_VAR(sMuseumFishPoints23),
+    HOST_OVERLAY_VAR(sMuseumFishPoints24),
+    HOST_OVERLAY_VAR(sMuseumFossilPoints25),
+    HOST_OVERLAY_VAR(sMuseumFossilRoomProfile),
+    HOST_OVERLAY_VAR(sMuseumFossilPoints26),
+    HOST_OVERLAY_VAR(sMuseumRoomProfile),
+    HOST_OVERLAY_VAR(sMuseumInsectPoints27),
+    HOST_OVERLAY_VAR(sMuseumInsectPoints28),
+    HOST_OVERLAY_VAR(sMuseumRoomUnk53Profile),
+    HOST_OVERLAY_VAR(sMuseumPaintingPoints29),
+    HOST_OVERLAY_VAR(MuseumFossilRoom_setupExhibits_sa),
+    HOST_OVERLAY_VAR(MuseumFossilRoom_setupExhibits_sa_init),
+    HOST_OVERLAY_VAR(MuseumFossilRoom_setupExhibits_sb),
+    HOST_OVERLAY_VAR(MuseumFossilRoom_setupExhibits_sb_init),
+    HOST_OVERLAY_VARS_END
+};

@@ -1010,3 +1010,11 @@ void PopupChoiceMenuBody::load2dString(MsgString *buf, u32 c)
     u8 t = c;
     String_Load2d(buf, &t, 0);
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov002_022013ac) {
+    HOST_OVERLAY_VAR(sPopupChoicePopOffsets),
+    HOST_OVERLAY_VARS_END
+};

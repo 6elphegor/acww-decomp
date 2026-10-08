@@ -73,3 +73,10 @@ WfcObjGroup *WfcObj_Create(s32 which, s32 idx, s32 flag) {
     return r;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02224b14) {
+    HOST_OVERLAY_VAR(sWfcCellData),
+    HOST_OVERLAY_VARS_END
+};

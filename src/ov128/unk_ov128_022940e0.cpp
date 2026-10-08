@@ -764,3 +764,28 @@ void StargazingMenu::setFlags(u32 m) { stateFlags = stateFlags | m; }
 
 void StargazingMenu::clearFlags(u32 m) { stateFlags = stateFlags & ~m; }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov128_022940e0) {
+    HOST_OVERLAY_VAR(data_ov128_022955c0),
+    HOST_OVERLAY_VAR(data_ov128_022952b8),
+    HOST_OVERLAY_VAR(sArrowCursorX),
+    HOST_OVERLAY_VAR(data_ov128_022953e0),
+    HOST_OVERLAY_VAR(data_ov128_02295280),
+    HOST_OVERLAY_VAR(data_ov128_022953b0),
+    HOST_OVERLAY_VAR(data_ov128_022952d8),
+    HOST_OVERLAY_VAR(data_ov128_02295498),
+    HOST_OVERLAY_VAR(sArrowCursorY),
+    HOST_OVERLAY_VAR(data_ov128_02295458),
+    HOST_OVERLAY_VAR(data_ov128_02295540),
+    HOST_OVERLAY_VAR(sNameLabelFrames),
+    HOST_OVERLAY_VAR(data_ov128_02295298),
+    HOST_OVERLAY_VAR(data_ov128_02295350),
+    HOST_OVERLAY_VAR(data_ov128_02295380),
+    HOST_OVERLAY_VAR(data_ov128_02295268),
+    HOST_OVERLAY_VAR(data_ov128_02295418),
+    HOST_OVERLAY_VAR(sStargazingMenuProfile),
+    HOST_OVERLAY_VAR(data_ov128_022952f8),
+    HOST_OVERLAY_VARS_END
+};

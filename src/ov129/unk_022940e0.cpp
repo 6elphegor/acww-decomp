@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_overlay_vars.h"
 #include "Unk_020d8c7c.h"
 #include "game/ConstellationRecord.h"
 #include "gfx/StarTwinkle.h"
@@ -918,6 +919,9 @@ void ConstellationEditorMenu::startQuit() {
 }
 extern "C" const s32 data_ov129_022964bc[5] = {0, 0, 0, -4, 4};
 
+// ConstellationEditorMenu::acceptConfirmation's static obj, initialised at its first use after the overlay was loaded
+ConstellationRecord ConstellationEditorMenu_acceptConfirmation_obj;
+u8 ConstellationEditorMenu_acceptConfirmation_obj_init;
 void ConstellationEditorMenu::acceptConfirmation() {
     ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(3);
     setTransitionState(2);
@@ -928,17 +932,20 @@ void ConstellationEditorMenu::acceptConfirmation() {
     } else {
         MenuCtrl_SetResult(1);
         s32 n = MenuCtrl_GetIndex();
-        static ConstellationRecord obj;
-        ConstellationRecord_Clear(&obj);
-        Constellation_SetCreator((u8 *)&obj);
+        if (!ConstellationEditorMenu_acceptConfirmation_obj_init) {
+            HOST_STATIC_CONSTRUCT(ConstellationEditorMenu_acceptConfirmation_obj);
+            ConstellationEditorMenu_acceptConfirmation_obj_init = 1;
+        }
+        ConstellationRecord_Clear(&ConstellationEditorMenu_acceptConfirmation_obj);
+        Constellation_SetCreator((u8 *)&ConstellationEditorMenu_acceptConfirmation_obj);
         s32 i;
         for (i = 0; i < 16; i++) {
-            obj.lines[i] = lines[i];
+            ConstellationEditorMenu_acceptConfirmation_obj.lines[i] = lines[i];
         }
         for (i = 0; i < 16; i++) {
-            obj.name[i] = constellationName[i];
+            ConstellationEditorMenu_acceptConfirmation_obj.name[i] = constellationName[i];
         }
-        Constellation_Store(&obj, n, 0);
+        Constellation_Store(&ConstellationEditorMenu_acceptConfirmation_obj, n, 0);
         Snd_PlaySe(0x27);
     }
 }
@@ -1645,3 +1652,14 @@ extern "C" const u8 data_ov129_022964b4[8] = {3, 3, 3, 3, 1, 0, 0, 0};
 
 extern "C" u8 sEditorArrowCursorX[8] = {0x10, 0xf0, 0x80, 0x80, 0, 0, 0, 0};
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_022940e0) {
+    HOST_OVERLAY_VAR(ConstellationEditorMenu_acceptConfirmation_obj),
+    HOST_OVERLAY_VAR(ConstellationEditorMenu_acceptConfirmation_obj_init),
+    HOST_OVERLAY_VAR(sConstellationEditorMenuProfile),
+    HOST_OVERLAY_VAR(sEditorArrowCursorY),
+    HOST_OVERLAY_VAR(sEditorArrowCursorX),
+    HOST_OVERLAY_VARS_END
+};

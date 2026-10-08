@@ -740,3 +740,10 @@ extern "C" const s32 sDateSelectCursorYTable[5] = {0x70, 0x70, 0x70, 0, 0};
 
 extern "C" ProcProfile sDateSelectMenuProfile = {(void *(*)())DateSelectMenu_Create, 0xb1, 0xb5};
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov138_02295380) {
+    HOST_OVERLAY_VAR(sDateSelectMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

@@ -287,3 +287,15 @@ void Atm::onChoice(u32) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_022048c0) {
+    HOST_OVERLAY_VAR(sAtmInstance),
+    HOST_OVERLAY_VAR(sAtmStringBankPtr),
+    HOST_OVERLAY_VAR(sAtmMsgFile),
+    HOST_OVERLAY_VAR(sAtmMsgFilePtr),
+    HOST_OVERLAY_VAR(sAtmStringBank),
+    HOST_OVERLAY_VAR(sAtmProfile),
+    HOST_OVERLAY_VARS_END
+};

@@ -218,3 +218,11 @@ void WfcTransferNotice_Exit() {
     WfcUtil_SetScene(WfcTransferWait_Enter);
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0220f9e4) {
+    HOST_OVERLAY_VAR(sWfcTransferIntroAccepted),
+    HOST_OVERLAY_VARS_END
+};

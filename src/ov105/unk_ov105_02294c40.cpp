@@ -2334,3 +2334,16 @@ extern "C" Unk_ov105_Ent data_ov105_02298544[9] = {
     {0x41c400c0, 0x000041c2}, {0x41c400c1, 0x0000511e}, {0x41c400c3, 0x0000111e},
     {0x41dc00c0, 0x000041c4}, {0x41dc00c1, 0x0000511e}, {0x41dc00c3, 0xffff111e},
 };
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov105_02294c40) {
+    HOST_OVERLAY_VAR(sLetterStorageMenuProfile),
+    HOST_OVERLAY_VAR(data_ov105_02298524),
+    HOST_OVERLAY_VAR(sLetterStoragePageChars),
+    HOST_OVERLAY_VAR(data_ov105_02298504),
+    HOST_OVERLAY_VAR(data_ov105_022984e4),
+    HOST_OVERLAY_VAR(data_ov105_02298544),
+    HOST_OVERLAY_VARS_END
+};

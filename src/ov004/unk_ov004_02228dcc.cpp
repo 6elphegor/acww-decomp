@@ -287,3 +287,12 @@ void TarotProps::releasePart(s32 i) {
     RoomObjRes_Free(&partRes[i]);
     RoomObjTex_Reset(&partTex[i]);
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02228dcc) {
+    HOST_OVERLAY_VAR(sTarotPropsProfile),
+    HOST_OVERLAY_VAR(sTarotProps),
+    HOST_OVERLAY_VARS_END
+};

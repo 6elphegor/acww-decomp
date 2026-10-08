@@ -56,3 +56,12 @@ BOOL GulliverShip::onDelete() {
 
 extern "C" u16 sGulliverShipVisitorProfile = 0x60;
 extern "C" ActorProfile sGulliverShipProfile = {(void *(*)())GulliverShip_Create, 0x27, 0x2d, 0, 0xc8000, 0x12c000, 0x258000};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_02217814) {
+    HOST_OVERLAY_VAR(sGulliverShipVisitorProfile),
+    HOST_OVERLAY_VAR(sGulliverShipProfile),
+    HOST_OVERLAY_VARS_END
+};

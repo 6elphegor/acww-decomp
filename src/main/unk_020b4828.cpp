@@ -1101,8 +1101,6 @@ SceneWarp::SceneWarp() {
     exitKind = 0;
 }
 
-SceneWarp::~SceneWarp() {}
-
 extern "C" void SceneWarp_Init(SceneWarp* e, u8 id, VecFx32* v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t) {
     e->type = id;
     e->pos.x = v->x;

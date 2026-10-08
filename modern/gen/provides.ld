@@ -1,6 +1,3 @@
-PROVIDE("_ZN6Vec3Z2D1Ev" = "_ZN6FxVec3D1Ev" );
-PROVIDE("_ZN5Vec3ZD1Ev" = "_ZN6FxVec3D1Ev" );
-PROVIDE("_ZN12FxVec3NoCtorD1Ev" = "_ZN6FxVec3D1Ev" );
 PROVIDE("_ZN11LitCedarPosC1Ev" = "LitCedarPos_Construct" );
 PROVIDE("_ZN6FxVec3C1Ev" = "FxVec3_Construct" );
 PROVIDE("_ZN5Actor8postDrawEv" = "_ZN5Actor8postDrawEi" );

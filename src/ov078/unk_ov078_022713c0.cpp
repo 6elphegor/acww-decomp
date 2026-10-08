@@ -706,3 +706,20 @@ void SpNpcSaharah::onInteractionEvent(u32 v, u8) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov078_022713c0) {
+    HOST_OVERLAY_VAR(data_ov078_022725c4),
+    HOST_OVERLAY_VAR(sSpNpcSaharahProfile),
+    HOST_OVERLAY_VAR(data_ov078_022725d0),
+    HOST_OVERLAY_VAR(data_ov078_022725d4),
+    HOST_OVERLAY_VAR(data_ov078_022725c8),
+    HOST_OVERLAY_VAR(sSpNpcSaharahModelPath),
+    HOST_OVERLAY_VAR(sSpNpcSaharahTexturePath),
+    HOST_OVERLAY_VAR(data_ov078_022725cc),
+    HOST_OVERLAY_VAR(data_ov078_022725c0),
+    HOST_OVERLAY_VAR(sSpNpcSaharahActTable),
+    HOST_OVERLAY_VAR(sSpNpcSaharahSideStepOffsets),
+    HOST_OVERLAY_VARS_END
+};

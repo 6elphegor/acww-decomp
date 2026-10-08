@@ -983,3 +983,18 @@ u8 sSavedConstellationStars[0x11];
 extern "C" u8 data_ov127_02293fa0[4] = {
     0x10, 0xf0, 0x80, 0x80,
 };
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov127_02291f60) {
+    HOST_OVERLAY_VAR(data_ov127_02293fa4),
+    HOST_OVERLAY_VAR(data_ov127_02293fac),
+    HOST_OVERLAY_VAR(data_ov127_02293fb4),
+    HOST_OVERLAY_VAR(data_ov127_02293fc4),
+    HOST_OVERLAY_VAR(data_ov127_02293fd4),
+    HOST_OVERLAY_VAR(sTestedConstellationStars),
+    HOST_OVERLAY_VAR(sSavedConstellationStars),
+    HOST_OVERLAY_VAR(data_ov127_02293fa0),
+    HOST_OVERLAY_VARS_END
+};

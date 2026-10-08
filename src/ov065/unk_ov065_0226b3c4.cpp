@@ -1456,3 +1456,11 @@ void WifiAp_SortFoundAp(u32 n, WifiApContext *ctx) {
 }
 }  // namespace N_ab40
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0226b3c4) {
+    HOST_OVERLAY_VAR(sWifiApSsidUsbConnector),
+    HOST_OVERLAY_VAR(sWifiApHostName),
+    HOST_OVERLAY_VARS_END
+};

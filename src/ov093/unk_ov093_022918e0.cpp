@@ -404,3 +404,13 @@ extern "C" char data_ov093_0229225c[] = "menu/staff/logo.bch";
 
 extern "C" char *sStaffRollLogoCharPath = data_ov093_0229225c;
 extern "C" char *sStaffRollPalettePath = "menu/staff/sfr.bpl";
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov093_022918e0) {
+    HOST_OVERLAY_VAR(data_ov093_0229225c),
+    HOST_OVERLAY_VAR(sStaffRollLogoCharPath),
+    HOST_OVERLAY_VAR(sStaffRollPalettePath),
+    HOST_OVERLAY_VARS_END
+};

@@ -308,3 +308,12 @@ extern "C" void TaxiInterior_SetPartAnim(TaxiInterior *self, u8 k, AnimModel *pa
         ((BlendAnimModel *)part)->initAnim(RoomObjRes_GetBca(res, k), s0, s1, s2, s3);
     }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov068_0226b9a8) {
+    HOST_OVERLAY_VAR(sTaxiInteriorProfile),
+    HOST_OVERLAY_VAR(sTaxiInterior),
+    HOST_OVERLAY_VARS_END
+};

@@ -75,10 +75,7 @@ static inline BOOL Unk_ov098_0229b2d8_Both() {
 
 struct Unk_ov098_0229b790_Pt {
     s32 x, y;
-    Unk_ov098_0229b790_Pt(s32 a, s32 b) {
-        x = a;
-        y = b;
-    }
+    constexpr Unk_ov098_0229b790_Pt(s32 a, s32 b) : x(a), y(b) {}
 };
 
 extern "C" {
@@ -252,8 +249,8 @@ void PocketMenu::sendInsectReleasePacket(u8 a, u32 b) {
     }
 }
 
-s32 *PocketMenu::getDirOffset(s16 a) {
-    static Unk_ov098_0229b790_Pt tbl[16] = {
+// PocketMenu::getDirOffset's static tbl
+Unk_ov098_0229b790_Pt PocketMenu_getDirOffset_tbl[16] = {
         Unk_ov098_0229b790_Pt(0, 1),   Unk_ov098_0229b790_Pt(1, 1),   Unk_ov098_0229b790_Pt(1, 1),
         Unk_ov098_0229b790_Pt(1, 0),   Unk_ov098_0229b790_Pt(1, 0),   Unk_ov098_0229b790_Pt(1, -1),
         Unk_ov098_0229b790_Pt(1, -1),  Unk_ov098_0229b790_Pt(0, -1),  Unk_ov098_0229b790_Pt(0, -1),
@@ -261,7 +258,8 @@ s32 *PocketMenu::getDirOffset(s16 a) {
         Unk_ov098_0229b790_Pt(-1, 0),  Unk_ov098_0229b790_Pt(-1, 1),  Unk_ov098_0229b790_Pt(-1, 1),
         Unk_ov098_0229b790_Pt(0, 1),
     };
-    return &tbl[(a >> 12) & 15].x;
+s32 *PocketMenu::getDirOffset(s16 a) {
+    return &PocketMenu_getDirOffset_tbl[(a >> 12) & 15].x;
 }
 
 BOOL PocketMenu::findBuryHole() {
@@ -457,3 +455,11 @@ void PocketMenu::mainAct39() {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov098_0229b280) {
+    HOST_OVERLAY_VAR(sBuryHoleAngles),
+    HOST_OVERLAY_VAR(PocketMenu_getDirOffset_tbl),
+    HOST_OVERLAY_VARS_END
+};

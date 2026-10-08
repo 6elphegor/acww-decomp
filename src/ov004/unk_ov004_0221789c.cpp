@@ -791,3 +791,13 @@ BOOL FleaMarketSellerVillager::checkPlayerLeaving() {
     return FALSE;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0221789c) {
+    HOST_OVERLAY_VAR(sFleaMarketSellerVillagerProfile),
+    HOST_OVERLAY_VAR(data_ov004_022506c8),
+    HOST_OVERLAY_VAR(data_ov004_022506f0),
+    HOST_OVERLAY_VAR(sFleaMarketSellerActTable),
+    HOST_OVERLAY_VARS_END
+};

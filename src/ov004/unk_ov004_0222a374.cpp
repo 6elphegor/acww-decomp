@@ -16,10 +16,7 @@ struct Unk_ov004_0222a374_Loc {
 
 struct Unk_ov004_0222a374_Pair {
     s32 a, b;
-    Unk_ov004_0222a374_Pair(s32 x, s32 y) {
-        a = x;
-        b = y;
-    }
+    constexpr Unk_ov004_0222a374_Pair(s32 x, s32 y) : a(x), b(y) {}
 };
 
 
@@ -54,8 +51,9 @@ BOOL PlayerBedSetter::onCreate() {
 }
 
 extern "C" {
+// Room_PlacePlayerBeds's static tbl
+Unk_ov004_0222a374_Pair Room_PlacePlayerBeds_tbl[4] = { Unk_ov004_0222a374_Pair(6, 9), Unk_ov004_0222a374_Pair(9, 9), Unk_ov004_0222a374_Pair(6, 12), Unk_ov004_0222a374_Pair(9, 12) };
 void Room_PlacePlayerBeds() {
-    static Unk_ov004_0222a374_Pair tbl[4] = { Unk_ov004_0222a374_Pair(6, 9), Unk_ov004_0222a374_Pair(9, 9), Unk_ov004_0222a374_Pair(6, 12), Unk_ov004_0222a374_Pair(9, 12) };
     BlockMap *g = gSceneBlockMap;
     if (g != 0) {
         s32 i;
@@ -63,7 +61,7 @@ void Room_PlacePlayerBeds() {
         for (i = 0; i < 4; i++) {
             PlayerData *p = PlayerData_Get(i);
             if (p != 0) {
-                Unk_ov004_0222a374_Pair &e = tbl[i & 3];
+                Unk_ov004_0222a374_Pair &e = Room_PlacePlayerBeds_tbl[i & 3];
                 s32 x = e.a;
                 s32 y = e.b;
                 Unk_ov004_0222a374_Loc l;
@@ -94,3 +92,12 @@ void Room_PlacePlayerBeds() {
     }
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0222a374) {
+    HOST_OVERLAY_VAR(sPlayerBedSetterProfile),
+    HOST_OVERLAY_VAR(Room_PlacePlayerBeds_tbl),
+    HOST_OVERLAY_VARS_END
+};

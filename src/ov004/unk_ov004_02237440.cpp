@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_overlay_vars.h"
 #include "uptr.h"
 #include "proto/main/unk_0202fa70.h"
 // mwcc-version: 1.2/base
@@ -4464,3 +4465,24 @@ extern "C" u32 MuseumInsect_GetTimeOfDayBit() {
     return 1;
 }
 
+
+// Run when the overlay is loaded (modern/host/overlay.c), as the DS's __sinit: the default constructors of
+// the unit's objects.
+extern "C" void StaticInit_unk_ov004_02237440(void) {
+    HOST_STATIC_CONSTRUCT(sMuseumInsects);
+}
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02237440) {
+    HOST_OVERLAY_VAR(sMuseumInsectRoomProfile),
+    HOST_OVERLAY_VAR(sMuseumScorpionSlot),
+    HOST_OVERLAY_VAR(sMuseumDungBallSlot),
+    HOST_OVERLAY_VAR(sMuseumFleaDrawScale),
+    HOST_OVERLAY_VAR(sMuseumInsectParams),
+    HOST_OVERLAY_VAR(sMuseumInsectBehaviors),
+    HOST_OVERLAY_VAR(sMuseumInsectFrame),
+    HOST_OVERLAY_VAR(sMuseumInsects),
+    HOST_OVERLAY_VARS_END
+};

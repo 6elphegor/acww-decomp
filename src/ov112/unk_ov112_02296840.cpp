@@ -2079,3 +2079,12 @@ BOOL BbsWriteMenu::isPostSendConfirmed() {
     return TRUE;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov112_02296840) {
+    HOST_OVERLAY_VAR(data_ov112_022999b8),
+    HOST_OVERLAY_VAR(data_ov112_02299ad8),
+    HOST_OVERLAY_VAR(data_ov112_02299ac0),
+    HOST_OVERLAY_VARS_END
+};

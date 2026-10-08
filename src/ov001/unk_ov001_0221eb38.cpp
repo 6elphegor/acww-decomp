@@ -279,3 +279,11 @@ extern "C" const u8 sWfcHeaderCells[16] = {1, 0, 5, 0, 6, 4, 0, 2, 0, 6, 4, 0, 5
 extern "C" const WfcPoint sWfcHeaderPartPos[5] = {{0x20, 0x21}, {0x50, 0x30}, {0x68, 0x21}, {0x98, 0x30}, {0xb0, 0x21}};
 
 extern "C" WfcHeaderWork *sWfcHeader = 0;
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0221eb38) {
+    HOST_OVERLAY_VAR(sWfcHeader),
+    HOST_OVERLAY_VARS_END
+};

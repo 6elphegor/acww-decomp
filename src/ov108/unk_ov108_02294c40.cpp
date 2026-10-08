@@ -1209,3 +1209,10 @@ void LetterGiveMenu::setFlags(u32 mask) { stateFlags = stateFlags | mask; }
 
 void LetterGiveMenu::clearFlags(u32 mask) { stateFlags = stateFlags & ~mask; }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov108_02294c40) {
+    HOST_OVERLAY_VAR(sLetterGiveMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

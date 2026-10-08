@@ -1112,3 +1112,20 @@ extern "C" char *sCreaturePicDir = 0;
 extern "C" char *sCreatureBgPaletteName = 0;
 
 extern "C" char sCreaturePicPath[0x38] = {0};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov114_02294c40) {
+    HOST_OVERLAY_VAR(data_ov114_02296580),
+    HOST_OVERLAY_VAR(data_ov114_02296588),
+    HOST_OVERLAY_VAR(data_ov114_02296590),
+    HOST_OVERLAY_VAR(data_ov114_02296598),
+    HOST_OVERLAY_VAR(data_ov114_022965a0),
+    HOST_OVERLAY_VAR(data_ov114_022965c0),
+    HOST_OVERLAY_VAR(data_ov114_022965e0),
+    HOST_OVERLAY_VAR(sCreaturePicDir),
+    HOST_OVERLAY_VAR(sCreatureBgPaletteName),
+    HOST_OVERLAY_VAR(sCreaturePicPath),
+    HOST_OVERLAY_VARS_END
+};

@@ -1,4 +1,5 @@
 #include "gfx/Model.h"
+#include "host_overlay_vars.h"
 #include "gfx/TwoLayerAnimModel.h"
 // mwcc-version: 1.2/base
 // ov004 TU32: .text 0x02233074-0x02235fd0 (furniture/TV resource slots, tile placement helpers, actor tables, scene object 0224e9d8)
@@ -58,15 +59,10 @@
 
 extern s32 data_020c8cb8;
 
-// Zero-initialised 3-word object whose (empty) destructor lives in main
+// Zero-initialised 3-word object (on the DS its empty destructor lives in main; trivial here: game/FxVec3.h)
 struct FxVec3 : VecFx32Copy {
     FxVec3() {}
-    FxVec3(s32 v) {
-        x = v;
-        y = 0;
-        z = 0;
-    }
-    ~FxVec3();
+    constexpr FxVec3(s32 v) : VecFx32Copy(v, 0, 0) {}
 };
 
 // ---- records / tables
@@ -152,7 +148,7 @@ struct FtrModelPath {
 
 struct Unk_ov004_02233f3c_P {
     s16 x, y;
-    Unk_ov004_02233f3c_P(s16 a, s16 b) : x(a), y(b) {}
+    constexpr Unk_ov004_02233f3c_P(s16 a, s16 b) : x(a), y(b) {}
 };
 
 struct Unk_0205242c_Self;
@@ -1197,13 +1193,19 @@ extern "C" char data_ov004_0224e944[8] = "tv_fc";
 extern "C" const s8 sFtrProbeDirOffsets[4] = {0, 0, 2, -2};
 
 // @0x223527c unk_022350c8.cpp
+// FtrContactSet::makeStepVec's static r, initialised at its first use after the overlay was loaded
+FxVec3 FtrContactSet_makeStepVec_r;
+u8 FtrContactSet_makeStepVec_r_init;
 VecFx32 *FtrContactSet::makeStepVec(s16 v) {
-    static FxVec3 r;
-    r.x = 0;
-    r.y = 0;
-    r.z = 0x2000;
-    Vec_RotateY((VecFx32 *)&r, v);
-    return (VecFx32 *)&r;
+    if (!FtrContactSet_makeStepVec_r_init) {
+        HOST_STATIC_CONSTRUCT(FtrContactSet_makeStepVec_r);
+        FtrContactSet_makeStepVec_r_init = 1;
+    }
+    FtrContactSet_makeStepVec_r.x = 0;
+    FtrContactSet_makeStepVec_r.y = 0;
+    FtrContactSet_makeStepVec_r.z = 0x2000;
+    Vec_RotateY((VecFx32 *)&FtrContactSet_makeStepVec_r, v);
+    return (VecFx32 *)&FtrContactSet_makeStepVec_r;
 }
 
 // @0x2235270 unk_022350c8.cpp
@@ -3141,17 +3143,19 @@ extern "C" ProcProfile sFurnitureManagerProfile = {(void *(*)())FurnitureManager
 extern "C" char data_ov004_0224e96c[8] = "tv_cf";
 
 // @0x2234ed8 unk_02234774.cpp
+// FtrMgr_CheckBedStepFront's static dflt
+FxVec3 FtrMgr_CheckBedStepFront_dflt(0x2000);
 extern "C" s32 FtrMgr_CheckBedStepFront(VecFx32 *pos, s32 ang) {
-    static FxVec3 dflt(0x2000);
-    return FtrMgr_CheckBedStep(pos, ang, (VecFx32 *)&dflt);
+    return FtrMgr_CheckBedStep(pos, ang, (VecFx32 *)&FtrMgr_CheckBedStepFront_dflt);
 }
 
 extern "C" char data_ov004_0224e974[8] = "tv_rc";
 
 // @0x2234e80 unk_02234774.cpp
+// FtrMgr_CheckBedStepBack's static dflt
+FxVec3 FtrMgr_CheckBedStepBack_dflt(-0x2000);
 extern "C" s32 FtrMgr_CheckBedStepBack(VecFx32 *pos, s32 ang) {
-    static FxVec3 dflt(-0x2000);
-    return FtrMgr_CheckBedStep(pos, ang, (VecFx32 *)&dflt);
+    return FtrMgr_CheckBedStep(pos, ang, (VecFx32 *)&FtrMgr_CheckBedStepBack_dflt);
 }
 
 // @0x2234df8 unk_02234774.cpp
@@ -3666,14 +3670,15 @@ extern "C" s32 FtrMgr_IsPickableByIndex(s32 i) {
 extern "C" const u8 sTvScheduleDay4[0x54] = {8, 0, 0, 10, 1, 0, 1, 3, 0, 0, 4, 0, 1, 5, 0, 2, 6, 0, 255, 6, 45, 2, 7, 0, 255, 7, 45, 3, 8, 0, 6, 8, 30, 7, 10, 0, 2, 11, 0, 255, 11, 45, 8, 12, 0, 3, 13, 0, 8, 13, 30, 6, 15, 0, 7, 16, 0, 8, 17, 0, 2, 18, 0, 255, 18, 45, 8, 19, 0, 6, 20, 0, 3, 21, 0, 2, 22, 0, 255, 22, 45, 8, 23, 0};
 
 // @0x2234320 unk_02233dc0.cpp
-extern "C" s32 FtrMgr_GetProbeTile(s32 *ox, s32 *oy, VecFx32 *pos, s32 ang, s32 idx) {
-    static Unk_ov004_02233f3c_P dirs[16] = {
+// FtrMgr_GetProbeTile's static dirs
+Unk_ov004_02233f3c_P FtrMgr_GetProbeTile_dirs[16] = {
         Unk_ov004_02233f3c_P(0, 1),  Unk_ov004_02233f3c_P(1, 1),   Unk_ov004_02233f3c_P(1, 1),
         Unk_ov004_02233f3c_P(1, 0),  Unk_ov004_02233f3c_P(1, 0),   Unk_ov004_02233f3c_P(1, -1),
         Unk_ov004_02233f3c_P(1, -1), Unk_ov004_02233f3c_P(0, -1),  Unk_ov004_02233f3c_P(0, -1),
         Unk_ov004_02233f3c_P(-1, -1), Unk_ov004_02233f3c_P(-1, -1), Unk_ov004_02233f3c_P(-1, 0),
         Unk_ov004_02233f3c_P(-1, 0), Unk_ov004_02233f3c_P(-1, 1),  Unk_ov004_02233f3c_P(-1, 1),
         Unk_ov004_02233f3c_P(0, 1)};
+extern "C" s32 FtrMgr_GetProbeTile(s32 *ox, s32 *oy, VecFx32 *pos, s32 ang, s32 idx) {
     FieldPos_ToUnit(ox, oy, pos);
     if (idx == 0) {
         return 1;
@@ -3682,8 +3687,8 @@ extern "C" s32 FtrMgr_GetProbeTile(s32 *ox, s32 *oy, VecFx32 *pos, s32 ang, s32 
         if (idx != 0) {
             s32 t = (ang >> 12) & 0xf;
             s32 k = (t + sFtrProbeDirOffsets[idx]) & 0xf;
-            *ox = *ox + dirs[k].x;
-            *oy = *oy + dirs[k].y;
+            *ox = *ox + FtrMgr_GetProbeTile_dirs[k].x;
+            *oy = *oy + FtrMgr_GetProbeTile_dirs[k].y;
         }
         return 1;
     }
@@ -3762,6 +3767,9 @@ FtrActorGrid sFtrActorGrid;
 FtrContactSet sFtrContactSet;
 
 // @0x2233f3c unk_02233dc0.cpp
+// FtrMgr_FindPlacement's static dirs
+Unk_ov004_02233f3c_P FtrMgr_FindPlacement_dirs[4] = {Unk_ov004_02233f3c_P(0, 0), Unk_ov004_02233f3c_P(-1, 0),
+                                           Unk_ov004_02233f3c_P(0, -1), Unk_ov004_02233f3c_P(-1, -1)};
 extern "C" s32 FtrMgr_FindPlacement(u32 *out, u16 *tile, VecFx32 *pos, s32 ang, s32 mode) {
     s32 pl, kind, base;
     s32 bx, by;
@@ -3791,8 +3799,6 @@ extern "C" s32 FtrMgr_FindPlacement(u32 *out, u16 *tile, VecFx32 *pos, s32 ang, 
     kind = FtrInfo_GetUnk05(pl);
     base = FtrActor_AngleToDir((s16)(ang + 0x8000));
     FieldPos_ToUnit(&bx, &by, pos);
-    static Unk_ov004_02233f3c_P dirs[4] = {Unk_ov004_02233f3c_P(0, 0), Unk_ov004_02233f3c_P(-1, 0),
-                                           Unk_ov004_02233f3c_P(0, -1), Unk_ov004_02233f3c_P(-1, -1)};
     n = layer = 1;
     goto testL;
 loopL:
@@ -3815,8 +3821,8 @@ loopD:
     e = 0;
     goto testE;
 loopE:
-    px = c54 + dirs[e].x;
-    py = c58 + dirs[e].y;
+    px = c54 + FtrMgr_FindPlacement_dirs[e].x;
+    py = c58 + FtrMgr_FindPlacement_dirs[e].y;
     if (FtrMgr_TryPlaceAt(out, px, py, r7, pl, (u8)layer, bx, by) == 3) {
         if (kind == 1) {
             s48 = Item_MakeFurniture(pl, r7);
@@ -4643,7 +4649,8 @@ extern "C" char data_ov004_0224e97c[8] = "tv_ff";
 
 extern "C" const u8 sFtrPlaceDirOrder[4] = {0, 2, 1, 3};
 
-s32 sFtrMgrSoundRangeSq = (s32)(((s64)data_020c8cb8 * data_020c8cb8 + 0x800) >> 12);
+// main's const data_020c8cb8 (0x20000) squared (on the DS computed by __sinit)
+s32 sFtrMgrSoundRangeSq = (s32)(((s64)0x20000 * 0x20000 + 0x800) >> 12);
 
 extern "C" u8 sFtrMgrSaleMode = 0;
 
@@ -4670,3 +4677,54 @@ extern "C" u16 sFtrMgrCycleCounter = 0;
 extern "C" FurnitureManager *sFurnitureManager = 0;
 
 extern "C" char data_ov004_0224e94c[8] = "tv_sc";
+
+// Run when the overlay is loaded (modern/host/overlay.c), as the DS's __sinit: the default constructors of
+// the unit's objects.
+extern "C" void StaticInit_unk_ov004_02233074(void) {
+    HOST_STATIC_CONSTRUCT(sFtrMgrPool);
+    HOST_STATIC_CONSTRUCT(sFtrActorTable);
+    HOST_STATIC_CONSTRUCT(sFtrActorHeap);
+    HOST_STATIC_CONSTRUCT(sFtrPreviewer);
+    HOST_STATIC_CONSTRUCT(sFtrActorGrid);
+    HOST_STATIC_CONSTRUCT(sFtrContactSet);
+}
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02233074) {
+    HOST_OVERLAY_VAR(data_ov004_0224e934),
+    HOST_OVERLAY_VAR(sFtrMgrPool),
+    HOST_OVERLAY_VAR(sFtrMoveAnimModelName),
+    HOST_OVERLAY_VAR(data_ov004_0224e954),
+    HOST_OVERLAY_VAR(sTvWeatherNames),
+    HOST_OVERLAY_VAR(sFtrActorTable),
+    HOST_OVERLAY_VAR(data_ov004_0224e964),
+    HOST_OVERLAY_VAR(data_ov004_0224e944),
+    HOST_OVERLAY_VAR(FtrContactSet_makeStepVec_r),
+    HOST_OVERLAY_VAR(FtrContactSet_makeStepVec_r_init),
+    HOST_OVERLAY_VAR(sFurnitureManagerProfile),
+    HOST_OVERLAY_VAR(data_ov004_0224e96c),
+    HOST_OVERLAY_VAR(FtrMgr_CheckBedStepFront_dflt),
+    HOST_OVERLAY_VAR(data_ov004_0224e974),
+    HOST_OVERLAY_VAR(FtrMgr_CheckBedStepBack_dflt),
+    HOST_OVERLAY_VAR(FtrMgr_GetProbeTile_dirs),
+    HOST_OVERLAY_VAR(sFtrActorHeap),
+    HOST_OVERLAY_VAR(sFtrPreviewer),
+    HOST_OVERLAY_VAR(sFtrActorGrid),
+    HOST_OVERLAY_VAR(sFtrContactSet),
+    HOST_OVERLAY_VAR(FtrMgr_FindPlacement_dirs),
+    HOST_OVERLAY_VAR(data_ov004_0224e95c),
+    HOST_OVERLAY_VAR(sFtrMgrTvSoundEnabled),
+    HOST_OVERLAY_VAR(data_ov004_0224e97c),
+    HOST_OVERLAY_VAR(sFtrMgrSoundRangeSq),
+    HOST_OVERLAY_VAR(sFtrMgrSaleMode),
+    HOST_OVERLAY_VAR(data_ov004_0224e93c),
+    HOST_OVERLAY_VAR(data_ov004_0224e984),
+    HOST_OVERLAY_VAR(sFtrMoveAnimModelNamePtr),
+    HOST_OVERLAY_VAR(sFtrRemovePos),
+    HOST_OVERLAY_VAR(sFtrMgrCycleCounter),
+    HOST_OVERLAY_VAR(sFurnitureManager),
+    HOST_OVERLAY_VAR(data_ov004_0224e94c),
+    HOST_OVERLAY_VARS_END
+};

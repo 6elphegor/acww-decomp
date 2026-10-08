@@ -171,3 +171,13 @@ void *WfcPool_Get(WfcPool *r) {
     return res;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02224ca0) {
+    HOST_OVERLAY_VAR(sWfcFade),
+    HOST_OVERLAY_VAR(sWfcFadeFlags),
+    HOST_OVERLAY_VAR(sWfcFadeEndValues),
+    HOST_OVERLAY_VAR(sWfcFadeStartValues),
+    HOST_OVERLAY_VARS_END
+};

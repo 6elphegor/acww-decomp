@@ -618,3 +618,13 @@ void SpNpcTortimerBugOff::onInteractionEvent(u32 v, u8) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov082_022713c0) {
+    HOST_OVERLAY_VAR(sSpNpcTortimerBugOffProfile),
+    HOST_OVERLAY_VAR(sSpNpcTortimerBugOffTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerBugOffModelPath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerBugOffActTable),
+    HOST_OVERLAY_VARS_END
+};

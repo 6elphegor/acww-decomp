@@ -71,3 +71,40 @@ void qr2_register_keyA(s32 i, const char *v) {
     }
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_022884fc) {
+    HOST_OVERLAY_VAR(data_ov065_0228e4cc),
+    HOST_OVERLAY_VAR(data_ov065_0228e4f4),
+    HOST_OVERLAY_VAR(data_ov065_0228e418),
+    HOST_OVERLAY_VAR(data_ov065_0228e43c),
+    HOST_OVERLAY_VAR(data_ov065_0228e3d0),
+    HOST_OVERLAY_VAR(data_ov065_0228e49c),
+    HOST_OVERLAY_VAR(data_ov065_0228e3f8),
+    HOST_OVERLAY_VAR(data_ov065_0228e400),
+    HOST_OVERLAY_VAR(data_ov065_0228e4b4),
+    HOST_OVERLAY_VAR(data_ov065_0228e448),
+    HOST_OVERLAY_VAR(data_ov065_0228e410),
+    HOST_OVERLAY_VAR(data_ov065_0228e454),
+    HOST_OVERLAY_VAR(data_ov065_0228e460),
+    HOST_OVERLAY_VAR(data_ov065_0228e46c),
+    HOST_OVERLAY_VAR(data_ov065_0228e478),
+    HOST_OVERLAY_VAR(data_ov065_0228e484),
+    HOST_OVERLAY_VAR(data_ov065_0228e3e8),
+    HOST_OVERLAY_VAR(data_ov065_0228e430),
+    HOST_OVERLAY_VAR(data_ov065_0228e4e4),
+    HOST_OVERLAY_VAR(data_ov065_0228e3e0),
+    HOST_OVERLAY_VAR(data_ov065_0228e408),
+    HOST_OVERLAY_VAR(data_ov065_0228e4d8),
+    HOST_OVERLAY_VAR(data_ov065_0228e3f0),
+    HOST_OVERLAY_VAR(data_ov065_0228e428),
+    HOST_OVERLAY_VAR(data_ov065_0228e490),
+    HOST_OVERLAY_VAR(data_ov065_0228e4a8),
+    HOST_OVERLAY_VAR(data_ov065_0228e4c0),
+    HOST_OVERLAY_VAR(data_ov065_0228e420),
+    HOST_OVERLAY_VAR(data_ov065_0228e3d8),
+    HOST_OVERLAY_VAR(qr2_registered_key_list),
+    HOST_OVERLAY_VARS_END
+};

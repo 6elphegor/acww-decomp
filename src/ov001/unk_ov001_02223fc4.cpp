@@ -174,3 +174,10 @@ extern "C" BOOL WfcUtil_StrEndsWith(const void *a, const void *b, s32 n) {
     return memcmp((const u8 *)a + (la - n), (const u8 *)b + (lb - n), n) == 0;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02223fc4) {
+    HOST_OVERLAY_VAR(sWfcFs),
+    HOST_OVERLAY_VARS_END
+};

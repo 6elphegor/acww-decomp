@@ -634,3 +634,19 @@ BOOL BirthdayGuestVillager::canPlayTalkMelody() {
     return FALSE;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02215f04) {
+    HOST_OVERLAY_VAR(data_ov004_02250588),
+    HOST_OVERLAY_VAR(data_ov004_02250598),
+    HOST_OVERLAY_VAR(data_ov004_0225057c),
+    HOST_OVERLAY_VAR(data_ov004_02250580),
+    HOST_OVERLAY_VAR(data_ov004_0225058c),
+    HOST_OVERLAY_VAR(data_ov004_02250594),
+    HOST_OVERLAY_VAR(sBirthdayGuestVillagerProfile),
+    HOST_OVERLAY_VAR(sBirthdayGuestVillager),
+    HOST_OVERLAY_VAR(data_ov004_0224c158),
+    HOST_OVERLAY_VAR(sBirthdayGuestMsgFile),
+    HOST_OVERLAY_VARS_END
+};

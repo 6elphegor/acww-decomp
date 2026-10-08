@@ -1501,3 +1501,16 @@ extern "C" char data_ov111_022989f8[] = "menu/chat2/b_cht_1.bsc";
 extern "C" char data_ov111_02298a10[] = "menu/chat2/b_cht_2.bsc";
 
 extern "C" const char *sChatSendAnimScreens[4] = {data_ov111_022989c8, data_ov111_022989e0, data_ov111_022989f8, data_ov111_02298a10};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_02296840) {
+    HOST_OVERLAY_VAR(data_ov111_02298920),
+    HOST_OVERLAY_VAR(data_ov111_022989c8),
+    HOST_OVERLAY_VAR(data_ov111_022989e0),
+    HOST_OVERLAY_VAR(data_ov111_022989f8),
+    HOST_OVERLAY_VAR(data_ov111_02298a10),
+    HOST_OVERLAY_VAR(sChatSendAnimScreens),
+    HOST_OVERLAY_VARS_END
+};

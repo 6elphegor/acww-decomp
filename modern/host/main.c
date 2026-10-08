@@ -9,6 +9,7 @@
 
 #include "coro.h"
 #include "host.h"
+#include "overlay.h"
 
 int gHostVerbose;
 const char *gHostRomPath;
@@ -72,6 +73,7 @@ int main(int argc, char **argv) {
         else gHostRomPath = argv[i];
     }
     if (!gHostRomPath) { fprintf(stderr, "usage: %s [-v] <rom.nds>\n", argv[0]); return 1; }
+    HostOverlay_Init();  // the overlays' variables as they are now (overlay.c)
     card_init(gHostRomPath);
     u32 size;
     const u8 *rom = host_rom(&size);

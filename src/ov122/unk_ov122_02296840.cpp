@@ -2370,3 +2370,12 @@ void LetterWriteMenu::setFlags(u32 mask) { flags = flags | mask; }
 
 void LetterWriteMenu::clearFlags(u32 mask) { flags = flags & ~mask; }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov122_02296840) {
+    HOST_OVERLAY_VAR(data_ov122_0229a130),
+    HOST_OVERLAY_VAR(data_ov122_0229a180),
+    HOST_OVERLAY_VAR(data_ov122_0229a030),
+    HOST_OVERLAY_VARS_END
+};

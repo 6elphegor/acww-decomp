@@ -2129,3 +2129,11 @@ BOOL PostOfficeMenu::testFlags(u32 mask) {
 void PostOfficeMenu::setFlags(u32 mask) { stateFlags = stateFlags | mask; }
 
 void PostOfficeMenu::clearFlags(u32 mask) { stateFlags = stateFlags & ~mask; }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov104_02294c40) {
+    HOST_OVERLAY_VAR(sPostOfficeMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

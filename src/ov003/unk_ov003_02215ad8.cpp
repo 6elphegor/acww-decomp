@@ -123,3 +123,10 @@ void KatrinaTent::setupTalkMsg() {
     ((MsgString9B *)(buf))->MsgString9B::~MsgString9B();
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_02215ad8) {
+    HOST_OVERLAY_VAR(sKatrinaTentProfile),
+    HOST_OVERLAY_VARS_END
+};

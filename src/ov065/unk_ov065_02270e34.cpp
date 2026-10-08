@@ -1381,3 +1381,16 @@ void DwcCore_SetError(s32 a, s32 b) {
 }
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_02270e34) {
+    HOST_OVERLAY_VAR(sDwcLoginDoneCallback),
+    HOST_OVERLAY_VAR(sDwcLoginControl),
+    HOST_OVERLAY_VAR(sDwcLoginDoneArg),
+    HOST_OVERLAY_VAR(sDwcErrorCode),
+    HOST_OVERLAY_VAR(sDwcErrorClass),
+    HOST_OVERLAY_VAR(sDwcFriendControl),
+    HOST_OVERLAY_VARS_END
+};

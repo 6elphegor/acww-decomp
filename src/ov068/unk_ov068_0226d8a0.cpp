@@ -156,3 +156,18 @@ BOOL RoostCafeSet::enterShown() {
 void RoostCafeSet::execShown() {
     targetAlpha = 0x1f;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov068_0226d8a0) {
+    HOST_OVERLAY_VAR(data_ov068_02271268),
+    HOST_OVERLAY_VAR(data_ov068_02271264),
+    HOST_OVERLAY_VAR(data_ov068_02271254),
+    HOST_OVERLAY_VAR(data_ov068_0227126c),
+    HOST_OVERLAY_VAR(data_ov068_02271258),
+    HOST_OVERLAY_VAR(data_ov068_0227125c),
+    HOST_OVERLAY_VAR(sRoostCafeSetProfile),
+    HOST_OVERLAY_VAR(sRoostCafeSet),
+    HOST_OVERLAY_VARS_END
+};

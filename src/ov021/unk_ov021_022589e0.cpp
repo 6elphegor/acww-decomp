@@ -14,7 +14,6 @@
 
 // 0x1c-byte map object: constructor 0x020b4f8c, destructor 0x020b4fc0 (both in main)
 
-extern u8 sRoomCommonProfileCount;  // copied into the entry table by __sinit
 extern u32 sRoomCommonProfiles[];
 
 // Declarations for data defined further down (definition order sets the data layout)
@@ -25,7 +24,7 @@ extern SceneSpawnGroup data_ov021_02258c64[4];
 extern SceneSpawnList data_ov021_02258c04;
 extern SceneInfo data_ov021_02258c4c;
 extern u32 data_ov021_02258c14[2];
-extern FxVec3 data_ov021_02258cc4;
+extern const FxVec3 data_ov021_02258cc4;
 extern SceneWarp data_ov021_02258d0c[7];
 extern SceneSpawnRecord data_ov021_02258c38[1];
 extern SceneMapInfo data_ov021_02258c1c;
@@ -39,7 +38,7 @@ SceneSpawnRecord data_ov021_02258c24[1] = {
 };
 
 SceneSpawnGroup data_ov021_02258c64[4] = {
-    {2, sRoomCommonProfileCount, 0, sRoomCommonProfiles},
+    {2, ROOM_COMMON_PROFILE_COUNT, 0, sRoomCommonProfiles},
     {2, 2, 0, data_ov021_02258c14},
     {1, 1, 0, data_ov021_02258c24},
     {0, 1, 0, data_ov021_02258c38},
@@ -51,7 +50,8 @@ SceneInfo data_ov021_02258c4c = {&data_ov021_02258c04, 0, &data_ov021_02258c1c, 
 
 u32 data_ov021_02258c14[2] = {0x100c2, 0x51};
 
-FxVec3 data_ov021_02258cc4(0x10000, 0x200, 0x1d000);
+// constant (only the warp table below reads it; on the DS copied into it by __sinit)
+constexpr FxVec3 data_ov021_02258cc4(0x10000, 0x200, 0x1d000);
 
 SceneWarp data_ov021_02258d0c[7] = {
     SceneWarp(0x3c, VecFx32Copy(0, 0, 0), 0x800000, 0, 2, 2, 0, 4),
@@ -68,3 +68,20 @@ SceneSpawnRecord data_ov021_02258c38[1] = {
 };
 
 SceneMapInfo data_ov021_02258c1c = {data_ov021_02258c00, 1, 1};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov021_022589e0) {
+    HOST_OVERLAY_VAR(data_ov021_02258c0c),
+    HOST_OVERLAY_VAR(data_ov021_02258c00),
+    HOST_OVERLAY_VAR(data_ov021_02258c24),
+    HOST_OVERLAY_VAR(data_ov021_02258c64),
+    HOST_OVERLAY_VAR(data_ov021_02258c04),
+    HOST_OVERLAY_VAR(data_ov021_02258c4c),
+    HOST_OVERLAY_VAR(data_ov021_02258c14),
+    HOST_OVERLAY_VAR(data_ov021_02258d0c),
+    HOST_OVERLAY_VAR(data_ov021_02258c38),
+    HOST_OVERLAY_VAR(data_ov021_02258c1c),
+    HOST_OVERLAY_VARS_END
+};

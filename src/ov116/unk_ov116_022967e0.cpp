@@ -533,3 +533,11 @@ BOOL InsectBookTab::testFlags(u32 mask) {
 void InsectBookTab::setFlags(u32 mask) {
     flags |= mask;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov116_022967e0) {
+    HOST_OVERLAY_VAR(sInsectBookTabProfile),
+    HOST_OVERLAY_VARS_END
+};

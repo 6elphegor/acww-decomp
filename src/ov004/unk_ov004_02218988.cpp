@@ -1179,3 +1179,16 @@ void FleaMarketBuyerVillager::setViewDistance(FtrActor *arg) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02218988) {
+    HOST_OVERLAY_VAR(sFleaMarketBuyerVillagerProfile),
+    HOST_OVERLAY_VAR(data_ov004_02250828),
+    HOST_OVERLAY_VAR(data_ov004_022507b0),
+    HOST_OVERLAY_VAR(data_ov004_022507d8),
+    HOST_OVERLAY_VAR(data_ov004_02250800),
+    HOST_OVERLAY_VAR(sFleaMarketBuyerTalkScripts),
+    HOST_OVERLAY_VAR(sFleaMarketBuyerActTable),
+    HOST_OVERLAY_VARS_END
+};

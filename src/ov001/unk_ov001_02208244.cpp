@@ -47,3 +47,11 @@ extern "C" s32 WfcUtil_HideTopMessage() {
 }
 
 #pragma thumb reset
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02208244) {
+    HOST_OVERLAY_VAR(sWfcTopMessageShown),
+    HOST_OVERLAY_VARS_END
+};

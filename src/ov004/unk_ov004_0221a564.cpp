@@ -724,3 +724,19 @@ BOOL SickVillager::canPlayTalkMelody() {
     return FALSE;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0221a564) {
+    HOST_OVERLAY_VAR(data_ov004_02250938),
+    HOST_OVERLAY_VAR(data_ov004_02250940),
+    HOST_OVERLAY_VAR(data_ov004_0225095c),
+    HOST_OVERLAY_VAR(data_ov004_02250948),
+    HOST_OVERLAY_VAR(data_ov004_02250944),
+    HOST_OVERLAY_VAR(data_ov004_02250954),
+    HOST_OVERLAY_VAR(data_ov004_02250958),
+    HOST_OVERLAY_VAR(sSickVillagerProfile),
+    HOST_OVERLAY_VAR(sSickVillager),
+    HOST_OVERLAY_VAR(data_ov004_02250984),
+    HOST_OVERLAY_VARS_END
+};

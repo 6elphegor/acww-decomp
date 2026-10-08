@@ -272,3 +272,16 @@ void CountdownSign_SetMaterialAlpha(CountdownSign *self, s32 a, NNSG3dRS *o) {
 BOOL CountdownDigit::needsMatrixUpdate() {
     return FALSE;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_022150ec) {
+    HOST_OVERLAY_VAR(sCountdownDigitProfile),
+    HOST_OVERLAY_VAR(sCountdownSignProfile),
+    HOST_OVERLAY_VAR(sCountdownSpawnIndex),
+    HOST_OVERLAY_VAR(sCountdownHours),
+    HOST_OVERLAY_VAR(sCountdownMinutes),
+    HOST_OVERLAY_VAR(sCountdownSeconds),
+    HOST_OVERLAY_VARS_END
+};

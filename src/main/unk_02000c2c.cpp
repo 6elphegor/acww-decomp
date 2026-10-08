@@ -363,9 +363,8 @@ void LitCedarPos_Construct(u32 *p) {
     p[1] = 0;
 }
 
-// FxVec3's destructor, empty (0x02000c8c; the other vector classes' destructors are the same function:
-// modern/gen/provides.ld), and the same as a function for the array helpers (__cxa_vec_ctor / __cxa_vec_cleanup)
-FxVec3::~FxVec3() {}
+// FxVec3's destructor, empty (0x02000c8c; on the host the vector classes' destructors are trivial: game/FxVec3.h),
+// as a function for the array helpers (__cxa_vec_ctor / __cxa_vec_cleanup)
 void FxVec3_Destruct(void *) {}
 
 // the game's entry point, called by crt0 (symbols.txt: `main`; see renames.txt)

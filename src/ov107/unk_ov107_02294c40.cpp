@@ -1432,3 +1432,11 @@ void PocketsFullMenu::setFlags(u32 mask) { stateFlags = stateFlags | mask; }
 void PocketsFullMenu::clearFlags(u32 mask) { stateFlags = stateFlags & ~mask; }
 
 extern "C" const s16 sFishReleaseProbeAngles[8] = {0, 0x2000, -0x2000, 0x4000, -0x4000, 0x6000, -0x6000, 0x7fff};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov107_02294c40) {
+    HOST_OVERLAY_VAR(sPocketsFullMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

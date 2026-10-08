@@ -126,3 +126,11 @@ BOOL PlayerHouse::isOpen() { return TRUE; }
 
 BOOL PlayerHouse::playsDoorMelody() { return TRUE; }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_022165d0) {
+    HOST_OVERLAY_VAR(sPlayerHouseProfile),
+    HOST_OVERLAY_VAR(data_ov003_02235358),
+    HOST_OVERLAY_VARS_END
+};

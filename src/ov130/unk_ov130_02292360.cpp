@@ -628,3 +628,34 @@ extern "C" void NumberPad_ClearFlags(NumberPad *s, u32 m) {
     s->flags &= ~m;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov130_02292360) {
+    HOST_OVERLAY_VAR(data_ov130_02293568),
+    HOST_OVERLAY_VAR(data_ov130_022935a8),
+    HOST_OVERLAY_VAR(data_ov130_022935e8),
+    HOST_OVERLAY_VAR(sSeparatorCellsWide),
+    HOST_OVERLAY_VAR(data_ov130_022934d8),
+    HOST_OVERLAY_VAR(sSeparatorCells),
+    HOST_OVERLAY_VAR(data_ov130_02293518),
+    HOST_OVERLAY_VAR(data_ov130_022934a0),
+    HOST_OVERLAY_VAR(data_ov130_022934bc),
+    HOST_OVERLAY_VAR(sKeyScreenFiles),
+    HOST_OVERLAY_VAR(sMainScreenFiles),
+    HOST_OVERLAY_VAR(data_ov130_02293458),
+    HOST_OVERLAY_VAR(data_ov130_02293430),
+    HOST_OVERLAY_VAR(data_ov130_0229341c),
+    HOST_OVERLAY_VAR(data_ov130_022933e0),
+    HOST_OVERLAY_VAR(data_ov130_022933f4),
+    HOST_OVERLAY_VAR(data_ov130_02293408),
+    HOST_OVERLAY_VAR(data_ov130_02293444),
+    HOST_OVERLAY_VAR(data_ov130_022933b8),
+    HOST_OVERLAY_VAR(data_ov130_02293368),
+    HOST_OVERLAY_VAR(data_ov130_022933cc),
+    HOST_OVERLAY_VAR(data_ov130_0229337c),
+    HOST_OVERLAY_VAR(sNumberPadKeySeIds),
+    HOST_OVERLAY_VAR(data_ov130_022933a4),
+    HOST_OVERLAY_VAR(sTitleObjCharFiles),
+    HOST_OVERLAY_VARS_END
+};

@@ -16,8 +16,10 @@
 
 extern "C" {
 u32 sFieldSceneProfiles[14] = {0xc9, 0xca, 0xd, 0xc4, 0x8a, 0xc1, 0x89, 7, 0x8c, 0x8e, 0xd5, 0xd1, 0xd2, 0x8d};
-u32 sFieldSceneProfileCount = 0xe;
-FxVec3 data_ov003_022355a0(0x10000, 0x200, 0x1d000);
+u32 sFieldSceneProfileCount = FIELD_SCENE_PROFILE_COUNT;
+// constant (only the warp table below reads it; on the DS copied into it by __sinit)
+extern const FxVec3 data_ov003_022355a0;
+constexpr FxVec3 data_ov003_022355a0(0x10000, 0x200, 0x1d000);
 SceneWarp sFieldSceneObjects[21] = {
     SceneWarp(0x11, data_ov003_022355a0, 0x22c00000, -0x8000, 2, 2, 0, 0),
     SceneWarp(0x12, data_ov003_022355a0, 0x22c00000, -0x8000, 2, 2, 0, 0),
@@ -47,3 +49,14 @@ SceneWarpList sFieldSceneObjectList = {sFieldSceneObjects, 0x15};
 extern "C" NNSG3dResTex *PlayerHouseTex_Get(PlayerHouseTex *p) {
     return p->tex;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_022187f8) {
+    HOST_OVERLAY_VAR(sFieldSceneProfiles),
+    HOST_OVERLAY_VAR(sFieldSceneProfileCount),
+    HOST_OVERLAY_VAR(sFieldSceneObjects),
+    HOST_OVERLAY_VAR(sFieldSceneObjectList),
+    HOST_OVERLAY_VARS_END
+};

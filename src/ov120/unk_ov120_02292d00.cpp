@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_overlay_vars.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -538,14 +539,20 @@ void MapViewerMenu::loadBgGfx() {
 }
 
 
+// MapViewerMenu::loadMapImage's static obj, initialised at its first use after the overlay was loaded
+TownMapMarkers MapViewerMenu_loadMapImage_obj;
+u8 MapViewerMenu_loadMapImage_obj_init;
 void MapViewerMenu::loadMapImage() {
     Heap *h = gCurrentHeap;
     u8 *p = (u8 *)Heap_AllocTail(h, 0x2000);
-    static TownMapMarkers obj;
-    TownMapMarkers_Clear(&obj);
-    TownMapImage_Build(p, &obj);
+    if (!MapViewerMenu_loadMapImage_obj_init) {
+        HOST_STATIC_CONSTRUCT(MapViewerMenu_loadMapImage_obj);
+        MapViewerMenu_loadMapImage_obj_init = 1;
+    }
+    TownMapMarkers_Clear(&MapViewerMenu_loadMapImage_obj);
+    TownMapImage_Build(p, &MapViewerMenu_loadMapImage_obj);
     Gfx2d_LoadCharRange(p, 4, 0x60, 0x60, 0x15f);
-    setupMarkers(&obj);
+    setupMarkers(&MapViewerMenu_loadMapImage_obj);
     Heap_Free(h, p);
 }
 
@@ -1450,5 +1457,16 @@ MapViewMarker::MapViewMarker() {}
 
 MapViewMarker::~MapViewMarker() {}
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
 
-
+HOST_OVERLAY_VARS(unk_ov120_02292d00) {
+    HOST_OVERLAY_VAR(sMapViewPlacesButtonCells),
+    HOST_OVERLAY_VAR(sMapViewIconCell),
+    HOST_OVERLAY_VAR(sMapViewFrameCells),
+    HOST_OVERLAY_VAR(sMapViewResidentsButtonCells),
+    HOST_OVERLAY_VAR(sMapViewerMenuProfile),
+    HOST_OVERLAY_VAR(MapViewerMenu_loadMapImage_obj),
+    HOST_OVERLAY_VAR(MapViewerMenu_loadMapImage_obj_init),
+    HOST_OVERLAY_VARS_END
+};

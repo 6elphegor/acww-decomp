@@ -663,7 +663,7 @@ void SpNpcLyleTalk::onTaskDone(u32) {
     }
 }
 
-s16 sSpNpcLyleFrontAngle = data_020c6cc0;
+s16 sSpNpcLyleFrontAngle = 0x3000;  // main's const data_020c6cc0[0] (on the DS copied by __sinit)
 
 u8 sSpNpcLyleModelPath[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'o', 't', 't', '.', 'n', 's', 'b', 'm', 'd', 0};
 
@@ -1075,3 +1075,16 @@ void SpNpcLyle::onInteractionEvent(u32 a, u8) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov071_022713c0) {
+    HOST_OVERLAY_VAR(sSpNpcLyleFrontAngle),
+    HOST_OVERLAY_VAR(sSpNpcLyleModelPath),
+    HOST_OVERLAY_VAR(sSpNpcLyleActTable),
+    HOST_OVERLAY_VAR(sSpNpcLyleSidestepOffsets),
+    HOST_OVERLAY_VAR(sSpNpcLyleKey),
+    HOST_OVERLAY_VAR(sSpNpcLyleTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcLyleProfile),
+    HOST_OVERLAY_VARS_END
+};

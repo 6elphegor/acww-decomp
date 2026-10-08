@@ -1537,3 +1537,23 @@ s32 SockCore_RecvDatagram(Sess *s, u8 *dst, s32 max, u16 *o1, u32 *o2, s32 block
 }
 
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0225fdf0) {
+    HOST_OVERLAY_VAR(Unk_ov065_02260de4_Ns::sSockUdpParams),
+    HOST_OVERLAY_VAR(Unk_ov065_02260de4_Ns::sSockTcpParams),
+    HOST_OVERLAY_VAR(Unk_ov065_02260de4_Ns::sSockSendOnlyParams),
+    HOST_OVERLAY_VAR(Unk_ov065_02260de4_Ns::sSockUserAlloc),
+    HOST_OVERLAY_VAR(Unk_ov065_02260de4_Ns::sSockUserFree),
+    HOST_OVERLAY_VAR(Unk_ov065_02260de4_Ns::sSockOpenList),
+    HOST_OVERLAY_VAR(Unk_ov065_02260de4_Ns::sSockClosedList),
+    HOST_OVERLAY_VAR(Unk_ov065_02260de4_Ns::sHostentAddr),
+    HOST_OVERLAY_VAR(Unk_ov065_02260de4_Ns::sHostentAddrList),
+    HOST_OVERLAY_VAR(Unk_ov065_02260de4_Ns::sInetNtoaBuf),
+    HOST_OVERLAY_VAR(Unk_ov065_02260de4_Ns::sHostent),
+    HOST_OVERLAY_VAR(Unk_ov065_02260de4_Ns::sSockStartupConfig),
+    HOST_OVERLAY_VAR(Unk_ov065_02260de4_Ns::sHostentName),
+    HOST_OVERLAY_VARS_END
+};

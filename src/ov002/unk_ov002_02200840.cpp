@@ -1,5 +1,6 @@
 // ov002: shared library overlay (menu / cursor / slider helpers used by the scene overlays).
 #include "ds_div.h"
+#include "host_overlay_vars.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
@@ -570,17 +571,23 @@ BOOL MenuProc::execPhase4() { return TRUE; }
 
 BOOL MenuProc::execClosed() { return TRUE; }
 
+// MenuProc::onExecute's static tbl, initialised at its first use after the overlay was loaded
+Unk_ov002_02200a68_Fn MenuProc_onExecute_tbl[6];
+u8 MenuProc_onExecute_tbl_init;
 BOOL MenuProc::onExecute() {
-    static Unk_ov002_02200a68_Fn tbl[6] = {
+    if (!MenuProc_onExecute_tbl_init) {
+        HOST_STATIC_INIT_ARRAY(MenuProc_onExecute_tbl, {
         (Unk_ov002_02200a68_Fn)&MenuProc::execWaitScreen,
         (Unk_ov002_02200a68_Fn)&MenuProc::execTransition,
         (Unk_ov002_02200a68_Fn)&MenuProc::execMain,
         (Unk_ov002_02200a68_Fn)&MenuProc::execPhase3,
         (Unk_ov002_02200a68_Fn)&MenuProc::execPhase4,
         (Unk_ov002_02200a68_Fn)&MenuProc::execClosed,
-    };
+    });
+        MenuProc_onExecute_tbl_init = 1;
+    }
     keyRepeat.update();
-    (this->*tbl[phase])();
+    (this->*MenuProc_onExecute_tbl[phase])();
     return TRUE;
 }
 
@@ -689,3 +696,12 @@ void MenuProc::initSlideOut(s32 a, s32 mode) {
 void MenuProc::setSlideExtent(s32 v) { ((MenuSlideView *)&slide)->setExtent(v); }
 
 void MenuProc::applySlideOffset(s32 a, s32 b, s32 c) { ((MenuSlideView *)&slide)->applyLayerOffset(a, b, c); }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov002_02200840) {
+    HOST_OVERLAY_VAR(MenuProc_onExecute_tbl),
+    HOST_OVERLAY_VAR(MenuProc_onExecute_tbl_init),
+    HOST_OVERLAY_VARS_END
+};

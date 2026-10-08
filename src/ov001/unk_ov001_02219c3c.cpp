@@ -432,3 +432,15 @@ extern "C" const WfcRect sWfcConnSelectRects[7] = {
 extern "C" u8 data_ov001_0222b240[4] = {3, 4, 5, 7};
 
 extern "C" char data_ov001_0222b260[22] = "char/ybObjMain.ncl.l";
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02219c3c) {
+    HOST_OVERLAY_VAR(sWfcConnSelectCursor),
+    HOST_OVERLAY_VAR(sWfcConnSelect),
+    HOST_OVERLAY_VAR(data_ov001_0222b244),
+    HOST_OVERLAY_VAR(data_ov001_0222b240),
+    HOST_OVERLAY_VAR(data_ov001_0222b260),
+    HOST_OVERLAY_VARS_END
+};

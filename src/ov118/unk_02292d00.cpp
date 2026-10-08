@@ -1718,3 +1718,14 @@ MapTabMarker::MapTabMarker() {}
 
 MapTabMarker::~MapTabMarker() {}
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_02292d00) {
+    HOST_OVERLAY_VAR(sMapTabResidentsButtonCells),
+    HOST_OVERLAY_VAR(sMapTabIconCell),
+    HOST_OVERLAY_VAR(sMapTabPlacesButtonCells),
+    HOST_OVERLAY_VAR(sMapTabProfile),
+    HOST_OVERLAY_VAR(sMapTabFrameCells),
+    HOST_OVERLAY_VARS_END
+};

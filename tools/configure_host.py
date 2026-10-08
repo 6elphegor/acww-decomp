@@ -188,13 +188,14 @@ def main():
         n.rule("hostas", f"{args.cc} {M_FLAG} -c $in -o $out", description="AS $in")
         n.build(str(build / "shared.o"), "hostas", str(build / "shared.s"))
         host_objs.append(str(build / "shared.o"))
-        # the variables in their original order, each overlay's data, bss and constructors in ranges of their own,
-        # and the table of those ranges for modern/host/overlay.c (tools/host_order.py)
+        # the variables in their original order (tools/host_order.py)
         n.rule("order", "python3 tools/host_order.py $in $out", description="ORDER $out")
         order_ld = str(build / "order.ld")
-        overlay_table = str(build / "overlay_table.c")
-        n.build([order_ld, overlay_table], "order", f"config/{args.version}/arm9", implicit=["tools/host_order.py"])
-        n.build(str(build / "overlay_table.o"), "hostcc", overlay_table, variables={"flags": "-Imodern/host"})
+        n.build(order_ld, "order", f"config/{args.version}/arm9", implicit=["tools/host_order.py"])
+        # each overlay's units, their variables and static initialisers, for modern/host/overlay.c (generated C,
+        # committed: tools/host_overlay_vars.py)
+        n.build(str(build / "overlay_table.o"), "hostcc", "modern/gen/overlay_table.c",
+                variables={"flags": "-Imodern/host"})
         host_objs.append(str(build / "overlay_table.o"))
         n.rule("partial", f"ld -m {LD_EMU} -r -T $order -o $out @$list @$wrap",
                description="LD -r $out")

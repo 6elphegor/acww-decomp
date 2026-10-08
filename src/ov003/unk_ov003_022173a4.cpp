@@ -89,3 +89,11 @@ BOOL TownSign::isOpen() {
 }
 
 extern "C" ActorProfile sTownSignProfile = {(void *(*)())TownSign_Create, 0x20, 0x26, 0, 0xc8000, 0x12c000, 0x258000};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_022173a4) {
+    HOST_OVERLAY_VAR(sTownSignProfile),
+    HOST_OVERLAY_VARS_END
+};

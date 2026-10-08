@@ -1043,3 +1043,19 @@ s32 ghiAppendDataToBuffer(GHIBuffer *o, char *s, s32 len) {
 }
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0227931c) {
+    HOST_OVERLAY_VAR(ghiThrottleBufferSize),
+    HOST_OVERLAY_VAR(ghiThrottleTimeDelay),
+    HOST_OVERLAY_VAR(ghiConnections),
+    HOST_OVERLAY_VAR(ghiNextUniqueID),
+    HOST_OVERLAY_VAR(ghiNumConnections),
+    HOST_OVERLAY_VAR(ghiConnectionsLen),
+    HOST_OVERLAY_VAR(ghiProxyAddress),
+    HOST_OVERLAY_VAR(ghiProxyPort),
+    HOST_OVERLAY_VAR(ghiReferenceCount),
+    HOST_OVERLAY_VARS_END
+};

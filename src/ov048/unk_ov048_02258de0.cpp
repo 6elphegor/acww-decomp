@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_overlay_vars.h"
 #include "gfx/VecFx32.h"
 #include "save/Pattern.h"
 #include "npc/NpcAnimCtrl.h"
@@ -1212,14 +1213,20 @@ BOOL SpNpcCopperTalk::hasFriends() {
     return FALSE;
 }
 
+// SpNpcCopperTalk::start's static tbl, initialised at its first use after the overlay was loaded
+TalkStartMsg SpNpcCopperTalk_start_tbl[11];
+u8 SpNpcCopperTalk_start_tbl_init;
 void SpNpcCopperTalk::start(TalkStartMsg *arg) {
     TalkStartMsg *out = (TalkStartMsg *)arg;
-    static TalkStartMsg tbl[11] = {
+    if (!SpNpcCopperTalk_start_tbl_init) {
+        HOST_STATIC_INIT_ARRAY(SpNpcCopperTalk_start_tbl, {
         {(const char *)sSpNpcCopperMsgKey, 0}, {(const char *)sSpNpcCopperMsgKey, 4}, {(const char *)sSpNpcCopperMsgKey, 5},
         {(const char *)sSpNpcCopperMsgKey, 6}, {(const char *)sSpNpcCopperMsgKey, 7}, {(const char *)sSpNpcCopperMsgKey, 0xa},
         {(const char *)sSpNpcCopperMsgKey, 0x68}, {(const char *)sSpNpcCopperMsgKey, 0xd}, {sSpNpcCopperSequence4Key, 9},
         {(const char *)sSpNpcCopperMsgKey, 0x47}, {(const char *)sSpNpcCopperMsgKey, 0x48},
-    };
+    });
+        SpNpcCopperTalk_start_tbl_init = 1;
+    }
     void *h;
     saveDone = 0;
     wifiIdChanged = 0;
@@ -1242,8 +1249,8 @@ void SpNpcCopperTalk::start(TalkStartMsg *arg) {
         }
     }
     if (topic >= 0 && topic < 0xb) {
-        out->msgIndex = tbl[topic].msgIndex;
-        out->msgKey = tbl[topic].msgKey;
+        out->msgIndex = SpNpcCopperTalk_start_tbl[topic].msgIndex;
+        out->msgKey = SpNpcCopperTalk_start_tbl[topic].msgKey;
     }
 }
 
@@ -2536,5 +2543,21 @@ BOOL SpNpcCopper::canStartSave() {
     return FALSE;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
 
-
+HOST_OVERLAY_VARS(unk_ov048_02258de0) {
+    HOST_OVERLAY_VAR(sSpNpcCopperSequence4Key),
+    HOST_OVERLAY_VAR(sSpNpcCopperModelPath),
+    HOST_OVERLAY_VAR(sSpNpcCopperTexturePathPtr),
+    HOST_OVERLAY_VAR(sSpNpcCopperTalkScripts),
+    HOST_OVERLAY_VAR(sSpNpcCopperMsgKey),
+    HOST_OVERLAY_VAR(sSpNpcCopperActTable),
+    HOST_OVERLAY_VAR(SpNpcCopperTalk_start_tbl),
+    HOST_OVERLAY_VAR(SpNpcCopperTalk_start_tbl_init),
+    HOST_OVERLAY_VAR(sSpNpcCopperKey),
+    HOST_OVERLAY_VAR(sSpNpcCopperModelPathPtr),
+    HOST_OVERLAY_VAR(sSpNpcCopperTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcCopperProfile),
+    HOST_OVERLAY_VARS_END
+};

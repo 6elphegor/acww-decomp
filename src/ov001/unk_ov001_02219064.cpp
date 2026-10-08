@@ -183,3 +183,10 @@ extern "C" void WfcSimpleStartInit_WaitDialogClosed() {
     WfcUtil_SetScene(WfcSimpleStartInit_StartExit);
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02219064) {
+    HOST_OVERLAY_VAR(sWfcSimpleStartInitReady),
+    HOST_OVERLAY_VARS_END
+};

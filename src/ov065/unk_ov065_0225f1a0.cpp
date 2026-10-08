@@ -144,3 +144,16 @@ BOOL SockCore_IsLinkUp(void)
     return FALSE;
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0225f1a0) {
+    HOST_OVERLAY_VAR(sSockDefaultSocket),
+    HOST_OVERLAY_VAR(sSockCoreState),
+    HOST_OVERLAY_VAR(sSockLastHostIp),
+    HOST_OVERLAY_VAR(sSockYieldMode),
+    HOST_OVERLAY_VAR(sSockCoreConfig),
+    HOST_OVERLAY_VAR(sIpStackParams),
+    HOST_OVERLAY_VARS_END
+};

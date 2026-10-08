@@ -901,3 +901,19 @@ extern "C" Actor *sHouseRoachVillager = 0;
 extern "C" volatile u8 sHouseRoachTotal = 0;
 
 extern "C" HouseRoach *sHouseRoaches[3] = {0};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02235fd0) {
+    HOST_OVERLAY_VAR(sHouseRoachManagerProfile),
+    HOST_OVERLAY_VAR(sHouseRoachModelPath),
+    HOST_OVERLAY_VAR(sHouseRoachProfile),
+    HOST_OVERLAY_VAR(sHouseRoachTurnCounter),
+    HOST_OVERLAY_VAR(sHouseRoachActiveCount),
+    HOST_OVERLAY_VAR(sHouseRoachManager),
+    HOST_OVERLAY_VAR(sHouseRoachVillager),
+    HOST_OVERLAY_VAR(sHouseRoachTotal),
+    HOST_OVERLAY_VAR(sHouseRoaches),
+    HOST_OVERLAY_VARS_END
+};

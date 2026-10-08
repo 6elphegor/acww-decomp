@@ -264,3 +264,12 @@ BOOL WfcInput_GetTouchPos(WfcPoint *out) {
     return TRUE;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02225f40) {
+    HOST_OVERLAY_VAR(sWfcInput),
+    HOST_OVERLAY_VAR(sWfcTouchRepeatCounter),
+    HOST_OVERLAY_VAR(sWfcKeyRepeatCounters),
+    HOST_OVERLAY_VARS_END
+};

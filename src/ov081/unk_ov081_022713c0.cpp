@@ -637,3 +637,13 @@ void SpNpcTortimerFishingTourney::onInteractionEvent(u32 v, u8) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov081_022713c0) {
+    HOST_OVERLAY_VAR(sSpNpcTortimerFishingTourneyProfile),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFishingTourneyTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFishingTourneyActTable),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFishingTourneyModelPath),
+    HOST_OVERLAY_VARS_END
+};

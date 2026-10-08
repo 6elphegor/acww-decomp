@@ -22,7 +22,7 @@ struct VecFx16 {
 // - VecFx32Ctor: empty default constructor and (x, y, z).
 struct VecFx32Ctor : VecFx32 {
     VecFx32Ctor() {}
-    VecFx32Ctor(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
+    constexpr VecFx32Ctor(s32 a, s32 b, s32 c) : VecFx32{a, b, c} {}
 };
 
 // - VecFx32CtorDtor: VecFx32Ctor plus an empty inline destructor.
@@ -35,8 +35,8 @@ struct VecFx32CtorDtor : VecFx32 {
 // - VecFx32Copy: VecFx32Ctor plus a member-wise inline copy constructor.
 struct VecFx32Copy : VecFx32 {
     VecFx32Copy() {}
-    VecFx32Copy(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
-    VecFx32Copy(const VecFx32Copy &o) { x = o.x; y = o.y; z = o.z; }
+    constexpr VecFx32Copy(s32 a, s32 b, s32 c) : VecFx32{a, b, c} {}
+    constexpr VecFx32Copy(const VecFx32Copy &o) : VecFx32{o.x, o.y, o.z} {}
 };
 
 // - VecFx32CopyDtor: VecFx32Copy plus an empty inline destructor.

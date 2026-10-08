@@ -294,3 +294,14 @@ void WfcText_RequestTransfer(WfcTextCanvas *o) {
     }
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0222516c) {
+    HOST_OVERLAY_VAR(sWfcText),
+    HOST_OVERLAY_VAR(sWfcFontPaths),
+    HOST_OVERLAY_VAR(data_ov001_0222b894),
+    HOST_OVERLAY_VAR(data_ov001_0222b8a4),
+    HOST_OVERLAY_VARS_END
+};

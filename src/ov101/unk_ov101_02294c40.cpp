@@ -1240,3 +1240,10 @@ void PocketItemSelectMenu::setFlags(u32 mask) { stateFlags = stateFlags | mask; 
 
 void PocketItemSelectMenu::clearFlags(u32 mask) { stateFlags = stateFlags & ~mask; }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov101_02294c40) {
+    HOST_OVERLAY_VAR(sPocketItemSelectMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

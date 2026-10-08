@@ -1895,3 +1895,28 @@ extern "C" AossSession sAossSession = {0};
 extern "C" s32 sAossSocket = -1;
 
 extern "C" u8 sAossNameBuf[0x280] = {0};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02200680) {
+    HOST_OVERLAY_VAR(sAossError),
+    HOST_OVERLAY_VAR(sAossRc4Key),
+    HOST_OVERLAY_VAR(sAossRandSeeded),
+    HOST_OVERLAY_VAR(sAossCrcTable),
+    HOST_OVERLAY_VAR(sAossConnectResult),
+    HOST_OVERLAY_VAR(sAossSessionId),
+    HOST_OVERLAY_VAR(sAossScanList),
+    HOST_OVERLAY_VAR(sAossPacketBuf),
+    HOST_OVERLAY_VAR(sAossProgress),
+    HOST_OVERLAY_VAR(sAossDefaultRetry),
+    HOST_OVERLAY_VAR(sAossKeyBlockTags),
+    HOST_OVERLAY_VAR(sAossSocConfig),
+    HOST_OVERLAY_VAR(sAossEncryptFlag),
+    HOST_OVERLAY_VAR(sAossRand),
+    HOST_OVERLAY_VAR(sAossKeyBuf),
+    HOST_OVERLAY_VAR(sAossSession),
+    HOST_OVERLAY_VAR(sAossSocket),
+    HOST_OVERLAY_VAR(sAossNameBuf),
+    HOST_OVERLAY_VARS_END
+};

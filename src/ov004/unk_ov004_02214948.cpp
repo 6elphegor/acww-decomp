@@ -129,20 +129,21 @@ extern "C" BOOL BirthdayHost_GiftFilter(u16 *p, s32 flag) {
     return FALSE;
 }
 
+// BirthdayHostVillager::preCreate's static vs
+FxVec3 BirthdayHostVillager_preCreate_vs[6] = {
+        FxVec3(0, 0, 0), FxVec3(-0x2000, 0, 0), FxVec3(-0x4000, 0, 0),
+        FxVec3(0x2000, 0, 0), FxVec3(0, 0, 0x2000), FxVec3(-0x2000, 0, 0x2000)
+    };
 BOOL BirthdayHostVillager::preCreate() {
     if (!VillagerActor::preCreate()) {
         return FALSE;
     }
     position.x = data_020c8cb4 + 0x1000;
     position.z = data_020c8cb8 - 0x7000;
-    static FxVec3 vs[6] = {
-        FxVec3(0, 0, 0), FxVec3(-0x2000, 0, 0), FxVec3(-0x4000, 0, 0),
-        FxVec3(0x2000, 0, 0), FxVec3(0, 0, 0x2000), FxVec3(-0x2000, 0, 0x2000)
-    };
     u32 i;
     for (i = 0; i < 6; i++) {
         VecFx32 t;
-        Vec_Add(&t, &position, &vs[i]);
+        Vec_Add(&t, &position, &BirthdayHostVillager_preCreate_vs[i]);
         if (!FtrMgr_GetSurfaceHeightAtPos(&t)) {
             position.x = t.x;
             position.y = t.y;
@@ -891,3 +892,20 @@ BOOL BirthdayHostVillager::canPlayTalkMelody() {
     return FALSE;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02214948) {
+    HOST_OVERLAY_VAR(data_ov004_022503c0),
+    HOST_OVERLAY_VAR(data_ov004_022503dc),
+    HOST_OVERLAY_VAR(data_ov004_022503c4),
+    HOST_OVERLAY_VAR(data_ov004_022503bc),
+    HOST_OVERLAY_VAR(data_ov004_022503cc),
+    HOST_OVERLAY_VAR(data_ov004_022503d0),
+    HOST_OVERLAY_VAR(sBirthdayHostVillagerProfile),
+    HOST_OVERLAY_VAR(sBirthdayHostVillager),
+    HOST_OVERLAY_VAR(BirthdayHostVillager_preCreate_vs),
+    HOST_OVERLAY_VAR(data_ov004_0224befc),
+    HOST_OVERLAY_VAR(sBirthdayHostMsgFile),
+    HOST_OVERLAY_VARS_END
+};

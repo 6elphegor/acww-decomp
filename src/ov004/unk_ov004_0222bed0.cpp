@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_overlay_vars.h"
 #include "gfx/Mtx43.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -515,3 +516,19 @@ extern "C" s32 ItemDrop_Start(s32 idx, u32 v, VecFx32Copy *a, VecFx32Copy *b, u3
     return ItemDropList_Add(&sRoomItemDrops, idx, &pp, &la, &lb, 0, v, 0, *(u8 *)&f);
 }
 
+
+// Run when the overlay is loaded (modern/host/overlay.c), as the DS's __sinit: the default constructors of
+// the unit's objects.
+extern "C" void StaticInit_unk_ov004_0222bed0(void) {
+    HOST_STATIC_CONSTRUCT(sRoomItemDrops);
+}
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0222bed0) {
+    HOST_OVERLAY_VAR(sRoomItemIconsProfile),
+    HOST_OVERLAY_VAR(sRoomItemIcons),
+    HOST_OVERLAY_VAR(sRoomItemDrops),
+    HOST_OVERLAY_VARS_END
+};

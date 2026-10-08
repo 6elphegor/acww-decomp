@@ -575,3 +575,15 @@ SpNpcPascalActEntry sSpNpcPascalActTable[6] = {
     {&SpNpcPascal::setupAct04, &SpNpcPascal::mainAct04},
     {&SpNpcPascal::setupAct05, &SpNpcPascal::mainAct05},
 };
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov076_022713c0) {
+    HOST_OVERLAY_VAR(sSpNpcPascalKey),
+    HOST_OVERLAY_VAR(sSpNpcPascalModelPath),
+    HOST_OVERLAY_VAR(sSpNpcPascalProfile),
+    HOST_OVERLAY_VAR(sSpNpcPascalTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcPascalActTable),
+    HOST_OVERLAY_VARS_END
+};

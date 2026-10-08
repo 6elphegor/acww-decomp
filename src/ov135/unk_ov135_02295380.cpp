@@ -767,3 +767,10 @@ extern "C" const u8 sClockAdjustCursorUpTable[7] = {0, 1, 2, 1, 2, 4, 3};
 
 extern "C" const u8 sClockAdjustCursorDownTable[7] = {4, 3, 4, 6, 5, 5, 6};
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov135_02295380) {
+    HOST_OVERLAY_VAR(sClockAdjustMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

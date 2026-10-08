@@ -2,6 +2,7 @@
 // ov004 TU26: .text 0x02229660-0x0222a374 (class RoomTelephone). The switch function at 0x02229c20
 // (RoomTelephone::onChoice) needs mwcc 1.2/base and is in the _switch file (object order).
 #include "types.h"
+#include "host_overlay_vars.h"
 #include "proto/main/unk_020b4828.h"
 #include "gfx/VecFx32.h"
 #include "room/RoomTelephoneActEntry.h"
@@ -104,23 +105,29 @@ extern "C" DebugColor data_ov004_0225127c(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" DebugColor data_ov004_02251290(0x14, 0x18, 0x18, 0x1f);
 
 // State table: {function run on entering the state, function run every frame}.
-extern "C" RoomTelephoneActEntry sRoomTelephoneActTable[15] = {
-    { (RoomTelephoneActFn)&RoomTelephone::enterAct00, (RoomTelephoneActFn)&RoomTelephone::execAct00 },
-    { (RoomTelephoneActFn)&RoomTelephone::enterAct01, (RoomTelephoneActFn)&RoomTelephone::execAct01 },
-    { (RoomTelephoneActFn)&RoomTelephone::enterAct02, (RoomTelephoneActFn)&RoomTelephone::execAct02 },
-    { (RoomTelephoneActFn)&RoomTelephone::enterAct03, (RoomTelephoneActFn)&RoomTelephone::execAct03 },
-    { (RoomTelephoneActFn)&RoomTelephone::enterAct04, (RoomTelephoneActFn)&RoomTelephone::execAct04 },
-    { (RoomTelephoneActFn)&RoomTelephone::enterAct05, (RoomTelephoneActFn)&RoomTelephone::execAct05 },
-    { (RoomTelephoneActFn)&RoomTelephone::enterAct06, (RoomTelephoneActFn)&RoomTelephone::execAct06 },
-    { (RoomTelephoneActFn)&RoomTelephone::enterAct07, (RoomTelephoneActFn)&RoomTelephone::execAct07 },
-    { (RoomTelephoneActFn)&RoomTelephone::enterAct08, (RoomTelephoneActFn)&RoomTelephone::execAct08 },
-    { (RoomTelephoneActFn)&RoomTelephone::enterAct09, (RoomTelephoneActFn)&RoomTelephone::execAct09 },
-    { (RoomTelephoneActFn)&RoomTelephone::enterAct0A, (RoomTelephoneActFn)&RoomTelephone::execAct0A },
-    { (RoomTelephoneActFn)&RoomTelephone::enterAct0B, (RoomTelephoneActFn)&RoomTelephone::execAct0B },
-    { (RoomTelephoneActFn)&RoomTelephone::enterAct0C, (RoomTelephoneActFn)&RoomTelephone::execAct0C },
-    { (RoomTelephoneActFn)&RoomTelephone::enterAct0D, (RoomTelephoneActFn)&RoomTelephone::execAct0D },
-    { (RoomTelephoneActFn)&RoomTelephone::enterAct0E, (RoomTelephoneActFn)&RoomTelephone::execAct0E },
-};
+extern "C" { RoomTelephoneActEntry sRoomTelephoneActTable[15]; }  // initialised by StaticInit_unk_ov004_02229660
+
+// Run when the overlay is loaded (modern/host/overlay.c), as the DS's __sinit: the initialisers the compiler
+// doesn't make constant data.
+extern "C" void StaticInit_unk_ov004_02229660(void) {
+    HOST_STATIC_INIT_ARRAY(sRoomTelephoneActTable, {
+        { (RoomTelephoneActFn)&RoomTelephone::enterAct00, (RoomTelephoneActFn)&RoomTelephone::execAct00 },
+        { (RoomTelephoneActFn)&RoomTelephone::enterAct01, (RoomTelephoneActFn)&RoomTelephone::execAct01 },
+        { (RoomTelephoneActFn)&RoomTelephone::enterAct02, (RoomTelephoneActFn)&RoomTelephone::execAct02 },
+        { (RoomTelephoneActFn)&RoomTelephone::enterAct03, (RoomTelephoneActFn)&RoomTelephone::execAct03 },
+        { (RoomTelephoneActFn)&RoomTelephone::enterAct04, (RoomTelephoneActFn)&RoomTelephone::execAct04 },
+        { (RoomTelephoneActFn)&RoomTelephone::enterAct05, (RoomTelephoneActFn)&RoomTelephone::execAct05 },
+        { (RoomTelephoneActFn)&RoomTelephone::enterAct06, (RoomTelephoneActFn)&RoomTelephone::execAct06 },
+        { (RoomTelephoneActFn)&RoomTelephone::enterAct07, (RoomTelephoneActFn)&RoomTelephone::execAct07 },
+        { (RoomTelephoneActFn)&RoomTelephone::enterAct08, (RoomTelephoneActFn)&RoomTelephone::execAct08 },
+        { (RoomTelephoneActFn)&RoomTelephone::enterAct09, (RoomTelephoneActFn)&RoomTelephone::execAct09 },
+        { (RoomTelephoneActFn)&RoomTelephone::enterAct0A, (RoomTelephoneActFn)&RoomTelephone::execAct0A },
+        { (RoomTelephoneActFn)&RoomTelephone::enterAct0B, (RoomTelephoneActFn)&RoomTelephone::execAct0B },
+        { (RoomTelephoneActFn)&RoomTelephone::enterAct0C, (RoomTelephoneActFn)&RoomTelephone::execAct0C },
+        { (RoomTelephoneActFn)&RoomTelephone::enterAct0D, (RoomTelephoneActFn)&RoomTelephone::execAct0D },
+        { (RoomTelephoneActFn)&RoomTelephone::enterAct0E, (RoomTelephoneActFn)&RoomTelephone::execAct0E },
+    });
+}
 #undef FN
 
 extern "C" {
@@ -572,3 +579,29 @@ extern "C" RoomTelephone *RoomTelephone_GetInstance() {
 extern "C" RoomTelephone *RoomTelephone_Create() {
     return new RoomTelephone;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02229660) {
+    HOST_OVERLAY_VAR(data_ov004_02251294),
+    HOST_OVERLAY_VAR(data_ov004_02251284),
+    HOST_OVERLAY_VAR(data_ov004_0225128c),
+    HOST_OVERLAY_VAR(data_ov004_02251280),
+    HOST_OVERLAY_VAR(data_ov004_0225127c),
+    HOST_OVERLAY_VAR(data_ov004_02251290),
+    HOST_OVERLAY_VAR(sRoomTelephoneActTable),
+    HOST_OVERLAY_VAR(data_ov004_0224e16c),
+    HOST_OVERLAY_VAR(data_ov004_0224e170),
+    HOST_OVERLAY_VAR(data_ov004_0224e174),
+    HOST_OVERLAY_VAR(sRoomTelephoneMsgFile2),
+    HOST_OVERLAY_VAR(data_ov004_0224e178),
+    HOST_OVERLAY_VAR(data_ov004_0224e298),
+    HOST_OVERLAY_VAR(data_ov004_0224e2a0),
+    HOST_OVERLAY_VAR(data_ov004_0224e2a8),
+    HOST_OVERLAY_VAR(sRoomTelephoneArcPath),
+    HOST_OVERLAY_VAR(sRoomTelephoneTexPath),
+    HOST_OVERLAY_VAR(sRoomTelephone),
+    HOST_OVERLAY_VAR(sRoomTelephoneProfile),
+    HOST_OVERLAY_VARS_END
+};

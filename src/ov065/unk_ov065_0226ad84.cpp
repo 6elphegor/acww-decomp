@@ -332,3 +332,15 @@ s32 WifiAp_GetLinkLevel() {
 }
 
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0226ad84) {
+    HOST_OVERLAY_VAR(sWifiApAllocator),
+    HOST_OVERLAY_VAR(sWifiApSocketConfig),
+    HOST_OVERLAY_VAR(sWifiApLinkWork),
+    HOST_OVERLAY_VAR(sWifiApContext),
+    HOST_OVERLAY_VAR(sWifiApControl),
+    HOST_OVERLAY_VARS_END
+};

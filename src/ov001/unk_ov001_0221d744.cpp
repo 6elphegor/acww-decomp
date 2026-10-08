@@ -174,3 +174,10 @@ void WfcApScan_StoreResults(WMStartScanExCallback *p) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0221d744) {
+    HOST_OVERLAY_VAR(sWfcApScan),
+    HOST_OVERLAY_VARS_END
+};

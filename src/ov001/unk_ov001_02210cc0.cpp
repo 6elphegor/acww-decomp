@@ -173,3 +173,11 @@ void WfcTransferWait_OnTransferEvent(u32 a) {
 }
 
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02210cc0) {
+    HOST_OVERLAY_VAR(sWfcTransferWaitResult),
+    HOST_OVERLAY_VARS_END
+};

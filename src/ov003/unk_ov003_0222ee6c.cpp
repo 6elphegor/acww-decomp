@@ -80,3 +80,17 @@ BOOL SnowballSpawner::onCreate() {
 BOOL SnowballSpawner::onExecute() { return TRUE; }
 BOOL SnowballSpawner::onDraw() { return TRUE; }
 BOOL SnowballSpawner::onDelete() { return TRUE; }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_0222ee6c) {
+    HOST_OVERLAY_VAR(sSnowballSpawnerProfile),
+    HOST_OVERLAY_VAR(data_ov003_0225b748),
+    HOST_OVERLAY_VAR(data_ov003_0225b744),
+    HOST_OVERLAY_VAR(data_ov003_0225b740),
+    HOST_OVERLAY_VAR(data_ov003_0225b73c),
+    HOST_OVERLAY_VAR(data_ov003_0225b738),
+    HOST_OVERLAY_VAR(data_ov003_0225b74c),
+    HOST_OVERLAY_VARS_END
+};

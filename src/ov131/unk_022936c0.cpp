@@ -561,4 +561,10 @@ void AmountEntryMenu::setFlags(u32 mask) { flags = flags | mask; }
 
 // ---------------------------------------------------------------------------------------------
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
 
+HOST_OVERLAY_VARS(unk_022936c0) {
+    HOST_OVERLAY_VAR(sAmountEntryMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

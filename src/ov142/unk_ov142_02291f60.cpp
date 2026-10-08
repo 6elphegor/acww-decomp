@@ -1960,3 +1960,19 @@ extern "C" GXOamAttr data_ov142_02294d38[4] = {
     {0x404b400b, 0x15b, 1, 0x6, 0x0},
     {0x006b000b, 0x15f, 1, 0x6, 0xffff},
 };
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov142_02291f60) {
+    HOST_OVERLAY_VAR(data_ov142_02294d58),
+    HOST_OVERLAY_VAR(data_ov142_02294d30),
+    HOST_OVERLAY_VAR(data_ov142_02294d28),
+    HOST_OVERLAY_VAR(data_ov142_02294d78),
+    HOST_OVERLAY_VAR(data_ov142_02294d18),
+    HOST_OVERLAY_VAR(data_ov142_02294e08),
+    HOST_OVERLAY_VAR(data_ov142_02294d20),
+    HOST_OVERLAY_VAR(sCatalogMenuProfile),
+    HOST_OVERLAY_VAR(data_ov142_02294d38),
+    HOST_OVERLAY_VARS_END
+};

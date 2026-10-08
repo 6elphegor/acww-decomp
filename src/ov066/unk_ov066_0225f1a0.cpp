@@ -3037,3 +3037,22 @@ s32 LocalWl_SetEventCallback(void (*fn)(void *)) {
 
 }
 #pragma thumb reset
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov066_0225f1a0) {
+    HOST_OVERLAY_VAR(sLocalWlPowerApis),
+    HOST_OVERLAY_VAR(data_ov066_022647c4),
+    HOST_OVERLAY_VAR(data_ov066_022647c0),
+    HOST_OVERLAY_VAR(data_ov066_022647bc),
+    HOST_OVERLAY_VAR(sLocalWlRandSeed),
+    HOST_OVERLAY_VAR(sLocalWlSession),
+    HOST_OVERLAY_VAR(sLocalWlMp),
+    HOST_OVERLAY_VAR(sLocalWl),
+    HOST_OVERLAY_VAR(sLocalWlAllocHook),
+    HOST_OVERLAY_VAR(sLocalWlScan),
+    HOST_OVERLAY_VAR(sLocalWlErrorHook),
+    HOST_OVERLAY_VAR(sLocalWlFreeHook),
+    HOST_OVERLAY_VARS_END
+};

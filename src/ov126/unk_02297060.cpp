@@ -1702,3 +1702,11 @@ void NameEntryMenu::clearFlags(u32 mask) {
     flags = flags & ~mask;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_02297060) {
+    HOST_OVERLAY_VAR(data_ov126_022999e0),
+    HOST_OVERLAY_VAR(data_ov126_02299ad0),
+    HOST_OVERLAY_VARS_END
+};

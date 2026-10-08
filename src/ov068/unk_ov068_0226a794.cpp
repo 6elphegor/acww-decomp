@@ -810,3 +810,17 @@ void PlayerActor::mainTaxiGetIn() {
     mainTaxiGetInFinish();
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov068_0226a794) {
+    HOST_OVERLAY_VAR(data_ov068_02271090),
+    HOST_OVERLAY_VAR(data_ov068_02271098),
+    HOST_OVERLAY_VAR(data_ov068_022710a4),
+    HOST_OVERLAY_VAR(data_ov068_022710a0),
+    HOST_OVERLAY_VAR(data_ov068_02271094),
+    HOST_OVERLAY_VAR(data_ov068_0227109c),
+    HOST_OVERLAY_VAR(sKappnTaxiProfile),
+    HOST_OVERLAY_VAR(sKappnTaxiLeaveTimer),
+    HOST_OVERLAY_VARS_END
+};

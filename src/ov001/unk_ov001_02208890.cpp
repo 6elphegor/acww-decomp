@@ -170,3 +170,32 @@ extern "C" char data_ov001_0222a690[] = "char/jb5HlMove.nsc.l";
 extern "C" char data_ov001_0222a624[] = "char/jb4HlIp.nsc.l";
 
 extern "C" char data_ov001_0222a7b0[] = "char/jb5HlOption.nsc.l";
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02208890) {
+    HOST_OVERLAY_VAR(data_ov001_0222a638),
+    HOST_OVERLAY_VAR(sWfcHighlightScreens),
+    HOST_OVERLAY_VAR(data_ov001_0222a6a8),
+    HOST_OVERLAY_VAR(data_ov001_0222a768),
+    HOST_OVERLAY_VAR(data_ov001_0222a6c0),
+    HOST_OVERLAY_VAR(data_ov001_0222a738),
+    HOST_OVERLAY_VAR(data_ov001_0222a798),
+    HOST_OVERLAY_VAR(data_ov001_0222a720),
+    HOST_OVERLAY_VAR(data_ov001_0222a708),
+    HOST_OVERLAY_VAR(data_ov001_0222a64c),
+    HOST_OVERLAY_VAR(data_ov001_0222a678),
+    HOST_OVERLAY_VAR(sWfcHighlightScreen),
+    HOST_OVERLAY_VAR(data_ov001_0222a750),
+    HOST_OVERLAY_VAR(data_ov001_0222a780),
+    HOST_OVERLAY_VAR(data_ov001_0222a610),
+    HOST_OVERLAY_VAR(data_ov001_0222a660),
+    HOST_OVERLAY_VAR(data_ov001_0222a7c8),
+    HOST_OVERLAY_VAR(data_ov001_0222a6f0),
+    HOST_OVERLAY_VAR(data_ov001_0222a6d8),
+    HOST_OVERLAY_VAR(data_ov001_0222a690),
+    HOST_OVERLAY_VAR(data_ov001_0222a624),
+    HOST_OVERLAY_VAR(data_ov001_0222a7b0),
+    HOST_OVERLAY_VARS_END
+};

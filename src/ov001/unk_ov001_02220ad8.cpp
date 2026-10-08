@@ -418,3 +418,12 @@ u32 WfcMoveMb_FindAidByMac(u8 *mac)
 
 extern "C" WfcMoveMbWork *sWfcMoveMb = 0;
 extern "C" u16 *sWfcMoveMbMaskPtrs[6] = {0, 0, 0, 0, 0, 0};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02220ad8) {
+    HOST_OVERLAY_VAR(sWfcMoveMb),
+    HOST_OVERLAY_VAR(sWfcMoveMbMaskPtrs),
+    HOST_OVERLAY_VARS_END
+};

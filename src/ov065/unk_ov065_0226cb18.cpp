@@ -553,3 +553,18 @@ s32 WifiAp_StepStopSockets(void) {
 }
 }  // namespace N_c750
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0226cb18) {
+    HOST_OVERLAY_VAR(sWifiApUsbKey1),
+    HOST_OVERLAY_VAR(sWifiApUsbKey2),
+    HOST_OVERLAY_VAR(sWifiApNdwcshapPermTable),
+    HOST_OVERLAY_VAR(sWifiApNdwcshapKey2),
+    HOST_OVERLAY_VAR(sWifiApNdwcshapKey1),
+    HOST_OVERLAY_VAR(sWifiApNdwcshapKey1Ptr),
+    HOST_OVERLAY_VAR(sWifiApUsbKey1Ptr),
+    HOST_OVERLAY_VAR(sWifiApNdwcshapKey2Ptr),
+    HOST_OVERLAY_VAR(sWifiApUsbKey2Ptr),
+    HOST_OVERLAY_VARS_END
+};

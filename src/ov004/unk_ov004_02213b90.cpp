@@ -515,3 +515,26 @@ MuseumExhibitInfo::MuseumExhibitInfo() {
 extern "C" MuseumExhibitInfo *MuseumExhibitInfo_Create(void) {
     return new MuseumExhibitInfo;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02213b90) {
+    HOST_OVERLAY_VAR(data_ov004_022502f4),
+    HOST_OVERLAY_VAR(data_ov004_022502e4),
+    HOST_OVERLAY_VAR(data_ov004_022502ec),
+    HOST_OVERLAY_VAR(data_ov004_022502dc),
+    HOST_OVERLAY_VAR(data_ov004_022502d0),
+    HOST_OVERLAY_VAR(data_ov004_022502e0),
+    HOST_OVERLAY_VAR(sMuseumExhibitInfoProfile),
+    HOST_OVERLAY_VAR(sMuseumExhibitSpawnMsg),
+    HOST_OVERLAY_VAR(sMuseumExhibitMsgFile),
+    HOST_OVERLAY_VAR(sMuseumExhibitAutoTalkActive),
+    HOST_OVERLAY_VAR(sMuseumExhibitInfoCount),
+    HOST_OVERLAY_VAR(sMuseumExhibitSpawnKind),
+    HOST_OVERLAY_VAR(sMuseumExhibitSpawnList),
+    HOST_OVERLAY_VAR(sMuseumExhibitSpawnCount),
+    HOST_OVERLAY_VAR(sMuseumExhibitSpawnFacingArc),
+    HOST_OVERLAY_VAR(sMuseumExhibitInfos),
+    HOST_OVERLAY_VARS_END
+};
