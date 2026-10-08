@@ -132,7 +132,7 @@ that scripted runs stay reproducible; `ACWW_RTC=host` gives them the local time)
 `ACWW_IOHIST` (register accesses by address and calling code, to `acww_iohist.txt`; written at exit, on SIGINT and
 at `ACWW_EXIT_FRAME`), `ACWW_POSLOG=<n>` (the local player's
 position every n frames: for writing input scripts that walk somewhere), `ACWW_WATCH=addr:len` (x86 Linux),
-`ACWW_PROFILE` (to `acww_profile.txt`, at the same points as `ACWW_IOHIST`), `ACWW_WATCHDOG`, `ACWW_PROCLOG`, `ACWW_HEAPCHECK`, `ACWW_SNDTRACE` (sound commands),
+`ACWW_PROFILE` (to `acww_profile.txt`, at the same points as `ACWW_IOHIST`), `ACWW_WATCHDOG`, `ACWW_HIGHMEM` (64-bit hosts: see below), `ACWW_PROCLOG`, `ACWW_HEAPCHECK`, `ACWW_SNDTRACE` (sound commands),
 `ACWW_SNDSTATE` (the sound driver's players and channels once a second), `ACWW_AUDIO_INFO` (the viewer's audio
 device, underruns).
 
@@ -178,7 +178,10 @@ Differences from the DS that the sources handle under `HOST` (or MODERN):
 - Pointers to virtual member functions: ARM `{offset, 2*adj+1}`, x86 `{offset+1, adj}`: the compiler's, written as
   `&Class::member` (ProcBase's phase dispatch); member functions used as such must be 2-byte aligned
   (`-falign-functions=4`).
-- Pointers in 26-bit PXI messages: host data addresses are reconstructed.
+- PXI messages that carry an address (the sound command list, the card request block, the NVRAM buffer, a WM
+  request): the ARM7 side is the host's, so the pointer is handed over whole before the message goes out
+  (`PXI_PointerWord`, include/nitro/pxi_ptr.h); the message itself is sent as on the DS. The DMA functions hand the
+  whole source and destination to the DMA model the same way (include/nitro/dma_host.h).
 - Reading through NULL is harmless on the DS (address 0 is mapped) but not on the host.
 - Code that ran over one variable into the next (a clear spanning two arrays) needs the original order or a fix.
 - Integer division by zero: the DS's division routine (`_s32_div_f`) gives the dividend as the quotient and 0 as
@@ -190,11 +193,20 @@ Differences from the DS that the sources handle under `HOST` (or MODERN):
 `python3 tools/configure_host.py --arch x86_64 && ninja -f build_host64.ninja` builds `build/host64_usa/acww`, a
 native x86-64 program (status: plays like the i386 build through the attract demo, the title (logo, clouds, talk
 text) into the town scene with villagers, insects, fish and particle effects; the pictures match the i386 build
-frame for frame until the town scene's first transitions, then drift by a frame or two of virtual time). For now
-everything stays below
-4 GB: the DS memory at its DS addresses, the program at 0x10000000 (`-Wl,-Ttext-segment`), the threads' stacks
-(`host_stack_alloc`, MAP_32BIT) - so a pointer stored in 32 bits still works while the code is made clean. Moving the
-DS memory above 4 GB (macOS arm64) comes after.
+frame for frame until the town scene's first transitions, then drift by a frame or two of virtual time). The DS
+memory is still at its DS addresses and the program at 0x10000000 (`-Wl,-Ttext-segment`); the root heap and the
+threads' stacks are below 4 GB by default (0x50000000, `host_stack_alloc` with MAP_32BIT). Moving the DS memory
+above 4 GB (macOS arm64) comes after (docs/portability.md 3.2, 3.3).
+
+`ACWW_HIGHMEM=1` (x86-64 Linux) is the low-4 GB poisoning harness (docs/portability.md 3.0): the root heap and the
+threads' stacks above 4 GB, at addresses whose low word lies in poisoned space (0x5a0000000, 0x6b0000000 up), and
+every range below 4 GB that nothing uses when the game starts reserved without access (`PROT_NONE`, as macOS's
+`__PAGEZERO`); only the DS mappings still in use, the program image and the C library's first heap stay. A pointer
+cut to 32 bits then faults, and the crash report says where (its frames as addresses: `addr2line -f -i -C -e
+build/host64_usa/acww <addresses>` names them). The quick, play, town and save/continue scripts run through under it, with the same
+pictures and sound as without it. Pointers that must live in a 32-bit slot of the DS's data formats (a sound bank's
+wave archive links, an NFTR font's block links, a wave loaded on its own) go through `include/host_ptr32.h`: the
+pointer itself when it fits, else a handle into a host table.
 
 What changes with 64-bit pointers, and how the sources handle it (the DS build unchanged, every step checked with the
 matching build and with the i386 build's screenshots and sound staying bit-identical):
@@ -292,7 +304,7 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
   player was never spawned: `localSlot` stayed 4).
 - Heaps are sized for the DS's objects: on 64-bit hosts every heap the game creates with a size is twice that
   (`ExpHeap_Create` / `FrameHeap_Create`), and the root heap is a block of its own (`host_root_heap_region`,
-  8 MB below 4 GB) instead of the DS's main RAM arena.
+  8 MB below 4 GB, above 4 GB with `ACWW_HIGHMEM`) instead of the DS's main RAM arena.
 - Stack buffers sized to what the DS's stack slot padding absorbed: `Clock_GetDate` writes four bytes into
   three-byte locals (on x86-64 the fourth hit a saved register).
 - ARM idioms that don't carry over: an empty function's "result" is its first argument (still in r0 on the DS).

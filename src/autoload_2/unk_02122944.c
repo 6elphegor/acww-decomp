@@ -30,7 +30,7 @@ extern u32 IsChildAidValid(u32);
 extern u32 MBi_BlockHeaderEnd(u32, u32, void *);
 extern u8 *WM_ReadMPData(void *, u32);
 extern u32 FS_OpenFileDirect(void *, void *, u32, u32, int);
-extern u32 FS_ReadFile(void *, u32, u32);
+extern u32 FS_ReadFile(void *, void *, u32);
 extern void FS_CloseFile(void *);
 extern u8 *MBi_SetRecvBufferFromChild(void *, void *, u32);
 extern u32 MBi_calc_nextsendblock(u32, u32);

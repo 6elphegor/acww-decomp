@@ -101,9 +101,9 @@ void CARDi_SetRomOp(u32, u32);
 BOOL CARDi_ReadFromCache(void *);
 BOOL CARDi_TryReadCardDma(void *);
 
-u32 RTC_GetDateTimeAsync(u32, u32, void (*)(void), u32);
-u32 RTC_GetTimeAsync(u32, void (*)(void), u32);
-u32 RTC_GetDateAsync(u32, void (*)(void), u32);
+u32 RTC_GetDateTimeAsync(void *, void *, void (*)(void), void *);
+u32 RTC_GetTimeAsync(void *, void (*)(void), void *);
+u32 RTC_GetDateAsync(void *, void (*)(void), void *);
 BOOL RtcSendPxiCommand(u32);
 BOOL RTCi_ReadRawDateAsync(void);
 BOOL RTCi_ReadRawTimeAsync(void);

@@ -63,7 +63,7 @@ extern LocaleCmpt data_0213c350; // current locale
 int OS_TryLockMutex(OSMutex *);
 int __fread(const void *, u32, u32, FILE *);
 int __flush_all(void);
-int __flush_buffer(FILE *, int);
+int __flush_buffer(FILE *, u32 *);
 u32 strlen(const char *);
 int _fseek(FILE *, u32, int);
 int fseek(FILE *, int, int);
