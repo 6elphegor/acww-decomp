@@ -71,7 +71,7 @@ LD_EMU = "elf_x86_64" if X64 else "elf_i386"
 
 GAME_FLAGS = " ".join([
     M_FLAG, "-fno-pie", "-fno-short-enums", "-fsigned-char", "-fshort-wchar", "-ffreestanding", "-nostdinc",
-    "-fno-strict-aliasing", "-fno-builtin", "-O1", "-g", "-w", "-fno-omit-frame-pointer", "-falign-functions=4", "-fdata-sections", "-malign-data=abi",
+    "-fno-strict-aliasing", "-fno-builtin", "-O1", "-g", "-w", "-fno-omit-frame-pointer", "-falign-functions=4",
     "-DMODERN", "-DHOST", f"-DGAME_VERSION_{args.version.upper()}", "-Iinclude",
     # the game's C library names renamed to ds_* (its own libc, apart from the host's)
     "-include", "include/host_libc_rename.h",
@@ -86,10 +86,11 @@ CXX_FLAGS = ("-std=gnu++14 -fno-exceptions -fno-rtti -fno-threadsafe-statics -fn
 # every unit with the full class definitions, in both builds: the layout tools (tools/host_view_layout.py) read the
 # types from the 32-bit and the 64-bit debug information (debug information only: the code is the same)
 CXX_FLAGS += " -femit-class-debug-always"
+if args.guards:
+    # a section per variable: tools/host_guards.py puts a guard after each
+    GAME_FLAGS += " -fdata-sections"
 if CLANG:
-    # GCC-only game flags: -malign-data (GCC's), -fpcc-struct-return (clang: i386 only); clang's name for the class
-    # debug information
-    GAME_FLAGS = GAME_FLAGS.replace(" -malign-data=abi", "")
+    # GCC-only game flag: -fpcc-struct-return (clang: i386 only); clang's name for the class debug information
     if X64:
         GAME_FLAGS = GAME_FLAGS.replace(" -fpcc-struct-return", "")
     CXX_FLAGS = CXX_FLAGS.replace("-femit-class-debug-always", "-fstandalone-debug")
@@ -206,10 +207,14 @@ def main():
         game_list = build / "game_objects.txt"
         build.mkdir(parents=True, exist_ok=True)
         game_list.write_text("".join(f"{o}\n" for o in game_objs))
-        # the variables in their original order (tools/host_order.py)
-        n.rule("order", "python3 tools/host_order.py $in $out", description="ORDER $out")
-        order_ld = str(build / "order.ld")
-        n.build(order_ld, "order", f"config/{args.version}/arm9", implicit=["tools/host_order.py"])
+        # the game's data and bss as the sections gdata and gbss, which the final link places in DS main RAM (below);
+        # the variables where the compiler and linker put them (until docs/portability.md 3.3 makes them ordinary
+        # .data/.bss)
+        game_ld = str(build / "game.ld")
+        # (the guard variant: also the read-only data in one section, whose variables get guards too)
+        rodata = "    .rodata : { *(.rodata .rodata.*) }\n" if args.guards else ""
+        Path(game_ld).write_text("SECTIONS {\n    gdata : { *(.data .data.*) }\n" + rodata +
+                                 "    gbss : { *(.bss .bss.* COMMON) }\n}\n")
         # each overlay's units, their variables and static initialisers, for modern/host/overlay.c (generated C,
         # committed: tools/host_overlay_vars.py)
         n.build(str(build / "overlay_table.o"), "hostcc", "modern/gen/overlay_table.c",
@@ -220,8 +225,8 @@ def main():
             # the ordinary partial link's map, then the same layout with a guard after every variable
             n.rule("partial_map", f"ld -m {LD_EMU} -r -T $order -Map=$map -o $out @$list", description="LD -r $out")
             n.build([str(build / "game_plain.o"), str(build / "game_plain.map")], "partial_map", game_objs,
-                    implicit=[str(game_list), order_ld],
-                    variables={"list": str(game_list), "order": order_ld, "map": str(build / "game_plain.map")})
+                    implicit=[str(game_list), game_ld],
+                    variables={"list": str(game_list), "order": game_ld, "map": str(build / "game_plain.map")})
             n.rule("guards", "python3 tools/host_guards.py $in $out", description="GUARDS $out")
             guard_ld, guard_c = str(build / "guards.ld"), str(build / "guard_table.c")
             n.build([guard_ld, guard_c], "guards", str(build / "game_plain.map"), implicit=["tools/host_guards.py"])
@@ -230,8 +235,8 @@ def main():
             n.build(str(build / "guard_table.o"), "hostcc", guard_c, variables={"flags": "-Imodern/host"})
             host_objs.append(str(build / "guard_table.o"))
         else:
-            n.build(str(build / "game_all.o"), "partial", game_objs, implicit=[str(game_list), order_ld],
-                    variables={"list": str(game_list), "order": order_ld})
+            n.build(str(build / "game_all.o"), "partial", game_objs, implicit=[str(game_list), game_ld],
+                    variables={"list": str(game_list), "order": game_ld})
         # (the game's C library names don't clash with the host's: include/host_libc_rename.h)
         game_o = str(build / "game_all.o")
         objects_file = build / "objects.txt"
