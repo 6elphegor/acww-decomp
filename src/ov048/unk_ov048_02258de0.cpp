@@ -801,7 +801,7 @@ extern "C" BOOL SpNpcCopper_CheckKatieEscort() {
                 }
             }
         }
-        ((LostChildRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getLostChildRecord()))->clearEscorting();
+        ((LostChildRecord *)(PlayerData_GetCurrent()->getLostChildRecord()))->clearEscorting();
     skip:
         if (((LostChildRecord *)(r4))->isEscorting()) {
             ((PlayerData *)(h))->setFlag(0x36);
@@ -1657,7 +1657,7 @@ BOOL SpNpcCopper::mainAct0F() {
         b = 4;
         s32 u;
         s32 x;
-        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) != 0 && (x = a, u = gCommManager->myAid, x == u) && x == b) {
+        if (((NpcActor *)(this))->netGetSlots(&a, &b) != 0 && (x = a, u = gCommManager->myAid, x == u) && x == b) {
             netSetSlotsIfOwner(1, u, u);
             ((ActorTalkRequest *)&talk)->resetMsg();
             talk.setTalkPlayer(getPlayerActor(4));
@@ -1679,7 +1679,7 @@ BOOL SpNpcCopper::mainAct11() {
     if (isNetOwner() != 0) {
         a = 4;
         b = 4;
-        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) != 0) {
+        if (((NpcActor *)(this))->netGetSlots(&a, &b) != 0) {
             if (a == 4) {
                 if (NetArea_IsLocalOwner() != 0) {
                     netSetSlotsIfOwner(1, gCommManager->myAid, 4);
@@ -1758,7 +1758,7 @@ void SpNpcCopperTalk::setFriendCodeArgs(s64 v) {
 }
 
 BOOL SpNpcCopperTalk::hasFriends() {
-    u8 *arr = (u8 *)FriendList_GetEntries(((PlayerData *)(PlayerData_GetCurrent()))->getFriendList());
+    u8 *arr = (u8 *)FriendList_GetEntries(PlayerData_GetCurrent()->getFriendList());
     s32 i;
     for (i = 0; i < 0x20; i++) {
         if (DwcFriendData_IsValid(FriendEntry_GetFriendData(arr + i * 0x1c)) != 0) {
@@ -1923,7 +1923,7 @@ void SpNpcCopperTalk::showAnythingElseMenu() {
 void SpNpcCopperTalk::showWifiIdSavedResult() {
     u8 buf[2];
     if (wifiIdChanged != 0) {
-        setFriendCodeArgs(Net_GetOwnFriendKey(PlayerWifiData_GetDwcUserData(((PlayerData *)(PlayerData_GetCurrent()))->getWifiUserData())));
+        setFriendCodeArgs(Net_GetOwnFriendKey(PlayerWifiData_GetDwcUserData(PlayerData_GetCurrent()->getWifiUserData())));
         buf[0] = 0x76;
         ((TalkWindowState *)(window))->setNextMessage(buf, sSpNpcCopperMsgKey);
     } else {
@@ -1994,7 +1994,7 @@ void SpNpcCopperTalk::onMessageEnd(u32) {
 void SpNpcCopperTalk::onChoiceUpdateWifiId(s32 p) {
     if (p == 0) {
         NetOverlay_LoadWifi();
-        PlayerWifiData_Create(((PlayerData *)(PlayerData_GetCurrent()))->getWifiUserData());
+        PlayerWifiData_Create(PlayerData_GetCurrent()->getWifiUserData());
         NetOverlay_Restore();
     }
     onChoiceConnectWifi(p);
@@ -2068,7 +2068,7 @@ void SpNpcCopperTalk::checkWifiReady() {
         }
         return;
     }
-    void *s = PlayerWifiData_GetDwcUserData(((PlayerData *)(PlayerData_GetCurrent()))->getWifiUserData());
+    void *s = PlayerWifiData_GetDwcUserData(PlayerData_GetCurrent()->getWifiUserData());
     NetOverlay_LoadWifi();
     if (Net_HasWifiUserId(s)) {
         if (Net_IsWifiConfigValid(s)) {
@@ -2808,16 +2808,16 @@ void SpNpcCopperTalk::waitJoinAccepted() {
     if (checkNetError(b)) {
         Comm_ClearSyncState();
         if (_ZN15KatieVisitState11isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()))) {
-            if (((LostChildRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getLostChildRecord()))->isEscorting()) {
-                ((LostChildRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getLostChildRecord()))->clearEscorting();
+            if (((LostChildRecord *)(PlayerData_GetCurrent()->getLostChildRecord()))->isEscorting()) {
+                ((LostChildRecord *)(PlayerData_GetCurrent()->getLostChildRecord()))->clearEscorting();
             }
         }
     } else {
         s32 t = Comm_GetSyncState();
         if (t == 5) {
             if (_ZN15KatieVisitState11isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()))) {
-                if (((LostChildRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getLostChildRecord()))->isEscorting() == 0) {
-                    ((LostChildRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getLostChildRecord()))->setEscorting();
+                if (((LostChildRecord *)(PlayerData_GetCurrent()->getLostChildRecord()))->isEscorting() == 0) {
+                    ((LostChildRecord *)(PlayerData_GetCurrent()->getLostChildRecord()))->setEscorting();
                 }
             }
             if (CommSend_PlayerData(&syncPayload, NetSession_GetSyncMemberMask())) {
@@ -2881,7 +2881,7 @@ s32 SpNpcCopperTalk::getWifiLoginResultMsg() {
     case 0: {
         NetOverlay_LoadWifi();
         r = 0x26;
-        s64 t = Net_GetOwnFriendKey(PlayerWifiData_GetDwcUserData(((PlayerData *)(PlayerData_GetCurrent()))->getWifiUserData()));
+        s64 t = Net_GetOwnFriendKey(PlayerWifiData_GetDwcUserData(PlayerData_GetCurrent()->getWifiUserData()));
         ((SpNpcCopperTalk *)(this))->setFriendCodeArgs((s32)t);
         NetOverlay_Restore();
         break;
@@ -3040,7 +3040,7 @@ void SpNpcCopper::onInteractionEvent(u32 cmd, u8 arg) {
             if (isNetOwner()) {
                 a = 4;
                 b = 4;
-                if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b))) {
+                if (((NpcActor *)(this))->netGetSlots(&a, &b)) {
                     if ((arg != 4 && (s32)arg == b) || arg == 4) {
                         netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                         SpNpcCopper_ChangeAct(this, 1);

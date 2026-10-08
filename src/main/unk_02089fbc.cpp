@@ -2034,10 +2034,10 @@ void HudWallet::setRolling(BOOL v) {
 }
 
 extern "C" s32 Hud_GetBells() {
-    s32 c = PlayerData_GetCurrent();
+    PlayerData *c = PlayerData_GetCurrent();
     s32 r = 0;
     if (c != 0) {
-        s32 a = ((PlayerInventory *)(((PlayerData *)(c))->getInventory()))->getTotalBells(1);
+        s32 a = ((PlayerInventory *)(c->getInventory()))->getTotalBells(1);
         r = a + MenuCtrl_GetHandBells();
     }
     return r;

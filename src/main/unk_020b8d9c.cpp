@@ -1138,7 +1138,6 @@ extern "C" {
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *p);
 }
 extern "C" {
-void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 }
 extern "C" {
 void _ZN11NpcTalkCtrl11requestTalkEhh(void *p, s32 a, s32 b);
@@ -3768,7 +3767,6 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-u32 _ZN10PlayerData14getSkyShotHitsEv(void* p);
 }
 extern "C" {
 }
@@ -4087,7 +4085,7 @@ extern "C" void SkyShot_AddHit() {
 }
 
 extern "C" BOOL SkyShot_HasMaxHits() {
-    return _ZN10PlayerData14getSkyShotHitsEv(PlayerData_GetCurrent()) >= 0x10;
+    return PlayerData_GetCurrent()->getSkyShotHits() >= 0x10;
 }
 
 }
@@ -4464,7 +4462,6 @@ extern "C" {
 u32 _ZN10PlayerData8testFlagEj(void *p, u32 n);
 }
 extern "C" {
-u32 _ZN10PlayerData11getPlayerIdEv(void *p);
 }
 extern "C" {
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
@@ -4776,7 +4773,7 @@ void SkySprites::sendWishLetters() {
             Letter ctx;
             StarWishLetterVars l;
             l.msgVariant = Random_GlobalBelow(3);
-            Letter_ComposeFromMail(&ctx, &l, data_020e6794, data_020e4634, data_020e4630, _ZN10PlayerData11getPlayerIdEv(o));
+            Letter_ComposeFromMail(&ctx, &l, data_020e6794, data_020e4634, data_020e4630, ((PlayerData *)(o))->getPlayerId());
             ItemPickSpec q(0, 4);
             ItemPick_One(&l.present, q, 0, 0, 1, 1, 0);
             ((LetterView *)(&ctx))->setPresent(l.present, 1);
@@ -5785,9 +5782,9 @@ namespace n06 {
 void SkySprites::updatePete() {
     using namespace n06;
     if (peteEventToday != 0) {
-        s32 npc = NpcRegistry_FindSpNpc(8);
+        NpcActor *npc = NpcRegistry_FindSpNpc(8);
         if (npc) {
-            if (((NpcActor *)((void *)npc))->isUpdating()) {
+            if (npc->isUpdating()) {
                 peteEventToday = 0;
             }
         }

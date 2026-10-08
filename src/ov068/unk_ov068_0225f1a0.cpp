@@ -129,7 +129,6 @@
 #define NpcEmotionFx_startEntry _ZN12NpcEmotionFx10startEntryEP15NpcEmotionPhasei
 #define NpcLookAt_isOnTarget _ZN9NpcLookAt10isOnTargetEv
 #define NpcLookAt_canSeeTarget _ZN9NpcLookAt12canSeeTargetEP9Character
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcLookAt_setTargetPos _ZN9NpcLookAt12setTargetPosEP7VecFx32
 #define NpcMoveCtrl_resetDestination _ZN11NpcMoveCtrl16resetDestinationEv
 #define NpcMoveCtrl_hasNextLeg _ZN11NpcMoveCtrl10hasNextLegEv
@@ -143,7 +142,6 @@
 #define func_0201b138 _ZN8NpcActor6onDrawEv
 #define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP7VecFx32
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getRelativeAngleTo _ZN8NpcActor18getRelativeAngleToEPS_
 #define NpcActor_getAngleToPlayer _ZN8NpcActor16getAngleToPlayerEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
@@ -351,7 +349,7 @@ public:
     virtual BOOL isPickable();
     virtual BOOL consumeFleaRemoved();
     virtual BOOL canAcceptPartnerInvite();
-    virtual BOOL acceptPartnerInvite(u32 partner);
+    virtual BOOL acceptPartnerInvite(VillagerActor *partner);
     virtual BOOL endPartnerTalk();
 
     void refreshActivity();
@@ -579,7 +577,6 @@ extern s32 data_020c6d1c;
 extern u8 gVec3Zero[];
 s32 Vec_DistXZ(void *, void *);
 s32 NpcLookAt_canSeeTarget(void *, void *);
-void NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u8);
 void NpcLookAt_setTargetPos(void *, void *);
 s32 VillagerTalk_hasPartner(void *);
 s32 VillagerTalk_getEventKind(void *);
@@ -592,7 +589,6 @@ s32 VillagerMemory_IsUsed(void *);
 s32 NpcActor_isPlayerNear(void *, s32, u32);
 s32 NpcTalkCtrl_isBusy(void *);
 s32 VillagerTalk_begin(void *, void *, s32);
-void *NpcActor_getPlayerActor(void *, s32);
 void ActorTalkRequest_setTalkPlayer(void *, void *);
 void ActorTalkRequest_setPartnerActor(void *, void *);
 void TalkRepeat_Count(void *t);
@@ -1156,7 +1152,6 @@ extern s32 data_020c6d1c;
 extern u8 gVec3Zero[];
 s32 Vec_DistXZ(void *, void *);
 s32 NpcLookAt_canSeeTarget(void *, void *);
-void NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u8);
 void NpcLookAt_setTargetPos(void *, void *);
 s32 VillagerTalk_hasPartner(void *);
 s32 VillagerTalk_getEventKind(void *);
@@ -1169,7 +1164,6 @@ s32 VillagerMemory_IsUsed(void *);
 s32 NpcActor_isPlayerNear(void *, s32, u32);
 s32 NpcTalkCtrl_isBusy(void *);
 s32 VillagerTalk_begin(void *, void *, s32);
-void *NpcActor_getPlayerActor(void *, s32);
 void ActorTalkRequest_setTalkPlayer(void *, void *);
 void ActorTalkRequest_setPartnerActor(void *, void *);
 void TalkRepeat_Count(void *t);
@@ -3446,8 +3440,8 @@ BOOL FieldVillagerAi_TryStartChat(FieldVillagerAiStates *self, FieldVillager *o)
         if (o->canAcceptPartnerInvite() != 0) {
             FieldVillager *t = (FieldVillager *)FieldVillagerAi_FindChatPartner(self, o);
             if (t != 0) {
-                if (t->acceptPartnerInvite((u32)o) != 0) {
-                    ((VillagerTalk *)(o))->setPartner((u32)(t));
+                if (t->acceptPartnerInvite(o) != 0) {
+                    ((VillagerTalk *)(o))->setPartner(t);
                     ((VillagerTalk *)(o))->setInvitedByPartner(0);
                     FieldVillagerAi_SaveResumeState(self);
                     FieldVillagerAi_ChangeState(&o->ai, o, 9);
@@ -4869,7 +4863,7 @@ BOOL FieldVillagerAiChat::isStrangerPlayerNear(FieldVillager *o, s32 v) {
     using namespace ns_02262294;
     s32 h;
     if (PlayerData_GetCurrent() != 0) {
-        h = PlayerData_getPlayerId(PlayerData_GetCurrent());
+        h = PlayerData_GetCurrent()->getPlayerId();
     } else {
         h = 0;
     }
@@ -6596,7 +6590,7 @@ BOOL FieldVillager::canAcceptPartnerInvite() {
     return FALSE;
 }
 
-BOOL FieldVillager::acceptPartnerInvite(u32 partner) {
+BOOL FieldVillager::acceptPartnerInvite(VillagerActor *partner) {
     using namespace ns_0225f1a0;
     if (canAcceptPartnerInvite()) {
         ((VillagerTalk *)(this))->setPartner(partner);
@@ -6685,7 +6679,7 @@ void FieldVillagerLook::tickLookTime() {
 
 void FieldVillagerLook::setLookMode(FieldVillager *o, u32 idx, s32 a, s32 b, void *v, s32 c, s32 d, u8 e) {
     using namespace ns_0225f1a0;
-    ((NpcLookAt *)(&o->lookAt))->setTarget(idx, a, b, (VecFx32 *)(v), c, d, e);
+    ((NpcLookAt *)(&o->lookAt))->setTarget(idx, a, (Character *)b, (VecFx32 *)(v), c, d, e);
     lookMode = idx;
 }
 

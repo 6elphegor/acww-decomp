@@ -53,7 +53,6 @@ class SpNpcNookIntroTalk;
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define NpcActor_setNpcHandle _ZN8NpcActor12setNpcHandleEPt
 #define HouseData_getDebt _ZN9HouseData7getDebtEv
@@ -77,7 +76,6 @@ void TalkWindowState_setNextMessage(void *self, void *buf, void *p);
 void ActorTalkRequest_setNumberSlot(void *self, void *a, s32 b, s32 c, s32 d, s32 e);
 void ActorTalkRequest_setTalkPlayer(void *self, s32 a);
 void *ActorTalkRequest_getTalkPlayer(void *self);
-s32 NpcActor_getPlayerActor(void *self, s32 a);
 u32 NpcActor_getAngleTo(void *self, void *q);
 void NpcActor_setTalkRequest(void *self, void *q);
 void NpcActor_setNpcHandle(void *self, u16 *q);

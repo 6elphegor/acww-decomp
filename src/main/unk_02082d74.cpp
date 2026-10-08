@@ -22,7 +22,6 @@
 #define PROTO_LOCAL_CommRecord_UnpackSource  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_CommSyncVar_SetVar  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_NetBuf_UnpackPair20  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownSessionState_Get  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownSessionState_GetKatieState  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownSessionState_GetPeteFall  // declared below: the shared prototype conflicts with the calls here
@@ -40,6 +39,7 @@
 #include "proto/main/unk_02098e90.h"
 #include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020b0e60.h"
+#include "proto/main/unk_02097444.h"
 
 struct VisitorSpawner;
 struct VisitorSchedule;
@@ -234,7 +234,6 @@ void _ZN13PeteFallState6getPosEP7VecFx32(void *a, void *b);
 s32 _ZN13PeteFallState9getFacingEv(void *a);
 void _ZN15KatieVisitState6getPosEP7VecFx32(void *a, void *b);
 s32 _ZN15KatieVisitState12pickKatiePosEv(void *a);
-s32 PlayerData_GetCurrent();
 s32 _ZN20PlayerDailyTalkFlags4testEj(void *a, s32 b);
 s32 _ZN11SaveRecord412isDateActiveEv(void *a);
 s32 Scene_GetCurrent();
@@ -266,8 +265,6 @@ extern s32 sEventHostCheckValues[];
 s32 Scene_GetCurrent();
 s32 Scene_GetPrevious();
 s32 SceneId_IsHouseRoom(s32);
-void *PlayerData_GetCurrent();
-void *_ZN10PlayerData10getErrandsEv(void *);
 s32 _ZN12ErrandRecord8isActiveEv(void *);
 s32 _ZN12ErrandRecord11getSubGroupEv(void *);
 void Clock_GetDateTime(void *);
@@ -362,15 +359,12 @@ s32 SaveVillagers_FindBirthdayVillager(void *p, void *q);
 void VillagerStates_SetBirthdayHost(s32 v);
 void VillagerStates_SetBirthdayGuest(s32 v);
 s32 _ZN11CommManager12isSlotActiveEi(void *g, s32 i);
-s32 PlayerData_GetCurrent();
-s32 _ZN10PlayerData11getPlayerIdEv(s32 p);
 void SaveVillagers_PickFleaVillager(void *p, s32 v);
 s32 Scene_InVillagerHouse();
 s32 Scene_InHouseRoom();
 s32 VillagerEvent_GetTodayIndex();
 s32 VillagerStates_GetFleaMarketBuyer();
 s32 Scene_GetHouseRoom();
-s32 _ZN10PlayerData10getErrandsEv(s32 p);
 s32 _ZN12ErrandRecord8isActiveEv(void *p);
 s32 _ZN12ErrandRecord7getKindEv(void *p);
 s32 DateTime_DiffMinutes(void *p, void *q);
@@ -795,7 +789,7 @@ extern "C" void NpcSpawner_SpawnPlayerHouseVisitor(void *a)
     h[0] = 0xfff1;
     s32 st = F4::VillagerEvent_GetTodayIndex();
     if (st == 0xb) {
-        PlayerErrandsInviteView *top = (PlayerErrandsInviteView *)F4::_ZN10PlayerData10getErrandsEv(F4::PlayerData_GetCurrent());
+        PlayerErrandsInviteView *top = (PlayerErrandsInviteView *)PlayerData_GetCurrent()->getErrands();
         HouseVisitInviteLayoutView &m = *top;
         HouseVisitInviteErrandPart &q = m;
         u8 *r7 = (u8 *)&m;
@@ -895,8 +889,8 @@ BOOL NpcSpawner::onCreate()
         if (Visitor_IsTaxiActive() == 0) {
             if (F4::_ZN11CommManager12isSlotActiveEi(F4::gCommManager, F4::gCommManager->myAid) == 0) {
                 s32 r1;
-                if (F4::PlayerData_GetCurrent()) {
-                    r1 = F4::_ZN10PlayerData11getPlayerIdEv(F4::PlayerData_GetCurrent());
+                if (PlayerData_GetCurrent()) {
+                    r1 = PlayerData_GetCurrent()->getPlayerId();
                 } else {
                     r1 = 0;
                 }
@@ -1396,7 +1390,7 @@ extern "C" s32 Visitor_FindActiveEventEntry(const EventVisitorEntry *p, s32 n)
 
 extern "C" BOOL Visitor_IsNookJobActive()
 {
-    void *r = F2::PlayerData_GetCurrent();
+    void *r = PlayerData_GetCurrent();
     if (r != 0 && ((PlayerData *)(r))->testFlag(1) != 0)
         return TRUE;
     return FALSE;
@@ -1442,7 +1436,7 @@ extern "C" BOOL VisitorPlace_Resetti(s32 a, VecFx32 *p)
 extern "C" u16 *Visitor_CheckTomNook()
 {
     u16 k;
-    void *r4 = F2::PlayerData_GetCurrent();
+    void *r4 = PlayerData_GetCurrent();
     if (F2::Scene_GetCurrent() == 0 && Visitor_IsTaxiActive() == 0 && (F2::gCommManager)->isSlotActive(F2::gCommManager->myAid) == 0 && r4 != 0 && ((PlayerData *)(r4))->testFlag(0x23) != 0) {
         if (F2::SceneId_IsHouseRoom(F2::Scene_GetPrevious()) != 0 || F2::Scene_GetPrevious() == 6) {
             k = 0xd019;
@@ -1507,7 +1501,7 @@ extern "C" u16 *Visitor_CheckTortimer(s32 a, s32 b, s32 c)
 extern "C" BOOL Visitor_IsNookJobErrandActive()
 {
     PlayerErrandSlot *r4;
-    void *r = F2::PlayerData_GetCurrent();
+    void *r = PlayerData_GetCurrent();
     if (r != 0)
         r4 = PlayerErrands_GetSlot((PlayerErrands *)((PlayerData *)(r))->getErrands(), 0);
     else
@@ -1625,7 +1619,7 @@ extern "C" BOOL VisitorPlace_EventHost(s32 a, VecFx32 *p, Unk_02083314_K *q)
 
 extern "C" BOOL VisitorPlace_Tortimer(s32 a, VecFx32 *p, Unk_02083314_K *q)
 {
-    F2::PlayerData_GetCurrent();
+    PlayerData_GetCurrent();
     if (Visitor_IsNookJobActive() != 0)
         return VisitorPlace_NearTownHall(a, p, q);
     return VisitorPlace_NearPlayerHouse(a, p, q);
@@ -1878,9 +1872,9 @@ extern "C" u16 *Visitor_CheckPete() {
 }
 
 extern "C" BOOL Visitor_CanPascalVisit() {
-    s32 p = F1::PlayerData_GetCurrent();
+    PlayerData *p = PlayerData_GetCurrent();
     if (p) {
-        if (F1::_ZN20PlayerDailyTalkFlags4testEj(((PlayerData *)((void *)p))->getDailyTalkFlags(), 0x18) == 0) return TRUE;
+        if (F1::_ZN20PlayerDailyTalkFlags4testEj(p->getDailyTalkFlags(), 0x18) == 0) return TRUE;
     }
     return FALSE;
 }

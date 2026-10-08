@@ -9,6 +9,7 @@ struct GuestSlotTriple;
 struct SaveManagerActEntry;
 #ifdef __cplusplus
 #include "save/BlancaFaceRecord.h"
+#include "save/TownCompress.h"
 #include "types.h"
 class AxBbsNotice;
 class AxMail;
@@ -76,6 +77,9 @@ void SaveManager_RequestAct1C(void);
 #ifndef PROTO_LOCAL_GameStart_SetupSave
 void GameStart_SetupSave();
 #endif
+#ifndef PROTO_LOCAL_SaveManager_GetTownTransferBuf
+void *SaveManager_GetTownTransferBuf();
+#endif
 #ifndef PROTO_LOCAL_SaveManager_SetGatePassed
 void SaveManager_SetGatePassed();
 #endif
@@ -99,9 +103,6 @@ void VillagerTransfer_PlanSwap(void *a);
 #endif
 #ifndef PROTO_LOCAL_VillagerTransfer_PlanRotate
 void VillagerTransfer_PlanRotate(void *a);
-#endif
-#ifndef PROTO_LOCAL_LostChild_ResetAndPairLast
-void LostChild_ResetAndPairLast(SaveManager *a);
 #endif
 #ifndef PROTO_LOCAL_Wifi_StoreFriendList
 void Wifi_StoreFriendList(void);
@@ -241,9 +242,6 @@ u32 Net_GetJoiningAid();
 #ifndef PROTO_LOCAL_Net_SetJoiningAid
 void Net_SetJoiningAid(u32 v);
 #endif
-#ifndef PROTO_LOCAL_SaveManager_GetTownTransferBuf
-void *SaveManager_GetTownTransferBuf();
-#endif
 #ifndef PROTO_LOCAL_SaveManager_IsGatePassed
 u32 SaveManager_IsGatePassed();
 #endif
@@ -254,10 +252,10 @@ u32 SaveManager_IsSessionJoined();
 u8 *SaveManager_GetLetterStorage();
 #endif
 #ifndef PROTO_LOCAL_SaveManager_GetTownCompressBuf
-void *SaveManager_GetTownCompressBuf();
+TownCompressBuffer *SaveManager_GetTownCompressBuf();
 #endif
 #ifndef PROTO_LOCAL_SaveManager_GetTownCompressThread
-void *SaveManager_GetTownCompressThread();
+TownCompressThread *SaveManager_GetTownCompressThread();
 #endif
 #ifndef PROTO_LOCAL_SaveManager_Get
 SaveManager *SaveManager_Get();
@@ -336,6 +334,9 @@ void SaveManager_SetCtrlAct17(SaveManager *p, u32 v);
 #endif
 #ifndef PROTO_LOCAL_NetSession_ReturnToSolo
 void NetSession_ReturnToSolo(void *a, s32 b, s32 c);
+#endif
+#ifndef PROTO_LOCAL_LostChild_ResetAndPairLast
+void LostChild_ResetAndPairLast(SaveManager *a);
 #endif
 #ifndef PROTO_LOCAL_LostChild_ResetAndPairAll
 void LostChild_ResetAndPairAll(SaveManager *self);
@@ -605,11 +606,11 @@ extern void *data_020e25ec[2];
 #ifndef PROTO_LOCAL_sAxMailFileName
 extern char *sAxMailFileName;
 #endif
-#ifndef PROTO_LOCAL_data_020e25dc
-extern void *data_020e25dc[2];
-#endif
 #ifndef PROTO_LOCAL_sGameStartMode
 extern s32 sGameStartMode;
+#endif
+#ifndef PROTO_LOCAL_data_020e25dc
+extern void *data_020e25dc[2];
 #endif
 #ifndef PROTO_LOCAL_data_020e2554
 extern void *data_020e2554[2];
@@ -620,11 +621,11 @@ extern void *data_020e25c4[2];
 #ifndef PROTO_LOCAL_data_020e2734
 extern void *data_020e2734[2];
 #endif
-#ifndef PROTO_LOCAL_data_020e25b4
-extern void *data_020e25b4[2];
-#endif
 #ifndef PROTO_LOCAL_sEraseResidentSlot
 extern s32 sEraseResidentSlot;
+#endif
+#ifndef PROTO_LOCAL_data_020e25b4
+extern void *data_020e25b4[2];
 #endif
 #ifndef PROTO_LOCAL_data_020e259c
 extern void *data_020e259c[2];

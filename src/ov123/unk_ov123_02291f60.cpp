@@ -1157,7 +1157,7 @@ void PatternEditorMenu::startBarTransition(u8 a, u8 b)
 
 void PatternEditorMenu::loadFromPlayerPattern()
 {
-    void *b = ((PlayerData *)(PlayerData_GetCurrent()))->getPatterns();
+    void *b = PlayerData_GetCurrent()->getPatterns();
     void *d = ((PlayerPatterns *)(b))->getPatternByOrder((u32)(MenuCtrl_GetIndex()));
     MIi_CpuCopy32(((Pattern *)(d))->getPixels(), canvasA, 0x200);
     MIi_CpuCopy32(((Pattern *)(d))->getPixels(), canvasB, 0x200);

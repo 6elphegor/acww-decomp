@@ -381,7 +381,7 @@ void SpNpcTortimerBugOffTalk::start(TalkStartMsg *out_) {
     Unk_ov082_022718b0_Rec *out = (Unk_ov082_022718b0_Rec *)out_;
     u16 x[4];
     Unk_ov082_022718b0_Rec rec;
-    ((PlayerData *)(PlayerData_GetCurrent()))->getErrands();
+    PlayerData_GetCurrent()->getErrands();
     out->a = (u32)"sp_npc_turtle2";
     rec.a = 0;
     rec.b = 0;
@@ -437,7 +437,7 @@ s32 SpNpcTortimerBugOffTalk::getRecordHolder() {
         ((ActorTalkRequest *)(this))->setNumberSlot(((ContestRecord *)(r7))->getSize() >> 12, 0, 3, 0, 0);
         if (((PlayerId *)(r6))->isValid()) {
             ((ActorTalkRequest *)(this))->setPlayerNameSlot((PlayerId *)(((ContestRecord *)(r7))->getHolderPlayer()), 1);
-            u16 *q = (u16 *)((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId();
+            u16 *q = (u16 *)PlayerData_GetCurrent()->getPlayerId();
             u16 *p = (u16 *)((ContestRecord *)(r7))->getHolderPlayer();
             if (p[0] != q[0] || memcmp(p + 1, q + 1, 8) != 0 || ((PlayerId *)(p))->equals((PlayerId *)(q)) == 0) {
                 return 1;
@@ -486,7 +486,7 @@ void SpNpcTortimerBugOffTalk::onMessageEnd(u32) {
                 msg = 0x16;
                 break;
             }
-            ((PlayerSpNpcRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord()))->setEnteredBugOff(1);
+            ((PlayerSpNpcRecord *)(PlayerData_GetCurrent()->getSpNpcRecord()))->setEnteredBugOff(1);
             {
                 s32 v = ((ContestRecord *)(r6))->getSize();
                 if ((ownerNpc->entrySize >> 12) > (v >> 12)) {
@@ -526,7 +526,7 @@ void SpNpcTortimerBugOffTalk::onMessageEnd(u32) {
             }
             ContestRecord_SetItem(r6, &entryItem);
             ((ContestRecord *)(r6))->setSize(ownerNpc->entrySize);
-            ((ContestRecord *)(r6))->setHolderPlayer((Unk_02085810_Base *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()));
+            ((ContestRecord *)(r6))->setHolderPlayer((Unk_02085810_Base *)(PlayerData_GetCurrent()->getPlayerId()));
             ((ContestRecord *)(r6))->setKind(2);
             ((SaveData *)(gSaveData))->setFlag(0xf);
             ((ItemPickSpec *)(void *)(&o))->set(0, 0);

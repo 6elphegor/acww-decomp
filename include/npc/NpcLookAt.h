@@ -52,7 +52,7 @@ public:
     s32 calcYaw(VecFx32 *a, VecFx32 *b, s32 c);
     BOOL canSeeTarget(Character *scene);
     void setManualAngles(s32 pri, s16 a, s16 b, s16 c, s16 d);
-    void setTarget(u8 type, s32 pri, s32 tgt, VecFx32 *v, s32 h, s32 lim, u8 flag);
+    void setTarget(u8 type, s32 pri, Character *tgt, VecFx32 *v, s32 h, s32 lim, u8 flag);
     void setTargetPos(VecFx32 *v);
     void setPitchLimit(s16 v);
     void disable();

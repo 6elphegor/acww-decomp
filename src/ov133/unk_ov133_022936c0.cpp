@@ -888,7 +888,7 @@ u32 FriendCodeMenu::hitTest(s32 x0, s32 y) {
 }
 
 void *FriendCodeMenu::getFriendEntry() {
-    void *h = ((PlayerData *)PlayerData_GetCurrent())->getFriendList();
+    void *h = PlayerData_GetCurrent()->getFriendList();
     s32 idx = MenuCtrl_GetIndex();
     return (u8 *)FriendList_GetEntries(h) + idx * 0x1c;
 }

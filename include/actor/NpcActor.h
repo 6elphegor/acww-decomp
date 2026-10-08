@@ -67,7 +67,7 @@ public:
     void setNetUserBytes(void *dst, s32 n);
     BOOL getNetUserBytes(u8 *src, u32 n);
     BOOL netIsTalkLocked();
-    s32 netGetSlots(s32 a, s32 b);
+    s32 netGetSlots(s32 *a, s32 *b);
     void netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...);
     void netSetSlots(s32 a, s32 b, s32 c);
     BOOL isNetOwner();
@@ -76,7 +76,7 @@ public:
     s32 getSpeakerGender();
     ActorTalkRequest *getTalkRequest();
     void setTalkRequest(ActorTalkRequest *p);
-    u32 getPlayerActor(u32 id);
+    Character *getPlayerActor(u32 id);
     s16 getRelativeAngleTo(NpcActor *other);
     s32 getAngleToPlayer(u32 id);
     s32 getAngleTo(NpcActor *other);

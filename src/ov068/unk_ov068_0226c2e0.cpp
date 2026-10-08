@@ -60,7 +60,6 @@
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
 #define NpcFaceAnim_resumeMouthMaterial _ZN11NpcFaceAnim19resumeMouthMaterialEv
 #define NpcLookAt_setManualAngles _ZN9NpcLookAt15setManualAnglesEissss
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcLookAt_setPitchLimit _ZN9NpcLookAt13setPitchLimitEs
 #define NpcMoveAnimSet_setRunAnim _ZN14NpcMoveAnimSet10setRunAnimEi
 #define NpcMoveAnimSet_setWalkAnim _ZN14NpcMoveAnimSet11setWalkAnimEi
@@ -304,7 +303,6 @@ void NNS_G3dMdlSetMdlLightEnableFlagAll(void *mdl, s32 b);
 void NpcAnimCtrl_playAnim(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, s32 b, s32 c);
 void NpcActionCtrl_requestPlayAnim(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
-void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, void *v, s32 d, s32 e, u8 f);
 void NpcLookAt_setManualAngles(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
 void NpcLookAt_setPitchLimit(void *self, s32 a);
 void NpcTalkCtrl_requestTalk(void *self, u8 a, u8 b);
@@ -1193,7 +1191,7 @@ BOOL SpNpcRoostGuest::checkPlayerSeated() {
 extern "C" u16 RoostGuest_PickKKSong(void *self) {
     using namespace sC;
     u16 arr[2];
-    ItemPick_FromRange(&arr[0], 0x1323, 0x46, 0, 0, (u32)PlayerData_GetCurrent(), 0, 10, 0, 1);
+    ItemPick_FromRange(&arr[0], 0x1323, 0x46, 0, 0, PlayerData_GetCurrent(), 0, 10, 0, 1);
     if (!Unk_ov068_0226c340_R(&arr[0])) {
         ItemPick_FromRange(&arr[1], 0x1323, 0x46, 0, 0, 0, 1, 10, 0, 1);
         arr[0] = arr[1];

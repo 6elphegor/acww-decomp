@@ -708,7 +708,7 @@ void SpNpcKappnTalk::onBoyNameChoice(u32 sel) {
     u8 msg[3];
     switch (sel) {
     case 0:
-        ((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->setGender(0);
+        ((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->setGender(0);
         if (GameStart_IsNewResident()) {
             msg[0] = genderMsg(0x19);
             window->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
@@ -718,7 +718,7 @@ void SpNpcKappnTalk::onBoyNameChoice(u32 sel) {
         }
         break;
     case 1:
-        ((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->setGender(1);
+        ((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->setGender(1);
         msg[2] = 0xe;
         window->setNextMessage(&msg[2], sSpNpcKappnMsgKey);
         break;
@@ -729,7 +729,7 @@ void SpNpcKappnTalk::onGirlNameChoice(u32 sel) {
     u8 msg[3];
     switch (sel) {
     case 0:
-        ((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->setGender(1);
+        ((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->setGender(1);
         if (GameStart_IsNewResident()) {
             msg[0] = genderMsg(0x19);
             window->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
@@ -739,7 +739,7 @@ void SpNpcKappnTalk::onGirlNameChoice(u32 sel) {
         }
         break;
     case 1:
-        ((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->setGender(0);
+        ((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->setGender(0);
         msg[2] = 0xd;
         window->setNextMessage(&msg[2], sSpNpcKappnMsgKey);
         break;
@@ -797,7 +797,7 @@ void SpNpcKappnTalk::onMoneyChoice(u32 sel) {
     if (GameStart_IsNewTown()) {
         v = genderMsg(sSpNpcKappnMoneyReplyMsgs[sel]);
     } else if (sel == 0) {
-        if (((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getGender() == 0) {
+        if (((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->getGender() == 0) {
             v = 0x21;
         } else {
             v = 0x2f;
@@ -813,7 +813,7 @@ void SpNpcKappnTalk::onMoneyChoice(u32 sel) {
 }
 
 u8 SpNpcKappnTalk::genderMsg(u32 v) {
-    u8 r = (u8)((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getGender();
+    u8 r = (u8)((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->getGender();
     return (u8)(v + r);
 }
 

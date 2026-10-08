@@ -410,7 +410,7 @@ extern "C" void ContestRecord_JudgeGardens(void *self)
             }
             s32 w = ContestRecord_ScorePlayerGarden(self, grid);
             if (cnt == 0 || w > best || (w > 0 && w == best && Random_GlobalBelow(2) == 0)) {
-                ((ContestRecord *)(self))->setHolderPlayer((Unk_02085810_Base *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()));
+                ((ContestRecord *)(self))->setHolderPlayer((Unk_02085810_Base *)(PlayerData_GetCurrent()->getPlayerId()));
             } else {
                 void *o = SaveVillagers_Get(gSaveVillagers, Random_PickSetBit(mask, cnt, 8));
                 if (o != NULL && ((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(o)))->isValid() != 0) {

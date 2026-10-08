@@ -7281,7 +7281,7 @@ extern "C" BOOL Town_CanReleaseBees(void) {
     BOOL r = FALSE;
     CommManager *g = *(CommManager **)gCommManager;
     if (((CommManager *)(g))->isSlotActive(g->myAid) == 0) {
-        if (((PlayerData *)(PlayerData_GetCurrent()))->testFlag(1) == 0) {
+        if (PlayerData_GetCurrent()->testFlag(1) == 0) {
             if (gTownUpdater.beesReleased == 0) {
                 r = TRUE;
             }

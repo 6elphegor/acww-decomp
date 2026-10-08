@@ -670,7 +670,7 @@ void SpNpcShrunkTalk::scriptFirstLesson() {
             ((TalkWindowState *)(window))->setSlotFromString(0, &b[1], "st_learn");
             ownerNpc->reactionWindow = 0;
             ownerNpc->waitTimer = 0x14;
-            ((PlayerData *)(PlayerData_GetCurrent()))->setFlag(0x10);
+            PlayerData_GetCurrent()->setFlag(0x10);
             b[0] = 0xc;
             ownerNpc->teachEmotion(0, 0x17);
             r4->setNextMessage(&b[0], (void *)"sp_npc_reaction");
@@ -742,7 +742,7 @@ void SpNpcShrunkTalk::attachOwner(SpNpcShrunk *owner) {
 void SpNpcShrunkTalk::start(TalkStartMsg *out) {
     out->msgKey = "sp_npc_reaction";
     out->msgIndex = 1;
-    if (((PlayerData *)(PlayerData_GetCurrent()))->testFlag(0x10) == 1) {
+    if (PlayerData_GetCurrent()->testFlag(0x10) == 1) {
         if (Talk_CheckAndSetPlayerFlag(0xe, 0) == 0) {
             out->msgIndex = Random_GlobalBelow(2) + 0x13;
         } else if (Emotion_CountLearned() == 1) {

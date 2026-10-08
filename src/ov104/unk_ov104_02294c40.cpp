@@ -470,7 +470,7 @@ BOOL PostOfficeMenu::execClosed() {
         MenuCtrl_SetResult(1);
         r4 = 0;
         if (LetterList_Compact(boxLetters, 10) <= 0) r4 = 4;
-        if (((PlayerData *)PlayerData_GetCurrent())->testFlag(1)) {
+        if (PlayerData_GetCurrent()->testFlag(1)) {
             r4 |= deliverVillagerLettersNow(boxLetters);
         }
         r4 |= takeFutureLetter(boxLetters);

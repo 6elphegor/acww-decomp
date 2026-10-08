@@ -58,7 +58,6 @@
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
 #define NpcAnimCtrl_getAnimId _ZN11NpcAnimCtrl9getAnimIdEj
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcLookAt_getObstacleBits _ZN9NpcLookAt15getObstacleBitsEv
 #define Unk_0201acf8_getLevel _ZN12Unk_0201acf88getLevelEv
 #define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP9Characteri
@@ -70,7 +69,6 @@
 #define PeteFallState_hasFallPos _ZN13PeteFallState10hasFallPosEv
 #define PeteFallState_getPos _ZN13PeteFallState6getPosEP7VecFx32
 #define PeteFallState_clear _ZN13PeteFallState5clearEv
-#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleToPlayer _ZN8NpcActor16getAngleToPlayerEj
 #define Unk_ov075_0227188c_CallA() NpcActionCtrl_requestAction(r4, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
@@ -101,7 +99,6 @@ void NpcMoveAnimSet_setStandAnim(void *p, s32 v);
 s32 NpcAnimCtrl_getAnimId(void *p, s32 a);
 s32 NpcActionCtrl_isActionDone(void *p);
 s32 NpcActionCtrl_getAction(void *p);
-void NpcLookAt_setTarget(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 s32 Unk_0201acf8_getLevel(void *p);
 s32 NpcLookAt_getObstacleBits(void *p);
 s32 NpcMoveCtrl_hasArrived(void *p, void *q, s32 a);
@@ -113,7 +110,6 @@ void Npc_RotateOffsetXZ(void *out, void *a, void *b, s32 c);
 s32 Npc_IsPosBlocked(void *p);
 s32 Math_AngleXZ(void *a, void *b);
 BOOL NpcActor_IsFrontAngle(s16 a);
-u32 NpcActor_getPlayerActor(void *p, s32 n);
 u32 NpcActor_getAngleToPlayer(void *p, s32 n);
 s32 NpcActor_getAngleTo(void *self, void *a);
 void Math_CountDownU8(void *p);
@@ -360,7 +356,7 @@ extern "C" void SpNpcPete_ChangeAct(void *self, s32 state) {
 }
 
 BOOL SpNpcPete::setupAct00() {
-    NpcLookAt_setTarget(&lookAt, 0, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+    lookAt.setTarget(0, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
     ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0xef, 1, data_020c6cc8, 0);
     ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xef);
     return TRUE;
@@ -395,7 +391,7 @@ BOOL SpNpcPete::setupAct05() {
     ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
-    NpcLookAt_setTarget(&lookAt, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+    lookAt.setTarget(1, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -584,7 +580,7 @@ BOOL SpNpcPete::setupAct01() {
     void *r4 = talk.getTalkPlayer();
     s32 r6 = rotY;
     if (isUp != 0) {
-        NpcLookAt_setTarget(&lookAt, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+        lookAt.setTarget(1, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
         collider.groups &= ~2;
     }
     if (r4 != 0) {
@@ -698,7 +694,7 @@ void SpNpcPeteTalk::attachOwner(void *owner) {
 void SpNpcPeteTalk::start(TalkStartMsg *out) {
     out->msgIndex = 0x1a;
     if (ownerNpc[0x714] != 0) {
-        if (((PlayerData *)(PlayerData_GetCurrent()))->testFlag(6) != 0) {
+        if (PlayerData_GetCurrent()->testFlag(6) != 0) {
             out->msgIndex = Random_GlobalBelow(4) + 12;
         }
     }

@@ -14,6 +14,7 @@
 #include "player/PlayerInventory.h"
 #include "save/TownId.h"
 #include "talk/MsgString.h"
+#include "proto/main/unk_02097444.h"
 
 // Entry of the const table at 0x020d0604 (8 bytes): name, random range
 struct TopicWordList {
@@ -1669,7 +1670,6 @@ void VillagerId_Clear(VillagerIdCtorDtor *r);
 VillagerIdCtorDtor *_ZN12VillagerData13getVillagerIdEv(void *p);
 void *SaveVillagers_PickRandomTalkPartner(void *g, VillagerIdCtorDtor **a, s32 n);
 s32 Letter_GetRecipientVillager(void *p);
-s32 PlayerData_GetCurrent();
 void func_02133ef8(void *p, s32 n);
 s32 memcmp(void *a, void *b, u32 n);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
@@ -1796,7 +1796,7 @@ extern "C" BOOL ParcelErrand_NextRecipient(ParcelErrand *z) {
 }
 
 extern "C" BOOL ParcelErrand_IsFor(ParcelErrand *z, u16 *p) {
-    if (z->recipient < 5 && PlayerData_GetCurrent() && !((TownId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getTownRelation()) {
+    if (z->recipient < 5 && PlayerData_GetCurrent() && !((TownId *)(PlayerData_GetCurrent()->getPlayerId()))->getTownRelation()) {
         if (((s32)(*p & 0xf000) >> 12) == 0xd && _ZN12ErrandRecord8isActiveEv(z) && _ZN12ErrandRecord7getStepEv(z) == 0) {
             BOOL in = FALSE;
             if (*p >= 0xd019 && *p <= 0xd01c) {
@@ -2144,7 +2144,6 @@ extern "C" BOOL Arbeit_IsLetterRecipient(PlayerErrands *m, VillagerIdCtorDtor *r
 // ======== unk_02098f90.cpp ========
 namespace n2 {
 extern "C" {
-void *PlayerData_GetCurrent();
 void *_ZN10PlayerData12getInventoryEv(void *);
 s32 _ZN15PlayerInventory15findEmptyPocketEv(void *);
 s32 _ZN15PlayerInventory14getEmptyLetterEv(void *);
@@ -2633,7 +2632,6 @@ extern "C" s32 Pocket_CountKind(PocketMatches *self, s32 v) {
 // ======== unk_0209865c.cpp (0x02098e90..0x02098f90) ========
 namespace n1 {
 extern "C" {
-PlayerData *PlayerData_GetCurrent();
 s32 PlayerErrands_GetDeliveryRecipientName(void *, void *, void *);
 u16 *_ZN15PlayerInventory9getPocketEi(void *, u32);
 s32 _ZN15PlayerInventory18isPocketFlagsClearEi(void *, s32);

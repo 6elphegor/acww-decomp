@@ -16,6 +16,7 @@
 #include "proto/main/unk_02095cdc.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_0209eb94.h"
+#include "player/PlayerData.h"
 
 
 
@@ -160,7 +161,6 @@ extern "C" {
 }
 
 extern "C" {
-u8 *_ZN10PlayerData11getEmotionsEv(s32 p);
 }
 
 extern "C" {
@@ -272,7 +272,7 @@ extern "C" void EmotionSlots_Clear(u8 *p) {
 
 extern "C" s32 Emotion_CountLearned(void) {
     u8 *p; s32 i, n;
-    p = _ZN10PlayerData11getEmotionsEv(PlayerData_GetCurrent());
+    p = PlayerData_GetCurrent()->getEmotions();
     n = 0;
     for (i = 0; i < 4; i++) {
         if (EmotionSlots_Get(p, i) != 0xff) {
@@ -284,12 +284,12 @@ extern "C" s32 Emotion_CountLearned(void) {
 
 extern "C" s32 Emotion_FindFreeSlot(void) { return Emotion_FindSlot(0xff); }
 
-extern "C" void Emotion_SetSlot(s32 i, s32 v) { EmotionSlots_Set(_ZN10PlayerData11getEmotionsEv(PlayerData_GetCurrent()), i, v); }
+extern "C" void Emotion_SetSlot(s32 i, s32 v) { EmotionSlots_Set(PlayerData_GetCurrent()->getEmotions(), i, v); }
 
-extern "C" s32 Emotion_GetSlot(s32 i) { return EmotionSlots_Get(_ZN10PlayerData11getEmotionsEv(PlayerData_GetCurrent()), i); }
+extern "C" s32 Emotion_GetSlot(s32 i) { return EmotionSlots_Get(PlayerData_GetCurrent()->getEmotions(), i); }
 
 extern "C" s32 Emotion_FindSlot(u32 id) {
-    u8 *p = _ZN10PlayerData11getEmotionsEv(PlayerData_GetCurrent());
+    u8 *p = PlayerData_GetCurrent()->getEmotions();
     for (s32 i = 0; i < 4; i++) {
         if (id == (u32)EmotionSlots_Get(p, i)) {
             return i;

@@ -468,7 +468,7 @@ void BankMenu::startSelect() {
 }
 
 void BankMenu::selectDeposit() {
-    if (PlayerBank_GetBalance(((PlayerData *)(PlayerData_GetCurrent()))->getBankAccount()) == 0x3b9ac9ff) {
+    if (PlayerBank_GetBalance(PlayerData_GetCurrent()->getBankAccount()) == 0x3b9ac9ff) {
         showMessage(0xe);
     } else {
         nextMenuId = 0x35;
@@ -479,7 +479,7 @@ void BankMenu::selectDeposit() {
 }
 
 void BankMenu::selectWithdraw() {
-    if (PlayerInventory_GetBellsRoom(((PlayerData *)(PlayerData_GetCurrent()))->getInventory(), 1, 0) == 0) {
+    if (PlayerInventory_GetBellsRoom(PlayerData_GetCurrent()->getInventory(), 1, 0) == 0) {
         showMessage(0xf);
     } else {
         nextMenuId = 0x36;

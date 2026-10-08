@@ -217,9 +217,9 @@ void NumberPad::init(u32 mode, u32 a, u32 b) {
     maxValue = 0;
     topAmount = 0;
     bottomAmount = 0;
-    s32 c = PlayerData_GetCurrent();
-    if (c != 0) {
-        if (((PlayerId *)(((PlayerData *)(c))->getPlayerId()))->getGender() == 0) {
+    PlayerData *c = PlayerData_GetCurrent();
+    if (c != NULL) {
+        if (c->getPlayerId()->getGender() == 0) {
             Snd_SetKeySeMode(0);
             return;
         }

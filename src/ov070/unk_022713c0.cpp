@@ -33,7 +33,6 @@
 #include "gfx/DebugColor.h"
 #include "item/LetterView.h"
 #define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_data_ov070_022726e0  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_data_ov070_022726e4  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_sSpNpcGracieKey  // declared below: the shared prototype conflicts with the calls here
@@ -49,6 +48,7 @@
 #include "proto/main/unk_02098e90.h"
 #include "proto/main/unk_020b2c50.h"
 #include "proto/ov070/unk_022713c0.h"
+#include "proto/main/unk_02097444.h"
 
 
 class ActorTalkRequest;
@@ -146,7 +146,6 @@ extern const TalkStartMsg sSpNpcGracieTopicMsgs[];
 extern const SpNpcGracieOutfitTier sSpNpcGracieOutfitTiers[];
 extern u16 data_020c6cc8;
 
-PlayerData *PlayerData_GetCurrent();
 void *MI_CpuFill8(void *, s32, u32);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void func_020b4154(void *p);

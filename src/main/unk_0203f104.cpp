@@ -104,7 +104,6 @@ void *SaveVillagers_Get(void *, s32);
 s32 SaveVillagers_GetUnk3830Index(void *);
 u8 *Villager_GetBirthday(void *);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
-u8 *_ZN10PlayerData11getBirthdayEv(s32);
 
 void Event_RefreshToday(s32);
 // ClockDateTimeCopy has a copy constructor, so both mwcc and GCC pass it as a pointer to a caller-made copy: the
@@ -462,7 +461,7 @@ extern "C" u8 EventRule_ResolveDay(Unk_0203f554_Sub *e, u32 year, EventDate cal,
 
 extern "C" void EventRule_GetPlayerBirthday(Unk_0203f554_Sub *e, EventDate *out) {
     if (PlayerData_GetCurrent()) {
-        u8 *p = _ZN10PlayerData11getBirthdayEv(PlayerData_GetCurrent());
+        u8 *p = (u8 *)PlayerData_GetCurrent()->getBirthday();
         if (p) {
             out->s.b3 = p[1];
             out->s.b2 = p[0];
@@ -1031,8 +1030,8 @@ extern "C" BOOL Game_IsIntroPeriod(void) {
     if (GameStart_IsActive()) {
         r = TRUE;
     } else {
-        s32 p = PlayerData_GetCurrent();
-        if (p == 0 || ((PlayerData *)(p))->testFlag(1) != 0) {
+        PlayerData *p = PlayerData_GetCurrent();
+        if (p == NULL || p->testFlag(1) != 0) {
             r = TRUE;
         }
     }

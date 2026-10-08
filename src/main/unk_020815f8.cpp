@@ -339,28 +339,28 @@ extern "C" NpcActor *NpcRegistry_GetVillager(s32 i) {
     return 0;
 }
 
-extern "C" s32 NpcRegistry_GetBySlot(s32 n) {
-    s32 r = 0;
+extern "C" NpcActor *NpcRegistry_GetBySlot(s32 n) {
+    NpcActor *r = NULL;
     if (n >= 0) {
         if (SaveVillagers_IsValidIndex(n)) {
-            r = (s32)gNpcActorRegistry.getVillager(n);
+            r = gNpcActorRegistry.getVillager(n);
         } else if (n < NpcRegistry_GetSlotCount()) {
-            r = (s32)gNpcActorRegistry.getSpNpc(n - 8);
+            r = gNpcActorRegistry.getSpNpc(n - 8);
         }
     }
     return r;
 }
 
-extern "C" s32 NpcRegistry_FindVillager(void *a) {
-    return (s32)gNpcActorRegistry.findVillagerByIndex((u32)a);
+extern "C" NpcActor *NpcRegistry_FindVillager(u32 idx) {
+    return gNpcActorRegistry.findVillagerByIndex(idx);
 }
 
-extern "C" s32 NpcRegistry_FindSpNpc(void *a) {
-    return (s32)gNpcActorRegistry.findSpNpcByIndex((u32)a);
+extern "C" NpcActor *NpcRegistry_FindSpNpc(u32 idx) {
+    return gNpcActorRegistry.findSpNpcByIndex(idx);
 }
 
-extern "C" s32 NpcRegistry_FindByKind(s32 kind, void *x) {
-    s32 r = 0;
+extern "C" NpcActor *NpcRegistry_FindByKind(s32 kind, u32 x) {
+    NpcActor *r = NULL;
     switch (kind) {
     case 2:
         r = NpcRegistry_FindVillager(x);
@@ -372,8 +372,8 @@ extern "C" s32 NpcRegistry_FindByKind(s32 kind, void *x) {
     return r;
 }
 
-extern "C" s32 NpcRegistry_FindByHandle(u16 *p) {
-    s32 r = 0;
+extern "C" NpcActor *NpcRegistry_FindByHandle(u16 *p) {
+    NpcActor *r = NULL;
     s32 t = (s32)(*p & 0xf000) >> 12;
     if (t != 13) {
         if (t == 14) r = NpcRegistry_FindVillagerByHandle(p);
@@ -383,37 +383,37 @@ extern "C" s32 NpcRegistry_FindByHandle(u16 *p) {
     return r;
 }
 
-extern "C" s32 NpcRegistry_FindVillagerByHandle(void *a) {
-    return (s32)gNpcActorRegistry.findVillagerByHandle((u16 *)a);
+extern "C" NpcActor *NpcRegistry_FindVillagerByHandle(u16 *p) {
+    return gNpcActorRegistry.findVillagerByHandle(p);
 }
 
-extern "C" s32 NpcRegistry_FindSpNpcByHandle(void *a) {
-    return (s32)gNpcActorRegistry.findSpNpcByHandle((u16 *)a);
+extern "C" NpcActor *NpcRegistry_FindSpNpcByHandle(u16 *p) {
+    return gNpcActorRegistry.findSpNpcByHandle(p);
 }
 
-extern "C" NpcActor *NpcRegistry_FindAt(void *a, void *b) {
-    NpcActor *r = gNpcActorRegistry.findVillagerAt((s32)a, (s32)b);
-    if (r == 0) r = gNpcActorRegistry.findSpNpcAt((s32)a, (s32)b);
+extern "C" NpcActor *NpcRegistry_FindAt(s32 x, s32 y) {
+    NpcActor *r = gNpcActorRegistry.findVillagerAt(x, y);
+    if (r == 0) r = gNpcActorRegistry.findSpNpcAt(x, y);
     return r;
 }
 
-extern "C" s32 NpcRegistry_PickRandomVillager(void *a) {
-    return (s32)gNpcActorRegistry.pickRandomVillager((s32 *)a);
+extern "C" NpcActor *NpcRegistry_PickRandomVillager(s32 *idx) {
+    return gNpcActorRegistry.pickRandomVillager(idx);
 }
 
-extern "C" s32 NpcRegistry_AddVillager(void *a, void *b) {
-    return gNpcActorRegistry.addVillager((NpcActor *)a, (u16 *)b);
+extern "C" s32 NpcRegistry_AddVillager(NpcActor *actor, u16 *handle) {
+    return gNpcActorRegistry.addVillager(actor, handle);
 }
 
-extern "C" s32 NpcRegistry_RemoveVillager(void *a) {
-    return gNpcActorRegistry.removeVillager((u16 *)a);
+extern "C" s32 NpcRegistry_RemoveVillager(u16 *handle) {
+    return gNpcActorRegistry.removeVillager(handle);
 }
 
-extern "C" s32 NpcRegistry_AddSpNpc(void *a, void *b) {
-    return gNpcActorRegistry.addSpNpc((NpcActor *)a, (u16 *)b);
+extern "C" s32 NpcRegistry_AddSpNpc(NpcActor *actor, u16 *handle) {
+    return gNpcActorRegistry.addSpNpc(actor, handle);
 }
 
-extern "C" s32 NpcRegistry_RemoveSpNpc(void *a) {
-    return gNpcActorRegistry.removeSpNpc((u16 *)a);
+extern "C" s32 NpcRegistry_RemoveSpNpc(u16 *handle) {
+    return gNpcActorRegistry.removeSpNpc(handle);
 }
 

@@ -130,7 +130,6 @@ BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void *SaveVillagers_Get(void *tbl, s32 idx);
 void *_ZN12VillagerData13getVillagerIdEv(void *p);
 void *Item_GetSaveData();
-s32 _ZN10PlayerData11getPlayerIdEv(void *self);
 void *SaveVillagers_FindBestFriendOf(void *p, s32 v);
 void SaveVillagers_ClearTalkedToday(void *p);
 s32 SaveVillagers_Count(void *p);
@@ -279,7 +278,7 @@ void SpNpcTortimerBrightNightsTalk::attachOwner(SpNpcTortimerBrightNights *owner
 
 void SpNpcTortimerBrightNightsTalk::start(TalkStartMsg *out) {
     u16 h;
-    ((PlayerData *)(PlayerData_GetCurrent()))->getErrands();
+    PlayerData_GetCurrent()->getErrands();
     out->msgKey = "sp_npc_turtle5";
     if (massageChairSlot == -1) {
         h = 0x37e0;
@@ -359,7 +358,7 @@ void SpNpcTortimerBrightNightsTalk::onMessageEnd(u32) {
             MsgString9B o;
             if (((VillagerId *)(r))->isValid() == 0) {
                 void *b = Item_GetSaveData();
-                void *q = SaveVillagers_FindBestFriendOf((u8 *)b + 0x8a3c, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
+                void *q = SaveVillagers_FindBestFriendOf((u8 *)b + 0x8a3c, PlayerData_GetCurrent()->getPlayerId());
                 if (((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(q)))->isValid()) {
                     ((ContestRecord *)(gContestRecord))->setHolderVillager((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(q)));
                     r = ((ContestRecord *)(gContestRecord))->getHolderVillager();

@@ -1017,9 +1017,9 @@ void Keyboard_Init(Keyboard *s, s32 a)
     s->page = 1;
     s->tabCells[0].attr2 = (s->tabCells[0].attr2 & ~0x3ff) | 0x103;
     s->tabCells[1].attr2 = (s->tabCells[1].attr2 & ~0x3ff) | 0x107;
-    s32 pd;
-    if ((pd = PlayerData_GetCurrent()) != 0) {
-        if (((PlayerId *)(((PlayerData *)(pd))->getPlayerId()))->getGender() == 0) {
+    PlayerData *pd;
+    if ((pd = PlayerData_GetCurrent()) != NULL) {
+        if (pd->getPlayerId()->getGender() == 0) {
             Snd_SetKeySeMode(0);
             return;
         }

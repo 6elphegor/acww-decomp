@@ -50,7 +50,6 @@ extern "C" {
 }
 
 extern "C" {
-u8 *_ZN10PlayerData11getFaceTypeEv(void *p);
 }
 
 extern "C" {
@@ -251,9 +250,9 @@ extern "C" BOOL PlayerActor_SetSwollenFace(s32 a, u32 idx) {
     if (o->animId >= 0xa1) return FALSE;
     u8 *v;
     if (a) {
-        v = _ZN10PlayerData11getFaceTypeEv(p) + 0x10;
+        v = ((PlayerData *)(p))->getFaceType() + 0x10;
     } else {
-        v = _ZN10PlayerData11getFaceTypeEv(p);
+        v = ((PlayerData *)(p))->getFaceType();
     }
     (&o->faceTex)->load((u32)(v));
     return TRUE;

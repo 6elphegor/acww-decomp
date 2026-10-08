@@ -3,6 +3,7 @@
 #include "player/PlayerOptions.h"
 #include "proto/main/unk_0203c92c.h"
 #include "proto/main/unk_02097444.h"
+#include "player/PlayerData.h"
 
 extern "C" {
 void MI_CpuCopy8(void *src, void *dst, u32 n);
@@ -16,7 +17,6 @@ extern "C" {
 }
 
 extern "C" {
-PlayerOptions *_ZN10PlayerData10getOptionsEv(void *self);
 }
 
 extern "C" {
@@ -58,7 +58,7 @@ extern "C" void PlayerOptions_SetTalkVoice(u32 v) {
 extern "C" void PlayerOptions_Commit() {
     PlayerOptions *r5, *r4;
     u8 l;
-    r5 = _ZN10PlayerData10getOptionsEv(PlayerData_GetCurrent());
+    r5 = PlayerData_GetCurrent()->getOptions();
     r4 = PlayerOptions_Get();
     if (r4->isHiraganaChanged()) {
         if (PlayerOptions_IsHiragana() == 1) r5->setHiragana();

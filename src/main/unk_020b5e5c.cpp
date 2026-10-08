@@ -82,9 +82,9 @@ extern "C" s32 TouchTarget_ResolveNone(void) { return 0; }
 
 extern "C" s32 TouchTarget_ResolvePlayer(s32 a) { return PlayerActor_GetCharacter(a); }
 
-extern "C" s32 TouchTarget_ResolveVillager(s32 a) { return NpcRegistry_FindVillager((void *)a); }
+extern "C" s32 TouchTarget_ResolveVillager(s32 a) { return NpcRegistry_FindVillager(a); }
 
-extern "C" s32 TouchTarget_ResolveSpNpc(s32 a) { return NpcRegistry_FindSpNpc((void *)a); }
+extern "C" s32 TouchTarget_ResolveSpNpc(s32 a) { return NpcRegistry_FindSpNpc(a); }
 
 extern "C" s32 TouchTarget_ResolveBuilding(s32 a) {
     if (IsMode0()) {

@@ -447,14 +447,14 @@ BOOL Camera::onCreate() {
         s32 *g = &sCameraFollowVillagerIdx;
         s32 i = *g;
         if (i == 8) {
-            p = (VillagerActor *)NpcRegistry_PickRandomVillager((s32)g);
+            p = (VillagerActor *)NpcRegistry_PickRandomVillager(g);
         } else {
             i = i + 1;
             if (i == 8) {
                 i = (s32)p;
             } else {
                 while (i != sCameraFollowVillagerIdx) {
-                    p = NpcRegistry_GetVillager(i);
+                    p = (VillagerActor *)NpcRegistry_GetVillager(i);
                     if (p) {
                         if (p->isPickable()) break;
                     }

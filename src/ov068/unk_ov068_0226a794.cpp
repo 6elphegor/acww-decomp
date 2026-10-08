@@ -764,7 +764,7 @@ void KappnTaxi::execTaxiLeaveEnd() {
     if (sKappnTaxiLeaveTimer == 0) {
         TalkRequestFlags_ClearSceneHold();
         SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2c, 2, 2);
-        ((PlayerData *)(PlayerData_GetCurrent()))->reset();
+        PlayerData_GetCurrent()->reset();
         ((SaveData *)(gSaveData))->resetPlayer((s32)(PlayerData_GetCurrentIndex()));
     }
     if (sKappnTaxiLeaveTimer >= 0) {

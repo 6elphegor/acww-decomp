@@ -1747,8 +1747,8 @@ BOOL NameEntryMenu::tryStartConfirm() {
 
 void NameEntryMenu::loadDesignName() {
     u8 buf[0x10];
-    s32 a = PlayerData_getPatterns(PlayerData_GetCurrent());
-    ((PatternInfo *)(((Pattern *)(((PlayerPatterns *)(a))->getPatternByOrder(MenuCtrl_GetIndex())))->getInfo()))->getTitleRaw((u8 *)(buf));
+    PlayerPatterns *a = (PlayerPatterns *)PlayerData_GetCurrent()->getPatterns();
+    ((PatternInfo *)(((Pattern *)(a->getPatternByOrder(MenuCtrl_GetIndex())))->getInfo()))->getTitleRaw((u8 *)(buf));
     Mem_Copy(buf, text, 0x10);
 }
 
@@ -1757,8 +1757,8 @@ void NameEntryMenu::loadConstellationName() {
 }
 
 u8 *NameEntryMenu::getFriendEntry() {
-    s32 t = PlayerData_GetCurrent();
-    s32 p = PlayerData_getFriendList(t);
+    PlayerData *t = PlayerData_GetCurrent();
+    void *p = t->getFriendList();
     s32 idx = MenuCtrl_GetIndex();
     u8 *q = (u8 *)FriendList_GetEntries(p);
     return q + idx * 0x1c;
@@ -1791,8 +1791,8 @@ void NameEntryMenu::loadInitialText() {
 
 void NameEntryMenu::storeDesignName() {
     u8 buf[0x10];
-    s32 a = PlayerData_getPatterns(PlayerData_GetCurrent());
-    void *p = ((PlayerPatterns *)(a))->getPatternByOrder(MenuCtrl_GetIndex());
+    PlayerPatterns *a = (PlayerPatterns *)PlayerData_GetCurrent()->getPatterns();
+    void *p = a->getPatternByOrder(MenuCtrl_GetIndex());
     Mem_Copy(text, buf, 0x10);
     ((PatternInfo *)(((Pattern *)(p))->getInfo()))->setTitleRaw((u8 *)(buf));
 }
@@ -1832,9 +1832,9 @@ void NameEntryMenu::checkPasswordAnswer() {
 }
 
 void NameEntryMenu::storePlayerName() {
-    s32 t = PlayerData_GetCurrent();
-    ((PlayerData *)(t))->getPlayerId();
-    s32 u = PlayerData_getPlayerId(t);
+    PlayerData *t = PlayerData_GetCurrent();
+    t->getPlayerId();
+    s32 u = t->getPlayerId();
     s32 n = PlayerDataArray_FindById(gSavePlayers, u);
     s32 i;
     for (i = 0; i < 4; i++) {
@@ -1845,7 +1845,7 @@ void NameEntryMenu::storePlayerName() {
             }
         }
     }
-    ((PlayerId *)(((PlayerData *)(t))->getPlayerId()))->setName(text);
+    ((PlayerId *)(t->getPlayerId()))->setName(text);
 }
 
 s32 NameEntryMenu::storeTownName() {

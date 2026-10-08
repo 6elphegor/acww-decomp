@@ -165,9 +165,9 @@ extern "C" void PlayerInventory_AddBells(u8 *p, s32 v, s32 mode) {
     PlayerInventory_SetWallet((PlayerInventory *)p, x, mode);
 }
 
-extern "C" u8 *PlayerData_GetFutureLetter(u8 *p) { return p + 0x1c6c; }
+extern "C" u8 *PlayerData_GetFutureLetter(PlayerData *p) { return p->futureLetter; }
 
-extern "C" u8 *PlayerData_GetMotherLetterState(u8 *p) { return p + 0x223e; }
+extern "C" u8 *PlayerData_GetMotherLetterState(PlayerData *p) { return p->motherLetterState; }
 
 extern "C" u8 *PlayerData_GetLetterStorage(void *p) {
     s32 s = ((PlayerData *)(p))->getIndex();
@@ -293,7 +293,7 @@ extern "C" s32 PlayerDataArray_FindById(u8 *base, u16 *p) {
     return -1;
 }
 
-extern "C" u8 *PlayerDataArray_CreateResident(u8 *base, s32 a1, s32 a2, u32 idx) {
+extern "C" u8 *PlayerDataArray_CreateResident(u8 *base, void *name, s32 a2, u32 idx) {
     u8 *r = 0;
     if (PlayerData_IsResidentIndex(idx) == 1) {
         static ItemId tbl[4] = {ItemId(0x3884), ItemId(0x3888), ItemId(0x388c), ItemId(0x3890)};
@@ -316,7 +316,7 @@ extern "C" u8 *PlayerDataArray_CreateResident(u8 *base, s32 a1, s32 a2, u32 idx)
         hdr = 0xfff1;
         {
             u32 s = PlayerId_GenerateUniqueId(v, cnt);
-            ((PlayerData *)(r))->setupNew(a1, s, a2, 0, 0, 0, 0, 0, 0, 0, &hdr);
+            ((PlayerData *)(r))->setupNew(name, s, a2, NULL, 0, 0, 0, 0, 0, 0, &hdr);
         }
         idx &= 3;
         ((PlayerData *)(r))->setBed((u16 *)(&tbl[idx]));
@@ -351,20 +351,19 @@ extern "C" s32 PlayerData_GetGuestSlot(s32 idx) {
     return r;
 }
 
-extern "C" u32 PlayerData_GetBySessionSlot(u32 a) { return PlayerData_Get(PlayerSession_GetDataIndex(a)); }
+extern "C" PlayerData *PlayerData_GetBySessionSlot(u32 a) { return PlayerData_Get(PlayerSession_GetDataIndex(a)); }
 
-extern "C" u32 PlayerData_GetCurrent() { return PlayerData_GetBySessionSlot(gCommManager->localSlot); }
+extern "C" PlayerData *PlayerData_GetCurrent() { return PlayerData_GetBySessionSlot(gCommManager->localSlot); }
 
 extern "C" u32 PlayerData_GetCurrentIndex() { return PlayerSession_GetDataIndex(gCommManager->localSlot); }
 
-extern "C" u32 PlayerData_Get(s32 idx) {
-    u32 r = 0;
+extern "C" PlayerData *PlayerData_Get(s32 idx) {
+    PlayerData *r = NULL;
     if (PlayerData_IsResidentIndex(idx) == 1) {
-        if ((u32)gSavePlayers != 0) r = (u32)PlayerData_GetResident(gSavePlayers, idx);
+        if (gSavePlayers != NULL) r = (PlayerData *)PlayerData_GetResident(gSavePlayers, idx);
     } else if (PlayerData_IsGuestIndex(idx) == 1) {
-        if (GuestPlayers_Get() != 0) {
-            r = (u32)GuestPlayers_Get();
-            r += PlayerData_GetGuestSlot(idx) * 0x228c;
+        if (GuestPlayers_Get() != NULL) {
+            r = (PlayerData *)(GuestPlayers_Get() + PlayerData_GetGuestSlot(idx) * 0x228c);
         }
     }
     return r;

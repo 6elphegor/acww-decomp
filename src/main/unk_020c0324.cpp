@@ -64,7 +64,6 @@ void *TownBlockMap_Get(void);
 void Town_FindGateHouse(void *a, VecFx32 *b, s32 c, s32 d);
 void FieldPos_SnapToUnitCenter(VecFx32 *a, VecFx32 *b);
 void FieldPos_FromUnitCenter(VecFx32 *a, s32 b, s32 c);
-s32 _ZN10PlayerData18getLostChildRecordEv(void *a);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void TalkRequest_SetTargetDone(void *a);
 void TalkRequestFlags_ClearSceneHold(void);
@@ -241,7 +240,7 @@ BOOL SpNpcKatie::updateAct() {
         _ZN15KatieVisitState6setPosEP7VecFx32(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
     }
     if (Scene_GetCurrent() == 0xb) {
-        if (((LostChildRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getLostChildRecord()))->isEscorting()) {
+        if (((LostChildRecord *)(PlayerData_GetCurrent()->getLostChildRecord()))->isEscorting()) {
             _ZN15KatieVisitState6setPosEP7VecFx32(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
         }
     }
@@ -501,7 +500,7 @@ BOOL SpNpcKatie::mainAct08() {
     s32 r5 = Net_GetJoiningAid();
     CommManager *r7 = gCommManager;
     s32 r6 = r7->localSlot;
-    s32 s = PlayerData_GetBySessionSlot(r5);
+    PlayerData *s = PlayerData_GetBySessionSlot(r5);
     switch (reunionStep) {
     case 0:
         if (Unk_020c06a0_IsMode2()) {
@@ -541,9 +540,9 @@ BOOL SpNpcKatie::mainAct08() {
         if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
-            s32 t = NpcRegistry_FindSpNpc(0x23);
+            NpcActor *t = NpcRegistry_FindSpNpc(0x23);
             if (t) {
-                ((ActorTalkRequest *)(&talk))->setPartnerActor((NpcActor *)(t));
+                ((ActorTalkRequest *)(&talk))->setPartnerActor(t);
             }
             buf = 10;
             _ZN15TalkWindowState14setNextMessageEPhPv(talk.window, &buf, (u32)sSpNpcKatieMsgKey);
@@ -593,19 +592,19 @@ BOOL SpNpcKatie::mainAct08() {
         break;
     case 10:
         if ((r7)->isMyAid(0)) {
-            s32 x = _ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent());
+            s32 x = PlayerData_GetCurrent()->getLostChildRecord();
             if (((LostChildRecord *)(x))->isKaitlinRole() == 1) {
                 ((LostChildRecord *)(x))->clear();
             }
-            ((PlayerData *)(PlayerData_GetCurrent()))->setFlag(0x39);
-            ((LostChildRecord *)(((PlayerData *)((void *)s))->getLostChildRecord()))->clear();
+            PlayerData_GetCurrent()->setFlag(0x39);
+            ((LostChildRecord *)(s->getLostChildRecord()))->clear();
             _ZN15KatieVisitState5clearEv(TownSessionState_GetKatieState(TownSessionState_Get()));
             SceneWarp_RequestExit(Scene_GetWarpRequest(), 1);
         }
         if (r5 == r6) {
-            ((LostChildRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getLostChildRecord()))->clear();
+            ((LostChildRecord *)(PlayerData_GetCurrent()->getLostChildRecord()))->clear();
             _ZN15KatieVisitState5clearEv(TownSessionState_GetKatieState(TownSessionState_Get()));
-            ((PlayerData *)(PlayerData_GetCurrent()))->setFlag(0x31);
+            PlayerData_GetCurrent()->setFlag(0x31);
             SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         } else {
             SceneWarp_RequestExit(Scene_GetWarpRequest(), 1);
@@ -674,7 +673,7 @@ void SpNpcKatieTalk::start(TalkStartMsg *out_) {
 }
 
 void SpNpcKatieTalk::onMessageStart(u32) {
-    s32 a = _ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent());
+    s32 a = PlayerData_GetCurrent()->getLostChildRecord();
     ((ActorTalkRequest *)this)->setTownNameSlot(_ZN15LostChildRecord9getTownIdEv((void *)a), 0);
     ((ActorTalkRequest *)this)->setTownNameSlot(_ZN15LostChildRecord9getTownIdEv((void *)a), 1);
 }

@@ -454,7 +454,7 @@ BOOL LetterView::isToFutureSelf() {
 
 void LetterView::loadDefaultGreeting() {
     if ((u8)(recipient.partyType + 0xfe) <= 1) return;
-    u8 *p = (u8 *)((PlayerInventory *)(((PlayerData *)(PlayerData_GetCurrent()))->getInventory()))->getUnk988();
+    u8 *p = (u8 *)((PlayerInventory *)(PlayerData_GetCurrent()->getInventory()))->getUnk988();
     Mem_Copy(p, greeting, 0x18);
     namePos = p[0x50];
 }

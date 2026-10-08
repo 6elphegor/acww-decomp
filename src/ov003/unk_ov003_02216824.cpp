@@ -22,7 +22,6 @@
 #include "gfx/TwoLayerAnimModel.h"
 #include "item/LetterView.h"
 #include "net/CommManager.h"
-#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerData_GetMailbox  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0205b7b0.h"
@@ -31,6 +30,7 @@
 #include "proto/ov003/unk_ov003_02204ce8.h"
 #include "proto/ov003/unk_ov003_02216824.h"
 #include "proto/ov003/unk_ov003_022187fc.h"
+#include "proto/main/unk_02097444.h"
 
 
 
@@ -62,7 +62,6 @@ s32 Ground_GetDefaultY(s32 a);
 BOOL PlayerActor_LocalRequestMailboxOpen(void *p);
 u32 WorldCurve_ToCurved(void *out, void *in);
 void Mtx43_Translate(void *m, s32 a, s32 b, s32 c);
-void *PlayerData_GetCurrent();
 PlayerMailbox *PlayerData_GetMailbox(void *p);
 s32 Vec_DistXZ(void *a, void *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);

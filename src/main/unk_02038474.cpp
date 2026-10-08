@@ -1064,7 +1064,7 @@ extern "C" void ChatQuickMsg_CheckButtons(void *self) {
             u8 ch = code;
             String_Load2d(&buf, &ch, 0);
             MsgString9B t;
-            ((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getNameString((MsgString *)(void *)(&t));
+            ((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->getNameString((MsgString *)(void *)(&t));
             ChatBalloon_Post(g->myAid, (StrBuf *)&t, &buf);
             Snd_PlaySe(0x32);
             sChatQuickMsgCooldown = 0x1e;

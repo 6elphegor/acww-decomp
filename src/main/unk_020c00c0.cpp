@@ -538,8 +538,8 @@ extern "C" BOOL Weather_UpdateDaily(WeatherRecord *self, void *arg) {
         if (GameStart_IsActive()) {
             self->todayPattern = 4;
         } else {
-            s32 t = PlayerData_GetCurrent();
-            if (t && ((PlayerData *)t)->testFlag(1)) {
+            PlayerData *t = PlayerData_GetCurrent();
+            if (t && t->testFlag(1)) {
                 self->todayPattern = 4;
             } else {
                 EventDayEntry *e = (EventDayEntry *)Event_GetTodayList();

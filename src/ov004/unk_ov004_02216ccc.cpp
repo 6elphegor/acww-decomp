@@ -48,11 +48,9 @@ class HouseOwnerVillager;
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcActor_netIsTalkLocked _ZN8NpcActor15netIsTalkLockedEv
-#define NpcActor_netGetSlots _ZN8NpcActor11netGetSlotsEii
 #define NpcActor_netSetSlotsIfOwner _ZN8NpcActor18netSetSlotsIfOwnerEjjjz
 #define NpcActor_isNetOwner _ZN8NpcActor10isNetOwnerEv
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleToPlayer _ZN8NpcActor16getAngleToPlayerEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define VillagerMood_update _ZN12VillagerMood6updateEP12VillagerTalk
@@ -93,11 +91,9 @@ extern const u8 data_ov004_02240094[5];
 
 s32 NpcActor_netSetSlotsIfOwner(void *, u32, u32, u32);
 s32 NpcActor_isNetOwner(void *);
-s32 NpcActor_netGetSlots(void *, s32 *, s32 *);
 s32 NpcActor_netIsTalkLocked(void *);
 s32 VillagerTalk_getEventKind(void *);
 s32 Villager_GetResidentStatus(void *);
-s32 NpcActor_getPlayerActor(void *, u32);
 void VillagerTalk_begin(void *, void *, s32);
 void ActorTalkRequest_setTalkPlayer(void *, s32);
 s32 NpcTalkCtrl_isBusy(void *);
@@ -504,7 +500,7 @@ BOOL HouseOwnerAi::updateState03(HouseOwnerVillager *o) {
         s32 la;
         void *w = o->villagerData;
         s32 g;
-        if (((NpcActor *)(o))->netGetSlots((s32)(&a), (s32)(&b)) != 0 && ((la = a), la == (g = gCommManager->myAid)) && la == b) {
+        if (((NpcActor *)(o))->netGetSlots(&a, &b) != 0 && ((la = a), la == (g = gCommManager->myAid)) && la == b) {
             ((NpcActor *)(o))->netSetSlotsIfOwner(1, g, g);
             if (w != 0 && Villager_GetResidentStatus(w) != 3) {
                 o->talkKind = 12;
@@ -534,7 +530,7 @@ BOOL HouseOwnerAi::updateState04(HouseOwnerVillager *o) {
     if (((NpcActor *)(o))->isNetOwner() != 0) {
         s32 a = 4;
         s32 b = 4;
-        if (((NpcActor *)(o))->netGetSlots((s32)(&a), (s32)(&b)) != 0) {
+        if (((NpcActor *)(o))->netGetSlots(&a, &b) != 0) {
             if (a == 4) {
                 if (NetArea_IsLocalOwner() != 0) {
                     ((NpcActor *)(o))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
@@ -624,7 +620,7 @@ void HouseOwnerVillager::onInteractionEvent(u32 idx, u8 v) {
             if (((NpcActor *)(this))->isNetOwner() != 0) {
                 s32 a = 4;
                 s32 b = 4;
-                if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) != 0) {
+                if (((NpcActor *)(this))->netGetSlots(&a, &b) != 0) {
                     if (v == 4) {
                         goto chk;
                     }

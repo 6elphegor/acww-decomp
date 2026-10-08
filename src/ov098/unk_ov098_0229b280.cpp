@@ -93,7 +93,7 @@ extern "C" {
 
 extern "C" s32 PocketMenu_CanDropOutdoor(s32 a, u32 b) {
     InvItemStackPad pad;
-    if (((PlayerData *)PlayerData_GetCurrent())->testFlag(1) != 0) {
+    if (PlayerData_GetCurrent()->testFlag(1) != 0) {
         if ((b >= 0x14fe && b <= 0x1517) || (b >= 0x151d && b <= 0x151e)) {
             return 0;
         }
@@ -272,7 +272,7 @@ s32 *PocketMenu::getDirOffset(s16 a) {
 }
 
 BOOL PocketMenu::findBuryHole() {
-    u16 *pv = ((PlayerData *)PlayerData_GetCurrent())->getHeldItem();
+    u16 *pv = PlayerData_GetCurrent()->getHeldItem();
     BOOL r = FALSE;
     u32 v = *pv;
     if (v >= 0x1369 && v <= 0x1369) {

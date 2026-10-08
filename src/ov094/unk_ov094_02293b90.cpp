@@ -354,7 +354,7 @@ void LetterGrid::markSlot(s32 i) {
 }
 
 void *LetterGrid::getLetter(s32 i) {
-    void *r = (void *)((PlayerData *)(PlayerData_GetCurrent()))->getInventory();
+    void *r = (void *)PlayerData_GetCurrent()->getInventory();
     if (i >= 0 && i <= 9) {
         return PlayerInventory_getLetter((s32)r, i);
     }
@@ -440,7 +440,7 @@ void LetterGrid::setHighlighted(s32 i) {
 }
 
 void LetterGrid::drawPocketLetters(s32 a, s32 b) {
-    u8 *rec = (u8 *)((PlayerInventory *)(((PlayerData *)(PlayerData_GetCurrent()))->getInventory()))->getLetter(0);
+    u8 *rec = (u8 *)((PlayerInventory *)(PlayerData_GetCurrent()->getInventory()))->getLetter(0);
     s32 idx = 0;
     s32 i = idx;
     for (; i < 10; i++) {
@@ -631,7 +631,7 @@ BOOL LetterGrid_IsSlotEmpty(LetterGrid *o, s32 i)
 
 void LetterGrid_LoadPocketLetters(LetterGrid *o)
 {
-    s32 q = (s32)PlayerInventory_getLetter(PlayerData_getInventory(PlayerData_GetCurrent()), 0);
+    s32 q = (s32)((PlayerInventory *)PlayerData_GetCurrent()->getInventory())->getLetter(0);
     s32 k = 0;
     s32 i = 0;
     do {

@@ -823,7 +823,7 @@ void SpNpcLyleTalk::onClaimItemChosen() {
             }
         }
         if (same == 0) {
-            void *w = ((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord();
+            void *w = PlayerData_GetCurrent()->getSpNpcRecord();
             m.msgIndex = 0x25;
             ((PlayerSpNpcRecord *)(w))->addInsuranceClaim();
             ((ActorTalkRequest *)(this))->requestTakeItem(&m.item, 0, 4, 0);

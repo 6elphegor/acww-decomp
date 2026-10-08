@@ -76,7 +76,6 @@
 #define PROTO_LOCAL_PlayerActor_LocalRequestSeatApproach  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_LocalRequestStorageClose  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_LocalRequestStorageOpen  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Snd_BgmSyncReadBeat  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Snd_BgmSyncUpdate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Snd_MelodyBeatUpdate  // declared below: the shared prototype conflicts with the calls here
@@ -838,7 +837,6 @@ void Wallpaper_LoadTexture(void *o, u16 *p);
 BOOL _ZN14MatTexVramTask7requestEPvjS0_jj(void *o, void *a, u32 b, void *c, u32 d, u32 e);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *o, u32 a);
 s32 FtrSync_RequestAct(void *o, s32 a, u8 c, u8 d);
-void *PlayerData_GetCurrent();
 }
 }
 
@@ -1151,7 +1149,7 @@ BOOL FtrPiggyBank::enterFtrAct01() {
     void *r5;
     playSound1();
     if (actAid == p12::gCommManager->localSlot) {
-        r5 = p12::PlayerData_GetCurrent();
+        r5 = PlayerData_GetCurrent();
         if (r5 != 0) {
             if (((PlayerInventory *)(((PlayerData *)(r5))->getInventory()))->getTotalBells(0) > 0) {
                 PlayerInventory *r4 = (PlayerInventory *)((PlayerData *)(r5))->getInventory();
@@ -1825,9 +1823,9 @@ BOOL FtrMyDesign::initModel() {
     if (t == -1) t = 0;
     hi = (t >> 3) & 3;
     s32 lo = t & 7;
-    s32 pd = PlayerData_Get(hi);
+    PlayerData *pd = PlayerData_Get(hi);
     if (pd) {
-        if (((PlayerId *)(((PlayerData *)(pd))->getPlayerId()))->getGender() == 0) {
+        if (pd->getPlayerId()->getGender() == 0) {
             hiddenNode = p14::_ZN12G3dResAccess11findNodeIdxEi(modelResMdl, p14::data_ov004_0224bb8c);
         } else {
             hiddenNode = p14::_ZN12G3dResAccess11findNodeIdxEi(modelResMdl, p14::data_ov004_0224bb90);
@@ -3760,7 +3758,6 @@ void *FtrActor_MakeSpawnArg(u32, u32, u32, u32, u8, u32);
 BOOL FtrMgr_SpawnFromArg(void *self);
 u32 Ftr_GetUnk05(void *);
 u32 Item_GetFurnitureIndex(void *);
-void *PlayerData_GetCurrent(void);
 u16 Item_MakeFurniture(u32, u32);
 }
 }
@@ -6348,7 +6345,7 @@ void FtrBed::execFtrAct0B() {
         } else {
             u32 r4 = MenuCtrl_GetIndex();
             newBedItem = Pocket_GetItem(r4);
-            void *p = p20::PlayerData_GetCurrent();
+            void *p = PlayerData_GetCurrent();
             if (p) {
                 ((PlayerData *)(p))->setBed((u16 *)(&newBedItem));
             }

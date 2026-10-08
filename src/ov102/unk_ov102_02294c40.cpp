@@ -22,7 +22,6 @@
 #define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_GetObjX  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_GetObjY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerData_GetDresser  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
@@ -41,6 +40,7 @@
 #include "proto/ov094/unk_ov094_02292da8.h"
 #include "proto/ov094/unk_ov094_02293b90.h"
 #include "proto/ov102/unk_ov102_02294c40.h"
+#include "proto/main/unk_02097444.h"
 
 extern "C" {
 BOOL Clock_GetWeekday();
@@ -63,7 +63,6 @@ extern s32 gCurrentHeap;
 // extra decls
 s32 Oam_GetObjY(void *p);
 s32 Oam_GetObjX(void *p);
-void *PlayerData_GetCurrent();
 u8 *PlayerData_GetDresser(void *p);
 u16 *ChestStorage_GetItems(void *p);
 void Oam_DrawObj(u32 a, void *p, u32 b, u32 c, s32 d, u32 e, u32 f);

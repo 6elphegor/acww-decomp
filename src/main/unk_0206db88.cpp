@@ -182,7 +182,7 @@ extern "C" BOOL MenuScreen_IsClosed(void) {
 }
 
 extern "C" void MenuScreen_UploadClothPattern(u16 *p, BgVramTaskPair *x, u8 *img, u16 *pal) {
-    u32 r = PlayerData_GetCurrent();
+    PlayerData *r = PlayerData_GetCurrent();
     BOOL in1 = FALSE;
     u32 v = *p;
     if (v >= 0x11a8 && v <= 0x12a7) in1 = TRUE;
@@ -195,7 +195,7 @@ extern "C" void MenuScreen_UploadClothPattern(u16 *p, BgVramTaskPair *x, u8 *img
             Gfx2d_LinearToTiles4bppBytes(ClothTex_GetTexData(o), img, 4, 4);
             Heap_Free(heap, o);
             if (x->requestCharsAndPalette((u32)img, 5, 0, 0, 0xf, (u32)pal, 0) != 0) {
-                ((PlayerData *)(r))->setInventoryBackground(p);
+                r->setInventoryBackground(p);
             }
         }
     }
@@ -232,8 +232,8 @@ extern "C" BOOL MenuScreen_LoadBackground(u32 arg) {
     }
     BOOL ok;
     void *heap = *(void **)gCurrentHeap;
-    s32 r = PlayerData_GetCurrent();
-    u16 tmp = *_ZN10PlayerData22getInventoryBackgroundEv((void *)r);
+    PlayerData *r = PlayerData_GetCurrent();
+    u16 tmp = *_ZN10PlayerData22getInventoryBackgroundEv(r);
     void *a = Heap_AllocTail(heap, 0x200);
     if (a == NULL) {
         return FALSE;

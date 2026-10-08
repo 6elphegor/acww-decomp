@@ -23,6 +23,7 @@
 #include "game/StrBSizeData.h"
 #include "gfx/Model.h"
 #include "gfx/TwoLayerAnimModel.h"
+#include "proto/main/unk_020815f8.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
@@ -724,7 +725,6 @@ BOOL CommManager_isSlotActive(CommManager *p, u32 v);
 BOOL NetArea_IsLocalOwner();
 s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
 void *PlayerActor_GetActor(s32 a);
-VillagerActor *NpcRegistry_FindVillager(s32 i);
 s32 Vec_DistXZ(void *a, void *b);
 void Insect_antsAppear(void *p);
 BOOL File_Exists(char *s);
@@ -8385,7 +8385,7 @@ extern "C" void Insect_CheckDisturbance(void *a, Rec *e) {
             u8 i;
             void *pv = &e->position;
             for (i = 0; i < 8; i++) {
-                o = NpcRegistry_FindVillager(i);
+                o = (VillagerActor *)NpcRegistry_FindVillager(i);
                 if (o) {
                     s32 lim = e->disturbRadius;
                     if (Vec_DistXZ(pv, ACTOR_POS_AT(o)) < lim) {

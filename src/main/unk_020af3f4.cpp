@@ -19,7 +19,6 @@
 
 
 extern "C" {
-u32 _ZN10PlayerData11getPlayerIdEv(void *a);
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
 void Snowman_SendLetter(u32 a);
 extern u8 gLooseSnowballs[];
@@ -37,7 +36,7 @@ extern "C" void Snowman_SendLetter(u32 idx) {
             l.a = idx;
             ItemName s(&l.b);
             MailText_SetSlot(1, &s);
-            Letter_ComposeFromMail(&big, &l, "sp_npc_snowman", &data_020e2eb8, &data_020e2ebc, _ZN10PlayerData11getPlayerIdEv(obj));
+            Letter_ComposeFromMail(&big, &l, "sp_npc_snowman", &data_020e2eb8, &data_020e2ebc, ((PlayerData *)(obj))->getPlayerId());
             ((LetterView *)(&big))->setPresent(l.b, 1);
             LetterDelivery_QueueOutgoing(&big, 0);
         }

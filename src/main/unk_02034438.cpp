@@ -35,7 +35,6 @@
 #define PROTO_LOCAL_Bgm_ResetAll  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FaintBgm_Update  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Snd_DuckSubPlayers  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Taxi_IsArriving  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_exit  // declared below: the shared prototype conflicts with the calls here
@@ -70,7 +69,6 @@ extern void *gCommManager;
 extern u8 gSavePlayers[];
 void func_02004b60();
 s32 Item_SetDesign(u16 *out, s32 a, s32 b);
-BOOL PlayerData_GetCurrent();
 u32 func_0209888c();
 BOOL _ZN11CommManager8isOnlineEv(void *p);
 s32 Scene_GetCurrent();
@@ -277,7 +275,6 @@ extern u8 gSavePlayers[];
 extern Unk_02034574_Fn data_020d8dac;
 void func_02004b60();
 s32 Item_SetDesign(u16 *out, s32 a, s32 b);
-BOOL PlayerData_GetCurrent();
 u32 func_0209888c();
 BOOL _ZN11CommManager8isOnlineEv(void *p);
 s32 Scene_GetCurrent();
@@ -401,7 +398,6 @@ s32 BgmTracks_FadeInForScene(void *p);
 s32 BgmTracks_FadeOutForScene(void *p);
 s32 BgmTracks_OnBgmStart(void *p, u32 a);
 s32 Scene_GetCurrent(void);
-void *PlayerData_GetCurrent(void);
 }
 }
 
@@ -420,9 +416,8 @@ s32 Bgm_GetClock(void);
 s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(s32 o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 extern u32 gCommManager;
 s32 _ZN11CommManager8isOnlineEv(u32 a);
-s32 PlayerData_GetCurrent(void);
 s32 Taxi_IsArriving(void);
-s32 _ZN10PlayerData8testFlagEj(s32 a, s32 b);
+s32 _ZN10PlayerData8testFlagEj(PlayerData *a, s32 b);
 }
 }
 
@@ -756,13 +751,13 @@ void FieldSpecialBgm::stop()
 void FieldSpecialBgm::start() {
     active = 1;
     if (currentBgm == 0xffff) {
-        s32 r5 = Ns_02035e2c::PlayerData_GetCurrent();
+        PlayerData *r5 = PlayerData_GetCurrent();
         if (Ns_02035e2c::Taxi_IsArriving() != 0) {
             Ns_02035e2c::Bgm_RequestSilence(3, 0, 5);
             play(4, 0x45, 1);
         } else if (Taxi_IsLeaving() != 0) {
             play(0xd, 0x4a, 0);
-        } else if (r5 != 0 && (Ns_02035e2c::_ZN10PlayerData8testFlagEj(r5, 0x23) != 0 || (Ns_02035e2c::_ZN10PlayerData8testFlagEj(r5, 1) != 0 && PlayerErrands_IsJobActive(_ZN10PlayerData10getErrandsEv(r5)) == 0))) {
+        } else if (r5 != 0 && (Ns_02035e2c::_ZN10PlayerData8testFlagEj(r5, 0x23) != 0 || (Ns_02035e2c::_ZN10PlayerData8testFlagEj(r5, 1) != 0 && PlayerErrands_IsJobActive(r5->getErrands()) == 0))) {
             play(0x1c, 0x46, 0);
         } else if (r5 != 0 && Ns_02035e2c::_ZN10PlayerData8testFlagEj(r5, 1) != 0) {
             play(0x1d, 0x48, 0);
@@ -1190,7 +1185,7 @@ extern "C" void *Bgm_GetClock(void) { return Ns_020354d8::data_021c1b3c + 0x24c;
 
 void RoomBgmClosingView::updateClosingMusic() {
     BOOL a;
-    void *p = Ns_020354d8::PlayerData_GetCurrent();
+    void *p = PlayerData_GetCurrent();
     if (p) {
         if (((PlayerData *)(p))->testFlag(0x23) != 0 || ((PlayerData *)(p))->testFlag(1) != 0) {
             a = TRUE;

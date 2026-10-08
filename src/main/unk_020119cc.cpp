@@ -660,7 +660,6 @@ u32 _ZN13NpcActionCtrl12isActionDoneEv(u8 *p);
 void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
 void _ZN15TalkWindowState11lockAdvanceEv(void *p);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(u8 *p, u32 a, u32 b, u32 c, u32 d, u32 e, s32 f, u32 g, u32 h, u32 i, u32 j);
-void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(u8 *p, u32 a, u32 b, u8 *c, u8 *d, u32 e, u32 f, u32 g);
 ActorTalkRequest *_ZN8NpcActor14getTalkRequestEv(void *self);
 }
 }
@@ -673,7 +672,6 @@ extern u32 gVec3Zero;
 extern u16 data_020c6cc8;
 s32 Scene_GetCurrent(void);
 u32 _ZN15TalkWindowState13getChoiceListEv(u32 a);
-void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 s32 Npc_GetVoiceType(void *p);
 s32 _ZN14NpcSpeechState12getMouthTypeEv(void *p);
 s32 _ZN14NpcSpeechState10isSpeakingEv(void *p);
@@ -1381,9 +1379,9 @@ s16 NpcActor::getRelativeAngleTo(NpcActor *other) {
     return getAngleTo(other) - rotY;
 }
 
-u32 NpcActor::getPlayerActor(u32 id) {
+Character *NpcActor::getPlayerActor(u32 id) {
     using namespace nR;
-    return PlayerActor_GetCharacter(id);
+    return (Character *)PlayerActor_GetCharacter(id);
 }
 
 void NpcActor::setTalkRequest(ActorTalkRequest *p) {
@@ -1527,7 +1525,7 @@ void NpcActor::netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...) {
     }
 }
 
-s32 NpcActor::netGetSlots(s32 a, s32 b) {
+s32 NpcActor::netGetSlots(s32 *a, s32 *b) {
     using namespace nR;
     return NpcNetRecord_GetSlots(a, b, &npcHandle);
 }
@@ -1536,7 +1534,7 @@ BOOL NpcActor::netIsTalkLocked() {
     using namespace nR;
     s32 a = 4;
     s32 b = 4;
-    if (netGetSlots((s32)&a, (s32)&b) != 0) {
+    if (netGetSlots(&a, &b) != 0) {
         if (b < 4) {
             return TRUE;
         }
@@ -1981,19 +1979,19 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
 
 namespace nQ {
 extern "C" BOOL NpcActor_CanPlayerPay(void *self, s32 v) {
-    return PlayerInventory_CanAddBells(((PlayerData *)(PlayerData_GetCurrent()))->getInventory(), -v, 1, 0);
+    return PlayerInventory_CanAddBells(PlayerData_GetCurrent()->getInventory(), -v, 1, 0);
 }
 }
 
 namespace nQ {
 extern "C" void NpcActor_ChargePlayer(void *self, s32 v) {
-    PlayerInventory_AddBells(((PlayerData *)(PlayerData_GetCurrent()))->getInventory(), -v, 1);
+    PlayerInventory_AddBells(PlayerData_GetCurrent()->getInventory(), -v, 1);
 }
 }
 
 namespace nQ {
 extern "C" s32 NpcActor_CheckPayoutFits(void *self, s32 v, s32 w) {
-    void *p = PlayerData_GetCurrent() ? ((PlayerData *)(PlayerData_GetCurrent()))->getInventory() : 0;
+    void *p = PlayerData_GetCurrent() ? PlayerData_GetCurrent()->getInventory() : 0;
     s32 lo = p ? PlayerInventory_GetBellsRoom(p, 0, 0) : 0;
     s32 hi = p ? PlayerInventory_GetBellsRoom(p, 1, w) : 0;
     s32 r = 2;
@@ -2008,7 +2006,7 @@ extern "C" s32 NpcActor_CheckPayoutFits(void *self, s32 v, s32 w) {
 
 namespace nQ {
 extern "C" void NpcActor_PayPlayer(void *self, s32 v) {
-    PlayerInventory_AddBells(((PlayerData *)(PlayerData_GetCurrent()))->getInventory(), v, 1);
+    PlayerInventory_AddBells(PlayerData_GetCurrent()->getInventory(), v, 1);
 }
 }
 
@@ -2444,11 +2442,11 @@ void NpcLookAt::setTargetPos(VecFx32 *v) {
     targetPos.z = v->z;
 }
 
-void NpcLookAt::setTarget(u8 type, s32 pri, s32 tgt, VecFx32 *v, s32 h, s32 lim, u8 flag) {
+void NpcLookAt::setTarget(u8 type, s32 pri, Character *tgt, VecFx32 *v, s32 h, s32 lim, u8 flag) {
     using namespace nP;
     if (disabled == 0 && priority != 4 && pri >= priority) {
         lookType = type;
-        targetActor = (Character *)tgt;
+        targetActor = tgt;
         targetPos.x = v->x;
         targetPos.y = v->y;
         targetPos.z = v->z;
@@ -5849,7 +5847,7 @@ void ActorTalkRequest::onTag09_3() {
     using namespace nH;
     NpcActor *p = getActor(actionActorIndex);
     if (p != NULL) {
-        _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(((void *)((u8 *)(p) + (0x3b0))), 4, 0, 0, (s32)&gVec3Zero, TalkRequest_GetPlayerId(), 0, 0);
+        p->lookAt.setTarget(4, 0, NULL, (VecFx32 *)&gVec3Zero, TalkRequest_GetPlayerId(), 0, 0);
     }
 }
 
@@ -5863,7 +5861,7 @@ void ActorTalkRequest::onTag09_4() {
         if (h != NULL) {
             h->onEventTag(0);
         }
-        p5->lookAt.setTarget(4, 0, (s32)(NULL), (VecFx32 *)(gVec3Zero), u, 0, 0);
+        p5->lookAt.setTarget(4, 0, NULL, (VecFx32 *)(gVec3Zero), u, 0, 0);
         p5->actionCtrl.requestAction(3, 2, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
     }
 }
@@ -5900,7 +5898,7 @@ void ActorTalkRequest::onTag09_5() {
         case 1: {
             NpcActor *p = getActor(s);
             if (p != NULL) {
-                p->lookAt.setTarget(2, 0, (s32)(p4), (VecFx32 *)(gVec3Zero), 4, 0, 0);
+                p->lookAt.setTarget(2, 0, p4, (VecFx32 *)(gVec3Zero), 4, 0, 0);
             }
             break;
         }
@@ -5946,7 +5944,7 @@ void ActorTalkRequest::onTag09_7() {
         case 0: {
             NpcActor *p = getActor(s);
             if (p != NULL) {
-                p->lookAt.setTarget(2, 0, (s32)(p4), (VecFx32 *)(gVec3Zero), 4, 0, 0);
+                p->lookAt.setTarget(2, 0, p4, (VecFx32 *)(gVec3Zero), 4, 0, 0);
             }
             break;
         }

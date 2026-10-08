@@ -232,6 +232,8 @@ public:
 #include "save/TownExchangeRecord.h"
 #include "sys/Heap.h"
 #include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020815f8.h"
 class EncodedString16 : public EncodedString {
 public:
     EncodedString16();
@@ -346,7 +348,6 @@ BOOL TownMap_FindBuildingAbove(s32, s32, s32, s32 *, s32 *);
 BOOL TownMap_IsUnitWalkable(s32, s32, void *);
 BOOL Item_IsFurniture(void *);
 BOOL Item_IsTreeStage0(void *);
-s32 NpcRegistry_FindAt(s32, s32);
 void *PlayerActor_GetBodyPos(s32);
 s32 PlayerActor_GetCharacter(s32);
 struct VillagerStateTable *VillagerStates_Get();
@@ -552,7 +553,6 @@ void *VillagerPlanBlock_GetPlan(void *p);
 BOOL _ZN12VillagerPlan20isTrendOlderThanWeekEPv(void *a, void *b);
 void Clock_GetDateTime(void *p);
 void Villager_RecordPlayerActivity(void *o, u32 kind, s32 v);
-VillagerActor *NpcRegistry_FindVillagerByHandle(void *a);
 BOOL MapBlock_HasAllAttr(void *cell, s32 v);
 void _ZN12VillagerDataD1Ev(void *p);
 void _ZN12VillagerDataC1Ev(void *p);
@@ -723,7 +723,6 @@ s32 _ZN10VillagerId7isValidEv(s32);
 s32 Town_GetMaxOutdoorVillagers();
 s32 SaveVillagers_CountImpl(void *);
 s32 VillagerStates_GetBirthdayVisitor(void *);
-s32 PlayerData_GetCurrent(void *);
 s32 _ZN10PlayerData8testFlagEj(s32, s32);
 s32 VillagerId_GetPersonality(s32);
 s32 Personality_IsAsleep(s32, s32);
@@ -827,7 +826,6 @@ s32 Date_IsAfterOrEqual(void *, void *);
 s32 Date_DaysBetween(void *, void *);
 void VillagerStates_SetBirthdayVisitor(s32);
 s32 Scene_GetCurrent();
-void *PlayerData_GetCurrent();
 s32 _ZN10PlayerData8testFlagEj(void *, s32);
 void *_ZN10PlayerData12getInventoryEv(void *);
 s32 _ZN15PlayerInventory15findEmptyPocketEv(void *);
@@ -986,9 +984,8 @@ void HouseVisitInvite_Clear(void *p);
 void _ZN12ErrandRecord7setStepEh(void *p, s32 v);
 BOOL Villager_SendHouseVisitLetter(u32 a, s32 b, void *c);
 BOOL SaveVillagers_ShouldAssignErrands(void *p);
-s32 PlayerData_GetCurrent(void *p);
 s32 Errand_GetClassIndex(u32 *o, u32 v);
-u32 Villager_GetErrandKind(void *b, void *p, s32 a);
+u32 Villager_GetErrandKind(void *b, void *p, void *a);
 s32 Errand_GetClass(u32 x);
 s32 VillagerPlanBlock_GetPlan(s32 p);
 s32 _ZN12VillagerPlan8hasTrendEv(s32 p);
@@ -1037,7 +1034,6 @@ VillagerId *_ZN12VillagerData13getVillagerIdEv(u8 *p);
 s32 SaveVillagers_Count(u8 *self);
 s32 Errand_GetClass(s32 v);
 s32 Villager_GetState(u8 *p);
-u8 *PlayerData_GetCurrent();
 s32 _ZN12ErrandRecord8isActiveEv(void *p);
 s32 _ZN12ErrandRecord7getKindEv(void *p);
 u8 *_ZN10PlayerData10getErrandsEv(u8 *p);
@@ -1271,7 +1267,6 @@ s32 memcmp(const void *, const void *, u32);
 u8 *Villager_GetState(void *);
 s32 VillagerState_DoubleTalkUrge(void *);
 s32 VillagerState_GetMood(void *);
-void *PlayerData_GetCurrent();
 void *_ZN10PlayerData11getPlayerIdEv(void *);
 BOOL _ZN10PlayerData8testFlagEj(void *, s32);
 s32 SpeciesBits_Test(s32, u32 *);
@@ -1350,7 +1345,6 @@ void Letter_ComposeVillagerMailZ(void *, u8 *, u8 *, u8 *, u8 *, void *, u8 *, v
 s32 LetterDelivery_QueueOutgoing(void *, s32);
 u32 Random_GlobalBelow(u32);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
-void *PlayerData_GetCurrent(void);
 void *_ZN10PlayerData11getPlayerIdEv(void *);
 s32 _ZN6TownId15getTownRelationEv(void *);
 void *Villager_FindMemory(void *, void *);
@@ -1464,7 +1458,6 @@ s32 Item_GetPrice(u16 *);
 s32 Random_GlobalBelow(s32);
 s32 Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
-s32 PlayerData_GetCurrent();
 s32 Villager_FindMemory(void *, s32);
 s32 String_Load(void *, void *, void *);
 s32 _ZN14VillagerMemory13getFriendshipEv(s32);
@@ -1678,7 +1671,6 @@ void *PlayerErrandSlot_GetVillager(void *, s32);
 s32 memcmp(void *, void *, s32);
 s32 Arbeit_IsLetterRecipient(void *, void *);
 s32 HouseVisitInvite_IsFrom(void *, void *);
-void *PlayerData_GetCurrent();
 void *_ZN10PlayerData10getErrandsEv(void *);
 void *VillagerPlanBlock_GetPlan(void *);
 s32 _ZN12VillagerPlan8getStateEv(void *);
@@ -1846,7 +1838,6 @@ extern "C" {
 struct EncodedString10Storage {
     u32 v[7];
 };
-void *PlayerData_GetCurrent();
 void *_ZN10PlayerData11getPlayerIdEv(void *);
 s32 _ZN8PlayerId7isValidEv(void *);
 u32 _ZN12VillagerData13getVillagerIdEv(u32);
@@ -1994,7 +1985,6 @@ s32 TownId_IsValid(void *p);
 s32 TownId_GetNameString(void *a, void *b);
 s32 MailText_SetSlot(s32 a, void *b);
 s32 Villager_SendLetterWithPaper(void *a, u32 b, void *c, void *d, void *e, s32 f);
-void *PlayerData_GetCurrent();
 s32 _ZN10PlayerData8testFlagEj(void *p, s32 a);
 s32 Clock_GetDateTime(void *p);
 s32 MI_CpuCopy8(void *a, void *b, s32 n);
@@ -2162,7 +2152,6 @@ s32 Villager_GetInfoByte2(u8 *p);
 u8 *_ZN12VillagerData13getVillagerIdEv(u8 *p);
 s32 VillagerId_GetVoiceType(u8 *p);
 s32 SaveVillagers_IsValidIndex(s32 i);
-s32 NpcRegistry_GetSlotCount();
 s32 _ZN16NpcActorRegistry8getSpNpcEi(void *tbl, s32 i);
 s32 _ZN16NpcActorRegistry11getVillagerEi(void *tbl, s32 i);
 s32 _ZN16NpcActorRegistry11removeSpNpcEPt(void *tbl, void *p);
@@ -2217,12 +2206,10 @@ BOOL Villager_GetDefaultCatchphrase(MsgString *buf, u32 x);
 s32 SpNpc_GetInfoByte0(u16 *p);
 u32 Npc_GetInfoByte2(u16 *p);
 u32 Npc_GetVoiceType(u16 *p);
-BOOL Npc_GetName(u8 *self, u16 *p);
+BOOL Npc_GetName(MsgString *self, u16 *p);
 BOOL Villager_GetSpeciesName(MsgString *buf, u32 x);
 u8 *SpNpc_GetInfo(u16 *p);
 u8 *VillagerInfo_Get(u32 n);
-s32 NpcRegistry_FindVillager(void *a);
-s32 NpcRegistry_FindSpNpc(void *a);
 }
 }
 
@@ -3112,7 +3099,7 @@ extern "C" BOOL Villager_GetSpeciesName(MsgString *buf, u32 x) {
 }
 
 namespace nQ {
-extern "C" BOOL Npc_GetName(u8 *self, u16 *p) {
+extern "C" BOOL Npc_GetName(MsgString *self, u16 *p) {
     s32 idx = *p & 0xfff;
     BOOL r = FALSE;
     s32 t = (s32)(*p & 0xf000) >> 12;
@@ -3124,7 +3111,7 @@ extern "C" BOOL Npc_GetName(u8 *self, u16 *p) {
     } else {
         if (idx < 0x26) {
             u8 k = idx;
-            String_Load((MsgString *)self, &k, (const char *)((u8 *)"st_spnpc_name"));
+            String_Load(self, &k, (const char *)((u8 *)"st_spnpc_name"));
             r = TRUE;
         }
     }
@@ -8435,7 +8422,7 @@ extern "C" s32 Villager_GetPlayerErrandKind(u8 *self, u8 *p, u8 *r4) {
     u16 *r5 = (u16 *)_ZN12VillagerData13getVillagerIdEv(p);
     s32 result = 0x16;
     if (r4 == NULL) {
-        r4 = PlayerData_GetCurrent();
+        r4 = (u8 *)PlayerData_GetCurrent();
     }
     if (r4 != NULL) {
         r4 = _ZN10PlayerData10getErrandsEv(r4);
@@ -8480,7 +8467,7 @@ extern "C" s32 Villager_GetErrandKind(u8 *self, u8 *p, u8 *r5) {
     u8 *q = (u8 *)Villager_GetState(p);
     s32 r7 = 0x16;
     if (r5 == NULL) {
-        r5 = PlayerData_GetCurrent();
+        r5 = (u8 *)PlayerData_GetCurrent();
     }
     if (q != NULL && r5 != NULL) {
         s32 r = Villager_GetPlayerErrandKind(self, p, r5);
@@ -8537,7 +8524,7 @@ extern "C" void VillagerStates_ResetErrands() {
 namespace nE {
 extern "C" void SaveVillagers_AssignErrands(void *bb) {
     u8 *b = (u8 *)bb;
-    s32 a = PlayerData_GetCurrent(b);
+    PlayerData *a = PlayerData_GetCurrent();
     s32 r5 = 0x11;
     s32 r4 = 8;
     if (a != 0) {
@@ -9347,7 +9334,7 @@ extern "C" void SaveVillagers_PickPlayerBirthdayVisitor(u8 *self, void *p) {
             if (((PlayerData *)(p))->testFlag(1) == 0) {
                 if (((PlayerInventory *)(((PlayerData *)(p))->getInventory()))->findEmptyPocket() != -1) {
                     void *a = ((PlayerData *)(p))->getPlayerId();
-                    u8 *r4 = _ZN10PlayerData11getBirthdayEv(p);
+                    u8 *r4 = ((PlayerData *)(p))->getBirthday();
                     if (*(u16 *)r4 != 0) {
                         if (((PlayerId *)(a))->isValid() != 0) {
                             ClockDateTime bb;
@@ -9873,9 +9860,9 @@ extern "C" void OutdoorSchedule_ApplySleep(OutdoorSchedule *self, u8 *p, s32 x) 
     s32 r;
     BOOL v;
     s32 t;
-    s32 o = PlayerData_GetCurrent(self);
+    PlayerData *o = PlayerData_GetCurrent();
     if (o) {
-        r = ((PlayerData *)(o))->testFlag(1);
+        r = o->testFlag(1);
     } else {
         r = 0;
     }
@@ -10208,7 +10195,7 @@ extern "C" void *func_020789a8(void *p) { return p; }
 
 namespace nB {
 extern "C" BOOL Villager_IsActorInBox(u16 *h, s32 x0, s32 x1, s32 z0, s32 z1) {
-    VillagerActor *o = NpcRegistry_FindVillagerByHandle(h);
+    VillagerActor *o = (VillagerActor *)NpcRegistry_FindVillagerByHandle(h);
     if (o != NULL && o->isPickable()) {
         s32 *pos = &o->position.x;
         BOOL result = FALSE;
@@ -10821,7 +10808,7 @@ namespace nA {
 extern "C" BOOL Field_IsUnitOccupied(s32 a, s32 b) {
     BOOL r = Field_FindPlayerAtUnit(a, b);
     if (r == 0) {
-        r = NpcRegistry_FindAt(a, b);
+        r = NpcRegistry_FindAt(a, b) != NULL;
     }
     return r;
 }

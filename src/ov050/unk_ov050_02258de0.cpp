@@ -1284,7 +1284,7 @@ BOOL SpNpcNookShop::mainAct08() {
         s32 a = 4;
         s32 b = 4;
         u32 x, t;
-        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) && ((x = a), x == (t = gCommManager->myAid)) && x == b) {
+        if (((NpcActor *)(this))->netGetSlots(&a, &b) && ((x = a), x == (t = gCommManager->myAid)) && x == b) {
             netSetSlotsIfOwner(1, t, t);
             talk.resetMsg();
             ((ActorTalkRequest *)(&talk))->setTalkPlayer(getPlayerActor(4));
@@ -1328,7 +1328,7 @@ BOOL SpNpcNookShop::mainAct09() {
     if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) && a == 4 && NetArea_IsLocalOwner()) {
+        if (((NpcActor *)(this))->netGetSlots(&a, &b) && a == 4 && NetArea_IsLocalOwner()) {
             netSetSlotsIfOwner(1, gCommManager->myAid, 4);
             changeAct(0xd);
         }
@@ -2244,7 +2244,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0C(TalkStartMsg *out) {
             }
         }
         ownerNpc->arbeitPrompted = 1;
-        if (PlayerData_testFlag(g, 10) && SaveVillagers_AllKnowPlayer(gSaveVillagers, PlayerData_getPlayerId(g)) &&
+        if (((PlayerData *)(g))->testFlag(10) && SaveVillagers_AllKnowPlayer(gSaveVillagers, ((PlayerData *)(g))->getPlayerId()) &&
             *PlayerData_getBirthday(PlayerData_GetCurrent()) != 0) {
             ErrandRecord_setStep(p, 1);
             out->msgIndex = 0x1a;
@@ -2258,7 +2258,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0D(TalkStartMsg *out) {
     void *g = PlayerData_GetCurrent();
     Pocket_FindEmpty(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(((PlayerData *)(g))->getErrands(), 0)));
     if (!checkNotInUniform(out)) {
-        if (!(PlayerData_testFlag(g, 10) && SaveVillagers_AllKnowPlayer(gSaveVillagers, PlayerData_getPlayerId(g)))) {
+        if (!(((PlayerData *)(g))->testFlag(10) && SaveVillagers_AllKnowPlayer(gSaveVillagers, ((PlayerData *)(g))->getPlayerId()))) {
             if (ownerNpc->arbeitPrompted != 0) {
                 out->msgIndex = 0x13;
             } else {
@@ -2276,7 +2276,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0D(TalkStartMsg *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg0E(TalkStartMsg *out) {
     if (!checkNotInUniform(out)) {
-        if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(((PlayerData *)(PlayerData_GetCurrent()))->getErrands(), 0))) == 1) {
+        if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(PlayerData_GetCurrent()->getErrands(), 0))) == 1) {
             out->msgIndex = 0x1e;
         } else if (ownerNpc->arbeitPrompted == 0) {
             out->msgIndex = 0x1c;
@@ -2328,7 +2328,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0F(TalkStartMsg *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg10(TalkStartMsg *out) {
     if (((SpNpcNookShopTalk *)(this))->checkNotInUniform(out) == 0) {
-        void *h = ((PlayerData *)(PlayerData_GetCurrent()))->getErrands();
+        void *h = PlayerData_GetCurrent()->getErrands();
         if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))) == 1) {
             out->msgIndex = 0x2c;
         } else if (ownerNpc->arbeitPrompted == 0) {
@@ -2342,7 +2342,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg10(TalkStartMsg *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg11(TalkStartMsg *out) {
     if (((SpNpcNookShopTalk *)(this))->checkNotInUniform(out) == 0) {
-        void *h = ((PlayerData *)(PlayerData_GetCurrent()))->getErrands();
+        void *h = PlayerData_GetCurrent()->getErrands();
         if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))) == 1) {
             out->msgIndex = 0x31;
         } else if (ownerNpc->arbeitPrompted == 0) {
@@ -2356,7 +2356,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg11(TalkStartMsg *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg12(TalkStartMsg *out) {
     if (((SpNpcNookShopTalk *)(this))->checkNotInUniform(out) == 0) {
-        void *h = ((PlayerData *)(PlayerData_GetCurrent()))->getErrands();
+        void *h = PlayerData_GetCurrent()->getErrands();
         if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))) == 1) {
             out->msgIndex = 0x33;
         } else if (ownerNpc->arbeitPrompted == 0) {
@@ -2437,7 +2437,7 @@ extern "C" const TalkStartMsg sSpNpcNookShopTopicTable[31] = {
 };
 
 void SpNpcNookShopTalk::onArbeitMessageEnd() {
-    void *h = ((PlayerData *)(PlayerData_GetCurrent()))->getErrands();
+    void *h = PlayerData_GetCurrent()->getErrands();
     PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0));
     nextMsg = 0xff;
     static SpNpcNookShopArbeitMessageEndHandler tbl[24] = {
@@ -3781,7 +3781,7 @@ void SpNpcNookShop::onInteractionEvent(u32 cmd, u8 arg) {
             if (isNetOwner()) {
                 a = 4;
                 b = 4;
-                if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b))) {
+                if (((NpcActor *)(this))->netGetSlots(&a, &b)) {
                     if ((arg != 4 && (s32)arg == b) || arg == 4) {
                         netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                         changeAct(0xd);
@@ -3974,7 +3974,7 @@ BOOL SpNpcNookShop::tryClosingTimeTalk() {
     if (((CommManager *)(gCommManager))->isOnline() != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         return FALSE;
     }
-    if (((PlayerData *)(PlayerData_GetCurrent()))->testFlag(1)) {
+    if (PlayerData_GetCurrent()->testFlag(1)) {
         return FALSE;
     }
     if (ShopClosingTime_isPastClosingTime(TownSessionState_GetClosingTime(TownSessionState_Get()))) {

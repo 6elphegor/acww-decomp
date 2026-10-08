@@ -325,7 +325,7 @@ extern "C" BOOL SpNpcCornimer_IsAcorn(u16 *p, s32 m) {
 
 void SpNpcCornimerTalk::onMessageEnd(u32) {
     CornimerMsgEndLocals buf;
-    void *g = ((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord();
+    void *g = PlayerData_GetCurrent()->getSpNpcRecord();
     u32 k;
     buf.v[0] = 0xfff1;
     k = 0xff;

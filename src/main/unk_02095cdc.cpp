@@ -32,7 +32,6 @@
 #define PROTO_LOCAL_MotherLetter_GetFileName  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_MotherLetter_Send  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerDataArray_FindById  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerData_GetFutureLetter  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_VillagerId_Construct  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_VillagerId_CopyFrom  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_VillagerId_Destruct  // declared below: the shared prototype conflicts with the calls here
@@ -180,13 +179,10 @@ void func_02096e00();
 LetterView *FutureLetter_GetLetter(void *);
 void func_02096ed4();
 s32 PlayerDataArray_FindById(void *, void *);
-void *PlayerData_GetFutureLetter(void *);
 s32 func_02097ff4(s32, s32);
 s32 func_0209801c(s32, s32);
 s32 func_02098044(s32, s32);
-u8 *_ZN10PlayerData11getBirthdayEv(void *);
 s32 func_02098320(s32);
-void *_ZN10PlayerData8getIndexEv(void *);
 void *_ZN10PlayerData11getPlayerIdEv(void *);
 u32 Date_GetNthWeekdayDay(u32, u32, u32, u32);
 void DateTime_AddDays(void *, s32);
@@ -251,7 +247,7 @@ extern "C" s32 LetterDelivery_DeliverOutgoing(void) {
 
 extern "C" BOOL LetterDelivery_IsMailboxFull(s32 idx) {
     if (idx == -1) {
-        idx = (s32)_ZN10PlayerData8getIndexEv(PlayerData_GetCurrent());
+        idx = PlayerData_GetCurrent()->getIndex();
     }
     Letter *p = data_021e935c[idx].getLetter(0);
     s32 i;
@@ -384,7 +380,7 @@ extern "C" void LetterDelivery_PostOfficeClosedNop(void) {}
 
 extern "C" s32 LetterDelivery_HasFutureLetter(void *p) {
     if (p == 0) p = PlayerData_GetCurrent();
-    if (FutureLetter_GetLetter(PlayerData_GetFutureLetter(p))->getState() != 0) return 1;
+    if (FutureLetter_GetLetter(PlayerData_GetFutureLetter((PlayerData *)p))->getState() != 0) return 1;
     return 0;
 }
 
@@ -407,7 +403,7 @@ extern "C" void LetterDelivery_Update(void) {
     s32 z0, z1, z2;
     s32 i;
     u8 *r6;
-    void *s0;
+    PlayerData *s0;
     LetterView *s4;
     A.a = 0; A.b = 0;
     Clock_GetDateTime(&A);
@@ -442,7 +438,7 @@ extern "C" void LetterDelivery_Update(void) {
     z2 = 0; z1 = 0; z0 = 0;
     for (i = 0; i < 4; i++) {
         if (PlayerDataArray_IsUsed(gSavePlayers, i)) {
-            s0 = PlayerData_GetResident(gSavePlayers, i);
+            s0 = (PlayerData *)PlayerData_GetResident(gSavePlayers, i);
             r6 = ((FutureLetter *)(PlayerData_GetFutureLetter(s0)))->getDeliveryDate();
             s4 = FutureLetter_GetLetter(PlayerData_GetFutureLetter(s0));
             if (((LetterView *)s4)->getState()) {
@@ -486,16 +482,16 @@ extern "C" void LetterDelivery_DeliverReceivedLetter(void) {
     if (ReceivedLetter_HasLetter(r6) != 0) {
         if (LetterDelivery_IsMailboxFull(-1) == 0) {
             void *r5 = ReceivedLetter_GetLetter(r6);
-            void *r4 = _ZN10PlayerData8getIndexEv(PlayerData_GetCurrent());
+            s32 r4 = PlayerData_GetCurrent()->getIndex();
             Letter_SetRecipientResident(r5, r4);
             Letter_MarkReceived(r5);
-            if (LetterDelivery_PutInMailbox((Letter *)r5, (s32)r4, 0) != 0) ReceivedLetter_Clear(r6);
+            if (LetterDelivery_PutInMailbox((Letter *)r5, r4, 0) != 0) ReceivedLetter_Clear(r6);
         }
     }
 }
 
 extern "C" void MotherLetter_OnNewDay(Unk_02096354_Arg *p, s32 n) {
-    void *r6 = PlayerData_GetCurrent();
+    PlayerData *r6 = PlayerData_GetCurrent();
     void *r4;
     if (r6 == 0) return;
     if (n < 1) return;
@@ -524,9 +520,9 @@ extern "C" void MotherLetter_OnNewDay(Unk_02096354_Arg *p, s32 n) {
 }
 
 extern "C" s32 MotherLetter_TrySendBirthday(Unk_02096354_Arg *p) {
-    void *r5 = PlayerData_GetCurrent();
+    PlayerData *r5 = PlayerData_GetCurrent();
     void *r6 = PlayerData_GetMotherLetterState(r5);
-    u8 *q = _ZN10PlayerData11getBirthdayEv(r5);
+    u8 *q = ((PlayerData *)(r5))->getBirthday();
     if (*(u16 *)q == 0) return 0;
     if (p->year == ((MotherLetterState *)(r6))->getBirthdayLetterYear()) return 0;
     s32 r;

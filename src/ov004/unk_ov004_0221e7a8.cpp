@@ -4848,9 +4848,9 @@ extern "C" void PlayerActor_NetHaircutFinish(Obj *o) {
 
 extern "C" void PlayerActor_EndHaircutFinish(Obj *o) {
     if (((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot)) {
-        s32 r4 = PlayerData_GetBySessionSlot(o->sessionSlot);
-        s32 r6 = ((PlayerData *)(r4))->getHairStyle();
-        s32 r2 = ((PlayerData *)(r4))->getHairColor();
+        PlayerData *r4 = PlayerData_GetBySessionSlot(o->sessionSlot);
+        s32 r6 = r4->getHairStyle();
+        s32 r2 = r4->getHairColor();
         PlayerActor_NetSendHair(o, r6, r2);
     }
 }

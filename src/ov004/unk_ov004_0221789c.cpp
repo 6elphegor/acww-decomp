@@ -62,7 +62,6 @@ class FleaMarketSellerVillager;
 #define NpcMoveCtrl_setTargetAngle _ZN11NpcMoveCtrl14setTargetAngleEs
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleToPlayer _ZN8NpcActor16getAngleToPlayerEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define NpcActor_getDistanceToPlayer _ZN8NpcActor19getDistanceToPlayerEj
@@ -101,7 +100,6 @@ VecFx32 *PlayerActor_GetBodyPos(u32);
 void NpcActor_FindFreeUnitNear(void *, void *, void *);
 s32 NpcActor_getDistanceToPlayer(void *, u32);
 s32 NpcActor_getAngleToPlayer(void *, u32);
-s32 NpcActor_getPlayerActor(void *, u32);
 void NpcMoveCtrl_setTargetAngle(void *, s32);
 void NpcMoveCtrl_setWaypoint(void *, void *);
 void BlockMap_getWalkLinksAtPos(void *, void *);
@@ -600,7 +598,7 @@ void FleaMarketSellerVillagerTalk::sellFurniture() {
 
 void FleaMarketSellerVillagerTalk::start(TalkStartMsg *out_) {
     TalkTopicMsg *out = (TalkTopicMsg *)out_;
-    void *r7 = Villager_FindOrCreateMemory(villager->villagerData, ((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId());
+    void *r7 = Villager_FindOrCreateMemory(villager->villagerData, PlayerData_GetCurrent()->getPlayerId());
     if (r7) {
         VillagerMemory_RecordTalk(r7, 0, 0, 0);
     }
@@ -628,7 +626,7 @@ void FleaMarketSellerVillagerTalk::start(TalkStartMsg *out_) {
             salePrice = 10;
         }
         if (PlayerData_GetCurrent()) {
-            r7 = Villager_FindMemory(villager->villagerData, ((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId());
+            r7 = Villager_FindMemory(villager->villagerData, PlayerData_GetCurrent()->getPlayerId());
         }
         if (r7) {
             r6 = VillagerMemory_getFriendship(r7);

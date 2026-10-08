@@ -130,7 +130,6 @@ public:
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
 #define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP7VecFx32
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
@@ -160,7 +159,6 @@ s32 NpcActionCtrl_requestStand(void *, u32, u32);
 s32 NpcActionCtrl_requestAction(void *, u32, s32, s32, s32, s16, s16, s32, s32, u16, u16);
 void NpcMoveCtrl_setWaypoint(void *, void *);
 s32 NpcActor_findAvoidPos(void *, void *);
-s32 NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u32);
 s32 NpcTalkCtrl_isBusy(void *);
 void NpcFootstepFx_enableFootsteps(void *);
 void Camera_FocusOnPoint(void *);
@@ -422,7 +420,7 @@ void BirthdayGuestVillager::onInteractionEvent(u32 a, u8 b) {
 void *BirthdayGuestVillagerTalk::getPlayerMemory() {
     BirthdayGuestVillager *o = villager;
     if (o && o->villagerData) {
-        void *r = ((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId();
+        void *r = PlayerData_GetCurrent()->getPlayerId();
         return Villager_FindOrCreateMemory(villager->villagerData, r);
     }
     return 0;
@@ -651,7 +649,7 @@ BOOL BirthdayGuestVillager::setupAct01() {
             }
             if (r) {
                 ((NpcActionCtrl *)(p))->requestAction(3, 1, 0, 0, 0, walkAngle, 0, 0, data_020c6cc8, 0);
-                NpcLookAt_setTarget(&lookAt, 2, 0, (s32)o, gVec3Zero, 4, data_020c6d1c, 1);
+                lookAt.setTarget(2, 0, (Character *)o, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
                 return TRUE;
             }
         }

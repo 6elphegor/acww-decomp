@@ -29,43 +29,43 @@ s32 NpcRegistry_GetSlotCount();
 NpcActor *NpcRegistry_GetVillager(s32 i);
 #endif
 #ifndef PROTO_LOCAL_NpcRegistry_GetBySlot
-s32 NpcRegistry_GetBySlot(s32 n);
+NpcActor *NpcRegistry_GetBySlot(s32 n);
 #endif
 #ifndef PROTO_LOCAL_NpcRegistry_FindVillager
-s32 NpcRegistry_FindVillager(void *a);
+NpcActor *NpcRegistry_FindVillager(u32 idx);
 #endif
 #ifndef PROTO_LOCAL_NpcRegistry_FindSpNpc
-s32 NpcRegistry_FindSpNpc(void *a);
+NpcActor *NpcRegistry_FindSpNpc(u32 idx);
 #endif
 #ifndef PROTO_LOCAL_NpcRegistry_FindByKind
-s32 NpcRegistry_FindByKind(s32 kind, void *x);
+NpcActor *NpcRegistry_FindByKind(s32 kind, u32 x);
 #endif
 #ifndef PROTO_LOCAL_NpcRegistry_FindByHandle
-s32 NpcRegistry_FindByHandle(u16 *p);
+NpcActor *NpcRegistry_FindByHandle(u16 *p);
 #endif
 #ifndef PROTO_LOCAL_NpcRegistry_FindVillagerByHandle
-s32 NpcRegistry_FindVillagerByHandle(void *a);
+NpcActor *NpcRegistry_FindVillagerByHandle(u16 *p);
 #endif
 #ifndef PROTO_LOCAL_NpcRegistry_FindSpNpcByHandle
-s32 NpcRegistry_FindSpNpcByHandle(void *a);
+NpcActor *NpcRegistry_FindSpNpcByHandle(u16 *p);
 #endif
 #ifndef PROTO_LOCAL_NpcRegistry_FindAt
-NpcActor *NpcRegistry_FindAt(void *a, void *b);
+NpcActor *NpcRegistry_FindAt(s32 x, s32 y);
 #endif
 #ifndef PROTO_LOCAL_NpcRegistry_PickRandomVillager
-s32 NpcRegistry_PickRandomVillager(void *a);
+NpcActor *NpcRegistry_PickRandomVillager(s32 *idx);
 #endif
 #ifndef PROTO_LOCAL_NpcRegistry_AddVillager
-s32 NpcRegistry_AddVillager(void *a, void *b);
+s32 NpcRegistry_AddVillager(NpcActor *actor, u16 *handle);
 #endif
 #ifndef PROTO_LOCAL_NpcRegistry_RemoveVillager
-s32 NpcRegistry_RemoveVillager(void *a);
+s32 NpcRegistry_RemoveVillager(u16 *handle);
 #endif
 #ifndef PROTO_LOCAL_NpcRegistry_AddSpNpc
-s32 NpcRegistry_AddSpNpc(void *a, void *b);
+s32 NpcRegistry_AddSpNpc(NpcActor *actor, u16 *handle);
 #endif
 #ifndef PROTO_LOCAL_NpcRegistry_RemoveSpNpc
-s32 NpcRegistry_RemoveSpNpc(void *a);
+s32 NpcRegistry_RemoveSpNpc(u16 *handle);
 #endif
 }
 #ifndef PROTO_LOCAL_gNpcActorRegistry

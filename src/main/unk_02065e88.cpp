@@ -34,7 +34,6 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "snd/BgmVolumeMixer.h"
-#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Snd_PlaySe  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Str_SPrintf  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_GetArticle  // declared below: the shared prototype conflicts with the calls here
@@ -50,6 +49,7 @@
 #include "proto/main/unk_02065e88.h"
 #include "proto/main/unk_020b2c50.h"
 #include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02097444.h"
 
 class MsgRequest;
 class MsgString;
@@ -1097,7 +1097,6 @@ extern "C" { void func_0206c56c_dummy_unused(); }
 extern "C" { MsgTextLabel *MsgTextLabel_CreateVram(u32 a, u32 len, u32 b); }
 extern "C" { void MsgTextLabel_Destroy(MsgTextLabel *p); }
 extern "C" { MsgString *String_GetArticle(u8 *key); }
-extern "C" { void *PlayerData_GetCurrent(); }
 extern "C" { void *_ZN10PlayerData11getPlayerIdEv(void *); }
 extern "C" { s32 _ZN8PlayerId9getGenderEv(void *); }
 typedef void (TalkRenderProcessor::*Unk_020ddc64_Fn)();
@@ -1199,7 +1198,7 @@ void TalkRenderProcessor::selectByPlayerGender() {
     using namespace n17;
     char *p0, *p1;
     tag.getStrings2(&p0, &p1);
-    if (((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getGender() == 0) {
+    if (((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->getGender() == 0) {
         if (p0 != 0) pushText((u8 *)p0);
     } else {
         if (p1 != 0) {
@@ -1625,7 +1624,6 @@ extern "C" { void _ZN15TalkWindowState14setNextMessageEPhPv(void *self, u8 *p, s
 extern "C" { void _ZN15TalkWindowState17setAdvancePendingEv(void *self); }
 extern "C" { u8 *Msg_GetColorTag(s32 i); }
 extern "C" { u8 *String_GetArticle(u8 *p); }
-extern "C" { void *PlayerData_GetCurrent(void); }
 extern "C" { s32 _ZN10PlayerData11getPlayerIdEv(void *p); }
 extern "C" { s32 _ZN8PlayerId9getGenderEv(s32 p); }
 
@@ -2546,8 +2544,7 @@ namespace n12 {
 extern "C" { u32 Catalog_CountFish(); }
 extern "C" { u32 Catalog_CountInsects(); }
 extern "C" { s32 SaveVillagers_Count(void *p); }
-extern "C" { s32 PlayerData_GetCurrent(); }
-extern "C" { s32 _ZN10PlayerData11getPlayerIdEv(s32 p); }
+extern "C" { s32 _ZN10PlayerData11getPlayerIdEv(PlayerData *p); }
 extern "C" { s32 _ZN8PlayerId9getGenderEv(s32 p); }
 extern "C" { s32 Villager_FindMemory(void *p, s32 v); }
 extern "C" { s32 _ZN14VillagerMemory13getFriendshipEv(s32 m); }
@@ -2748,7 +2745,7 @@ void TalkParserCondTags::tagBranchFriendship() {
     tag.getArgs3(&r[0], &r[2], &r[3]);
     s32 k = 0;
     void *p = o->getSpeakerData();
-    s32 pd = PlayerData_GetCurrent();
+    PlayerData *pd = PlayerData_GetCurrent();
     if (p) {
         s32 v = _ZN10PlayerData11getPlayerIdEv(pd);
         s32 m;
@@ -2894,7 +2891,6 @@ extern "C" { void _ZN12TalkBusyIconD1Ev(void *p); }
 extern "C" { void _ZN12TalkBusyIconC1Ev(void *p); }
 extern "C" { BOOL Talk_IsAltTextEnabled(void); }
 extern "C" { s32 Villager_GetAnimalKind(void *a); }
-extern "C" { s32 PlayerData_GetCurrentIndex(void); }
 extern "C" { s32 PlayerData_IsResidentIndex(u32 idx); }
 extern "C" { s32 PlayerDataArray_CountUsed(void *p); }
 extern "C" { s32 Weather_GetFallingPrecip(void); }
@@ -4231,7 +4227,6 @@ extern "C" { void _ZN10TalkParser12setPrintModeEi(void *p, s32 v); }
 extern "C" { void _ZN15TalkWindowState14setNextMessageEPhPv(void *self, u8 *p, s32 z); }
 extern "C" { s32 _ZN15TalkWindowState13unlockAdvanceEv(void *self); }
 extern "C" { s32 _ZN15TalkWindowState13resetTextVarsEv(void *self); }
-extern "C" { void *PlayerData_GetCurrent(void); }
 extern "C" { s32 _ZN10PlayerData11getPlayerIdEv(void *p); }
 extern "C" { s32 Villager_FindMemoryIndex(void *a, s32 b); }
 extern "C" { void *Villager_GetMemory(void *a, s32 b); }

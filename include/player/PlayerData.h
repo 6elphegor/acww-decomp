@@ -10,7 +10,8 @@
 // One player's save record (0x228c bytes; gSavePlayers holds four, gGuestPlayers three): patterns, inventory, catalog,
 // letters, errands, friend list, appearance, ... Defined in src/main/unk_02097d1c.cpp (0x02097ff4..0x02098668).
 class PlayerId;
-
+class TownId;
+struct PlayerBank;
 struct Unk_0209865c_Tri {
     u8 lo : 3;
     u8 mid : 3;
@@ -105,7 +106,7 @@ public:
     void setFaceType(u8 v);
     u32 getFaceType();
     s32 getIndex();
-    void setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u8 s4, u8 s5, u32 s6, u16 *s7);
+    void setupNew(void *name, u32 p2, u32 p3, TownId *town, u8 s1, u8 s2, u8 s3, u8 s4, u8 s5, u32 s6, u16 *s7);
     BOOL isUsed();
     void reset();
     void fillZero();
@@ -125,9 +126,9 @@ public:
     void setBirthdayTalkYear(u32 v);
     void clearBirthday();
     void setBirthday(u32 a, u32 b);
-    void *getBirthday();
-    void *getEmotions();
-    void *getBankAccount();
+    u8 *getBirthday();
+    u8 *getEmotions();
+    PlayerBank *getBankAccount();
     u8 *getDayUpdateDate();
     s32 findUnusedSlot(s32 n);
     BOOL getOtherResidentName(void *p);

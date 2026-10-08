@@ -1478,7 +1478,7 @@ BOOL FriendRosterTab::isWifiMode()
 
 void *FriendRosterTab::getFriendEntries()
 {
-    return FriendList_GetEntries(((PlayerData *)(PlayerData_GetCurrent()))->getFriendList());
+    return FriendList_GetEntries(PlayerData_GetCurrent()->getFriendList());
 }
 
 void *FriendRosterTab::getFocusedFriendEntry()
@@ -1534,7 +1534,7 @@ void FriendRosterTab::compactRoster()
     if (isWifiMode()) {
         buildFriendIndex();
     } else {
-        FriendList_Compact(((PlayerData *)(PlayerData_GetCurrent()))->getFriendList());
+        FriendList_Compact(PlayerData_GetCurrent()->getFriendList());
     }
 }
 
@@ -1649,7 +1649,7 @@ void FriendRosterTab::drawPresentPage() {
 }
 
 void FriendRosterTab::drawOwnCodePage() {
-    void *g = ((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId();
+    void *g = PlayerData_GetCurrent()->getPlayerId();
     void *a = allocTextLabel();
     u32 A[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     _ZN11MsgString9CC2Ev(A);
