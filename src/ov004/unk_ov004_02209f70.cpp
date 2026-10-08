@@ -66,11 +66,7 @@
 #include "room/FtrPreviewer.h"
 #include "snd/SndSeEmitter.h"
 #include "talk/ChoiceList.h"
-#define PROTO_LOCAL_FtrSync_ChangeAct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrSync_RequestAct  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FtrSync_RequestToggleGyroid  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Ftr_GetUnk05  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Ftr_GetUnk06  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/ov004/unk_ov004_02209f70.h"
 #include "proto/ov004/unk_ov004_02233074.h"
@@ -471,10 +467,8 @@ extern u8 data_ov004_02240024[];
 extern u8 data_ov004_02240038[];
 extern char data_ov004_0224bb50[];
 
-s32 FtrSync_RequestAct(s32 a, s32 b, u8 c, u8 d);
-s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d);
 s32 Item_MakeFurniture(s32 a, s32 b);
-s32 CarpetTex_GetTex(s32 a);
+void *CarpetTex_GetTex(void *p);  // (src/main/unk_0203a0cc.cpp returns it as s32)
 
 s32 FtrActor_GetFtrIndex(void *p);
 void FtrActor_StepAnims(void *p);
@@ -520,7 +514,7 @@ void FtrComputer::execFtrAct01() {
     ((FtrGlowMatSet *)(&glowMats))->setLit(1, 1, 0);
     ((FtrActor *)(this))->playSound0();
     if (switchState.isChanging()) {
-        p11::FtrSync_RequestAct((s32)(sptr)this, 0, 0xff, 1);
+        FtrSync_RequestAct(this, 0, 0xff, 1);
     }
 }
 
@@ -535,7 +529,7 @@ void FtrComputer::execFtrAct00() {
     p11::FtrActor_StepAnims(this);
     ((FtrGlowMatSet *)(&glowMats))->setLit(0, 1, 0);
     if (switchState.isChanging()) {
-        p11::FtrSync_RequestAct((s32)(sptr)this, 1, 0xff, 1);
+        FtrSync_RequestAct(this, 1, 0xff, 1);
     }
 }
 
@@ -588,7 +582,7 @@ BOOL FtrComputer::initModel() {
     s32 r = switchState.isOn();
     ((FtrGlowMatSet *)(&glowMats))->init(t, r);
     if (spawnMode == 1) {
-        p11::FtrSync_ChangeAct((s32)(sptr)this, 0, 0xff, 1);
+        FtrSync_ChangeAct(this, 0, 0xff, 1);
     } else if (switchState.isOn() && !FtrMgr_IsShopScene()) {
         changeAct(1, 0xff);
     } else {
@@ -651,11 +645,11 @@ u8 FtrHeadwear::getActSwitchState(u32 a) {
 }
 
 s32 FtrHeadwear::syncAct1() {
-    return p11::FtrSync_RequestAct((s32)(sptr)this, 1, 0xff, 1);
+    return FtrSync_RequestAct(this, 1, 0xff, 1);
 }
 
 s32 FtrHeadwear::syncAct0() {
-    return p11::FtrSync_RequestAct((s32)(sptr)this, 0, 0xff, 1);
+    return FtrSync_RequestAct(this, 0, 0xff, 1);
 }
 
 BOOL FtrHeadwear::isVisible() {
@@ -757,8 +751,8 @@ BOOL FtrCarpetSample::initModel() {
     u16 v = w;
     CarpetTex_Load(((FtrPreviewer *)(FtrPreviewer_GetInstance()))->getFloorBuffer(), &v);
     void *h = model.resMdl;
-    s32 r = p11::CarpetTex_GetTex(((FtrPreviewer *)(FtrPreviewer_GetInstance()))->getFloorBuffer());
-    if (((MatTexVramTask *)(&texTask))->request((void *)(h), (const char *)p11::data_ov004_0224bb50, (void *)(r), 0, 0)) {
+    void *r = p11::CarpetTex_GetTex(((FtrPreviewer *)(FtrPreviewer_GetInstance()))->getFloorBuffer());
+    if (((MatTexVramTask *)(&texTask))->request((void *)(h), (const char *)p11::data_ov004_0224bb50, r, 0, 0)) {
         return TRUE;
     }
     return FALSE;
@@ -790,7 +784,6 @@ extern u8 data_ov004_02240064[];
 extern u8 data_ov004_0224bb60[];
 
 void Wallpaper_LoadTexture(void *o, u16 *p);
-s32 FtrSync_RequestAct(void *o, s32 a, u8 c, u8 d);
 }
 }
 
@@ -851,7 +844,7 @@ BOOL FtrWallpaperSample::initModel() {
     }
     tmp = v;
     p12::Wallpaper_LoadTexture(((FtrPreviewer *)(FtrPreviewer_GetInstance()))->getWallBuffer(), &tmp);
-    t = Wallpaper_GetTex(((FtrPreviewer *)(FtrPreviewer_GetInstance()))->getWallBuffer());
+    t = Wallpaper_GetTex((u8 *)((FtrPreviewer *)(FtrPreviewer_GetInstance()))->getWallBuffer());
     if (((MatTexVramTask *)(&texTask))->request(model.resMdl, (const char *)(p12::data_ov004_0224bb60), (void *)t, 0, 0) != 0) return TRUE;
     return FALSE;
 }
@@ -968,7 +961,7 @@ void FtrMetronome::execFtrAct02() {
         }
     }
     if (switchState.isChanging() != 0) {
-        p12::FtrSync_RequestAct(this, 3, 0xff, 1);
+        FtrSync_RequestAct(this, 3, 0xff, 1);
     }
 }
 
@@ -997,7 +990,7 @@ BOOL FtrMetronome::enterFtrAct01() {
 
 void FtrMetronome::execFtrAct00() {
     if (switchState.isChanging() != 0) {
-        p12::FtrSync_RequestAct(this, 1, 0xff, 1);
+        FtrSync_RequestAct(this, 1, 0xff, 1);
     }
 }
 
@@ -1115,7 +1108,7 @@ BOOL FtrPiggyBank::enterFtrAct01() {
 
 void FtrPiggyBank::execFtrAct00() {
     if (switchState.isChanging() != 0) {
-        p12::FtrSync_RequestAct(this, 1, p12::gCommManager->localSlot, 1);
+        FtrSync_RequestAct(this, 1, p12::gCommManager->localSlot, 1);
     } else if (isPreview() != 0) {
         changeAct(1, 0xff);
     }
@@ -1151,15 +1144,12 @@ extern char data_ov004_0224bb88[];
 extern s16 data_02135f44[];
 
 u32 Item_MakeFurniture(u32 a, s32 b);
-void FtrSync_RequestAct(void *p, s32 a, s32 b, s32 c);
 s32 TalkRequest_SetTargetDone(void *p);
 s32 TalkRequest_AddPlayerTalk6(void *p, s32 a);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void MTX_RotY33_(void *out, s32 a, s32 b);
 s32 Math_StepS32(s32 *p, s32 target, s32 step);
-u32 _ZN15PatternTexCache13getAbleTexKeyEi(void *a, u32 b);
-s32 _ZN15PatternTexCache21testAndClearAbleDirtyEi(void *a, u32 b);
 }
 }
 
@@ -1244,7 +1234,7 @@ BOOL FtrInstrument::updateAppearRemove() {
 
 BOOL FtrInstrument::updateActive() {
     if (switchState.isChanging()) {
-        p13::FtrSync_RequestAct(this, 0, 0xff, 1);
+        FtrSync_RequestAct(this, 0, 0xff, 1);
     }
     updateAppearRemove();
     return TRUE;
@@ -1526,7 +1516,7 @@ BOOL FtrDesignDisplay::onDelete() {
 BOOL FtrDesignDisplay::updateActive() {
     if (seEmitterReady) {
         VecFx32 v = centerPos;
-        if (p13::_ZN15PatternTexCache21testAndClearAbleDirtyEi(PatternTexCache_Get(), designSlot)) {
+        if (PatternTexCache_Get()->testAndClearAbleDirty(designSlot)) {
             Snd_SeEmitterPlayOneShot(&seEmitter, 0x50, 0x7f, 0);
         }
         seEmitter.callUpdateRelative((VecFx32 *)(&v));
@@ -1549,8 +1539,7 @@ BOOL FtrDesignDisplay::initModel() {
             x = -1;
         }
         designSlot = x & 7;
-        void *o = PatternTexCache_Get();
-        u32 q = p13::_ZN15PatternTexCache13getAbleTexKeyEi(o, (u8)designSlot);
+        u8 *q = PatternTexCache_Get()->getAbleTexKey((u8)designSlot);
         if (q != 0) {
             Model_BindMatTexByIdx(model.resMdl, (const char *)p13::data_ov004_0224bb88, q, 0, 0);
             if (seEmitterReady == 0) {
@@ -1625,7 +1614,7 @@ public:
     s32 syncAct1();
 
     /* 0x840 */ void *clothTex;
-    /* 0x844 */ u8 f_844[HOST_SIZED(0x28, MatTexVramTask) / 1] HOST_ALIGN8;
+    /* 0x844 */ MatTexVramTask texTask;
     /* 0x86c */ u8 unk_86c;
     /* 0x86d */ u8 unk_86d;
     /* 0x86e */ u8 pad_86e;
@@ -1665,9 +1654,6 @@ extern u8 data_ov004_0224002c[];
 extern u8 data_021f47e0[];
 
 u16 Item_MakeFurniture(u32, s32);
-s32 _ZN15PatternTexCache15getPlayerTexKeyEii(void *, u8, u8);
-s32 FtrSync_RequestAct(void *, s32, s32, s32);
-s32 FtrSync_ChangeAct(void *, s32, s32, s32);
 void Item_FromPlacedForm(u16 *, u16 *);
 void MTX_MultVec43(void *, void *, void *);
 void GroundInfo_Destruct(void *);
@@ -1755,7 +1741,7 @@ BOOL FtrMyDesign::initModel() {
         }
     }
     void *o = model.resMdl;
-    Model_BindMatTexByIdx(o, (const char *)p14::data_ov004_0224bb88, p14::_ZN15PatternTexCache15getPlayerTexKeyEii(PatternTexCache_Get(), hi, lo), 0, 0);
+    Model_BindMatTexByIdx(o, (const char *)p14::data_ov004_0224bb88, PatternTexCache_Get()->getPlayerTexKey(hi, lo), 0, 0);
     return TRUE;
 }
 
@@ -1784,7 +1770,7 @@ BOOL FtrShirt::enterFtrAct01() {
     b = ((G3dResAccess *)(((FtrAnimSet *)(modelRes.getAnimSet()))->getTexCopy()))->findPlttIdx((const char *)p14::data_ov004_0224bb94);
     c = model.resMdl;
     d = ((FtrAnimSet *)(modelRes.getAnimSet()))->getTexCopy();
-    if (((MatTexVramTask *)(f_844))->request(c, (const char *)(p14::data_ov004_0224bb88), d, a, b)) {
+    if (texTask.request(c, (const char *)(p14::data_ov004_0224bb88), d, a, b)) {
         unk_86c = 0;
     }
     return TRUE;
@@ -1798,7 +1784,7 @@ BOOL FtrShirt::execFtrAct00() {
 BOOL FtrShirt::enterFtrAct00() {
     switchState.set(1, 0);
     void *o = model.resMdl;
-    ((MatTexVramTask *)(f_844))->request(o, (const char *)(p14::data_ov004_0224bb88), ClothTex_GetTex(clothTex), 0, 0);
+    texTask.request(o, (const char *)(p14::data_ov004_0224bb88), ClothTex_GetTex(clothTex), 0, 0);
     return TRUE;
 }
 
@@ -1832,11 +1818,11 @@ u8 FtrShirt::getActSwitchState(u32 a) {
 }
 
 s32 FtrShirt::syncAct0() {
-    return p14::FtrSync_RequestAct(this, 0, 0xff, 1);
+    return FtrSync_RequestAct(this, 0, 0xff, 1);
 }
 
 s32 FtrShirt::syncAct1() {
-    return p14::FtrSync_RequestAct(this, 1, 0xff, 1);
+    return FtrSync_RequestAct(this, 1, 0xff, 1);
 }
 
 BOOL FtrShirt::needsTexCopy() {
@@ -1878,7 +1864,6 @@ FtrShirt::~FtrShirt() {
 }
 
 FtrShirt::FtrShirt() {
-    new (f_844) MatTexVramTask();
     clothTex = NULL;
     unk_86c = unk_86d = 0;
 }
@@ -1892,7 +1877,7 @@ BOOL FtrCannon::execFtrAct01() {
     model.stepBlend();
     BOOL r = model.isFinished();
     if (r) {
-        return p14::FtrSync_ChangeAct(this, 0, 0xff, 1);
+        return FtrSync_ChangeAct(this, 0, 0xff, 1);
     }
     return r;
 }
@@ -1907,7 +1892,7 @@ BOOL FtrCannon::enterFtrAct01() {
 BOOL FtrCannon::execFtrAct00() {
     BOOL r = switchState.isChanging();
     if (r) {
-        return p14::FtrSync_ChangeAct(this, 1, 0xff, 1);
+        return FtrSync_ChangeAct(this, 1, 0xff, 1);
     }
     return r;
 }
@@ -1953,7 +1938,7 @@ void FtrCannon::onJointCalcPost(s32 a, void *b) {
         u8 obj[0x44];
         ((GroundInfo *)(obj))->initAtPos((VecFx32 *)(&o), 0, 0);
         if (((GroundInfoBase *)(obj))->getHeight(0) > 0) {
-            p14::FtrSync_ChangeAct(this, 0, 0xff, 1);
+            FtrSync_ChangeAct(this, 0, 0xff, 1);
         }
         p14::GroundInfo_Destruct(obj);
     }
@@ -2010,7 +1995,6 @@ extern "C" {
 extern u8 data_ov004_02240058[];
 
 
-void FtrSync_RequestAct(void *, s32, s32, s32);
 u32 Scene_GetCurrent(void);
 void FtrSync_RequestToggleGyroid(u32, void *, u32);
 }
@@ -2061,7 +2045,7 @@ void FtrKind19::execFtrAct02() {
     hasIndoorFlag6();
     playSound0();
     if (switchState.isChanging()) {
-        p15::FtrSync_RequestAct(this, 3, 0xff, 1);
+        FtrSync_RequestAct(this, 3, 0xff, 1);
     }
 }
 
@@ -2102,7 +2086,7 @@ BOOL FtrKind19::enterFtrAct01() {
 
 void FtrKind19::execFtrAct00() {
     if (switchState.isChanging()) {
-        p15::FtrSync_RequestAct(this, 1, 0xff, 1);
+        FtrSync_RequestAct(this, 1, 0xff, 1);
     }
 }
 
@@ -2575,7 +2559,6 @@ extern u8 data_ov004_0224003c[];
 extern u8 data_ov004_0224bb98[];
 extern u8 data_ov004_0224bba0[];
 extern u8 data_ov004_0224bba8[];
-void FtrSync_RequestAct(void *, s32, s32, s32);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 }
 }
@@ -2684,7 +2667,7 @@ BOOL FtrTvVcr::enterVcrAct03() {
 
 void FtrTvVcr::execVcrAct02() {
     if (switchState.isChanging()) {
-        p17::FtrSync_RequestAct(this, 3, 0xff, 1);
+        FtrSync_RequestAct(this, 3, 0xff, 1);
     }
 }
 
@@ -2714,7 +2697,7 @@ BOOL FtrTvVcr::enterVcrAct01() {
 
 void FtrTvVcr::execVcrAct00() {
     if (switchState.isChanging()) {
-        p17::FtrSync_RequestAct(this, 1, 0xff, 1);
+        FtrSync_RequestAct(this, 1, 0xff, 1);
     }
 }
 
@@ -2799,7 +2782,7 @@ extern "C" FtrActor *FtrTvVcr_Create() {
 // ================================================================ FtrTv
 void FtrTv::execFtrAct01() {
     if (switchState.isChanging()) {
-        p17::FtrSync_RequestAct(this, 0, 0xff, 1);
+        FtrSync_RequestAct(this, 0, 0xff, 1);
     }
 }
 
@@ -2813,7 +2796,7 @@ BOOL FtrTv::enterFtrAct01() {
 
 void FtrTv::execFtrAct00() {
     if (switchState.isChanging()) {
-        p17::FtrSync_RequestAct(this, 1, 0xff, 1);
+        FtrSync_RequestAct(this, 1, 0xff, 1);
     }
 }
 
@@ -2976,12 +2959,11 @@ u32 Scene_GetVillagerHouse();
 s32 Scene_InHouseRoom();
 s32 SaveVillagers_Get(void *p, u32 a);
 u32 Villager_GetInfo4d(void *v);
-void FtrSync_RequestAct(void *self, s32 a, u8 b, s32 c);
-void FtrSync_ChangeAct(void *self, s32 a, u8 b, s32 c);
 s32 FtrActor_TestPlayerUnk();
-BOOL _ZN8FtrActor10isStereoOnEv(FtrActor *self);
 }
 }
+
+static BOOL FtrActor_IsStereoOn(FtrActor *a) { return a->isStereoOn(); }
 
 typedef void (FtrStereo::*Unk_ov004_0220ead4_Fn)();
 typedef BOOL (FtrStereo::*Unk_ov004_0220eb40_Fn)();
@@ -3003,7 +2985,7 @@ static inline u16 Unk_ov004_0220ec30_Val(u32 t) {
 
 BOOL FtrStereo::enterFtrAct01() {
     playSound1();
-    FtrMgr_SetSwitchAll(0, p18::_ZN8FtrActor10isStereoOnEv, 0);
+    FtrMgr_SetSwitchAll(0, FtrActor_IsStereoOn, 0);
     switchState.set(1, 0);
     u8 *p = &actAid;
     curSong = *p;
@@ -3154,7 +3136,7 @@ void FtrStereo::execTalkAct02() {
             } else {
                 t = -1;
             }
-            p18::FtrSync_RequestAct(this, 1, t, 1);
+            FtrSync_RequestAct(this, 1, t, 1);
         }
         p18::TalkRequest_SetTargetDone(this);
     }
@@ -3286,7 +3268,7 @@ BOOL FtrStereo::initModel() {
     u32 c = switchState.isOn();
     glowMats.init(r4, c);
     if (spawnMode == 1) {
-        p18::FtrSync_ChangeAct(this, 0, 0xff, 1);
+        FtrSync_ChangeAct(this, 0, 0xff, 1);
     } else if (switchState.isOn() != 0 && FtrMgr_IsShopScene() == 0) {
         if (p18::Scene_InVillagerHouse()) {
             u32 t = 0;
@@ -3393,7 +3375,6 @@ extern u8 data_ov004_0224bbc0[];
 void Clock_GetMinuteHour(void *);
 u32 Scene_GetCurrent(void);
 void TalkRequest_SetTargetDone(void *);
-BOOL FtrSync_ChangeAct(void *, s32, s32, s32);
 void *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, u32);
 BOOL Item_IsFurniture(void *);
 }
@@ -3598,7 +3579,6 @@ void TalkRequest_AddPlayerTalk6(void *, s32);
 void Vec_RotateY(void *, s32);
 void TalkRequest_SetTargetDone(void *);
 u32 FtrActor_MakeSpawnArg(u32, u32, u32, u32, u8, u32);
-u32 Ftr_GetUnk05(void *);
 u32 Item_GetFurnitureIndex(void *);
 u16 Item_MakeFurniture(u32, u32);
 }
@@ -3858,7 +3838,6 @@ extern s32 data_020c8cbc;
 extern void *gCommManager;
 
 BOOL Item_IsFurniture(void *);
-s32 Ftr_GetUnk06(void *p);
 s32 TalkRequest_SetTargetDone(void *p);
 s32 TalkRequest_AddPlayerTalk6(void *p, s32 a);
 s32 Scene_GetWarpRequest(void);
@@ -3982,7 +3961,7 @@ public:
 extern "C" BOOL FtrBed_IsDma06Is5(u16 *p, s32 b) {
     if (b == 0) {
         if (p21::Item_IsFurniture(p)) {
-            if (p21::Ftr_GetUnk06(p) == 5) {
+            if (Ftr_GetUnk06(p) == 5) {
                 return TRUE;
             }
         }
@@ -4414,7 +4393,6 @@ BOOL FtrActor_StepAnims(FtrActor *o);
 void FtrActor_PlayAnimsFromLastFrame(FtrActor *o, s32 a, s32 b, s32 c);
 BOOL FtrActor_IsPosClearOfCharacters(void *v, s32 a, s32 b, s32 c, s32 d);
 void FieldPos_ToUnit(s32 *a, s32 *b, void *v);
-void FtrSync_RequestAct(void *o, s32 a, s32 b, s32 c);
 BOOL Scene_InUnk6To8(void);
 void Vec_RotateY(void *v, u32 a);
 void VEC_Add(void *a, void *b, void *c);
@@ -4709,7 +4687,7 @@ void FtrKind07::execFtrAct02() {
     (this)->hasIndoorFlag6();
     ((FtrActor *)(this))->playSound0();
     if (switchState.isChanging()) {
-        p22::FtrSync_RequestAct(this, 3, 0xff, 1);
+        FtrSync_RequestAct(this, 3, 0xff, 1);
     } else if (((FtrActor *)(this))->isPreview()) {
         changeAct(3, 0xff);
     }
@@ -4737,7 +4715,7 @@ BOOL FtrKind07::enterFtrAct01() {
 
 void FtrKind07::execFtrAct00() {
     if (switchState.isChanging()) {
-        p22::FtrSync_RequestAct(this, 1, 0xff, 1);
+        FtrSync_RequestAct(this, 1, 0xff, 1);
     } else if (((FtrActor *)(this))->isPreview()) {
         changeAct(1, 0xff);
     }
@@ -4887,7 +4865,6 @@ public:
 
 namespace p23 {
 extern "C" {
-void FtrSync_RequestAct(void *, s32, s32, s32);
 void Math_StepS32(void *, u32, u32);
 extern u8 data_ov004_02240060[];
 extern u8 data_ov004_02240054[];
@@ -4931,7 +4908,7 @@ BOOL FtrKind06::enterFtrAct03() {
 void FtrKind06::execFtrAct02() {
     playSound0();
     if (switchState.isChanging()) {
-        p23::FtrSync_RequestAct(this, 3, 0xff, 1);
+        FtrSync_RequestAct(this, 3, 0xff, 1);
     } else if (isPreview()) {
         changeAct(3, 0xff);
     }
@@ -4962,7 +4939,7 @@ BOOL FtrKind06::enterFtrAct01() {
 
 void FtrKind06::execFtrAct00() {
     if (switchState.isChanging()) {
-        p23::FtrSync_RequestAct(this, 1, 0xff, 1);
+        FtrSync_RequestAct(this, 1, 0xff, 1);
     } else if (isPreview()) {
         changeAct(1, 0xff);
     }
@@ -5057,7 +5034,7 @@ BOOL FtrKind05::enterFtrAct03() {
 
 void FtrKind05::execFtrAct02() {
     if (switchState.isChanging()) {
-        p23::FtrSync_RequestAct(this, 3, 0xff, 1);
+        FtrSync_RequestAct(this, 3, 0xff, 1);
     } else if (isPreview()) {
         changeAct(3, 0xff);
     }
@@ -5085,7 +5062,7 @@ BOOL FtrKind05::enterFtrAct01() {
 
 void FtrKind05::execFtrAct00() {
     if (switchState.isChanging()) {
-        p23::FtrSync_RequestAct(this, 1, 0xff, 1);
+        FtrSync_RequestAct(this, 1, 0xff, 1);
     } else if (isPreview()) {
         changeAct(1, 0xff);
     }
@@ -5194,7 +5171,6 @@ namespace p24 {
 extern "C" {
 extern u8 data_ov004_02240044[];
 extern u8 data_ov004_02240030[];
-void FtrSync_RequestAct(void *, s32, s32, s32);
 }
 }
 
@@ -5246,7 +5222,7 @@ void FtrKind04::execFtrAct01() {
     hasIndoorFlag6();
     playSound0();
     if (switchState.isChanging()) {
-        p24::FtrSync_RequestAct(this, 2, 0xff, 1);
+        FtrSync_RequestAct(this, 2, 0xff, 1);
     }
 }
 
@@ -5260,7 +5236,7 @@ BOOL FtrKind04::enterFtrAct01() {
 
 void FtrKind04::execFtrAct00() {
     if (switchState.isChanging()) {
-        p24::FtrSync_RequestAct(this, 1, 0xff, 1);
+        FtrSync_RequestAct(this, 1, 0xff, 1);
     }
 }
 
@@ -5353,7 +5329,7 @@ void FtrKind03::execFtrAct01() {
     hasIndoorFlag6();
     playSound0();
     if (switchState.isChanging()) {
-        p24::FtrSync_RequestAct(this, 0, 0xff, 1);
+        FtrSync_RequestAct(this, 0, 0xff, 1);
     }
 }
 
@@ -5366,7 +5342,7 @@ BOOL FtrKind03::enterFtrAct01() {
 
 void FtrKind03::execFtrAct00() {
     if (switchState.isChanging()) {
-        p24::FtrSync_RequestAct(this, 1, 0xff, 1);
+        FtrSync_RequestAct(this, 1, 0xff, 1);
     }
 }
 
@@ -5448,13 +5424,13 @@ void FtrKind02::execFtrAct01() {
     u32 t = p24::FtrActor_GetFtrIndex(this);
     if (t != 0xb9 && t != 0xba) goto rest;
     if (switchState.isChanging()) {
-        p24::FtrSync_RequestAct(this, 1, 0xff, 1);
+        FtrSync_RequestAct(this, 1, 0xff, 1);
         goto end;
     }
 rest:
     switchState.toggle(0);
     if (p24::FtrActor_StepAnims(this)) {
-        p24::FtrSync_RequestAct(this, 0, 0xff, 1);
+        FtrSync_RequestAct(this, 0, 0xff, 1);
     } else {
         playSound0();
     }
@@ -5474,7 +5450,7 @@ BOOL FtrKind02::enterFtrAct01() {
 
 void FtrKind02::execFtrAct00() {
     if (switchState.isChanging()) {
-        p24::FtrSync_RequestAct(this, 1, 0xff, 1);
+        FtrSync_RequestAct(this, 1, 0xff, 1);
     }
 }
 
@@ -5563,7 +5539,6 @@ public:
 
 namespace p25 {
 extern "C" {
-void FtrSync_RequestAct(void *, u8, s32, s32);
 extern u8 data_ov004_02240034[];
 }
 }
@@ -5595,7 +5570,7 @@ BOOL FtrBasic::enterFtrAct01() {
 
 void FtrBasic::execFtrAct00() {
     if (switchState.isChanging()) {
-        p25::FtrSync_RequestAct(this, (ftrAct + 1) & 1, 0xff, 1);
+        FtrSync_RequestAct(this, (ftrAct + 1) & 1, 0xff, 1);
     }
 }
 
@@ -5803,11 +5778,11 @@ BOOL FtrStorage::enterTalkAct0B() {
     s32 v = getStorageType();
     if (v != -1) {
         if (PlayerActor_LocalRequestStorageClose(&v)) {
-            return p19::FtrSync_ChangeAct(this, 3, 0xff, 1);
+            return FtrSync_ChangeAct(this, 3, 0xff, 1);
         }
         return FALSE;
     }
-    return p19::FtrSync_ChangeAct(this, 3, 0xff, 1);
+    return FtrSync_ChangeAct(this, 3, 0xff, 1);
 }
 
 void FtrStorage::execTalkAct0A() {
@@ -5867,7 +5842,7 @@ void FtrStorage::execTalkAct08() {
 }
 
 BOOL FtrStorage::enterTalkAct08() {
-    return p19::FtrSync_ChangeAct(this, 1, 0xff, 1);
+    return FtrSync_ChangeAct(this, 1, 0xff, 1);
 }
 
 void FtrStorage::execTalkAct07() {
@@ -5909,11 +5884,11 @@ BOOL FtrStorage::enterTalkAct05() {
     s32 v = getStorageType();
     if (v != -1) {
         if (PlayerActor_LocalRequestStorageClose(&v)) {
-            return p19::FtrSync_ChangeAct(this, 3, 0xff, 1);
+            return FtrSync_ChangeAct(this, 3, 0xff, 1);
         }
         return FALSE;
     }
-    return p19::FtrSync_ChangeAct(this, 3, 0xff, 1);
+    return FtrSync_ChangeAct(this, 3, 0xff, 1);
 }
 
 void FtrStorage::execTalkAct04() {
@@ -5936,7 +5911,7 @@ void FtrStorage::execTalkAct03() {
 }
 
 BOOL FtrStorage::enterTalkAct03() {
-    return p19::FtrSync_ChangeAct(this, 1, 0xff, 1);
+    return FtrSync_ChangeAct(this, 1, 0xff, 1);
 }
 
 void FtrStorage::execTalkAct02() {
@@ -6111,7 +6086,7 @@ void FtrBed::execFtrAct0C() {
                 r4++;
             }
         }
-        u32 t = p20::Ftr_GetUnk05(&newBedItem);
+        u32 t = Ftr_GetUnk05(&newBedItem);
         if (inLeftHalf != 0) {
             if (t == 2) {
                 r4--;

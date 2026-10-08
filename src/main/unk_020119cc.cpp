@@ -94,153 +94,7 @@
 #include "save/VillagerData.h"
 #include "town/BlockMap.h"
 #include "town/MapBlock.h"
-extern "C" void _ZN11NpcTalkCtrl10mainState0EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl10mainState1EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl10mainState2EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl10mainState3EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl10mainState4EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl11setupState0EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl11setupState1EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl11setupState2EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl11setupState3EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl11setupState4EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl11state0Step0EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl11state0Step1EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl11state0Step2EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl11state1Step0EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl11state1Step1EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl11state1Step2EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl11state2Step0EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl11state2Step1EP8NpcActor(void);
-extern "C" void _ZN11NpcTalkCtrl11state4Step0EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10act04Step0EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10act04Step1EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10act05Step0EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10act05Step1EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10act07Step0EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10act0AStep0EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10act0BStep0EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10act0DStep0EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10act0DStep1EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10act0DStep2EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10act0DStep3EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10act0DStep4EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10act11Step2Ev(void);
-extern "C" void _ZN13NpcActionCtrl10act12Step0Ev(void);
-extern "C" void _ZN13NpcActionCtrl10act12Step1Ev(void);
-extern "C" void _ZN13NpcActionCtrl10act15Step0EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10act15Step1EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10act15Step2EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10act15Step3EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10setupAct00EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10setupAct01EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10setupAct02EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10setupAct03EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10setupAct04EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10setupAct05EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10setupAct06EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10setupAct07EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10setupAct08EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10setupAct09EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10setupAct0AEP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10setupAct0BEP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10setupAct0CEP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10setupAct0DEP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl10setupAct0EEP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep00EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep01EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep02EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep03EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep04EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep05EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep06EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep07EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep08EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep09EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep10EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep11EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep12EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep13EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep14EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep15EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep16EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep17EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep18EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl11act0EStep19EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9mainAct00Ev(void);
-extern "C" void _ZN13NpcActionCtrl9mainAct01EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9mainAct02EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9mainAct03EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9mainAct04EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9mainAct05EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9mainAct07EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9mainAct08EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9mainAct09EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9mainAct0AEP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9mainAct0BEP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9mainAct0DEP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9mainAct15EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9postAct07EP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9postAct0AEP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9postAct0BEP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9postAct0CEP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9postAct0DEP8NpcActor(void);
-extern "C" void _ZN13NpcActionCtrl9postAct0EEv(void);
-extern "C" void _ZN13VillagerRoute10isAtDoorT1EP7VecFx32(void);
-extern "C" void _ZN13VillagerRoute10isAtDoorT3EP7VecFx32(void);
-extern "C" void _ZN13VillagerRoute10stepToDoorEP7VecFx32(void);
-extern "C" void _ZN13VillagerRoute10stepWanderEP7VecFx32(void);
-extern "C" void _ZN13VillagerRoute11isInBlockT2EP7VecFx32(void);
-extern "C" void _ZN13VillagerRoute11isInBlockT4EP7VecFx32(void);
-extern "C" void _ZN13VillagerRoute13stepAlongPathEP7VecFx32(void);
-extern "C" void _ZN13VillagerRoute14stepFollowPathEP7VecFx32(void);
-extern "C" void _ZN13VillagerRoute16isInAttr200BlockEP7VecFx32(void);
-extern "C" void _ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32(void);
-extern "C" void _ZN13VillagerRoute16stepCheckArrivedEP7VecFx32(void);
-extern "C" void _ZN13VillagerRoute9isInBlockEP7VecFx32(void);
-extern "C" void _ZN16ActorTalkRequest10melodyWaitEv(void);
-extern "C" void _ZN16ActorTalkRequest10taskMelodyEv(void);
-extern "C" void _ZN16ActorTalkRequest11eatItemWaitEv(void);
-extern "C" void _ZN16ActorTalkRequest11melodyStartEv(void);
-extern "C" void _ZN16ActorTalkRequest11taskEatItemEv(void);
-extern "C" void _ZN16ActorTalkRequest12eatItemStartEv(void);
-extern "C" void _ZN16ActorTalkRequest12giveItemWaitEv(void);
-extern "C" void _ZN16ActorTalkRequest12keepItemWaitEv(void);
-extern "C" void _ZN16ActorTalkRequest12subSceneOpenEv(void);
-extern "C" void _ZN16ActorTalkRequest12subSceneWaitEv(void);
-extern "C" void _ZN16ActorTalkRequest12takeItemWaitEv(void);
-extern "C" void _ZN16ActorTalkRequest12taskGiveItemEv(void);
-extern "C" void _ZN16ActorTalkRequest12taskKeepItemEv(void);
-extern "C" void _ZN16ActorTalkRequest12taskSubSceneEv(void);
-extern "C" void _ZN16ActorTalkRequest12taskTakeItemEv(void);
-extern "C" void _ZN16ActorTalkRequest13giveItemStartEv(void);
-extern "C" void _ZN16ActorTalkRequest13itemAct0FWaitEv(void);
-extern "C" void _ZN16ActorTalkRequest13itemAct12WaitEv(void);
-extern "C" void _ZN16ActorTalkRequest13keepItemStartEv(void);
-extern "C" void _ZN16ActorTalkRequest13takeItemStartEv(void);
-extern "C" void _ZN16ActorTalkRequest13taskItemAct0FEv(void);
-extern "C" void _ZN16ActorTalkRequest13taskItemAct12Ev(void);
-extern "C" void _ZN16ActorTalkRequest14itemAct0FStartEv(void);
-extern "C" void _ZN16ActorTalkRequest14itemAct12StartEv(void);
-extern "C" void _ZN16ActorTalkRequest14returnItemWaitEv(void);
-extern "C" void _ZN16ActorTalkRequest14taskReturnItemEv(void);
-extern "C" void _ZN16ActorTalkRequest15closeWindowWaitEv(void);
-extern "C" void _ZN16ActorTalkRequest15returnItemStartEv(void);
-extern "C" void _ZN16ActorTalkRequest15taskCloseWindowEv(void);
-extern "C" void _ZN16ActorTalkRequest16closeWindowStartEv(void);
-extern "C" void _ZN16ActorTalkRequest16taskReopenWindowEv(void);
-extern "C" void _ZN16ActorTalkRequest17switchSpeakerSwapEv(void);
-extern "C" void _ZN16ActorTalkRequest17taskSwitchSpeakerEv(void);
-extern "C" void _ZN16ActorTalkRequest18switchSpeakerCloseEv(void);
-extern "C" void _ZN16ActorTalkRequest18switchSpeakerFocusEv(void);
-extern "C" void _ZN16ActorTalkRequest19subSceneCloseWindowEv(void);
-extern "C" void _ZN16ActorTalkRequest9melodyEndEv(void);
-extern "C" void _ZN9NpcLookAt11lookAtPointEP8NpcActor(void);
-extern "C" void _ZN9NpcLookAt17lookAtLocalPlayerEP9Character(void);
-extern "C" void _ZN9NpcLookAt17lookAtTargetActorEP9Character(void);
-extern "C" void _ZN9NpcLookAt18lookAtTargetPlayerEP9Character(void);
-extern "C" void _ZN9NpcLookAt20approachManualAnglesEv(void);
-extern "C" void _ZN9NpcLookAt5relaxEv(void);
+#include "npc/VillagerRoute.h"
 
 
 
@@ -256,16 +110,10 @@ extern "C" void _ZN9NpcLookAt5relaxEv(void);
 // unk_02011ec0.cpp
 
 
-// unk_02012810.cpp
-struct RouteGridPos {
-    u32 x, z;
-};
-
-struct VillagerRoute;
 
 
-// unk_020131a4.cpp
-typedef Vec2 (VillagerRoute::*Unk_02013260_Fn)(u32 a, u32 b);
+// unk_020131a4.cpp: picks the route's target unit (the villager's position and the villager)
+typedef void (*VillagerRoutePickFn)(Vec2 *out, VillagerRoute *self, VecFx32 *pos, NpcActor *owner);
 
 // unk_02012810.cpp
 typedef s32 (VillagerRoute::*Unk_02012810_Fn)(VecFx32 *);
@@ -276,7 +124,7 @@ typedef s32 (VillagerRoute::*Unk_02012810_Fn0)();
 // unk_02012810.cpp
 struct VillagerRouteType {
     Unk_02012810_Fn arrivedCheck;
-    Unk_02013260_Fn pickTarget;
+    VillagerRoutePickFn pickTarget;
     Unk_02012810_Fn tbl[2][3];
 };
 
@@ -298,68 +146,6 @@ struct RouteJunction {
 
 
 
-// Villager route planner (0x9c bytes, FieldVillagerAi member in ov068): unit-grid path search over gSceneBlockMap
-// (unk_02011ec0.cpp step / pick functions, unk_02012810.cpp planner and junction stack, unk_020131a4.cpp control).
-struct VillagerRoute {
-    /* 0x00 */ u32 stepMode;
-    /* 0x04 */ u32 stepPhase;
-    /* 0x08 */ u32 routeType;
-    /* 0x0c */ Vec2 targetUnit;
-    /* 0x14 */ s32 targetBlockX;
-    /* 0x18 */ s32 targetBlockZ;
-    /* 0x1c */ RouteGridPos waypoint;
-    /* 0x24 */ s16 unk_24;
-    /* 0x26 */ s16 unk_26;
-    /* 0x28 */ VillagerRouteType *typeTable;
-    /* 0x2c */ u8 junctions[90];
-    /* 0x86 */ u8 pad_86[2];
-    /* 0x88 */ u32 pathDir;
-    /* 0x8c */ u32 pathMode;
-    /* 0x90 */ u32 approachDir;
-    /* 0x94 */ u32 lastUnitX;
-    /* 0x98 */ u32 lastUnitZ;
-
-    BOOL isInBlock(VecFx32 *v);
-    BOOL isInBlockT4(VecFx32 *v);
-    BOOL isInBlockT2(VecFx32 *v);
-    BOOL stepToDoor(VecFx32 *p);
-    BOOL isAtDoorT3(VecFx32 *p);
-    BOOL isAtDoorT1(VecFx32 *p);
-    BOOL stepCheckArrived(VecFx32 *p);
-    BOOL stepWander(VecFx32 *p);
-    BOOL stepAdjacentUnit(VecFx32 *p);
-    BOOL pickAdjacent(VecFx32 *p, BlockMap *w);
-    BOOL stepAlongPath(VecFx32 *p);
-    BOOL advanceOnPath(VecFx32 *p, BlockMap *w);
-    BOOL stepFollowPath(VecFx32 *p);
-    BOOL followPathDir(VecFx32 *p, Vec2 *lim, BlockMap *w);
-    BOOL isInAttr200Block(VecFx32 *v);
-
-    s32 oppositeDirs(s32 v);
-    s32 runStep(VecFx32 *v);
-    u32 getStage();
-    s32 findJunction(RouteGridPos *p);
-    RouteJunction popJunction(RouteGridPos *p);
-    void pushJunction(u32 hi, u32 lo, RouteGridPos *p);
-    s32 scanDir(RouteGridPos *out, RouteGridPosCopy pos, u32 mask, RouteGridPos *lim, BlockMap *obj);
-    u32 pickAdjacentUnit(VecFx32 *v, BlockMap *o);
-    s32 scanForPath(VecFx32 *cand, RouteGridPos *p, VecXZ *d, s32 limit, RouteGridPos *q, s32 flag, BlockMap *o);
-    u32 findNearestPath(RouteGridPos *out, VecFx32 *pos);
-    void planStep(VecFx32 *pos);
-    s32 countJunctions();
-    void clearJunctions();
-    s32 firstDir(s32 v);
-    s32 isArrived(VecFx32 *v);
-
-    BOOL isActive();
-    void setStepMode(u32 v);
-    void checkUnitChanged(VecFx32 *v);
-    void markUnitUnset();
-    void rememberUnit(VecFx32 *v);
-    void start(u32 a, u32 idx, u32 b, u32 c);
-    void reset();
-    VillagerRoute* resetTarget();
-};
 #ifdef HOST64
 static_assert(sizeof(VillagerRoute) == VILLAGER_ROUTE_HOST_SIZE, "VILLAGER_ROUTE_HOST_SIZE (include/uptr.h)");
 #endif
@@ -442,7 +228,7 @@ typedef VecFx32Ctor V;
 struct NpcActionCtrl;
 
 // unk_02019020.cpp
-typedef void (NpcActionCtrl::*Unk_02019858_FnA)(NpcActor *owner);
+typedef s32 (NpcActionCtrl::*Unk_02019858_FnA)(NpcActor *owner);
 
 // unk_02019020.cpp
 typedef void (NpcActionCtrl::*Unk_02019858_FnB)(NpcActor *arg);
@@ -470,7 +256,7 @@ struct NpcActionEntry {
 
 
 // unk_02019998.cpp
-typedef void (NpcLookAt::*Unk_0201a1e0_Fn)(NpcActor *);
+typedef void (NpcLookAt::*Unk_0201a1e0_Fn)(Character *);
 
 
 
@@ -624,7 +410,6 @@ extern "C" {
 void FieldPos_FromUnitCenter(void* p, u32 x, u32 y);
 void FieldPos_ToUnit(u32 *a, u32 *b, VecFx32 *v);
 void MI_CpuFill8(void* p, u32 v, u32 n);
-extern VillagerRouteType sVillagerRouteTypes[];
 static inline BOOL Unk_02013568_IsSet(u32 v, u32 m)
 {
     if (v & m) return TRUE;
@@ -914,24 +699,6 @@ extern const u32 sNpcMoveSpeedPresets[9];
 extern const u32 data_020c6dcc[12];
 extern const u32 sNpcMoveModeTable[25];
 extern const NpcEmotionEntry sEmotionTable[60];
-void _ZN13NpcActionCtrl10setupAct15EP8NpcActor(void);
-void _ZN13NpcActionCtrl9postAct14EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct14EP8NpcActor(void);
-void _ZN13NpcActionCtrl9postAct13EP8NpcActor(void);
-void _ZN13NpcActionCtrl9mainAct13EP8NpcActor(void);
-void _ZN13NpcActionCtrl10act13Step0EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct13EP8NpcActor(void);
-void _ZN13NpcActionCtrl9mainAct12EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct12EP8NpcActor(void);
-void _ZN13NpcActionCtrl9mainAct11EP8NpcActor(void);
-void _ZN13NpcActionCtrl10act11Step1EP8NpcActor(void);
-void _ZN13NpcActionCtrl10act11Step0EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct11EP8NpcActor(void);
-void _ZN13NpcActionCtrl9postAct10EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct10EP8NpcActor(void);
-void _ZN13NpcActionCtrl9postAct0FEP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct0FEP8NpcActor(void);
-void _ZN13NpcActionCtrl9mainAct0EEP8NpcActor(void);
 }
 }
 extern "C" {
@@ -2360,7 +2127,7 @@ void NpcLookAt::lookAtActor(Character *scene, Character *tgt, VecFx32 *v, s32 li
     }
 }
 
-void NpcLookAt::relax() {
+void NpcLookAt::relax(Character *) {
     using namespace nP;
     if (yaw != 0) {
         Math_StepAngle(&yaw, 0, yawStep);
@@ -2409,7 +2176,7 @@ void NpcLookAt::lookAtTargetActor(Character *scene) {
     }
 }
 
-void NpcLookAt::lookAtPoint(NpcActor *o) {
+void NpcLookAt::lookAtPoint(Character *o) {
     using namespace nO;
     s32 r6 = 0;
     s32 r7 = 0;
@@ -2439,7 +2206,7 @@ void NpcLookAt::lookAtPoint(NpcActor *o) {
     }
 }
 
-void NpcLookAt::approachManualAngles() {
+void NpcLookAt::approachManualAngles(Character *) {
     using namespace nO;
     if (yaw != manualYaw) {
         Math_StepAngle(&yaw, manualYaw, yawStep);
@@ -3288,7 +3055,7 @@ s32 NpcActionCtrl::setupAct00(NpcActor *o) {
     return 0;
 }
 
-void NpcActionCtrl::mainAct00() {
+void NpcActionCtrl::mainAct00(NpcActor *) {
     using namespace nN;
     setActionDone(1);
 }
@@ -3416,97 +3183,31 @@ void NpcActionCtrl::act04Step1(NpcActor *c) {
 namespace nZ {
 extern "C" {
 const u16 data_020c6d70[4] = {0x49, 0x13, 0x4a, 0x1d};
-void *data_020d734c[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0};
-void *data_020d71b4[2] = {(void *)_ZN13VillagerRoute16stepCheckArrivedEP7VecFx32, 0};
-void *data_020d768c[2] = {(void *)_ZN13NpcActionCtrl9postAct0BEP8NpcActor, 0};
 const u16 data_020c6ce0[2] = {0x4b, 0x1};
-void *data_020d73e4[2] = {(void *)_ZN13NpcActionCtrl11act0EStep09EP8NpcActor, 0};
-void *data_020d72ac[2] = {(void *)_ZN11NpcTalkCtrl10mainState4EP8NpcActor, 0};
-void *data_020d7334[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP7VecFx32, 0};
-void *data_020d7234[2] = {(void *)_ZN11NpcTalkCtrl10mainState0EP8NpcActor, 0};
-void *data_020d72ec[2] = {(void *)_ZN13NpcActionCtrl10act13Step0EP8NpcActor, 0};
-void *data_020d75fc[2] = {(void *)_ZN13NpcActionCtrl9postAct14EP8NpcActor, 0};
-void *data_020d7124[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0};
-void *data_020d765c[2] = {(void *)_ZN13NpcActionCtrl10setupAct0EEP8NpcActor, 0};
 FxVec3 sNpcAvoidOffsets[2] = {FxVec3(0x800, 0, 0x1000), FxVec3(-0x800, 0, 0x1000)};
-void *data_020d7384[2] = {(void *)_ZN16ActorTalkRequest16taskReopenWindowEv, 0};
-void *data_020d742c[2] = {(void *)_ZN13NpcActionCtrl11act0EStep00EP8NpcActor, 0};
-void *data_020d76d4[2] = {(void *)_ZN13NpcActionCtrl9mainAct04EP8NpcActor, 0};
-void *data_020d76e4[2] = {(void *)_ZN13NpcActionCtrl9mainAct07EP8NpcActor, 0};
-void *data_020d70cc[2] = {(void *)_ZN16ActorTalkRequest14itemAct12StartEv, 0};
-void *data_020d738c[2] = {(void *)_ZN11NpcTalkCtrl11state2Step1EP8NpcActor, 0};
-void *data_020d73b4[2] = {(void *)_ZN13NpcActionCtrl11act0EStep15EP8NpcActor, 0};
-void *data_020d73d4[2] = {(void *)_ZN13NpcActionCtrl11act0EStep11EP8NpcActor, 0};
 FxVec3 sNpcObstacleProbeOffsets[2] = {FxVec3(0x700, 0, 0xf00), FxVec3(-0x700, 0, 0xf00)};
-void *data_020d741c[2] = {(void *)_ZN13NpcActionCtrl11act0EStep02EP8NpcActor, 0};
-void *data_020d7274[2] = {(void *)_ZN11NpcTalkCtrl11setupState3EP8NpcActor, 0};
-void *data_020d72f4[2] = {(void *)_ZN13NpcActionCtrl10act15Step3EP8NpcActor, 0};
-void *data_020d731c[2] = {(void *)_ZN11NpcTalkCtrl11state0Step2EP8NpcActor, 0};
-void *data_020d743c[2] = {(void *)_ZN11NpcTalkCtrl11state0Step1EP8NpcActor, 0};
-void *data_020d7084[2] = {(void *)_ZN13NpcActionCtrl10setupAct01EP8NpcActor, 0};
-void *data_020d70ac[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
-void *data_020d7464[2] = {(void *)_ZN13NpcActionCtrl9mainAct02EP8NpcActor, 0};
 const u16 data_020c6cd4[2] = {0x63, 0x12};
-void *data_020d73f4[2] = {(void *)VillagerRoute_PickOwnHouseDoor, 0};
 const u32 data_020c6dcc[12] = {0x0, 0x0, 0xffffe000, 0xffffe000, 0x0, 0x0, 0x0, 0x0, 0x2000, 0x2000, 0x0, 0x0};
-void *data_020d7494[2] = {(void *)_ZN16ActorTalkRequest14taskReturnItemEv, 0};
 const u16 data_020c6cbc[2] = {0x400, 0x0};
 const u16 data_020c6cec[2] = {0x59, 0x0};
-void *data_020d7704[2] = {(void *)_ZN13NpcActionCtrl9mainAct05EP8NpcActor, 0};
-void *data_020d76fc[2] = {(void *)_ZN13NpcActionCtrl10setupAct06EP8NpcActor, 0};
-void *data_020d76f4[2] = {(void *)_ZN13NpcActionCtrl9mainAct05EP8NpcActor, 0};
-void *data_020d76ec[2] = {(void *)_ZN13NpcActionCtrl10setupAct07EP8NpcActor, 0};
 const u16 data_020c6d08[2] = {0x57, 0x103};
-void *data_020d76dc[2] = {(void *)_ZN13NpcActionCtrl9postAct07EP8NpcActor, 0};
-void *data_020d74e4[2] = {(void *)_ZN13VillagerRoute10stepToDoorEP7VecFx32, 0};
-void *data_020d76cc[2] = {(void *)_ZN13NpcActionCtrl9mainAct08EP8NpcActor, 0};
-void *data_020d76c4[2] = {(void *)_ZN13NpcActionCtrl10setupAct09EP8NpcActor, 0};
-void *data_020d76bc[2] = {(void *)_ZN13NpcActionCtrl9mainAct09EP8NpcActor, 0};
-void *data_020d76b4[2] = {(void *)_ZN9NpcLookAt17lookAtTargetActorEP9Character, 0};
-void *data_020d76ac[2] = {(void *)_ZN13NpcActionCtrl9mainAct0AEP8NpcActor, 0};
-void *data_020d76a4[2] = {(void *)_ZN13NpcActionCtrl9postAct0AEP8NpcActor, 0};
-void *data_020d769c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
-void *data_020d7694[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32, 0};
 const u16 data_020c6cc8[2] = {0x4, 0x0};
 const u16 data_020c6d00[2] = {0x3b, 0x0};
-void *data_020d7614[2] = {(void *)_ZN13NpcActionCtrl10setupAct12EP8NpcActor, 0};
-void *data_020d761c[2] = {(void *)_ZN13NpcActionCtrl9mainAct11EP8NpcActor, 0};
 const u16 data_020c6cd8[2] = {0x46, 0x0};
-void *data_020d766c[2] = {(void *)_ZN13NpcActionCtrl9mainAct0DEP8NpcActor, 0};
 const u16 data_020c6d04[2] = {0x63, 0x100};
-void *data_020d762c[2] = {(void *)_ZN13NpcActionCtrl9postAct10EP8NpcActor, 0};
-void *data_020d7644[2] = {(void *)_ZN13NpcActionCtrl10setupAct0FEP8NpcActor, 0};
-void *data_020d764c[2] = {(void *)_ZN13NpcActionCtrl9postAct0EEv, 0};
 const u16 data_020c6cf0[2] = {0xeb85, 0x0};
 const u16 data_020c6d24[2] = {0x50, 0x9};
 const u16 data_020c6cc0[2] = {0x3000, 0x0};
-void *data_020d7664[2] = {(void *)_ZN16ActorTalkRequest13takeItemStartEv, 0};
 const u32 data_020c6d84[4] = {0x1, 0x2, 0x4, 0x8};
-void *data_020d7684[2] = {(void *)_ZN13NpcActionCtrl10setupAct0CEP8NpcActor, 0};
 const u16 data_020c6d28[2] = {0x53, 0x0};
-void *data_020d722c[2] = {(void *)_ZN13VillagerRoute11isInBlockT2EP7VecFx32, 0};
 const u32 sNpcMoveSpeedPresets[9] = {0x0, 0x0, 0x0, 0x100, 0x19, 0x33, 0x199, 0x66, 0x99};
-void *data_020d7224[2] = {(void *)_ZN11NpcTalkCtrl11setupState0EP8NpcActor, 0};
-void *data_020d75f4[2] = {(void *)_ZN13NpcActionCtrl10setupAct14EP8NpcActor, 0};
-void *data_020d75ec[2] = {(void *)_ZN13VillagerRoute16stepCheckArrivedEP7VecFx32, 0};
 const u16 data_020c6cd0[2] = {0x5e, 0x0};
-void *data_020d7214[2] = {(void *)_ZN13NpcActionCtrl10setupAct05EP8NpcActor, 0};
-void *data_020d75d4[2] = {(void *)_ZN16ActorTalkRequest12takeItemWaitEv, 0};
-void *data_020d75cc[2] = {(void *)_ZN13NpcActionCtrl10act04Step0EP8NpcActor, 0};
-void *data_020d75c4[2] = {(void *)_ZN13NpcActionCtrl10act04Step1EP8NpcActor, 0};
-void *data_020d75bc[2] = {(void *)_ZN13VillagerRoute11isInBlockT4EP7VecFx32, 0};
-void *data_020d75b4[2] = {(void *)_ZN16ActorTalkRequest12giveItemWaitEv, 0};
-void *data_020d75ac[2] = {(void *)_ZN13NpcActionCtrl10act15Step2EP8NpcActor, 0};
-void *data_020d75a4[2] = {(void *)_ZN13NpcActionCtrl10act05Step1EP8NpcActor, 0};
-void *data_020d71f4[2] = {(void *)_ZN13NpcActionCtrl10act05Step0EP8NpcActor, 0};
-void *data_020d7594[2] = {(void *)_ZN11NpcTalkCtrl11state4Step0EP8NpcActor, 0};
-void *data_020d758c[2] = {(void *)_ZN16ActorTalkRequest13itemAct0FWaitEv, 0};
 }
 }
 
 void NpcActionCtrl::mainAct04(NpcActor *c) {
     using namespace nM;
-    static void (NpcActionCtrl::*tbl[])(NpcActor *) = {*(void (NpcActionCtrl::**)(NpcActor *))data_020d75cc, *(void (NpcActionCtrl::**)(NpcActor *))data_020d75c4};
+    static void (NpcActionCtrl::*tbl[])(NpcActor *) = {&NpcActionCtrl::act04Step0, &NpcActionCtrl::act04Step1};
     if (actStep < 2) {
         (this->*tbl[actStep])(c);
     }
@@ -3574,22 +3275,13 @@ void NpcActionCtrl::act05Step1(NpcActor *c) {
 
 namespace nZ {
 extern "C" {
-void *data_020d7574[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0};
-void *data_020d756c[2] = {(void *)_ZN13NpcActionCtrl10setupAct10EP8NpcActor, 0};
-void *data_020d7564[2] = {(void *)_ZN16ActorTalkRequest15closeWindowWaitEv, 0};
-void *data_020d755c[2] = {(void *)_ZN13NpcActionCtrl10act15Step1EP8NpcActor, 0};
-void *data_020d7554[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32, 0};
-void *data_020d754c[2] = {(void *)_ZN16ActorTalkRequest16closeWindowStartEv, 0};
-void *data_020d7544[2] = {(void *)_ZN13NpcActionCtrl9postAct0DEP8NpcActor, 0};
-void *data_020d753c[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP7VecFx32, 0};
 const u16 data_020c6d3c[2] = {0x54, 0x5};
-void *data_020d71bc[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 }
 }
 
 void NpcActionCtrl::mainAct05(NpcActor *c) {
     using namespace nM;
-    static void (NpcActionCtrl::*tbl[])(NpcActor *) = {*(void (NpcActionCtrl::**)(NpcActor *))data_020d71f4, *(void (NpcActionCtrl::**)(NpcActor *))data_020d75a4};
+    static void (NpcActionCtrl::*tbl[])(NpcActor *) = {&NpcActionCtrl::act05Step0, &NpcActionCtrl::act05Step1};
     if (actStep < 2) {
         (this->*tbl[actStep])(c);
     }
@@ -3637,24 +3329,14 @@ void NpcActionCtrl::act07Step0(NpcActor *c) {
 
 namespace nZ {
 extern "C" {
-void *data_020d7514[2] = {(void *)_ZN13NpcActionCtrl10setupAct0BEP8NpcActor, 0};
-void *data_020d750c[2] = {(void *)_ZN16ActorTalkRequest19subSceneCloseWindowEv, 0};
-void *data_020d7504[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0};
-void *data_020d74fc[2] = {(void *)_ZN13NpcActionCtrl10setupAct0AEP8NpcActor, 0};
-void *data_020d74f4[2] = {(void *)_ZN13VillagerRoute10stepToDoorEP7VecFx32, 0};
 const u32 sNpcAct07Anims[5] = {0xda, 0xdb, 0xdc, 0xdd, 0xde};
-void *data_020d7194[2] = {(void *)_ZN16ActorTalkRequest13itemAct12WaitEv, 0};
-void *data_020d70bc[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP7VecFx32, 0};
-void *data_020d74d4[2] = {(void *)_ZN16ActorTalkRequest17taskSwitchSpeakerEv, 0};
-void *data_020d74cc[2] = {(void *)_ZN13NpcActionCtrl10setupAct08EP8NpcActor, 0};
-void *data_020d74c4[2] = {(void *)_ZN16ActorTalkRequest10taskMelodyEv, 0};
 const u16 sNpcAct07Ses[5] = {0x45, 0x46, 0x47, 0x48, 0x49};
 }
 }
 
 void NpcActionCtrl::mainAct07(NpcActor *c) {
     using namespace nM;
-    static void (NpcActionCtrl::*tbl[])(NpcActor *) = {*(void (NpcActionCtrl::**)(NpcActor *))data_020d708c};
+    static void (NpcActionCtrl::*tbl[])(NpcActor *) = {&NpcActionCtrl::act07Step0};
     if (actStep < 1) {
         (this->*tbl[actStep])(c);
     }
@@ -3780,13 +3462,12 @@ void NpcActionCtrl::act0AStep0(NpcActor *c) {
 
 namespace nZ {
 extern "C" {
-void *data_020d70d4[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32, 0};
 }
 }
 
 void NpcActionCtrl::mainAct0A(NpcActor *c) {
     using namespace nL;
-    static Unk_02017d74_Fn tbl[1] = {*(Unk_02017d74_Fn *)data_020d7484};
+    static Unk_02017d74_Fn tbl[1] = {&NpcActionCtrl::act0AStep0};
     if (actStep < 1) {
         (this->*tbl[actStep])(c);
     }
@@ -3835,18 +3516,14 @@ void NpcActionCtrl::act0BStep0(NpcActor *c) {
 namespace nZ {
 extern "C" {
 const u16 data_020c6d10[2] = {0x61, 0x0};
-void *data_020d748c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 const u16 data_020c6d1c[2] = {0x8000, 0x0};
 const u16 data_020c6d2c[2] = {0x5a, 0x0};
-void *data_020d7474[2] = {(void *)_ZN16ActorTalkRequest13taskItemAct0FEv, 0};
-void *data_020d746c[2] = {(void *)_ZN13NpcActionCtrl10act0BStep0EP8NpcActor, 0};
-void *data_020d715c[2] = {(void *)_ZN16ActorTalkRequest9melodyEndEv, 0};
 }
 }
 
 void NpcActionCtrl::mainAct0B(NpcActor *c) {
     using namespace nL;
-    static Unk_02017d74_Fn tbl[1] = {*(Unk_02017d74_Fn *)data_020d746c};
+    static Unk_02017d74_Fn tbl[1] = {&NpcActionCtrl::act0BStep0};
     if (actStep < 1) {
         (this->*tbl[actStep])(c);
     }
@@ -3985,18 +3662,13 @@ void NpcActionCtrl::act0DStep4(NpcActor *c) {
 
 namespace nZ {
 extern "C" {
-void *data_020d7454[2] = {(void *)_ZN13NpcActionCtrl10act0DStep1EP8NpcActor, 0};
-void *data_020d714c[2] = {(void *)_ZN13NpcActionCtrl10act0DStep3EP8NpcActor, 0};
 const u16 data_020c6d38[2] = {0x45, 0x2};
-void *data_020d7104[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
-void *data_020d710c[2] = {(void *)_ZN9NpcLookAt5relaxEv, 0};
-void *data_020d7114[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 }
 }
 
 void NpcActionCtrl::mainAct0D(NpcActor *c) {
     using namespace nL;
-    static Unk_02017d74_Fn tbl[5] = {*(Unk_02017d74_Fn *)data_020d745c, *(Unk_02017d74_Fn *)data_020d7454, *(Unk_02017d74_Fn *)data_020d744c, *(Unk_02017d74_Fn *)data_020d714c, *(Unk_02017d74_Fn *)data_020d711c};
+    static Unk_02017d74_Fn tbl[5] = {&NpcActionCtrl::act0DStep0, &NpcActionCtrl::act0DStep1, &NpcActionCtrl::act0DStep2, &NpcActionCtrl::act0DStep3, &NpcActionCtrl::act0DStep4};
     if (actStep < 5) {
         (this->*tbl[actStep])(c);
     }
@@ -4368,42 +4040,20 @@ void NpcActionCtrl::act0EStep19(NpcActor *c) {
 namespace nZ {
 extern "C" {
 const u32 sNpcMoveModeTable[25] = {0x0, 0x100, 0x0, 0x100, 0x0, 0x1, 0x200, 0x1, 0x100, 0x1, 0x2, 0x400, 0x2, 0x400, 0x1, 0x1, 0x800, 0x0, 0x100, 0x1, 0x0, 0x100, 0x1, 0x100, 0x0};
-void *data_020d7414[2] = {(void *)_ZN13NpcActionCtrl11act0EStep03EP8NpcActor, 0};
-void *data_020d740c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
-void *data_020d7404[2] = {(void *)_ZN16ActorTalkRequest12taskGiveItemEv, 0};
-void *data_020d73fc[2] = {(void *)_ZN13NpcActionCtrl11act0EStep06EP8NpcActor, 0};
-void *data_020d717c[2] = {(void *)_ZN16ActorTalkRequest11eatItemWaitEv, 0};
-void *data_020d73ec[2] = {(void *)_ZN13NpcActionCtrl11act0EStep08EP8NpcActor, 0};
-void *data_020d723c[2] = {(void *)_ZN11NpcTalkCtrl11setupState1EP8NpcActor, 0};
-void *data_020d73dc[2] = {(void *)_ZN13NpcActionCtrl11act0EStep10EP8NpcActor, 0};
-void *data_020d7244[2] = {(void *)VillagerRoute_PickOtherHouseBlock, 0};
-void *data_020d73cc[2] = {(void *)_ZN13NpcActionCtrl11act0EStep12EP8NpcActor, 0};
-void *data_020d73c4[2] = {(void *)_ZN13NpcActionCtrl11act0EStep13EP8NpcActor, 0};
-void *data_020d73bc[2] = {(void *)_ZN13NpcActionCtrl11act0EStep14EP8NpcActor, 0};
 const u16 data_020c6d14[2] = {0x48, 0x0};
-void *data_020d73ac[2] = {(void *)_ZN13NpcActionCtrl11act0EStep16EP8NpcActor, 0};
-void *data_020d73a4[2] = {(void *)_ZN13NpcActionCtrl11act0EStep17EP8NpcActor, 0};
-void *data_020d739c[2] = {(void *)_ZN13NpcActionCtrl11act0EStep18EP8NpcActor, 0};
-void *data_020d7394[2] = {(void *)_ZN13NpcActionCtrl11act0EStep19EP8NpcActor, 0};
-void *data_020d7294[2] = {(void *)_ZN11NpcTalkCtrl10mainState3EP8NpcActor, 0};
 const u16 data_020c6d30[2] = {0x63, 0x0};
-void *data_020d737c[2] = {(void *)_ZN13NpcActionCtrl10act11Step0EP8NpcActor, 0};
-void *data_020d7374[2] = {(void *)_ZN13NpcActionCtrl10act11Step1EP8NpcActor, 0};
-void *data_020d736c[2] = {(void *)_ZN13NpcActionCtrl10act11Step2Ev, 0};
-void *data_020d72b4[2] = {(void *)_ZN13NpcActionCtrl10act12Step1Ev, 0};
-void *data_020d735c[2] = {(void *)_ZN16ActorTalkRequest12taskSubSceneEv, 0};
 }
 }
 
 void NpcActionCtrl::mainAct0E(NpcActor *o) {
     using namespace nJ;
-    static void (NpcActionCtrl::*tbl[20])(NpcActor *) = {*(void (NpcActionCtrl::**)(NpcActor *))data_020d742c, *(void (NpcActionCtrl::**)(NpcActor *))data_020d7424, *(void (NpcActionCtrl::**)(NpcActor *))data_020d741c, *(void (NpcActionCtrl::**)(NpcActor *))data_020d7414, *(void (NpcActionCtrl::**)(NpcActor *))data_020d7184, *(void (NpcActionCtrl::**)(NpcActor *))data_020d719c, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73fc, *(void (NpcActionCtrl::**)(NpcActor *))data_020d721c, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73ec, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73e4, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73dc, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73d4, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73cc, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73c4, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73bc, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73b4, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73ac, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73a4, *(void (NpcActionCtrl::**)(NpcActor *))data_020d739c, *(void (NpcActionCtrl::**)(NpcActor *))data_020d7394};
+    static void (NpcActionCtrl::*tbl[20])(NpcActor *) = {&NpcActionCtrl::act0EStep00, &NpcActionCtrl::act0EStep01, &NpcActionCtrl::act0EStep02, &NpcActionCtrl::act0EStep03, &NpcActionCtrl::act0EStep04, &NpcActionCtrl::act0EStep05, &NpcActionCtrl::act0EStep06, &NpcActionCtrl::act0EStep07, &NpcActionCtrl::act0EStep08, &NpcActionCtrl::act0EStep09, &NpcActionCtrl::act0EStep10, &NpcActionCtrl::act0EStep11, &NpcActionCtrl::act0EStep12, &NpcActionCtrl::act0EStep13, &NpcActionCtrl::act0EStep14, &NpcActionCtrl::act0EStep15, &NpcActionCtrl::act0EStep16, &NpcActionCtrl::act0EStep17, &NpcActionCtrl::act0EStep18, &NpcActionCtrl::act0EStep19};
     if (actStep < 20) {
         (this->*tbl[actStep])(o);
     }
 }
 
-void NpcActionCtrl::postAct0E() {
+void NpcActionCtrl::postAct0E(NpcActor *) {
     using namespace nJ;
 }
 
@@ -4491,7 +4141,7 @@ void NpcActionCtrl::act11Step1(NpcActor *o) {
     }
 }
 
-void NpcActionCtrl::act11Step2() {
+void NpcActionCtrl::act11Step2(NpcActor *) {
     using namespace nJ;
     if (!HandOverItem_IsActive()) {
         ((NpcActionCtrl *)(this))->setActionDone(1);
@@ -4501,16 +4151,12 @@ void NpcActionCtrl::act11Step2() {
 
 namespace nZ {
 extern "C" {
-void *data_020d7344[2] = {(void *)_ZN11NpcTalkCtrl11state2Step0EP8NpcActor, 0};
-void *data_020d733c[2] = {(void *)_ZN9NpcLookAt17lookAtLocalPlayerEP9Character, 0};
-void *data_020d72d4[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0};
-void *data_020d732c[2] = {(void *)_ZN13VillagerRoute10isAtDoorT3EP7VecFx32, 0};
 }
 }
 
 void NpcActionCtrl::mainAct11(NpcActor *o) {
     using namespace nJ;
-    static void (NpcActionCtrl::*tbl[3])(NpcActor *) = {*(void (NpcActionCtrl::**)(NpcActor *))data_020d737c, *(void (NpcActionCtrl::**)(NpcActor *))data_020d7374, *(void (NpcActionCtrl::**)(NpcActor *))data_020d736c};
+    static void (NpcActionCtrl::*tbl[3])(NpcActor *) = {&NpcActionCtrl::act11Step0, &NpcActionCtrl::act11Step1, &NpcActionCtrl::act11Step2};
     if (actStep < 3) {
         (this->*tbl[actStep])(o);
     }
@@ -4529,14 +4175,14 @@ BOOL NpcActionCtrl::setupAct12(NpcActor *o) {
     return TRUE;
 }
 
-void NpcActionCtrl::act12Step0() {
+void NpcActionCtrl::act12Step0(NpcActor *) {
     using namespace nJ;
     if (HandOverItem_IsModeActive(8) != 0) {
         actStep = 1;
     }
 }
 
-void NpcActionCtrl::act12Step1() {
+void NpcActionCtrl::act12Step1(NpcActor *) {
     using namespace nJ;
     if (HandOverItem_IsModeActive(8) == 0) {
         actStep = 2;
@@ -4546,15 +4192,12 @@ void NpcActionCtrl::act12Step1() {
 
 namespace nZ {
 extern "C" {
-void *data_020d730c[2] = {(void *)_ZN13NpcActionCtrl9mainAct03EP8NpcActor, 0};
-void *data_020d7324[2] = {(void *)_ZN13NpcActionCtrl10act15Step0EP8NpcActor, 0};
-void *data_020d7364[2] = {(void *)_ZN11NpcTalkCtrl11setupState4EP8NpcActor, 0};
 }
 }
 
 void NpcActionCtrl::mainAct12(NpcActor *o) {
     using namespace nJ;
-    static void (NpcActionCtrl::*tbl[2])(NpcActor *) = {*(void (NpcActionCtrl::**)(NpcActor *))data_020d7354, *(void (NpcActionCtrl::**)(NpcActor *))data_020d72b4};
+    static void (NpcActionCtrl::*tbl[2])(NpcActor *) = {&NpcActionCtrl::act12Step0, &NpcActionCtrl::act12Step1};
     if (actStep < 2) {
         (this->*tbl[actStep])(o);
     }
@@ -4593,7 +4236,7 @@ void NpcActionCtrl::act13Step0(NpcActor *o) {
 
 void NpcActionCtrl::mainAct13(NpcActor *o) {
     using namespace nJ;
-    static void (NpcActionCtrl::*tbl[1])(NpcActor *) = {*(void (NpcActionCtrl::**)(NpcActor *))data_020d72ec};
+    static void (NpcActionCtrl::*tbl[1])(NpcActor *) = {&NpcActionCtrl::act13Step0};
     if (actStep < 1) {
         (this->*tbl[actStep])(o);
     }
@@ -4895,15 +4538,12 @@ void NpcActionCtrl::act15Step3(NpcActor *o) {
 
 namespace nZ {
 extern "C" {
-void *data_020d7434[2] = {(void *)_ZN16ActorTalkRequest18switchSpeakerCloseEv, 0};
-void *data_020d7444[2] = {(void *)_ZN16ActorTalkRequest12taskTakeItemEv, 0};
-void *data_020d745c[2] = {(void *)_ZN13NpcActionCtrl10act0DStep0EP8NpcActor, 0};
 }
 }
 
 void NpcActionCtrl::mainAct15(NpcActor *o) {
     using namespace nI;
-    static Unk_02016360_Fn tbl[4] = {*(Unk_02016360_Fn *)data_020d7324, *(Unk_02016360_Fn *)data_020d755c, *(Unk_02016360_Fn *)data_020d75ac, *(Unk_02016360_Fn *)data_020d72f4};
+    static Unk_02016360_Fn tbl[4] = {&NpcActionCtrl::act15Step0, &NpcActionCtrl::act15Step1, &NpcActionCtrl::act15Step2, &NpcActionCtrl::act15Step3};
     if (actStep < 4) {
         (this->*tbl[actStep])(o);
     }
@@ -5787,15 +5427,12 @@ BOOL ActorTalkRequest::isTaskRunning() {
 
 namespace nZ {
 extern "C" {
-void *data_020d749c[2] = {(void *)_ZN11NpcTalkCtrl11state1Step0EP8NpcActor, 0};
-void *data_020d74ac[2] = {(void *)_ZN16ActorTalkRequest13taskItemAct12Ev, 0};
-void *data_020d74b4[2] = {(void *)_ZN16ActorTalkRequest11taskEatItemEv, 0};
 }
 }
 
 void ActorTalkRequest::runTask() {
     using namespace nG;
-    static ActorTalkTaskFn tbl[12] = {*(ActorTalkTaskFn *)data_020d735c, *(ActorTalkTaskFn *)data_020d7384, *(ActorTalkTaskFn *)data_020d720c, *(ActorTalkTaskFn *)data_020d7404, *(ActorTalkTaskFn *)data_020d7444, *(ActorTalkTaskFn *)data_020d7474, *(ActorTalkTaskFn *)data_020d747c, *(ActorTalkTaskFn *)data_020d7494, *(ActorTalkTaskFn *)data_020d74ac, *(ActorTalkTaskFn *)data_020d74b4, *(ActorTalkTaskFn *)data_020d74c4, *(ActorTalkTaskFn *)data_020d74d4};
+    static ActorTalkTaskFn tbl[12] = {&ActorTalkRequest::taskSubScene, &ActorTalkRequest::taskReopenWindow, &ActorTalkRequest::taskCloseWindow, &ActorTalkRequest::taskGiveItem, &ActorTalkRequest::taskTakeItem, &ActorTalkRequest::taskItemAct0F, &ActorTalkRequest::taskKeepItem, &ActorTalkRequest::taskReturnItem, &ActorTalkRequest::taskItemAct12, &ActorTalkRequest::taskEatItem, &ActorTalkRequest::taskMelody, &ActorTalkRequest::taskSwitchSpeaker};
     if ((s32)taskId < 12) {
         if ((this->*tbl[taskId])()) {
             s32 old = taskId;
@@ -5942,16 +5579,12 @@ BOOL ActorTalkRequest::subSceneWait() {
 
 namespace nZ {
 extern "C" {
-void *data_020d752c[2] = {(void *)_ZN16ActorTalkRequest12subSceneWaitEv, 0};
-void *data_020d7534[2] = {(void *)_ZN11NpcTalkCtrl11state2Step1EP8NpcActor, 0};
-void *data_020d7584[2] = {(void *)_ZN16ActorTalkRequest13giveItemStartEv, 0};
-void *data_020d759c[2] = {(void *)_ZN16ActorTalkRequest14itemAct0FStartEv, 0};
 }
 }
 
 BOOL ActorTalkRequest::taskSubScene() {
     using namespace nG;
-    static ActorTalkTaskFn tbl[3] = {*(ActorTalkTaskFn *)data_020d750c, *(ActorTalkTaskFn *)data_020d7524, *(ActorTalkTaskFn *)data_020d752c};
+    static ActorTalkTaskFn tbl[3] = {&ActorTalkRequest::subSceneCloseWindow, &ActorTalkRequest::subSceneOpen, &ActorTalkRequest::subSceneWait};
     BOOL r = FALSE;
     u8 i = taskStep;
     if (i < 3) {
@@ -6004,14 +5637,12 @@ BOOL ActorTalkRequest::closeWindowWait() {
 
 namespace nZ {
 extern "C" {
-void *data_020d7624[2] = {(void *)_ZN13NpcActionCtrl10setupAct15EP8NpcActor, 0};
-void *data_020d7634[2] = {(void *)_ZN13NpcActionCtrl9mainAct15EP8NpcActor, 0};
 }
 }
 
 BOOL ActorTalkRequest::taskCloseWindow() {
     using namespace nG;
-    static ActorTalkTaskFn tbl[2] = {*(ActorTalkTaskFn *)data_020d754c, *(ActorTalkTaskFn *)data_020d7564};
+    static ActorTalkTaskFn tbl[2] = {&ActorTalkRequest::closeWindowStart, &ActorTalkRequest::closeWindowWait};
     BOOL r = FALSE;
     u8 i = taskStep;
     if (i < 2) {
@@ -6065,13 +5696,12 @@ BOOL ActorTalkRequest::giveItemWait() {
 
 namespace nZ {
 extern "C" {
-void *data_020d7674[2] = {(void *)_ZN13NpcActionCtrl10setupAct0DEP8NpcActor, 0};
 }
 }
 
 BOOL ActorTalkRequest::taskGiveItem() {
     using namespace nF;
-    static Unk_02014420_Fn tbl[] = {*(Unk_02014420_Fn *)data_020d7584, *(Unk_02014420_Fn *)data_020d75b4};
+    static Unk_02014420_Fn tbl[] = {&ActorTalkRequest::giveItemStart, &ActorTalkRequest::giveItemWait};
     BOOL r = 0;
     if (taskStep < 2) {
         r = (this->*tbl[taskStep])();
@@ -6128,24 +5758,14 @@ BOOL ActorTalkRequest::takeItemWait() {
 
 namespace nZ {
 extern "C" {
-void *data_020d7604[2] = {(void *)_ZN13NpcActionCtrl10setupAct13EP8NpcActor, 0};
-void *data_020d721c[2] = {(void *)_ZN13NpcActionCtrl11act0EStep07EP8NpcActor, 0};
 const u16 data_020c6d48[4] = {0xe2, 0x0, 0xe0, 0x0};
-void *data_020d720c[2] = {(void *)_ZN16ActorTalkRequest15taskCloseWindowEv, 0};
-void *data_020d7204[2] = {(void *)_ZN13VillagerRoute16isInAttr200BlockEP7VecFx32, 0};
-void *data_020d71fc[2] = {(void *)_ZN13NpcActionCtrl10setupAct00EP8NpcActor, 0};
 const u16 data_020c6d0c[2] = {0x5f, 0x19};
-void *data_020d71ec[2] = {(void *)VillagerRoute_PickAttr200Target, 0};
-void *data_020d71e4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
-void *data_020d71dc[2] = {(void *)VillagerRoute_PickOwnHouseBlock, 0};
-void *data_020d71d4[2] = {(void *)_ZN16ActorTalkRequest13keepItemStartEv, 0};
-void *data_020d71cc[2] = {(void *)_ZN16ActorTalkRequest12keepItemWaitEv, 0};
 }
 }
 
 BOOL ActorTalkRequest::taskTakeItem() {
     using namespace nF;
-    static Unk_02014420_Fn tbl[] = {*(Unk_02014420_Fn *)data_020d7664, *(Unk_02014420_Fn *)data_020d75d4};
+    static Unk_02014420_Fn tbl[] = {&ActorTalkRequest::takeItemStart, &ActorTalkRequest::takeItemWait};
     BOOL r = 0;
     if (taskStep < 2) {
         r = (this->*tbl[taskStep])();
@@ -6189,18 +5809,13 @@ BOOL ActorTalkRequest::itemAct0FWait() {
 
 namespace nZ {
 extern "C" {
-void *data_020d7094[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
-void *data_020d71ac[2] = {(void *)_ZN16ActorTalkRequest14returnItemWaitEv, 0};
-void *data_020d71a4[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0};
-void *data_020d74ec[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP7VecFx32, 0};
 const u16 data_020c6cdc[2] = {0x4c, 0x0};
-void *data_020d718c[2] = {(void *)_ZN13VillagerRoute10isAtDoorT1EP7VecFx32, 0};
 }
 }
 
 BOOL ActorTalkRequest::taskItemAct0F() {
     using namespace nF;
-    static Unk_02014420_Fn tbl[] = {*(Unk_02014420_Fn *)data_020d759c, *(Unk_02014420_Fn *)data_020d758c};
+    static Unk_02014420_Fn tbl[] = {&ActorTalkRequest::itemAct0FStart, &ActorTalkRequest::itemAct0FWait};
     BOOL r = 0;
     if (taskStep < 2) {
         r = (this->*tbl[taskStep])();
@@ -6245,18 +5860,12 @@ BOOL ActorTalkRequest::keepItemWait() {
 
 namespace nZ {
 extern "C" {
-void *data_020d70dc[2] = {(void *)VillagerRoute_PickCoastBlock, 0};
-void *data_020d7174[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP7VecFx32, 0};
-void *data_020d716c[2] = {(void *)_ZN16ActorTalkRequest11melodyStartEv, 0};
-void *data_020d7164[2] = {(void *)_ZN16ActorTalkRequest10melodyWaitEv, 0};
-void *data_020d70ec[2] = {(void *)_ZN16ActorTalkRequest12eatItemStartEv, 0};
-void *data_020d7154[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP7VecFx32, 0};
 }
 }
 
 BOOL ActorTalkRequest::taskKeepItem() {
     using namespace nF;
-    static Unk_02014420_Fn tbl[] = {*(Unk_02014420_Fn *)data_020d71d4, *(Unk_02014420_Fn *)data_020d71cc};
+    static Unk_02014420_Fn tbl[] = {&ActorTalkRequest::keepItemStart, &ActorTalkRequest::keepItemWait};
     BOOL r = 0;
     if (taskStep < 2) {
         r = (this->*tbl[taskStep])();
@@ -6301,15 +5910,13 @@ BOOL ActorTalkRequest::returnItemWait() {
 
 namespace nZ {
 extern "C" {
-void *data_020d711c[2] = {(void *)_ZN13NpcActionCtrl10act0DStep4EP8NpcActor, 0};
-void *data_020d7424[2] = {(void *)_ZN13NpcActionCtrl11act0EStep01EP8NpcActor, 0};
 const u16 data_020c6cf8[2] = {0x5d, 0x0};
 }
 }
 
 BOOL ActorTalkRequest::taskReturnItem() {
     using namespace nF;
-    static Unk_02014420_Fn tbl[] = {*(Unk_02014420_Fn *)data_020d70b4, *(Unk_02014420_Fn *)data_020d71ac};
+    static Unk_02014420_Fn tbl[] = {&ActorTalkRequest::returnItemStart, &ActorTalkRequest::returnItemWait};
     BOOL r = 0;
     if (taskStep < 2) {
         r = (this->*tbl[taskStep])();
@@ -6353,18 +5960,13 @@ BOOL ActorTalkRequest::itemAct12Wait() {
 namespace nZ {
 extern "C" {
 const u16 data_020c6ccc[2] = {0x4d, 0x0};
-void *data_020d724c[2] = {(void *)_ZN13VillagerRoute9isInBlockEP7VecFx32, 0};
-void *data_020d7254[2] = {(void *)_ZN11NpcTalkCtrl10mainState1EP8NpcActor, 0};
-void *data_020d725c[2] = {(void *)_ZN11NpcTalkCtrl11setupState2EP8NpcActor, 0};
-void *data_020d727c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
-void *data_020d7284[2] = {(void *)VillagerRoute_PickRandomBlock, 0};
 const u16 data_020c6d18[2] = {0x44, 0x0};
 }
 }
 
 BOOL ActorTalkRequest::taskItemAct12() {
     using namespace nF;
-    static Unk_02014420_Fn tbl[] = {*(Unk_02014420_Fn *)data_020d70cc, *(Unk_02014420_Fn *)data_020d7194};
+    static Unk_02014420_Fn tbl[] = {&ActorTalkRequest::itemAct12Start, &ActorTalkRequest::itemAct12Wait};
     BOOL r = 0;
     if (taskStep < 2) {
         r = (this->*tbl[taskStep])();
@@ -6408,17 +6010,12 @@ BOOL ActorTalkRequest::eatItemWait() {
 
 namespace nZ {
 extern "C" {
-void *data_020d7354[2] = {(void *)_ZN13NpcActionCtrl10act12Step0Ev, 0};
-void *data_020d72cc[2] = {(void *)_ZN9NpcLookAt18lookAtTargetPlayerEP9Character, 0};
-void *data_020d72dc[2] = {(void *)_ZN9NpcLookAt20approachManualAnglesEv, 0};
-void *data_020d72fc[2] = {(void *)_ZN9NpcLookAt11lookAtPointEP8NpcActor, 0};
-void *data_020d7304[2] = {(void *)_ZN13NpcActionCtrl10setupAct03EP8NpcActor, 0};
 }
 }
 
 BOOL ActorTalkRequest::taskEatItem() {
     using namespace nF;
-    static Unk_02014420_Fn tbl[] = {*(Unk_02014420_Fn *)data_020d70ec, *(Unk_02014420_Fn *)data_020d717c};
+    static Unk_02014420_Fn tbl[] = {&ActorTalkRequest::eatItemStart, &ActorTalkRequest::eatItemWait};
     BOOL r = 0;
     if (taskStep < 2) {
         r = (this->*tbl[taskStep])();
@@ -6494,33 +6091,18 @@ BOOL ActorTalkRequest::melodyEnd() {
 namespace nZ {
 extern "C" {
 const u16 data_020c6d20[2] = {0xf, 0x0};
-void *data_020d744c[2] = {(void *)_ZN13NpcActionCtrl10act0DStep2EP8NpcActor, 0};
-void *data_020d747c[2] = {(void *)_ZN16ActorTalkRequest12taskKeepItemEv, 0};
-void *data_020d7484[2] = {(void *)_ZN13NpcActionCtrl10act0AStep0EP8NpcActor, 0};
-void *data_020d74bc[2] = {(void *)_ZN11NpcTalkCtrl11state1Step1EP8NpcActor, 0};
-void *data_020d74dc[2] = {(void *)_ZN11NpcTalkCtrl11state1Step2EP8NpcActor, 0};
-void *data_020d757c[2] = {(void *)_ZN13NpcActionCtrl10setupAct11EP8NpcActor, 0};
-void *data_020d75dc[2] = {(void *)_ZN13NpcActionCtrl9mainAct13EP8NpcActor, 0};
-void *data_020d760c[2] = {(void *)_ZN13NpcActionCtrl9mainAct12EP8NpcActor, 0};
 const u16 data_020c6ce8[2] = {0x43, 0x0};
-void *data_020d7654[2] = {(void *)_ZN13NpcActionCtrl9mainAct0EEP8NpcActor, 0};
-void *data_020d767c[2] = {(void *)_ZN13NpcActionCtrl9postAct0CEP8NpcActor, 0};
 const u16 sNpcTalkMouthAnims[4] = {0x137, 0x0, 0x138, 0x0};
 const u16 data_020c6cfc[2] = {0x4e, 0x0};
 const u16 data_020c6d58[4] = {0x55, 0x0, 0x56, 0x0};
 const u16 data_020c6d60[4] = {0xe3, 0x0, 0xe1, 0x0};
 const u16 data_020c6ce4[2] = {0x47, 0x6};
-void *data_020d707c[2] = {(void *)_ZN13VillagerRoute9isInBlockEP7VecFx32, 0};
-void *data_020d71c4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
-void *data_020d709c[2] = {(void *)_ZN13NpcActionCtrl9mainAct01EP8NpcActor, 0};
-void *data_020d70b4[2] = {(void *)_ZN16ActorTalkRequest15returnItemStartEv, 0};
-void *data_020d719c[2] = {(void *)_ZN13NpcActionCtrl11act0EStep05EP8NpcActor, 0};
 }
 }
 
 BOOL ActorTalkRequest::taskMelody() {
     using namespace nF;
-    static Unk_02014420_Fn tbl[] = {*(Unk_02014420_Fn *)data_020d716c, *(Unk_02014420_Fn *)data_020d7164, *(Unk_02014420_Fn *)data_020d715c};
+    static Unk_02014420_Fn tbl[] = {&ActorTalkRequest::melodyStart, &ActorTalkRequest::melodyWait, &ActorTalkRequest::melodyEnd};
     if (taskStep < 3) {
         return (this->*tbl[taskStep])();
     }
@@ -6590,20 +6172,17 @@ BOOL ActorTalkRequest::switchSpeakerSwap() {
 
 namespace nZ {
 extern "C" {
-void *data_020d70e4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 }
 }
 
 BOOL ActorTalkRequest::taskSwitchSpeaker() {
     using namespace nE;
-    static BOOL (ActorTalkRequest::*tbl[3])() = {*(BOOL (ActorTalkRequest::**)())data_020d7434, *(BOOL (ActorTalkRequest::**)())data_020d7134, *(BOOL (ActorTalkRequest::**)())data_020d7144};
+    static BOOL (ActorTalkRequest::*tbl[3])() = {&ActorTalkRequest::switchSpeakerClose, &ActorTalkRequest::switchSpeakerFocus, &ActorTalkRequest::switchSpeakerSwap};
     if (taskStep < 3) return (this->*tbl[taskStep])();
     return FALSE;
 }
 
-namespace nE {
-extern "C" void _ZN11NpcTalkCtrlC1Ev(void) {}
-}
+NpcTalkCtrl::NpcTalkCtrl() {}
 
 namespace nE {
 extern "C" void NpcTalkCtrl_Destroy(void) {}
@@ -6806,27 +6385,21 @@ void NpcTalkCtrl::state0Step2(NpcActor *ctx) {
 namespace nZ {
 extern "C" {
 const u16 data_020c6cf4[2] = {0x4f, 0x0};
-void *data_020d7134[2] = {(void *)_ZN16ActorTalkRequest18switchSpeakerFocusEv, 0};
-void *data_020d7144[2] = {(void *)_ZN16ActorTalkRequest17switchSpeakerSwapEv, 0};
 const u16 data_020c6d34[2] = {0x58, 0x6};
-void *data_020d7264[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
-void *data_020d728c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
-void *data_020d729c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 Unk_0201a1e0_Fn sNpcLookAtTypes[6] = {
-    *(Unk_0201a1e0_Fn *)data_020d710c,
-    *(Unk_0201a1e0_Fn *)data_020d733c,
-    *(Unk_0201a1e0_Fn *)data_020d76b4,
-    *(Unk_0201a1e0_Fn *)data_020d72fc,
-    *(Unk_0201a1e0_Fn *)data_020d72cc,
-    *(Unk_0201a1e0_Fn *)data_020d72dc,
+    &NpcLookAt::relax,
+    &NpcLookAt::lookAtLocalPlayer,
+    &NpcLookAt::lookAtTargetActor,
+    &NpcLookAt::lookAtPoint,
+    &NpcLookAt::lookAtTargetPlayer,
+    &NpcLookAt::approachManualAngles,
 };
-void *data_020d72e4[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32, 0};
 }
 }
 
 void NpcTalkCtrl::mainState0(NpcActor *ctx) {
     using namespace nE;
-    static void (NpcTalkCtrl::*tbl[3])(NpcActor *) = {*(void (NpcTalkCtrl::**)(NpcActor *))data_020d72a4, *(void (NpcTalkCtrl::**)(NpcActor *))data_020d743c, *(void (NpcTalkCtrl::**)(NpcActor *))data_020d731c};
+    static void (NpcTalkCtrl::*tbl[3])(NpcActor *) = {&NpcTalkCtrl::state0Step0, &NpcTalkCtrl::state0Step1, &NpcTalkCtrl::state0Step2};
     if (step < 3) (this->*tbl[step])(ctx);
 }
 
@@ -6870,7 +6443,7 @@ void NpcTalkCtrl::state2Step1(NpcActor *ctx) {
 
 void NpcTalkCtrl::mainState2(NpcActor *ctx) {
     using namespace nE;
-    static void (NpcTalkCtrl::*tbl[2])(NpcActor *) = {*(void (NpcTalkCtrl::**)(NpcActor *))data_020d7344, *(void (NpcTalkCtrl::**)(NpcActor *))data_020d738c};
+    static void (NpcTalkCtrl::*tbl[2])(NpcActor *) = {&NpcTalkCtrl::state2Step0, &NpcTalkCtrl::state2Step1};
     if (step < 2) (this->*tbl[step])(ctx);
 }
 
@@ -6968,13 +6541,12 @@ void NpcTalkCtrl::state1Step2(NpcActor* p) {
 
 namespace nZ {
 extern "C" {
-void *data_020d751c[2] = {(void *)_ZN13NpcActionCtrl9mainAct0BEP8NpcActor, 0};
 }
 }
 
 void NpcTalkCtrl::mainState1(NpcActor* p) {
     using namespace nD;
-    static Unk_02013474_Fn tbl[3] = {*(Unk_02013474_Fn *)data_020d749c, *(Unk_02013474_Fn *)data_020d74bc, *(Unk_02013474_Fn *)data_020d74dc};
+    static Unk_02013474_Fn tbl[3] = {&NpcTalkCtrl::state1Step0, &NpcTalkCtrl::state1Step1, &NpcTalkCtrl::state1Step2};
     if (step < 3) {
         (this->*tbl[step])(p);
     }
@@ -7005,7 +6577,7 @@ void NpcTalkCtrl::setupState3(NpcActor* p) {
 
 void NpcTalkCtrl::mainState3(NpcActor* p) {
     using namespace nD;
-    static Unk_02013474_Fn tbl[1] = {*(Unk_02013474_Fn *)data_020d7534};
+    static Unk_02013474_Fn tbl[1] = {&NpcTalkCtrl::state2Step1};
     if (step < 1) {
         (this->*tbl[step])(p);
     }
@@ -7038,44 +6610,36 @@ void NpcTalkCtrl::state4Step0(NpcActor* p) {
 namespace nZ {
 extern "C" {
 const u16 sNpcGiveItemAnims[4] = {0x22, 0x0, 0x2b, 0x0};
-void *data_020d7074[2] = {(void *)_ZN13NpcActionCtrl9mainAct00Ev, 0};
-void *data_020d70a4[2] = {(void *)_ZN13NpcActionCtrl10setupAct02EP8NpcActor, 0};
-void *data_020d70c4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 NpcActionEntry sNpcActionTable[22] = {
-    *(Unk_02019858_FnA *)data_020d71fc, *(Unk_02019858_FnB *)data_020d7074, 0,
-    *(Unk_02019858_FnA *)data_020d7084, *(Unk_02019858_FnB *)data_020d709c, 0,
-    *(Unk_02019858_FnA *)data_020d70a4, *(Unk_02019858_FnB *)data_020d7464, 0,
-    *(Unk_02019858_FnA *)data_020d7304, *(Unk_02019858_FnB *)data_020d730c, 0,
-    *(Unk_02019858_FnA *)data_020d7314, *(Unk_02019858_FnB *)data_020d76d4, 0,
-    *(Unk_02019858_FnA *)data_020d7214, *(Unk_02019858_FnB *)data_020d7704, 0,
-    *(Unk_02019858_FnA *)data_020d76fc, *(Unk_02019858_FnB *)data_020d76f4, 0,
-    *(Unk_02019858_FnA *)data_020d76ec, *(Unk_02019858_FnB *)data_020d76e4, *(Unk_02019858_FnC *)data_020d76dc,
-    *(Unk_02019858_FnA *)data_020d74cc, *(Unk_02019858_FnB *)data_020d76cc, 0,
-    *(Unk_02019858_FnA *)data_020d76c4, *(Unk_02019858_FnB *)data_020d76bc, 0,
-    *(Unk_02019858_FnA *)data_020d74fc, *(Unk_02019858_FnB *)data_020d76ac, *(Unk_02019858_FnC *)data_020d76a4,
-    *(Unk_02019858_FnA *)data_020d7514, *(Unk_02019858_FnB *)data_020d751c, *(Unk_02019858_FnC *)data_020d768c,
-    *(Unk_02019858_FnA *)data_020d7684, 0, *(Unk_02019858_FnC *)data_020d767c,
-    *(Unk_02019858_FnA *)data_020d7674, *(Unk_02019858_FnB *)data_020d766c, *(Unk_02019858_FnC *)data_020d7544,
-    *(Unk_02019858_FnA *)data_020d765c, *(Unk_02019858_FnB *)data_020d7654, *(Unk_02019858_FnC *)data_020d764c,
-    *(Unk_02019858_FnA *)data_020d7644, 0, *(Unk_02019858_FnC *)data_020d763c,
-    *(Unk_02019858_FnA *)data_020d756c, 0, *(Unk_02019858_FnC *)data_020d762c,
-    *(Unk_02019858_FnA *)data_020d757c, *(Unk_02019858_FnB *)data_020d761c, 0,
-    *(Unk_02019858_FnA *)data_020d7614, *(Unk_02019858_FnB *)data_020d760c, 0,
-    *(Unk_02019858_FnA *)data_020d7604, *(Unk_02019858_FnB *)data_020d75dc, *(Unk_02019858_FnC *)data_020d75e4,
-    *(Unk_02019858_FnA *)data_020d75f4, 0, *(Unk_02019858_FnC *)data_020d75fc,
-    *(Unk_02019858_FnA *)data_020d7624, *(Unk_02019858_FnB *)data_020d7634, 0,
+    &NpcActionCtrl::setupAct00, &NpcActionCtrl::mainAct00, 0,
+    &NpcActionCtrl::setupAct01, &NpcActionCtrl::mainAct01, 0,
+    &NpcActionCtrl::setupAct02, &NpcActionCtrl::mainAct02, 0,
+    &NpcActionCtrl::setupAct03, &NpcActionCtrl::mainAct03, 0,
+    &NpcActionCtrl::setupAct04, &NpcActionCtrl::mainAct04, 0,
+    &NpcActionCtrl::setupAct05, &NpcActionCtrl::mainAct05, 0,
+    &NpcActionCtrl::setupAct06, &NpcActionCtrl::mainAct05, 0,
+    &NpcActionCtrl::setupAct07, &NpcActionCtrl::mainAct07, &NpcActionCtrl::postAct07,
+    &NpcActionCtrl::setupAct08, &NpcActionCtrl::mainAct08, 0,
+    &NpcActionCtrl::setupAct09, &NpcActionCtrl::mainAct09, 0,
+    &NpcActionCtrl::setupAct0A, &NpcActionCtrl::mainAct0A, &NpcActionCtrl::postAct0A,
+    &NpcActionCtrl::setupAct0B, &NpcActionCtrl::mainAct0B, &NpcActionCtrl::postAct0B,
+    &NpcActionCtrl::setupAct0C, 0, &NpcActionCtrl::postAct0C,
+    &NpcActionCtrl::setupAct0D, &NpcActionCtrl::mainAct0D, &NpcActionCtrl::postAct0D,
+    &NpcActionCtrl::setupAct0E, &NpcActionCtrl::mainAct0E, &NpcActionCtrl::postAct0E,
+    &NpcActionCtrl::setupAct0F, 0, &NpcActionCtrl::postAct0F,
+    &NpcActionCtrl::setupAct10, 0, &NpcActionCtrl::postAct10,
+    &NpcActionCtrl::setupAct11, &NpcActionCtrl::mainAct11, 0,
+    &NpcActionCtrl::setupAct12, &NpcActionCtrl::mainAct12, 0,
+    &NpcActionCtrl::setupAct13, &NpcActionCtrl::mainAct13, &NpcActionCtrl::postAct13,
+    &NpcActionCtrl::setupAct14, 0, &NpcActionCtrl::postAct14,
+    &NpcActionCtrl::setupAct15, &NpcActionCtrl::mainAct15, 0,
 };
-void *data_020d70f4[2] = {(void *)VillagerRoute_PickOtherHouseDoor, 0};
-void *data_020d70fc[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
-void *data_020d712c[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0};
-void *data_020d726c[2] = {(void *)_ZN11NpcTalkCtrl10mainState2EP8NpcActor, 0};
-void *data_020d72a4[2] = {(void *)_ZN11NpcTalkCtrl11state0Step0EP8NpcActor, 0};
 NpcTalkCtrlState sNpcTalkCtrlStates[5] = {
-    *(Unk_02014040_Fn *)data_020d7224, *(Unk_02014040_Fn *)data_020d7234,
-    *(Unk_02014040_Fn *)data_020d723c, *(Unk_02014040_Fn *)data_020d7254,
-    *(Unk_02014040_Fn *)data_020d725c, *(Unk_02014040_Fn *)data_020d726c,
-    *(Unk_02014040_Fn *)data_020d7274, *(Unk_02014040_Fn *)data_020d7294,
-    *(Unk_02014040_Fn *)data_020d7364, *(Unk_02014040_Fn *)data_020d72ac,
+    &NpcTalkCtrl::setupState0, &NpcTalkCtrl::mainState0,
+    &NpcTalkCtrl::setupState1, &NpcTalkCtrl::mainState1,
+    &NpcTalkCtrl::setupState2, &NpcTalkCtrl::mainState2,
+    &NpcTalkCtrl::setupState3, &NpcTalkCtrl::mainState3,
+    &NpcTalkCtrl::setupState4, &NpcTalkCtrl::mainState4,
 };
 const NpcEmotionEntry sEmotionTable[60] = {
     {{{0x0, 0, 0x0, 0x1, -1}, {0x137, 0, 0x0, 0x1, -1}}, 0x0, 0x0},
@@ -7140,16 +6704,13 @@ const NpcEmotionEntry sEmotionTable[60] = {
     {{{0x4f, data_020c6ccc, 0x1, 0x1, 0}, {0x50, 0, 0x0, 0x0, -1}}, 0x1, 0x1},
 };
 const u16 data_020c6cc4[2] = {0x200, 0x0};
-void *data_020d7524[2] = {(void *)_ZN16ActorTalkRequest12subSceneOpenEv, 0};
-void *data_020d763c[2] = {(void *)_ZN13NpcActionCtrl9postAct0FEP8NpcActor, 0};
 const u16 data_020c6d50[4] = {0x51, 0x6, 0x52, 0x3};
-void *data_020d708c[2] = {(void *)_ZN13NpcActionCtrl10act07Step0EP8NpcActor, 0};
 }
 }
 
 void NpcTalkCtrl::mainState4(NpcActor* p) {
     using namespace nD;
-    static Unk_02013474_Fn tbl[1] = {*(Unk_02013474_Fn *)data_020d7594};
+    static Unk_02013474_Fn tbl[1] = {&NpcTalkCtrl::state4Step0};
     if (step < 3) {
         (this->*tbl[step])(p);
     }
@@ -7277,7 +6838,7 @@ extern "C" void VillagerRoute_Destruct() {
 
 void VillagerRoute::reset() {
     using namespace nD;
-    MI_CpuFill8(this, 0, 0x9c);
+    MI_CpuFill8(this, 0, sizeof(VillagerRoute));
     stepMode = 2;
     routeType = 7;
     unk_24 = -1;
@@ -7286,7 +6847,7 @@ void VillagerRoute::reset() {
     approachDir = 4;
 }
 
-void VillagerRoute::start(u32 a, u32 idx, u32 b, u32 c) {
+void VillagerRoute::start(VecFx32 *pos, u32 idx, u32 b, NpcActor *owner) {
     using namespace nD;
     if (idx < 7) {
         reset();
@@ -7294,11 +6855,11 @@ void VillagerRoute::start(u32 a, u32 idx, u32 b, u32 c) {
         stepMode = b;
         typeTable = &sVillagerRouteTypes[routeType];
         if (typeTable->pickTarget) {
-            targetUnit = (this->*(typeTable->pickTarget))(a, c);
+            typeTable->pickTarget(&targetUnit, this, pos, owner);
             s32 y = targetUnit.y;
             targetBlockX = targetUnit.x >> 4;
             targetBlockZ = y >> 4;
-            (this)->planStep((VecFx32 *)(a));
+            (this)->planStep(pos);
         }
     }
 }
@@ -7968,7 +7529,7 @@ BOOL VillagerRoute::stepWander(VecFx32 *p) {
 }
 
 namespace nB {
-extern "C" void VillagerRoute_PickAttr200Target(Vec2 *out, void *self) {
+extern "C" void VillagerRoute_PickAttr200Target(Vec2 *out, VillagerRoute *self, VecFx32 *v, NpcActor *obj) {
     BlockMap *world = gSceneBlockMap;
     out->x = 0;
     out->y = 0;
@@ -7997,7 +7558,7 @@ BOOL VillagerRoute::isInAttr200Block(VecFx32 *v) {
 }
 
 namespace nB {
-extern "C" void VillagerRoute_PickOtherHouseDoor(Vec2 *out, void *self, u32 unused, NpcActor *obj) {
+extern "C" void VillagerRoute_PickOtherHouseDoor(Vec2 *out, VillagerRoute *self, VecFx32 *v, NpcActor *obj) {
     out->x = 0;
     out->y = 0;
     if (obj->getVillagerData()) {
@@ -8037,7 +7598,7 @@ BOOL VillagerRoute::stepCheckArrived(VecFx32 *p) {
 }
 
 namespace nB {
-extern "C" void VillagerRoute_PickOtherHouseBlock(Vec2 *out, void *self, u32 unused, NpcActor *obj) {
+extern "C" void VillagerRoute_PickOtherHouseBlock(Vec2 *out, VillagerRoute *self, VecFx32 *v, NpcActor *obj) {
     BlockMap *world = gSceneBlockMap;
     out->x = 0;
     out->y = 0;
@@ -8071,7 +7632,7 @@ BOOL VillagerRoute::isInBlockT2(VecFx32 *v) {
 }
 
 namespace nB {
-extern "C" void VillagerRoute_PickOwnHouseDoor(Vec2 *out, void *self, u32 unused, NpcActor *obj) {
+extern "C" void VillagerRoute_PickOwnHouseDoor(Vec2 *out, VillagerRoute *self, VecFx32 *v, NpcActor *obj) {
     out->x = 0;
     out->y = 0;
     if (obj->getVillagerData()) {
@@ -8115,7 +7676,7 @@ BOOL VillagerRoute::stepToDoor(VecFx32 *p) {
 }
 
 namespace nB {
-extern "C" void VillagerRoute_PickOwnHouseBlock(Vec2 *out, void *self, u32 unused, NpcActor *obj) {
+extern "C" void VillagerRoute_PickOwnHouseBlock(Vec2 *out, VillagerRoute *self, VecFx32 *v, NpcActor *obj) {
     BlockMap *world = gSceneBlockMap;
     out->x = 0;
     out->y = 0;
@@ -8143,7 +7704,7 @@ BOOL VillagerRoute::isInBlockT4(VecFx32 *v) {
 }
 
 namespace nB {
-extern "C" void VillagerRoute_PickRandomBlock(Vec2 *out, void *self) {
+extern "C" void VillagerRoute_PickRandomBlock(Vec2 *out, VillagerRoute *self, VecFx32 *v, NpcActor *obj) {
     BlockMap *world = gSceneBlockMap;
     Vec2 pos;
     out->x = 0;
@@ -8178,7 +7739,7 @@ BOOL VillagerRoute::isInBlock(VecFx32 *v) {
 }
 
 namespace nB {
-extern "C" void VillagerRoute_PickCoastBlock(Vec2 *out, void *self, VecFx32 *v) {
+extern "C" void VillagerRoute_PickCoastBlock(Vec2 *out, VillagerRoute *self, VecFx32 *v, NpcActor *obj) {
     BlockMap *world = gSceneBlockMap;
     u8 mask = 0;
     out->x = 0;
@@ -8390,22 +7951,15 @@ inline NpcActor::~NpcActor() {}
 
 namespace nZ {
 extern "C" {
-void *data_020d713c[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32, 0};
-void *data_020d72bc[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP7VecFx32, 0};
-void *data_020d7314[2] = {(void *)_ZN13NpcActionCtrl10setupAct04EP8NpcActor, 0};
-void *data_020d75e4[2] = {(void *)_ZN13NpcActionCtrl9postAct13EP8NpcActor, 0};
-Unk_02013260_Fn sVillagerRouteTypes[7][8] = {
-    *(Unk_02013260_Fn *)data_020d7204, *(Unk_02013260_Fn *)data_020d71ec, *(Unk_02013260_Fn *)data_020d71e4, *(Unk_02013260_Fn *)data_020d7094, *(Unk_02013260_Fn *)data_020d71c4, *(Unk_02013260_Fn *)data_020d70bc, *(Unk_02013260_Fn *)data_020d71a4, *(Unk_02013260_Fn *)data_020d70d4,
-    *(Unk_02013260_Fn *)data_020d718c, *(Unk_02013260_Fn *)data_020d70f4, *(Unk_02013260_Fn *)data_020d748c, *(Unk_02013260_Fn *)data_020d7104, *(Unk_02013260_Fn *)data_020d7114, *(Unk_02013260_Fn *)data_020d7154, *(Unk_02013260_Fn *)data_020d712c, *(Unk_02013260_Fn *)data_020d71b4,
-    *(Unk_02013260_Fn *)data_020d722c, *(Unk_02013260_Fn *)data_020d7244, *(Unk_02013260_Fn *)data_020d7264, *(Unk_02013260_Fn *)data_020d727c, *(Unk_02013260_Fn *)data_020d729c, *(Unk_02013260_Fn *)data_020d72bc, *(Unk_02013260_Fn *)data_020d72d4, *(Unk_02013260_Fn *)data_020d72e4,
-    *(Unk_02013260_Fn *)data_020d732c, *(Unk_02013260_Fn *)data_020d73f4, *(Unk_02013260_Fn *)data_020d74a4, *(Unk_02013260_Fn *)data_020d74e4, *(Unk_02013260_Fn *)data_020d74f4, *(Unk_02013260_Fn *)data_020d753c, *(Unk_02013260_Fn *)data_020d7574, *(Unk_02013260_Fn *)data_020d75ec,
-    *(Unk_02013260_Fn *)data_020d75bc, *(Unk_02013260_Fn *)data_020d71dc, *(Unk_02013260_Fn *)data_020d70ac, *(Unk_02013260_Fn *)data_020d70c4, *(Unk_02013260_Fn *)data_020d70e4, *(Unk_02013260_Fn *)data_020d7174, *(Unk_02013260_Fn *)data_020d7124, *(Unk_02013260_Fn *)data_020d713c,
-    *(Unk_02013260_Fn *)data_020d724c, *(Unk_02013260_Fn *)data_020d7284, *(Unk_02013260_Fn *)data_020d72c4, *(Unk_02013260_Fn *)data_020d769c, *(Unk_02013260_Fn *)data_020d740c, *(Unk_02013260_Fn *)data_020d74ec, *(Unk_02013260_Fn *)data_020d7504, *(Unk_02013260_Fn *)data_020d7694,
-    *(Unk_02013260_Fn *)data_020d707c, *(Unk_02013260_Fn *)data_020d70dc, *(Unk_02013260_Fn *)data_020d70fc, *(Unk_02013260_Fn *)data_020d71bc, *(Unk_02013260_Fn *)data_020d728c, *(Unk_02013260_Fn *)data_020d7334, *(Unk_02013260_Fn *)data_020d734c, *(Unk_02013260_Fn *)data_020d7554,
+VillagerRouteType sVillagerRouteTypes[7] = {
+    {&VillagerRoute::isInAttr200Block, VillagerRoute_PickAttr200Target, {{&VillagerRoute::stepWander, &VillagerRoute::stepWander, &VillagerRoute::stepWander}, {&VillagerRoute::stepFollowPath, &VillagerRoute::stepAlongPath, &VillagerRoute::stepAdjacentUnit}}},
+    {&VillagerRoute::isAtDoorT1, VillagerRoute_PickOtherHouseDoor, {{&VillagerRoute::stepWander, &VillagerRoute::stepWander, &VillagerRoute::stepWander}, {&VillagerRoute::stepFollowPath, &VillagerRoute::stepAlongPath, &VillagerRoute::stepCheckArrived}}},
+    {&VillagerRoute::isInBlockT2, VillagerRoute_PickOtherHouseBlock, {{&VillagerRoute::stepWander, &VillagerRoute::stepWander, &VillagerRoute::stepWander}, {&VillagerRoute::stepFollowPath, &VillagerRoute::stepAlongPath, &VillagerRoute::stepAdjacentUnit}}},
+    {&VillagerRoute::isAtDoorT3, VillagerRoute_PickOwnHouseDoor, {{&VillagerRoute::stepToDoor, &VillagerRoute::stepToDoor, &VillagerRoute::stepToDoor}, {&VillagerRoute::stepFollowPath, &VillagerRoute::stepAlongPath, &VillagerRoute::stepCheckArrived}}},
+    {&VillagerRoute::isInBlockT4, VillagerRoute_PickOwnHouseBlock, {{&VillagerRoute::stepWander, &VillagerRoute::stepWander, &VillagerRoute::stepWander}, {&VillagerRoute::stepFollowPath, &VillagerRoute::stepAlongPath, &VillagerRoute::stepAdjacentUnit}}},
+    {&VillagerRoute::isInBlock, VillagerRoute_PickRandomBlock, {{&VillagerRoute::stepWander, &VillagerRoute::stepWander, &VillagerRoute::stepWander}, {&VillagerRoute::stepFollowPath, &VillagerRoute::stepAlongPath, &VillagerRoute::stepAdjacentUnit}}},
+    {&VillagerRoute::isInBlock, VillagerRoute_PickCoastBlock, {{&VillagerRoute::stepWander, &VillagerRoute::stepWander, &VillagerRoute::stepWander}, {&VillagerRoute::stepFollowPath, &VillagerRoute::stepAlongPath, &VillagerRoute::stepAdjacentUnit}}},
 };
-void *data_020d7184[2] = {(void *)_ZN13NpcActionCtrl11act0EStep04EP8NpcActor, 0};
-void *data_020d72c4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
-void *data_020d74a4[2] = {(void *)_ZN13VillagerRoute10stepToDoorEP7VecFx32, 0};
 Unk_021be028_Dir sRouteDirs[4] = {Unk_021be028_Dir(0, -1), Unk_021be028_Dir(-1, 0), Unk_021be028_Dir(0, 1), Unk_021be028_Dir(1, 0)};
 }
 }

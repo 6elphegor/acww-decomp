@@ -3,6 +3,7 @@
 #include "sys/StackPad.h"
 #include "actor/ActorProfile.h"
 #include "npc/VillagerId.h"
+#include "save/VillagerData.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
 #include "talk/MsgString9B.h"
@@ -31,7 +32,6 @@ struct TouchPicker;
 extern "C" {
 extern u8 gSaveVillagers[];
 u8 *SaveVillagers_Get(u8 *p, s32 i);
-VillagerId *_ZN12VillagerData13getVillagerIdEv(u8 *p);
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 Vec_DistXZ(s32 *a, s32 *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
@@ -95,16 +95,16 @@ VillagerBoard::~VillagerBoard() {
 
 BOOL VillagerBoard::onCreate() {
     VillagerBoard_ResetTable();
-    setCharId((u16) * (s32 *)((u8 *)this + 8));
+    setCharId((u16)param);
     changeAct(0);
-    sVillagerBoards[*(s32 *)((u8 *)this + 8)] = this;
+    sVillagerBoards[param] = this;
     sVillagerBoardCount++;
     return TRUE;
 }
 
 BOOL VillagerBoard::onExecute() {
     runAct();
-    (Scene_GetTouchPicker())->addSphere((TouchPickSphere *)touchSphere, (VecFx32 *)(void *)(&position.x), 0xc00, 9, *(s32 *)((u8 *)this + 8));
+    (Scene_GetTouchPicker())->addSphere((TouchPickSphere *)touchSphere, (VecFx32 *)(void *)(&position.x), 0xc00, 9, param);
     return TRUE;
 }
 
@@ -113,7 +113,7 @@ BOOL VillagerBoard::onDraw() {
 }
 
 BOOL VillagerBoard::onDelete() {
-    sVillagerBoards[*(s32 *)((u8 *)this + 8)] = 0;
+    sVillagerBoards[param] = 0;
     sVillagerBoardCount--;
     return TRUE;
 }
@@ -187,7 +187,7 @@ BOOL VillagerBoard::setupRead() {
     msgIndex = 0;
     ((TalkWindowState *)window)->nextState = 1;
     MsgString9B buf;
-    _ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(gSaveVillagers, *(s32 *)((u8 *)this + 8)))->getName(&buf);
+    ((VillagerData *)SaveVillagers_Get(gSaveVillagers, param))->getVillagerId()->getName(&buf);
     ((TalkWindowState *)window)->setSlot(0, &buf);
     return TRUE;
 }

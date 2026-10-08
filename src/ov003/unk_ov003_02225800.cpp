@@ -79,12 +79,6 @@ public:
     /* 0x98 */ void *specialAnimFiles[2]; // [0] bee swarm, [1] ant swarm .nsbca (Insect_LoadModel)
 };
 
-// global object whose destructor is main's FxVec3::~FxVec3 (0x02000c8c); no constructor call in the __sinit
-class FxVec3NoCtor {
-public:
-    ~FxVec3NoCtor();
-    u32 pad[3];
-};
 
 
 extern "C" void InsectManager_Create();
@@ -281,7 +275,6 @@ extern u8 data_ov003_02258f08;
 extern s8 sTrashFlySpawnEnabled;
 extern u16 data_ov003_02258f10;
 extern u16 sFieldInsectPurgeTimer;
-extern u32 sWateringPos[];
 extern Insect sFieldInsects[];
 extern InsectSpawnList *gInsectSpawnTables[];
 extern CommManager *gCommManager;
@@ -1733,9 +1726,9 @@ extern "C" void Insect_PlaySe(Rec *o, s32 a, s32 b) {
     s32 r = Insect_GetSeId(o->kind, a);
     if (r >= 0) {
         if (b != 0) {
-            ((SndEnvChannel *)(&o->seEmitter))->callRequest(r);
+            ((SndEnvChannel *)(&o->seEmitter))->callRequest((void *)(uptr)r); // (the wrapper takes the id as void *: src/main/unk_020039ec.cpp)
         } else {
-            ((SndEnvChannel *)(&o->seEmitter))->callRequestSustained((void *)(r));
+            ((SndEnvChannel *)(&o->seEmitter))->callRequestSustained((void *)(uptr)r);
         }
     }
 }
@@ -7301,7 +7294,7 @@ extern "C" BOOL Insect_IsAtWateringPoint(void *p)
     s32 a, b;
     if (sWateringActive != 0) {
         FieldPos_ToUnit(&a, &b, p);
-        FieldPos_ToUnit(&c, &d, sWateringPos);
+        FieldPos_ToUnit(&c, &d, &sWateringPos);
         if (c == a && d == b) {
             return TRUE;
         }

@@ -94,7 +94,7 @@ void Villager_GetFriendName(void *a, MsgString *b);
 void Villager_GetEnemyName(void *a, MsgString *b);
 void Villager_GetRandomOtherName(void *a, MsgString *b);
 void Villager_GetImpressionText(void *self, void *out, PlayerData *p);
-s32 Villager_GetState(VillagerData *a);
+VillagerState *Villager_GetState(VillagerData *a);
 u32 VillagerState_GetMood(VillagerState *e);
 s32 SaveVillagers_Count(u8 *base);
 // the clock, input, weather
@@ -2120,7 +2120,7 @@ u8 TalkVoice::getSpeakerMoodIndex()
     u32 i = 0;
     void *p = window->request->getSpeakerData();
     if (p) {
-        VillagerState *st = (VillagerState *)(uptr)Villager_GetState((VillagerData *)p);  // (returns the address)
+        VillagerState *st = Villager_GetState((VillagerData *)p);
         if (st) i = VillagerState_GetMood(st);
     }
     return data_020cba14[i];

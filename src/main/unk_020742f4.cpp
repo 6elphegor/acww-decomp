@@ -875,7 +875,7 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-VillagerState *VillagerStates_GetEntry(u32 a);  // (defined returning s32 in unk_02077ac4.cpp)
+VillagerState *VillagerStates_GetEntry(u32 a);
 }
 extern "C" {
 void VillagerState_SetPresence(VillagerState *e, u32 v);
