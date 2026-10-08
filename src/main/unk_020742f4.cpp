@@ -34,7 +34,7 @@ struct VillagerShirtRecvStackPad {
 // ======== types of unk_020767f8.cpp ========
 #include "net/FriendEntry.h"
 #include "net/DwcFriendControl.h"
-#include "game/SaveManager.h"
+#include "save/SaveManager.h"
 
 struct VillagerSyncLocals {
     u8 b;

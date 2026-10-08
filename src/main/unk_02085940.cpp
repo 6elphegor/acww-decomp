@@ -154,7 +154,7 @@ void *TownBlockMap_Get();
 void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
 s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
-s32 FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
+void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32 *v);
 s32 TownMap_IsUnitWalkable(s32 x, s32 y, void *grid);
 u16 *BlockMap_GetItemPtr(void *map, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 s32 Item_IsMarker(u16 *p);
@@ -1060,7 +1060,7 @@ fail:
     return 0;
 }
 
-BOOL PeteFallState::pickFallPos(s32 px, s32 flip) {
+BOOL PeteFallState::pickFallPos(VecFx32 *px, s32 flip) {
     s32 dir;
     BlockMap *map = gSceneBlockMap;
     if (map == 0) {

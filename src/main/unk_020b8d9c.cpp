@@ -3346,7 +3346,7 @@ void SkyShotSequence::actPeteFallen() {
     if (timer <= 0) {
         void* p = PlayerActor_GetBodyPos(playerSlot);
         if (p) {
-            ((PeteFallState *)(TownSessionState_GetPeteFall((u8 *)TownSessionState_Get())))->pickFallPos((s32)(uptr)p, fallDir);  // (the definition takes the VecFx32 * as an integer)
+            ((PeteFallState *)(TownSessionState_GetPeteFall((u8 *)TownSessionState_Get())))->pickFallPos((VecFx32 *)p, fallDir);
         }
         PlayerActor_LocalEndWatch();
         Camera_RestorePrevMode();

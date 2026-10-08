@@ -2,14 +2,13 @@
 #define TOWN_PETEFALLSTATE_H
 
 // Where Pete fell after a slingshot hit, and whether he is visiting (TownSessionState_GetPeteFall; 12 bytes). Methods
-// at 0x02086c04.. (src/main/unk_02085940.cpp, which still has its own copy of this class).
+// at 0x02086c04.. (src/main/unk_02085940.cpp).
 #include "types.h"
 #include "gfx/VecFx32.h"
 
 class PeteFallState {
 public:
-    // (px: the player's position, a VecFx32 * - the definition still takes it as an integer)
-    BOOL pickFallPos(s32 px, s32 flip);
+    BOOL pickFallPos(VecFx32 *px, s32 flip);  // px: the player's position
     s16 getFacing();
     void setVisitorActive();
     void clearVisitorActive();

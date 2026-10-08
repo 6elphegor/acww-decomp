@@ -2,7 +2,7 @@
 #define TOWN_VISITORSPAWNFLAGS_H
 
 // Whether today's visitor was spawned, and Gulliver's beach spot (TownSessionState_GetVisitorFlags; one byte). Methods at
-// 0x02086b7c.. (src/main/unk_02085940.cpp, which still has its own copy of this class).
+// 0x02086b7c.. (src/main/unk_02085940.cpp).
 #include "types.h"
 #include "gfx/VecFx32.h"
 
