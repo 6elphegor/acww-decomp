@@ -40,7 +40,6 @@ Flower_GetWateredForm
 FriendList_Compact
 FriendList_GetEntries
 FtrFootprint_Destruct
-Ip_Reassemble
 Item_RandomSeashell
 Item_ToPlantedFieldId
 LetterDefaults_Init
@@ -131,13 +130,6 @@ Scene_GetPrevious
 SockCore_CmdClose
 SockCore_CmdShutdown
 Sock_Poll
-Tcp_Input
-Tcp_InputAck
-Tcp_InputFin
-Tcp_InputRst
-Tcp_InputSyn
-Tcp_InputSynAck
-Tcp_InputSynExisting
 TownEval_Evaluate
 TownEval_EvaluateAcre
 TownEval_EvaluateAndClean
@@ -182,7 +174,6 @@ TreeQuota_Apply
 TreeQuota_ApplyAll
 TreeQuota_Init
 TreeQuota_InitAll
-Udp_Input
 Villager_HideFurniture
 Villager_IsFurnitureShown
 Villager_PickShownFurniture
