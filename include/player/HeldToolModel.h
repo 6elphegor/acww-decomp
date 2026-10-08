@@ -3,7 +3,7 @@
 
 #include "types.h"
 #include "uptr.h"
-#include "npc/NpcResHandleView.h"
+#include "npc/NpcResHandle.h"
 #include "gfx/Mtx43.h"
 
 class BlendAnimModel;

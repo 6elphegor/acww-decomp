@@ -11,7 +11,7 @@
 #include "player/HeldItemModel.h"
 
 // The NPC resource pools and their slots (one global each: s<Name>, <Name>_Get), defined in
-// src/main/unk_020821c4.cpp; the handles using them in src/main/unk_02081cc0.cpp (npc/NpcResHandleView.h). The body
+// src/main/unk_020821c4.cpp; the handles using them in src/main/unk_02081cc0.cpp (npc/NpcResHandle.h). The body
 // animation and villager animation heap pools have their own headers (npc/NpcBodyAnimPool.h,
 // npc/VillagerAnimHeapRefPool.h).
 

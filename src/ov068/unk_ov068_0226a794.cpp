@@ -139,30 +139,6 @@ struct KappnNpcIdBuf {
 
 
 
-// The taxi actions of the player (0x87 get out, 0x88 get in): methods of the PlayerActor, called through the player's
-// action tables (src/main/unk_02004558.cpp) by these names.
-class PlayerActTaxiGetIn : public PlayerActor {
-public:
-    void mainTaxiGetIn();
-    void mainTaxiGetInFinish();
-    void mainTaxiGetInAnim();
-    void endTaxiGetIn();
-    void netTaxiGetIn();
-    void setupTaxiGetIn();
-    s32 requestTaxiGetIn(s32 a, s32 b);
-};
-
-class PlayerActTaxiGetOut : public PlayerActor {
-public:
-    void mainTaxiGetOut();
-    void mainTaxiGetOutFinish();
-    void mainTaxiGetOutAnim();
-    void endTaxiGetOut();
-    void netTaxiGetOut();
-    void setupTaxiGetOut();
-    s32 requestTaxiGetOut(s32 a, s32 b);
-};
-
 extern "C" {
 // (no shared prototypes: excluded from include/proto, or defined in .c files)
 extern SaveData gSaveData;
@@ -726,30 +702,30 @@ void KappnTaxi::execTaxiLeaveEnd() {
 }
 
 extern "C" s32 KappnTaxi_RequestPlayerGetOut() {
-    PlayerActTaxiGetOut *p = (PlayerActTaxiGetOut *)PlayerActor_Get(4);
+    PlayerActor *p = PlayerActor_Get(4);
     if (p != 0) {
-        p->actionPriority = ((Unk_02007694 *)(PlayerActor *)p)->getActionDonePriority(p->action);
+        p->actionPriority = ((Unk_02007694 *)p)->getActionDonePriority(p->action);
         return p->requestTaxiGetOut(6, -1);
     }
     return 0;
 }
 
 extern "C" s32 KappnTaxi_RequestPlayerGetIn() {
-    PlayerActTaxiGetIn *p = (PlayerActTaxiGetIn *)PlayerActor_Get(4);
+    PlayerActor *p = PlayerActor_Get(4);
     if (p != 0) {
-        p->actionPriority = ((Unk_02007694 *)(PlayerActor *)p)->getActionDonePriority(p->action);
+        p->actionPriority = ((Unk_02007694 *)p)->getActionDonePriority(p->action);
         return p->requestTaxiGetIn(6, -1);
     }
     return 0;
 }
 
-s32 PlayerActTaxiGetOut::requestTaxiGetOut(s32 a, s32 b) {
+s32 PlayerActor::requestTaxiGetOut(s32 a, s32 b) {
     PlayerActionRequest m;
     m.assign(0x87, a, b);
     return pushRequest(&m);
 }
 
-void PlayerActTaxiGetOut::setupTaxiGetOut() {
+void PlayerActor::setupTaxiGetOut() {
     ClockDateTime w = {};
     startAnimOnce(0x82, 0, 0);
     rotY = 0;
@@ -766,70 +742,70 @@ void PlayerActTaxiGetOut::setupTaxiGetOut() {
     }
 }
 
-void PlayerActTaxiGetOut::netTaxiGetOut() {
+void PlayerActor::netTaxiGetOut() {
 }
 
-void PlayerActTaxiGetOut::endTaxiGetOut() {
+void PlayerActor::endTaxiGetOut() {
     position.x = position.x + 0x1c00;
     position.z = position.z - 0x2c00;
     rotY = rotY + 0x8000;
 }
 
-void PlayerActTaxiGetOut::mainTaxiGetOutAnim() {
+void PlayerActor::mainTaxiGetOutAnim() {
     advanceAnim();
     if (bodyModel.hasPassedFrame(0x16) != 0) {
         playFootstepSe();
     }
 }
 
-void PlayerActTaxiGetOut::mainTaxiGetOutFinish() {
+void PlayerActor::mainTaxiGetOutFinish() {
     if (bodyModel.isFinished() != 0) {
-        actionPriority = ((Unk_02007694 *)(PlayerActor *)this)->getActionDonePriority(action);
+        actionPriority = ((Unk_02007694 *)this)->getActionDonePriority(action);
         requestAct10(0, 5, -1);
         *(u8 *)PlayerSession_GetSessionFlags() = 0;
     }
 }
 
-void PlayerActTaxiGetOut::mainTaxiGetOut() {
+void PlayerActor::mainTaxiGetOut() {
     mainTaxiGetOutAnim();
     mainTaxiGetOutFinish();
 }
 
-s32 PlayerActTaxiGetIn::requestTaxiGetIn(s32 a, s32 b) {
+s32 PlayerActor::requestTaxiGetIn(s32 a, s32 b) {
     PlayerActionRequest m;
     m.assign(0x88, a, b);
     return pushRequest(&m);
 }
 
-void PlayerActTaxiGetIn::setupTaxiGetIn() {
+void PlayerActor::setupTaxiGetIn() {
     startAnimOnce(0x83, 3, 0);
     rotY = 0;
 }
 
-void PlayerActTaxiGetIn::netTaxiGetIn() {
+void PlayerActor::netTaxiGetIn() {
 }
 
-void PlayerActTaxiGetIn::endTaxiGetIn() {
+void PlayerActor::endTaxiGetIn() {
     position.x = position.x - 0x1c00;
     position.z = position.z + 0x2c00;
     rotY = rotY + 0x8000;
 }
 
-void PlayerActTaxiGetIn::mainTaxiGetInAnim() {
+void PlayerActor::mainTaxiGetInAnim() {
     advanceAnim();
     if (bodyModel.hasPassedFrame(8) != 0) {
         playFootstepSe();
     }
 }
 
-void PlayerActTaxiGetIn::mainTaxiGetInFinish() {
+void PlayerActor::mainTaxiGetInFinish() {
     if (bodyModel.isFinished() != 0) {
-        actionPriority = ((Unk_02007694 *)(PlayerActor *)this)->getActionDonePriority(action);
+        actionPriority = ((Unk_02007694 *)this)->getActionDonePriority(action);
         requestAct01(9, -1);
     }
 }
 
-void PlayerActTaxiGetIn::mainTaxiGetIn() {
+void PlayerActor::mainTaxiGetIn() {
     mainTaxiGetInAnim();
     mainTaxiGetInFinish();
 }

@@ -21,7 +21,7 @@ public:
     BOOL setMaterialTex(const char *matName, const char *texName);
     void applyFrame();
     void update();
-    void setAnim(void *r1, void *r2, u32 r3, u8 p5, void *p6);
+    void setAnim(void *anm, u16 lastFrame, u32 numFrames, u8 mode, s32 speed);
     void release();
     BOOL init(void *r1, void *r2, u32 r3, void *heap);
     void clear();

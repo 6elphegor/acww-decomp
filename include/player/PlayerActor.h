@@ -312,6 +312,21 @@ public:
     BOOL requestAct77(s16 v, u32 a, u32 b);
     void mainAct76();
     void act76Update();
+    // the taxi actions (0x87 get out, 0x88 get in; src/ov068/unk_ov068_0226a794.cpp)
+    void mainTaxiGetOut();
+    void mainTaxiGetOutFinish();
+    void mainTaxiGetOutAnim();
+    void endTaxiGetOut();
+    void netTaxiGetOut();
+    void setupTaxiGetOut();
+    s32 requestTaxiGetOut(s32 a, s32 b);
+    void mainTaxiGetIn();
+    void mainTaxiGetInFinish();
+    void mainTaxiGetInAnim();
+    void endTaxiGetIn();
+    void netTaxiGetIn();
+    void setupTaxiGetIn();
+    s32 requestTaxiGetIn(s32 a, s32 b);
 
     // 0x000-0x0ec Character, 0x0ec-0x130 TalkMsgRequest
     // animation / face / collider / movement methods (0x020102ec..0x020107c8 of src/main/unk_02004558.cpp; formerly

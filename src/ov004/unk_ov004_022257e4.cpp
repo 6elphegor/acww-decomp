@@ -241,9 +241,9 @@ BOOL CheckInGate::onDelete() {
 BOOL CheckInGate::bindTextures() {
     void *o;
     o = RoomObjRes_GetModel(&res);
-    NNS_G3dBindMdlTex(o, ((BgModelCache *)BgModelCache_Get())->getGroundTex());
+    NNS_G3dBindMdlTex(o, BgModelCache_Get()->getGroundTex());
     o = RoomObjRes_GetModel(&res);
-    NNS_G3dBindMdlPltt(o, ((BgModelCache *)BgModelCache_Get())->getGroundTex());
+    NNS_G3dBindMdlPltt(o, BgModelCache_Get()->getGroundTex());
     o = RoomObjRes_GetModel(&res);
     NNS_G3dBindMdlTex(o, RoomObjTex_Get(&tex));
     o = RoomObjRes_GetModel(&res);

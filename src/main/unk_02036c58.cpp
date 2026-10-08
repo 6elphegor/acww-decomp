@@ -41,34 +41,7 @@ extern "C" {
 extern TownMap gSaveTownMap;
 s32 Scene_GetCurrent(void);
 }
-class BgModelCacheObj;
 extern const u8 sBgHeapSizeByRoom[];
-
-
-class BgModelCacheObj {
-public:
-    BgModelCacheObj();
-    ~BgModelCacheObj();
-    BOOL setup(u32 flag);
-    void clearEntries();
-
-    BgAcreModel acres[31];
-    BgAcreBcl bclCache[9];
-    u8 withAnims;
-    u8 pad_619[3];
-    u32 heapSize;
-    u32 unk_620;
-    u32 unk_624;
-    u32 unk_628;
-    u32 unk_62c;
-    void *groundTex;
-    void *groundMatAnm;
-    void *groundTexSrtAnm;
-    void *riverPatAnm;
-    void *riverPatTex;
-    void *beBPatAnm;
-    void *beBPatTex;
-};
 
 
 // ---- BgModelCache ----
@@ -78,13 +51,13 @@ extern "C" void *BgModel_LoadFile(const char *a, u32 *b) {
     return File_LoadAlloc(a, gBgHeap, 4, b);
 }
 
-BgModelCacheObj::BgModelCacheObj() {
+BgModelCache::BgModelCache() {
     clearEntries();
 }
 
-BgModelCacheObj::~BgModelCacheObj() {}
+BgModelCache::~BgModelCache() {}
 
-void BgModelCacheObj::clearEntries() {
+void BgModelCache::clearEntries() {
     BgAcreModel *p; BgAcreBcl *q; u32 i; u32 j;
     p = acres;
     for (i = 0; i < 0x1f; p++, i++) {
@@ -118,7 +91,7 @@ void BgModelCacheObj::clearEntries() {
     unk_62c = 0;
 }
 
-BOOL BgModelCacheObj::setup(u32 flag) {
+BOOL BgModelCache::setup(u32 flag) {
     s32 t = Scene_GetCurrent();
     if (t == 0x2c) {
         gSaveTownMap.updateGroundSeason();
@@ -135,10 +108,10 @@ BOOL BgModelCacheObj::setup(u32 flag) {
     heapSize = (u8)v << 10;
     BgHeap_Create(heapSize, 0);
     if (flag != 0 || t == 0xb || t == 0x2f || (u8)(t + 0xf4) <= 2) {
-        ((BgModelCache *)this)->loadGroundTexture();
+        loadGroundTexture();
     }
     if (flag != 0) {
-        ((BgModelCache *)this)->loadGroundAnims();
+        loadGroundAnims();
     }
     return TRUE;
 }
@@ -348,16 +321,16 @@ VecFx32 BgMgt_GetEntry(u8 *base, s32 idx)
     return v;
 }
 
-extern "C" u8 *BgModelCache_Get(void)
+extern "C" BgModelCache *BgModelCache_Get(void)
 {
-    return (u8 *)&gBgModelCache;
+    return &gBgModelCache;
 }
 
 const u8 sBgHeapSizeByRoom[0x34] = {
     0xac, 0x0a, 0x0a, 0x0a, 0x0a, 0x0b, 0x0e, 0x0e, 0x0e, 0x14, 0x18, 0x2a, 0x2a, 0x2a, 0x2a, 0x0c, 0x19, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0c, 0x0c, 0x0f, 0x11, 0x0c, 0x19, 0x0c, 0x6e, 0x1a, 0x1f, 0x17, 0x0c, 0x0d, 0x12, 0x13, 0x37, 0xac, 0xac, 0xac, 0x28, 0x14, 0x2a, 0x32, 0xac, 0x14, 0x00
 };
 
-BgModelCacheObj gBgModelCache;
+BgModelCache gBgModelCache;
 
 
 // Constants shared with other files (loaded through their addresses; defined after the code here, where a visible const would be folded).

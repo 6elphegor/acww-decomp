@@ -79,31 +79,6 @@ u32 strlen(const char *s);
 }
 
 extern "C" {
-// Script stack helpers (another file)
-void _ZN12MsgCallStackC1Ev(void *list);
-}
-
-extern "C" {
-void _ZN12MsgCallStackD1Ev(void *list);
-}
-
-extern "C" {
-BOOL _ZN12MsgCallStack7isEmptyEv(void *list);
-}
-
-extern "C" {
-void _ZN12MsgCallStack4pushERKj(void *list, u8 **p);
-}
-
-extern "C" {
-u8 **_ZN12MsgCallStack3topEv(void *list);
-}
-
-extern "C" {
-void _ZN12MsgCallStack3popEv(void *list);
-}
-
-extern "C" {
 // This file
 BOOL Msg_EncodeGameChar(u8 *out, const u8 *src);
 }
@@ -563,19 +538,17 @@ void MsgRunner::start(u8 *p) {
 // ---- MsgParser
 void MsgParser::reset() {
     cursor = NULL;
-    while (!_ZN12MsgCallStack7isEmptyEv(&callStack)) {
-        _ZN12MsgCallStack3popEv(&callStack);
+    while (!callStack.isEmpty()) {
+        callStack.pop();
     }
 }
 
 MsgParser::MsgParser() {
     cursor = NULL;
-    _ZN12MsgCallStackC1Ev(&callStack);
 }
 
 MsgParser::~MsgParser() {
     reset();
-    _ZN12MsgCallStackD1Ev(&callStack);
 }
 
 void MsgParser::onBegin() {}
@@ -610,7 +583,7 @@ BOOL MsgParser::step(u32 arg) {
     u32 c = *cursor;
     BOOL r = TRUE;
     if (c == 0 || (arg != 0 && c == 0xa)) {
-        if (_ZN12MsgCallStack7isEmptyEv(&callStack)) {
+        if (callStack.isEmpty()) {
             onEnd();
             r = FALSE;
         } else {
@@ -637,14 +610,14 @@ void MsgParser::begin(u8 *p) {
 
 void MsgParser::pushText(const u8 *p) {
     if (p != NULL) {
-        _ZN12MsgCallStack4pushERKj(&callStack, &cursor);
+        callStack.push(cursor);
         cursor = const_cast<u8 *>(p);
     }
 }
 
 void MsgParser::popText() {
-    cursor = *_ZN12MsgCallStack3topEv(&callStack);
-    _ZN12MsgCallStack3popEv(&callStack);
+    cursor = *callStack.top();
+    callStack.pop();
 }
 
 // ---- MsgWalker

@@ -5,7 +5,7 @@
 
 #include "types.h"
 struct CellGrid;
-struct Chunk;
+class CollisionBlockRef;
 #ifdef __cplusplus
 #include "gfx/Camera.h"
 #include "gfx/VecFx32.h"
@@ -34,7 +34,7 @@ void Camera_GetLookAtPoint(VecFx32 *out, Camera *c);
 void Camera_GetLookAtOffset(VecFx32 *out, Camera *c);
 #endif
 #ifndef PROTO_LOCAL_CollisionMap_GetBlockRef
-Chunk *CollisionMap_GetBlockRef(s32 x, s32 z);
+CollisionBlockRef *CollisionMap_GetBlockRef(s32 x, s32 z);
 #endif
 #ifndef PROTO_LOCAL_Ground_GetUnitAttr
 u32 Ground_GetUnitAttr(s32 x, s32 y);

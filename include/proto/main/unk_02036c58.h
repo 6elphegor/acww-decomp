@@ -7,7 +7,7 @@
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
 #include "types.h"
-class BgModelCacheObj;
+struct BgModelCache;
 #endif
 
 #ifdef __cplusplus
@@ -25,14 +25,14 @@ void *BgModel_LoadBcl(s32 id, void *heap);
 s32 BgMgt_GetCount(s16 *p);
 #endif
 #ifndef PROTO_LOCAL_BgModelCache_Get
-u8 *BgModelCache_Get(void);
+BgModelCache *BgModelCache_Get(void);
 #endif
 }
 #ifndef PROTO_LOCAL_BgMgt_GetEntry
 VecFx32 BgMgt_GetEntry(u8 *base, s32 idx);
 #endif
 #ifndef PROTO_LOCAL_gBgModelCache
-extern BgModelCacheObj gBgModelCache;
+extern BgModelCache gBgModelCache;
 #endif
 #endif
 

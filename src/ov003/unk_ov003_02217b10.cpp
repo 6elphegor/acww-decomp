@@ -62,8 +62,8 @@ void FieldGroundBackdrop::clear() {
 }
 
 BOOL FieldGroundBackdrop::init() {
-    Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)((BgModelCache *)(BgModelCache_Get()))->getAcre(0x83);
-    void *t = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
+    Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)BgModelCache_Get()->getAcre(0x83);
+    void *t = BgModelCache_Get()->getGroundTex();
     modelRes = e->modelRes;
     ((Model *)&model)->setResourceAndBind(modelRes, (NNSG3dResTex *)t);
     followCamera();

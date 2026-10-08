@@ -369,8 +369,6 @@ extern PM_02005294 data_020d5e8c;
 extern PM_02005294 data_020d5e94;
 extern PM_02005294 data_020d5ea4;
 extern PM_02005294 data_020d5ebc;
-extern PM_02005294 data_020d5fdc;
-extern PM_02005294 data_020d61b4;
 extern PM_02005294 data_020d65a4;
 extern PM_02005294 data_020d6994;
 extern PM_02005294 data_020d5e54;
@@ -498,8 +496,6 @@ extern PM_020063a0 data_020d6324;
 extern PM_020063a0 data_020d631c;
 extern PM_020063a0 data_020d6314;
 extern PM_020063a0 data_020d630c;
-extern PM_020063a0 data_020d62e4;
-extern PM_020063a0 data_020d62dc;
 extern PM_020063a0 data_020d62d4;
 extern PM_020063a0 data_020d62cc;
 extern PM_020063a0 data_020d62c4;
@@ -625,8 +621,6 @@ extern PM_02006d14 data_020d67d4;
 extern PM_02006d14 data_020d67cc;
 extern PM_02006d14 data_020d67c4;
 extern PM_02006d14 data_020d67bc;
-extern PM_02006d14 data_020d6794;
-extern PM_02006d14 data_020d678c;
 extern PM_02006d14 data_020d6784;
 extern PM_02006d14 data_020d677c;
 extern PM_02006d14 data_020d6774;
@@ -693,8 +687,6 @@ extern PM_020076f0 data_020d6c24;
 extern PM_020076f0 data_020d6c1c;
 extern PM_020076f0 data_020d6c14;
 extern PM_020076f0 data_020d6c0c;
-extern PM_020076f0 data_020d6c04;
-extern PM_020076f0 data_020d6bfc;
 }
 }
 
@@ -1325,8 +1317,6 @@ void PlayerActor_MainPhoneHangUp();
 void PlayerActor_MainAct80();
 void PlayerActor_MainFirework();
 void PlayerActor_MainAct82();
-void _ZN19PlayerActTaxiGetOut14mainTaxiGetOutEv();
-void _ZN18PlayerActTaxiGetIn13mainTaxiGetInEv();
 void PlayerActor_MainThrowBottle();
 void PlayerActor_MainDrinkCoffee();
 void FieldObj_FreeCedarFileBufs();
@@ -1424,8 +1414,6 @@ void PlayerActor_NetPhoneHangUp();
 void PlayerActor_NetAct80();
 void PlayerActor_NetFirework();
 void PlayerActor_NetAct82();
-void _ZN19PlayerActTaxiGetOut13netTaxiGetOutEv();
-void _ZN18PlayerActTaxiGetIn12netTaxiGetInEv();
 void PlayerActor_NetThrowBottle();
 void PlayerActor_NetDoorWalkIn();
 void PlayerActor_NetDoorWalkOut();
@@ -1535,8 +1523,6 @@ void PlayerActor_SetupPhoneHangUp();
 void PlayerActor_SetupAct80();
 void PlayerActor_SetupFirework();
 void PlayerActor_SetupAct82();
-void _ZN19PlayerActTaxiGetOut15setupTaxiGetOutEv();
-void _ZN18PlayerActTaxiGetIn14setupTaxiGetInEv();
 void PlayerActor_SetupThrowBottle();
 void PlayerActor_SetupDrinkCoffee();
 void PlayerActor_SetupDoorWalkIn();
@@ -1585,8 +1571,6 @@ void PlayerActor_EndHaircutFinish();
 void PlayerActor_EndAct80();
 void PlayerActor_EndFirework();
 void PlayerActor_EndAct82();
-void _ZN19PlayerActTaxiGetOut13endTaxiGetOutEv();
-void _ZN18PlayerActTaxiGetIn12endTaxiGetInEv();
 }
 }
 
@@ -1701,8 +1685,6 @@ PM_02005294 data_020d5e8c = {{(PMF)nPM::PlayerActor_MainPhoneHangUp, 0}};
 PM_02005294 data_020d5e94 = {{(PMF)nPM::PlayerActor_MainAct80, 0}};
 PM_02005294 data_020d5ea4 = {{(PMF)nPM::PlayerActor_MainFirework, 0}};
 PM_02005294 data_020d5ebc = {{(PMF)nPM::PlayerActor_MainAct82, 0}};
-PM_02005294 data_020d5fdc = {{(PMF)nPM::_ZN19PlayerActTaxiGetOut14mainTaxiGetOutEv, 0}};
-PM_02005294 data_020d61b4 = {{(PMF)nPM::_ZN18PlayerActTaxiGetIn13mainTaxiGetInEv, 0}};
 PM_02005294 data_020d65a4 = {{(PMF)nPM::PlayerActor_MainThrowBottle, 0}};
 PM_02005294 data_020d6994 = {{(PMF)nPM::PlayerActor_MainDrinkCoffee, 0}};
 PM_02005294 data_020d5e54 = {{(PMF)nPM::FieldObj_FreeCedarFileBufs, 0}};
@@ -1819,8 +1801,6 @@ PM_020063a0 data_020d6324 = {{(PMF)nPM::PlayerActor_NetPhoneHangUp, 0}};
 PM_020063a0 data_020d631c = {{(PMF)nPM::PlayerActor_NetAct80, 0}};
 PM_020063a0 data_020d6314 = {{(PMF)nPM::PlayerActor_NetFirework, 0}};
 PM_020063a0 data_020d630c = {{(PMF)nPM::PlayerActor_NetAct82, 0}};
-PM_020063a0 data_020d62e4 = {{(PMF)nPM::_ZN19PlayerActTaxiGetOut13netTaxiGetOutEv, 0}};
-PM_020063a0 data_020d62dc = {{(PMF)nPM::_ZN18PlayerActTaxiGetIn12netTaxiGetInEv, 0}};
 PM_020063a0 data_020d62d4 = {{(PMF)nPM::PlayerActor_NetThrowBottle, 0}};
 PM_020063a0 data_020d62cc = {{(PMF)PlayerActor_NetDrinkCoffee, 0}};
 PM_020063a0 data_020d62c4 = {{(PMF)nPM::PlayerActor_NetDoorWalkIn, 0}};
@@ -1937,8 +1917,6 @@ PM_02006d14 data_020d67d4 = {{(PMF)nPM::PlayerActor_SetupPhoneHangUp, 0}};
 PM_02006d14 data_020d67cc = {{(PMF)nPM::PlayerActor_SetupAct80, 0}};
 PM_02006d14 data_020d67c4 = {{(PMF)nPM::PlayerActor_SetupFirework, 0}};
 PM_02006d14 data_020d67bc = {{(PMF)nPM::PlayerActor_SetupAct82, 0}};
-PM_02006d14 data_020d6794 = {{(PMF)nPM::_ZN19PlayerActTaxiGetOut15setupTaxiGetOutEv, 0}};
-PM_02006d14 data_020d678c = {{(PMF)nPM::_ZN18PlayerActTaxiGetIn14setupTaxiGetInEv, 0}};
 PM_02006d14 data_020d6784 = {{(PMF)nPM::PlayerActor_SetupThrowBottle, 0}};
 PM_02006d14 data_020d677c = {{(PMF)nPM::PlayerActor_SetupDrinkCoffee, 0}};
 PM_02006d14 data_020d6774 = {{(PMF)nPM::PlayerActor_SetupDoorWalkIn, 0}};
@@ -1992,8 +1970,6 @@ PM_020076f0 data_020d6c24 = {{(PMF)nPM::PlayerActor_EndHaircutFinish, 0}};
 PM_020076f0 data_020d6c1c = {{(PMF)nPM::PlayerActor_EndAct80, 0}};
 PM_020076f0 data_020d6c14 = {{(PMF)nPM::PlayerActor_EndFirework, 0}};
 PM_020076f0 data_020d6c0c = {{(PMF)nPM::PlayerActor_EndAct82, 0}};
-PM_020076f0 data_020d6c04 = {{(PMF)nPM::_ZN19PlayerActTaxiGetOut13endTaxiGetOutEv, 0}};
-PM_020076f0 data_020d6bfc = {{(PMF)nPM::_ZN18PlayerActTaxiGetIn12endTaxiGetInEv, 0}};
 }
 }
 
@@ -2526,7 +2502,7 @@ void PlayerActor::setEyeAnim(s32 *a, u8 *b) {
     using namespace nS;
     ((CharaFaceAnimRef *)((u8 *)&faceAnimRef))->loadAnim(*a, 1, 0);
     void *r = ((CharaFaceAnimRef *)(void *)((u8 *)&faceAnimRef))->getEyeAnimBuffer();
-    ((MatTexPatAnim *)((u8 *)&eyeTexAnim))->setAnim(r, (void *)(0), 0, *b, (void *)(0x1000));
+    eyeTexAnim.setAnim(r, 0, 0, *b, 0x1000);
     ((MatTexPatAnim *)((u8 *)&eyeTexAnim))->update();
     eyeAnimId = *a;
 }
@@ -2535,7 +2511,7 @@ void PlayerActor::setMouthAnim(s32 *a, u8 *b) {
     using namespace nS;
     ((CharaFaceAnimRef *)((u8 *)&faceAnimRef))->loadAnim(*a, 1, 0);
     void *r = ((CharaFaceAnimRef *)(void *)((u8 *)&faceAnimRef))->getMouthAnimBuffer();
-    ((MatTexPatAnim *)((u8 *)&mouthTexAnim))->setAnim(r, (void *)(0), 0, *b, (void *)(0x1000));
+    mouthTexAnim.setAnim(r, 0, 0, *b, 0x1000);
     ((MatTexPatAnim *)((u8 *)&mouthTexAnim))->update();
     mouthAnimId = *a;
 }
@@ -2825,8 +2801,8 @@ void PlayerActor::applyHatChange() {
         ((MatTexPatAnim *)(&((PlayerActor *)this)->mouthTexAnim))->release();
         ((Heap *)(((CharaFaceAnimWorkRef *)(&((PlayerActor *)this)->faceAnimWork))->getHeap()))->freeAll();
         ((PlayerActor *)(this))->initFaceAnims();
-        ((MatTexPatAnim *)(&((PlayerActor *)this)->eyeTexAnim))->setAnim(((CharaFaceAnimRef *)(&((PlayerActor *)this)->faceAnimRef))->getEyeAnimBuffer(), (void *)(p), 0, ((PlayerActor *)this)->animMode, (void *)(0x1000));
-        ((MatTexPatAnim *)(&((PlayerActor *)this)->mouthTexAnim))->setAnim(((CharaFaceAnimRef *)(&((PlayerActor *)this)->faceAnimRef))->getMouthAnimBuffer(), (void *)(q), 0, ((PlayerActor *)this)->animMode, (void *)(0x1000));
+        ((PlayerActor *)this)->eyeTexAnim.setAnim(((CharaFaceAnimRef *)(&((PlayerActor *)this)->faceAnimRef))->getEyeAnimBuffer(), p, 0, ((PlayerActor *)this)->animMode, 0x1000);
+        ((PlayerActor *)this)->mouthTexAnim.setAnim(((CharaFaceAnimRef *)(&((PlayerActor *)this)->faceAnimRef))->getMouthAnimBuffer(), q, 0, ((PlayerActor *)this)->animMode, 0x1000);
     }
     ((PlayerActor *)this)->hatState = 1;
 }
@@ -7158,7 +7134,7 @@ void Unk_02007694::endAction(u32 a) {
         0, data_020d6c34.fn, data_020d6c2c.fn, 0, 0, 0,
         0, 0, 0, 0, data_020d6c24.fn, 0,
         0, 0, data_020d6c1c.fn, data_020d6c14.fn, data_020d6c0c.fn, 0,
-        0, 0, 0, data_020d6c04.fn, data_020d6bfc.fn, 0,
+        0, 0, 0, reinterpret_cast<void (Unk_02007694::*)(u32)>(&PlayerActor::endTaxiGetOut), reinterpret_cast<void (Unk_02007694::*)(u32)>(&PlayerActor::endTaxiGetIn), 0,
         0, 0, 0, 0, 0, 0,
         0, reinterpret_cast<void (Unk_02007694::*)(u32)>(&Unk_02007694::endAct91), 0,
     };
@@ -7217,7 +7193,7 @@ void PlayerActor::changeAction(PlayerActionRequest* item) {
         data_020d683c.fn, data_020d6834.fn, data_020d682c.fn, data_020d6824.fn, &PlayerActor::setupAct76, reinterpret_cast<nD::Unk_02006d14_Fn>(&PlayerActor::setupAct77),
         data_020d680c.fn, reinterpret_cast<nD::Unk_02006d14_Fn>(&PlayerActor::setupAct79), data_020d67fc.fn, data_020d67f4.fn, data_020d67ec.fn, data_020d67e4.fn,
         data_020d67dc.fn, data_020d67d4.fn, data_020d67cc.fn, data_020d67c4.fn, data_020d67bc.fn, reinterpret_cast<nD::Unk_02006d14_Fn>(&PlayerActor::setupLidClosed),
-        reinterpret_cast<nD::Unk_02006d14_Fn>(&PlayerActor::setupErrorMessage), reinterpret_cast<nD::Unk_02006d14_Fn>(&PlayerActor::setupHoldUpItem), reinterpret_cast<nD::Unk_02006d14_Fn>(&Unk_02007694::setupLowerHeldUpItem), data_020d6794.fn, data_020d678c.fn, data_020d6784.fn,
+        reinterpret_cast<nD::Unk_02006d14_Fn>(&PlayerActor::setupErrorMessage), reinterpret_cast<nD::Unk_02006d14_Fn>(&PlayerActor::setupHoldUpItem), reinterpret_cast<nD::Unk_02006d14_Fn>(&Unk_02007694::setupLowerHeldUpItem), reinterpret_cast<nD::Unk_02006d14_Fn>(&PlayerActor::setupTaxiGetOut), reinterpret_cast<nD::Unk_02006d14_Fn>(&PlayerActor::setupTaxiGetIn), data_020d6784.fn,
         data_020d677c.fn, data_020d6774.fn, data_020d627c.fn, data_020d6764.fn, data_020d675c.fn, data_020d626c.fn,
         reinterpret_cast<nD::Unk_02006d14_Fn>(&Unk_02007694::setupWaitMenu), reinterpret_cast<nD::Unk_02006d14_Fn>(&Unk_02007694::setupAct91), reinterpret_cast<nD::Unk_02006d14_Fn>(&Unk_02007694::setupAct92),
     };
@@ -7312,7 +7288,7 @@ void Unk_02005e7c::followNetAction() {
         data_020d5f0c.fn, data_020d6384.fn, data_020d637c.fn, data_020d6374.fn, reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netAct76), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netAct77),
         data_020d635c.fn, reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netAct79), data_020d634c.fn, data_020d6344.fn, data_020d633c.fn, data_020d6334.fn,
         data_020d632c.fn, data_020d6324.fn, data_020d631c.fn, data_020d6314.fn, data_020d630c.fn, reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netLidClosed),
-        reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netErrorMessage), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netHoldUpItem), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&Unk_02007694::netLowerHeldUpItem), data_020d62e4.fn, data_020d62dc.fn, data_020d62d4.fn,
+        reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netErrorMessage), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netHoldUpItem), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&Unk_02007694::netLowerHeldUpItem), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netTaxiGetOut), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netTaxiGetIn), data_020d62d4.fn,
         data_020d62cc.fn, data_020d62c4.fn, data_020d62bc.fn, data_020d62b4.fn, data_020d62ac.fn, data_020d62a4.fn,
         reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&Unk_02007694::netWaitMenu), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&Unk_02007694::netAct91), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&Unk_02007694::netAct92),
     };
@@ -7435,7 +7411,7 @@ void PlayerActor::doExecute() {
         data_020d5fa4.fn, data_020d6004.fn, data_020d6264.fn, data_020d618c.fn, &PlayerActor::mainAct76, &PlayerActor::mainAct77,
         data_020d659c.fn, &PlayerActor::mainAct79, data_020d6dcc.fn, data_020d5e84.fn, data_020d5e7c.fn, data_020d5e74.fn,
         data_020d64b4.fn, data_020d5e8c.fn, data_020d5e94.fn, data_020d5ea4.fn, data_020d5ebc.fn, &PlayerActor::mainLidClosed,
-        &PlayerActor::mainErrorMessage, reinterpret_cast<void (PlayerActor::*)()>(&Unk_02007694::mainHoldUpItem), reinterpret_cast<void (PlayerActor::*)()>(&Unk_02007694::mainLowerHeldUpItem), data_020d5fdc.fn, data_020d61b4.fn, data_020d65a4.fn,
+        &PlayerActor::mainErrorMessage, reinterpret_cast<void (PlayerActor::*)()>(&Unk_02007694::mainHoldUpItem), reinterpret_cast<void (PlayerActor::*)()>(&Unk_02007694::mainLowerHeldUpItem), &PlayerActor::mainTaxiGetOut, &PlayerActor::mainTaxiGetIn, data_020d65a4.fn,
         data_020d6994.fn, data_020d5e54.fn, data_020d611c.fn, data_020d5e9c.fn, data_020d5ec4.fn, data_020d5ee4.fn,
         reinterpret_cast<void (PlayerActor::*)()>(&Unk_02007694::mainWaitMenu), reinterpret_cast<void (PlayerActor::*)()>(&Unk_02007694::mainAct91), reinterpret_cast<void (PlayerActor::*)()>(&Unk_02007694::mainAct92),
     };

@@ -54,31 +54,6 @@ struct NullPlayerIdLocal {
     void clear();
 };
 
-struct VillagerDataProfileView {
-    u8 unk_000[0x568];
-    u8 letter[0x6c0 - 0x568];
-    u8 unk_6c0[0x1e];
-    u8 catchphrase[0x6ec - 0x6de];
-    u16 shirt;
-    u8 unk_6ee[6];
-    u8 umbrella;
-
-    void getCatchphraseEncoded(void *p);
-    void getCatchphrase(void *p, void *q);
-    void clearCatchphrase();
-    void *getInfo28();
-    s32 findFreeSlot(s32 n);
-    void setUmbrella(u16 *p);
-        void setShirt(u16 *p);
-    u16 *getShirt();
-    BOOL hasLetterSenderMemory();
-    s32 findLetterSenderMemory();
-    void updateMemoriesFromPlayers();
-    void sendNewYearLetters(void *a);
-    void sendBirthdayLetters(void *a);
-    void replyToLetter(void *a, void *b);
-    BOOL hasLetterFrom(u16 *p);
-};
 
 
 
@@ -1651,9 +1626,9 @@ void Villager_SendNewYearLetter(void *t, void *p, void *q);
 void Villager_SendBirthdayLetter(void *t, void *p, void *q);
 void Villager_GetDefaultUmbrella(u16 *out, void *idx);
 void Villager_GetDefaultShirt(u16 *out, void *idx);
-void Villager_GetUmbrella(u16 *out, VillagerDataProfileView *o);
+void Villager_GetUmbrella(u16 *out, VillagerData *o);
 void Villager_GetDefaultUmbrella(u16 *out, void *idx);
-void Villager_GetUmbrella(u16 *out, VillagerDataProfileView *o);
+void Villager_GetUmbrella(u16 *out, VillagerData *o);
 void Villager_GetDefaultShirt(u16 *out, void *idx);
 void Villager_SendByeLetter(void *t, void *p);
 static inline BOOL Unk_0207ff5c_B(s32 v) {
@@ -3364,7 +3339,7 @@ void VillagerData::clear() {
     MI_CpuFill8(this, 0, 0x700);
     VillagerId_Clear(&villagerId);
     shirt = 0x11a8;
-    ((VillagerDataProfileView *)(this))->clearCatchphrase();
+    clearCatchphrase();
     for (s32 i = 0; i < 8; i++) VillagerMemory_Clear(&memories[i]);
     TownId_Clear(&movedFromTown);
     for (s32 i = 0; i < 10; i++) furniture[i] = 0xfff1;
@@ -3457,7 +3432,7 @@ s32 VillagerData::receiveLetterFrom(LetterView *id) {
     return r;
 }
 
-BOOL VillagerDataProfileView::hasLetterFrom(u16 *p) {
+BOOL VillagerData::hasLetterFrom(u16 *p) {
     using namespace nO;
     void *m;
     void *r6 = Letter_GetSenderPlayer(letter);
@@ -3473,7 +3448,7 @@ BOOL VillagerDataProfileView::hasLetterFrom(u16 *p) {
     return FALSE;
 }
 
-void VillagerDataProfileView::replyToLetter(void *p, void *q) {
+void VillagerData::replyToLetter(void *p, void *q) {
     using namespace nO;
     void *r;
     u32 v1c;
@@ -3482,7 +3457,7 @@ void VillagerDataProfileView::replyToLetter(void *p, void *q) {
     u16 res, ha, hb, hc, hd;
     u32 v30;
     u32 t1[2], t3[2], t5[2], t2[2], t4[2], t6[2];
-    r = ((VillagerData *)(this))->getVillagerId();
+    r = getVillagerId();
     if (p == 0) return;
     if (((PlayerData *)(p))->testFlag(1)) return;
     if (!((VillagerId *)(r))->isValid()) return;
@@ -3619,7 +3594,7 @@ extern "C" void Villager_SendBirthdayLetter(void *t, void *p, void *q) {
 }
 }
 
-void VillagerDataProfileView::sendBirthdayLetters(void *a) {
+void VillagerData::sendBirthdayLetters(void *a) {
     using namespace nO;
     if (gSavePlayers != 0) {
         s32 i;
@@ -3677,7 +3652,7 @@ extern "C" void Villager_SendNewYearLetter(void *t, void *p, void *q) {
 }
 }
 
-void VillagerDataProfileView::sendNewYearLetters(void *a) {
+void VillagerData::sendNewYearLetters(void *a) {
     using namespace nO;
     if (gSavePlayers != 0) {
         s32 i;
@@ -3718,9 +3693,9 @@ extern "C" void Villager_SendByeLetter(void *t, void *p) {
 }
 }
 
-void VillagerDataProfileView::updateMemoriesFromPlayers() {
+void VillagerData::updateMemoriesFromPlayers() {
     using namespace nO;
-    if (((VillagerId *)(((VillagerData *)(this))->getVillagerId()))->isValid()) {
+    if (((VillagerId *)(getVillagerId()))->isValid()) {
         if (gSavePlayers != 0) {
             s32 i;
             for (i = 0; i < 4; i++) {
@@ -3735,7 +3710,7 @@ void VillagerDataProfileView::updateMemoriesFromPlayers() {
     }
 }
 
-s32 VillagerDataProfileView::findLetterSenderMemory() {
+s32 VillagerData::findLetterSenderMemory() {
     using namespace nO;
     void *p = Letter_GetSenderPlayer(letter);
     if (p) {
@@ -3755,7 +3730,7 @@ s32 VillagerDataProfileView::findLetterSenderMemory() {
     return -1;
 }
 
-BOOL VillagerDataProfileView::hasLetterSenderMemory() {
+BOOL VillagerData::hasLetterSenderMemory() {
     using namespace nO;
     s32 t = findLetterSenderMemory();
     BOOL r = FALSE;
@@ -3766,12 +3741,12 @@ BOOL VillagerDataProfileView::hasLetterSenderMemory() {
     return r;
 }
 
-u16 *VillagerDataProfileView::getShirt() {
+u16 *VillagerData::getShirt() {
     using namespace nO;
     return &shirt;
 }
 
-void VillagerDataProfileView::setShirt(u16 *p) {
+void VillagerData::setShirt(u16 *p) {
     using namespace nO;
     shirt = *p;
 }
@@ -3790,7 +3765,7 @@ extern "C" void Villager_GetDefaultShirt(u16 *out, void *idx) {
 }
 
 namespace nO {
-extern "C" void Villager_GetUmbrella(u16 *out, VillagerDataProfileView *o) {
+extern "C" void Villager_GetUmbrella(u16 *out, VillagerData *o) {
     u16 r = 0x1380;
     *out = r;
     u32 v = o->umbrella;
@@ -3803,7 +3778,7 @@ extern "C" void Villager_GetUmbrella(u16 *out, VillagerDataProfileView *o) {
 }
 }
 
-void VillagerDataProfileView::setUmbrella(u16 *p) {
+void VillagerData::setUmbrella(u16 *p) {
     using namespace nO;
     BOOL r = FALSE;
     u32 v = *p;
@@ -3834,23 +3809,23 @@ extern "C" void Villager_GetDefaultUmbrella(u16 *out, void *idx) {
 }
 }
 
-s32 VillagerDataProfileView::findFreeSlot(s32 n) {
+s32 VillagerData::findFreeSlot(s32 n) {
     using namespace nO;
-    VillagerDataProfileView *p = this;
+    VillagerData *p = this;
     s32 i;
     for (i = 0; i < n; i++) {
-        if (!((VillagerId *)(p->letter + (0x6c0 - 0x568)))->isValid()) {
+        if (!p->villagerId.isValid()) {
             return i;
         }
-        p = (VillagerDataProfileView *)((u8 *)p + 0x700);
+        p++;
     }
     return -1;
 }
 
-void *VillagerDataProfileView::getInfo28() {
+void *VillagerData::getInfo28() {
     using namespace nO;
     u8 *r = 0;
-    if (((VillagerId *)(((VillagerData *)(this))->getVillagerId()))->isValid()) {
+    if (((VillagerId *)(getVillagerId()))->isValid()) {
         u8 *p = VillagerInfo_Get(VillagerId_GetSpecies(((VillagerData *)(void *)(this))->getVillagerId()));
         if (p) {
             r = p + 0x28;
@@ -3859,12 +3834,12 @@ void *VillagerDataProfileView::getInfo28() {
     return r;
 }
 
-void VillagerDataProfileView::clearCatchphrase() {
+void VillagerData::clearCatchphrase() {
     using namespace nO;
     MI_CpuFill8(catchphrase, 0x85, 10);
 }
 
-void VillagerDataProfileView::getCatchphrase(void *dst, void *flag) {
+void VillagerData::getCatchphrase(void *dst, void *flag) {
     using namespace nO;
     u8 b;
     EncodedString10 buf;
@@ -3878,7 +3853,7 @@ void VillagerDataProfileView::getCatchphrase(void *dst, void *flag) {
     }
 }
 
-void VillagerDataProfileView::getCatchphraseEncoded(void *p) {
+void VillagerData::getCatchphraseEncoded(void *p) {
     using namespace nO;
     StrBuf_ClearAlt(p);
     EncodedString_SetRaw(p, catchphrase, 10);
@@ -4342,8 +4317,8 @@ extern "C" BOOL Villager_IsMoreAttachedThan(void *a, void *b, void *c) {
     if (x < y) {
         return FALSE;
     }
-    x = ((VillagerDataProfileView *)(void *)((VillagerMemory *)a))->hasLetterSenderMemory();
-    y = ((VillagerDataProfileView *)(void *)((VillagerMemory *)b))->hasLetterSenderMemory();
+    x = ((VillagerData *)(void *)((VillagerMemory *)a))->hasLetterSenderMemory();
+    y = ((VillagerData *)(void *)((VillagerMemory *)b))->hasLetterSenderMemory();
     if (x != 0) {
         if (y == 0) {
             return TRUE;
@@ -4545,7 +4520,7 @@ BOOL VillagerDataItemView::getRoomLayout(s32 *o1, s32 *o2) {
 
 s32 VillagerDataItemView::getInfo28Item() {
     using namespace nM;
-    VillagerInfo28Bits *b = (VillagerInfo28Bits *)((VillagerDataProfileView *)(this))->getInfo28();
+    VillagerInfo28Bits *b = (VillagerInfo28Bits *)((VillagerData *)(this))->getInfo28();
     s32 r = 0;
     if (b) {
         r = (s32)b->v >> 2;
@@ -7003,7 +6978,7 @@ extern "C" void *SaveVillagers_GetByHouseRoom(void *self, u32 x) {
 
 namespace nH {
 extern "C" s32 SaveVillagers_FindFreeSlot(void *self) {
-    return ((VillagerDataProfileView *)(self))->findFreeSlot(8);
+    return ((VillagerData *)(self))->findFreeSlot(8);
 }
 }
 
@@ -7323,7 +7298,7 @@ extern "C" void SaveVillagers_InitNewTown(SaveVillagers *self) {
         if (v < 6) {
             s32 t = SaveVillagers_PickNewSpecies(self, v, 1);
             if (t != -1) {
-                ((VillagerData *)(&self->villagers[i]))->setup((u8)t, 0, 0, 1);
+                self->villagers[i].setup((u8)t, 0, 0, 1);
                 SpeciesBits_Set(self->speciesHistory, (u8)t);
                 mask = mask | (1 << v);
             }
@@ -7544,7 +7519,7 @@ extern "C" void SaveVillagers_ProcessTransfer(SaveVillagers *self, void *arg) {
             if (r4 == 0) {
                 return;
             }
-            ((VillagerDataProfileView *)(r4))->updateMemoriesFromPlayers();
+            ((VillagerData *)(r4))->updateMemoriesFromPlayers();
             if (Villager_IsMoreAttachedThan(r7, r4, arg) == 0) {
                 SaveVillagers_MoveOut(self, r7, r4, idx, arg);
             } else {
@@ -7567,7 +7542,7 @@ extern "C" void SaveVillagers_ProcessTransfer(SaveVillagers *self, void *arg) {
         }
         ((VillagerData *)(sTransferVillager))->clear();
         ((VillagerData *)(sTransferVillager))->copyFrom(r7);
-        ((VillagerDataProfileView *)(r4))->updateMemoriesFromPlayers();
+        ((VillagerData *)(r4))->updateMemoriesFromPlayers();
         SaveVillagers_MoveOut(self, r7, r4, idx, arg);
         SaveVillagers_MoveIn(self, r4, idx, sTransferVillager, 2, arg);
         return;
@@ -7575,7 +7550,7 @@ extern "C" void SaveVillagers_ProcessTransfer(SaveVillagers *self, void *arg) {
     if (r4 == 0) {
         return;
     }
-    ((VillagerDataProfileView *)(r4))->updateMemoriesFromPlayers();
+    ((VillagerData *)(r4))->updateMemoriesFromPlayers();
     if (Villager_IsMoreAttachedThan(r7, r4, arg) == 0) {
         SaveVillagers_MoveOut(self, r7, r4, idx, arg);
     } else {
@@ -7584,7 +7559,7 @@ extern "C" void SaveVillagers_ProcessTransfer(SaveVillagers *self, void *arg) {
     return;
 nomatch:
     if (r4 != 0) {
-        ((VillagerDataProfileView *)(r4))->updateMemoriesFromPlayers();
+        ((VillagerData *)(r4))->updateMemoriesFromPlayers();
         SaveVillagers_MoveOut(self, r7, r4, idx, arg);
     }
 }
@@ -8236,7 +8211,7 @@ extern "C" void SaveVillagers_DailyVillagerUpdate(u8 *p, s32 q) {
             if (q == 0) {
                 if (Villager_MaybeCopyAblePattern(i, 0)) {
                     u16 v = 0x12a8;
-                    ((VillagerDataProfileView *)(p))->setShirt((u16 *)(&v));
+                    ((VillagerData *)(p))->setShirt((u16 *)(&v));
                 }
             }
             Villager_UpdatePlanErrand(p);
@@ -8998,7 +8973,7 @@ extern "C" s32 SaveVillagers_DeliverLetter(void *self, void *p) {
                     if (((VillagerId *)(s.v))->isValid() != 0) {
                         void *o = SaveVillagers_Find(self, s.v);
                         if (o != NULL) {
-                            ((VillagerDataProfileView *)(o))->replyToLetter(q, p);
+                            ((VillagerData *)(o))->replyToLetter(q, p);
                             return ((VillagerData *)(o))->receiveLetterFrom((LetterView *)p);
                         }
                     }
@@ -10346,8 +10321,8 @@ extern "C" void SaveVillagers_OnNewDay(u8 *a, s32 b) {
                     ((VillagerMemory *)(e))->clearFortuneGreeting();
                 }
             }
-            ((VillagerDataProfileView *)(a))->sendBirthdayLetters((void *)(b));
-            ((VillagerDataProfileView *)(a))->sendNewYearLetters((void *)(b));
+            ((VillagerData *)(a))->sendBirthdayLetters((void *)(b));
+            ((VillagerData *)(a))->sendNewYearLetters((void *)(b));
         }
     }
 }

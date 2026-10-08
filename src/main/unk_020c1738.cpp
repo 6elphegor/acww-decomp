@@ -5,7 +5,7 @@
 #include "npc/NpcTalkCtrl.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
-#include "npc/NpcResHandleView.h"
+#include "npc/NpcResHandle.h"
 #include "npc/NpcLookAt.h"
 #include "npc/NpcObstacleProbe.h"
 #include "npc/NpcMoveCtrl.h"

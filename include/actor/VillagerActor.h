@@ -5,7 +5,7 @@
 #include "actor/NpcActor.h"
 #include "npc/VillagerClothModel.h"
 #include "talk/VillagerTalk.h"
-#include "npc/NpcResHandleView.h"
+#include "npc/NpcResHandle.h"
 #include "npc/VillagerMood.h"
 
 // sys/ClockDateTime.h is not included: unk_02077ac4.cpp includes this header and still has its own ClockDateTime.

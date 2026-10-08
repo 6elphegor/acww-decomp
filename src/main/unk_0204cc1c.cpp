@@ -797,7 +797,7 @@ BOOL BlockMap::build(MapBlockEntry *e, BlockMapSize *sz, void *heap) {
                 l.v.x = l.x << 17;
                 l.v.z = l.y << 17;
                 w = l.v;
-                BgAcreModel *h = ((BgModelCache *)BgModelCache_Get())->getAcre(e->acreId);
+                BgAcreModel *h = BgModelCache_Get()->getAcre(e->acreId);
                 MapBlock_Init(buf, e->acreId, &w, (s32)(uptr)e->layers[0], (s32)(uptr)e->layers[1], (s32)(uptr)e->buried, h, 0,
                               (Unk_02037638_S8 *)&l, 0);
                 buf++;
@@ -1443,7 +1443,7 @@ extern "C" BOOL VillagerRoomMap_Init(RoomBlockMap *p, u32 a, void *heap) {
         FieldUnit_FromBlockUnit(&p->unitsX, &p->unitsZ, p->width, p->height, 0, 0);
         CollisionMap_Bind(p->width, p->height, 0, p->mapSlot);
         l.v.x = 0; l.v.z = 0;
-        u32 t = (u32)(uptr)((BgModelCache *)BgModelCache_Get())->getAcreBcl(info->acreId);
+        u32 t = (u32)(uptr)BgModelCache_Get()->getAcreBcl(info->acreId);
         l.w = l.v;
         p->blocks->init(info->acreId, &l.w, (s32)(uptr)info->layers[0], (s32)(uptr)info->layers[1], (s32)(uptr)info->buried,
                         0, t, 0, 0, p->mapSlot);

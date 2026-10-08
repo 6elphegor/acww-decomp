@@ -3,7 +3,7 @@
 
 #include "types.h"
 #include "actor/NpcActor.h"
-#include "npc/NpcResHandleView.h"
+#include "npc/NpcResHandle.h"
 
 // Base of the special (non-villager) NPCs (0x654 bytes). Defined in src/main/unk_0202e2d4.cpp (vtable, D2/D1/D0
 // 0x0202e5a8.., overrides 0x0202e2d4..0x0202e55c); the constructor is inline.

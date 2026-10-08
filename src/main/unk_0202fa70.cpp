@@ -15,7 +15,7 @@
 #include "game/CollisionEdge.h"
 #include "game/CollisionTriangle.h"
 #include "game/BoxCollider.h"
-#define PROTO_LOCAL_CollisionMap_GetBlockRef  // declared below: the shared prototype conflicts with the calls here
+#include "game/CollisionMap.h"
 #include "proto/itcm/unk_01ffcb2c.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_0202fa70.h"
@@ -132,8 +132,6 @@ extern "C" s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 struct FloorBoundsRange { s32 lo, hi; };
 struct FloorBoundsStackPad { s32 v[6]; FloorBoundsStackPad() {} ~FloorBoundsStackPad() {} };
 
-class CollisionBlockRef;
-extern "C" CollisionBlockRef *CollisionMap_GetBlockRef(s32 x, s32 z);
 extern "C" void Ground_SetWalkLinks(s32 x, s32 z, s32 v);
 extern "C" void Ground_ClearWalkLinks(s32 x, s32 z, s32 v);
 #define TB(i, f, d) ((i) < 0x7c ? sGroundAttrTable[i].f : (d))
@@ -434,35 +432,6 @@ public:
     u8 ages[4];
     s8 unitXs[4];
     s8 unitZs[4];
-};
-class CollisionBlockRef {
-public:
-    CollisionBlockRef()
-    {
-        attrs = 0;
-        walkLinks = 0;
-    }
-    ~CollisionBlockRef() {}
-
-    u8 *attrs;
-    u8 *walkLinks;
-};
-// one map slot, size 0x138
-class CollisionMap {
-public:
-    CollisionMap() { reset(); }
-    ~CollisionMap() {}
-    void reset();
-
-    CollisionBlockRef blocks[6][6];
-    UnitShapeQueryX *shapeQuery;
-    u32 numBlocksX;
-    u32 numBlocksZ;
-    s32 lockedExit;
-    u8 allBlocksSet;
-    u8 pad_131;
-    s16 prevWaveLevel;
-    s16 waveLevel;
 };
 // the collision work area sCollisionWorld
 class CollisionWorld {

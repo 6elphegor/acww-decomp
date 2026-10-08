@@ -1,6 +1,7 @@
 #include "nitro/fs.h"
 #include "uptr.h"
 #include "types.h"
+#include "talk/MsgCallStack.h"
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
@@ -75,19 +76,6 @@ public:
 
 
 
-// Fixed-size stack of words
-class MsgCallStack {
-public:
-    MsgCallStack();
-    ~MsgCallStack();
-    BOOL isEmpty();
-    void push(const u32 &value);
-    u32 *top();
-    void pop();
-
-    /* 0x00 */ u32 entries[6];
-    /* 0x18 */ u32 depth;
-};
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Free functions and globals
@@ -2156,15 +2144,15 @@ void ChoiceMenu::draw() {
 void MsgCallStack::pop() {
     if (depth != 0) {
         depth--;
-        entries[depth] = 0;
+        entries[depth] = NULL;
     }
 }
 
-u32 *MsgCallStack::top() {
+u8 **MsgCallStack::top() {
     return &entries[depth - 1];
 }
 
-void MsgCallStack::push(const u32 &value) {
+void MsgCallStack::push(u8 *const &value) {
     if (depth < 6) {
         u32 i = depth++;
         entries[i] = value;
@@ -2180,7 +2168,7 @@ MsgCallStack::~MsgCallStack() {}
 MsgCallStack::MsgCallStack() {
     depth = 0;
     for (u32 i = 0; i < 6; i++) {
-        entries[i] = 0;
+        entries[i] = NULL;
     }
 }
 

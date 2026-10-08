@@ -22,7 +22,7 @@
 #include "npc/NpcFootstepFx.h"
 #include "talk/VillagerTalkRequestStartTopics.h"
 #include "sys/ProcBase.h"
-#include "npc/NpcResHandleView.h"
+#include "npc/NpcResHandle.h"
 #include "talk/EncodedString.h"
 #include "npc/NpcTalkCtrl.h"
 #include "talk/VillagerTalkKaraokeTopics.h"
@@ -68,7 +68,7 @@
 #include "npc/NpcFaceAnim.h"
 #include "npc/NpcMoveAnimSet.h"
 #include "npc/VillagerDataItemView.h"
-#include "npc/VillagerDataProfileView.h"
+#include "save/VillagerData.h"
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "player/PlayerInventory.h"
@@ -2046,7 +2046,7 @@ void VillagerActor::setShirt(u16 *p, BOOL flag) {
         void *o = getVillagerData();
         (&clothModel)->change(this, p);
         if (o != NULL) {
-            ((VillagerDataProfileView *)(o))->setShirt(p);
+            ((VillagerData *)(o))->setShirt(p);
             if (flag) {
                 VillagerSync_Shirt(o, p);
             }
@@ -2067,7 +2067,7 @@ BOOL VillagerActor::preCreate() {
 }
 
 BOOL VillagerActor::loadAnimSet() {
-    s32 *t = (s32 *)((SpNpcAnimHeapHandle *)(&animHeapHandle))->getVillagerAnimHeapRef();
+    s32 *t = (s32 *)animHeapHandle.getVillagerAnimHeapRef();
     if (!(&model)->allocJointRecord(VillagerAnimHeapRef_GetHeap(t))) {
         return FALSE;
     }
@@ -2082,8 +2082,8 @@ BOOL VillagerActor::onCreate() {
     if (!this->NpcActor::onCreate()) {
         return FALSE;
     }
-    if (!reinterpret_cast<SpNpcAnimHeapHandle *>(&animHeapHandle)->getVillagerAnimHeapRef()) {
-        if (!reinterpret_cast<NpcResHandle *>(&animHeapHandle)->acquire()) {
+    if (!animHeapHandle.getVillagerAnimHeapRef()) {
+        if (!animHeapHandle.acquire()) {
             return FALSE;
         }
         if (!this->loadAnimSet()) {
@@ -2098,7 +2098,7 @@ BOOL VillagerActor::onCreate() {
     }
     actionCtrl.startAction((this), 0, 1, 0, 0, 0, 0, 0);
     if (villagerData) {
-        h = *((VillagerDataProfileView *)(villagerData))->getShirt();
+        h = *((VillagerData *)(villagerData))->getShirt();
     }
     if (!clothModel.init(this, &h)) {
         return FALSE;
@@ -2123,7 +2123,7 @@ BOOL VillagerActor::onDelete() {
     if (!this->NpcActor::onDelete()) {
         return FALSE;
     }
-    reinterpret_cast<NpcResHandle *>(&animHeapHandle)->release();
+    animHeapHandle.release();
     clothModel.release();
     mood.stop();
     return TRUE;
@@ -2175,7 +2175,7 @@ VillagerClothModel *VillagerClothModel::destruct() {
 
 BOOL VillagerClothModel::init(VillagerActor *parent, u16 *id) {
     clothItem = 0xffff;
-    if (!((NpcResHandle *)(texPatBuf))->acquire()) {
+    if (!((NpcClothTexHandle *)texPatBuf)->acquire()) {
         return FALSE;
     }
     if (change(parent, id)) {
@@ -2185,7 +2185,7 @@ BOOL VillagerClothModel::init(VillagerActor *parent, u16 *id) {
 }
 
 void *VillagerClothModel::buildTexture(VillagerActor *parent, u16 *id) {
-    u8 *r4 = (u8 *)((NpcTexPatBufRefHandle *)(texPatBuf))->getClothTex();
+    u8 *r4 = (u8 *)((NpcClothTexHandle *)texPatBuf)->getClothTex();
     void *r6 = 0;
     if (r4) {
         BOOL in = FALSE;
@@ -2237,7 +2237,7 @@ BOOL VillagerClothModel::change(VillagerActor *parent, u16 *id) {
 
 void VillagerClothModel::release() {
     ((MatTexVramTask *)(this))->cancel();
-    ((NpcResHandle *)(texPatBuf))->release();
+    ((NpcClothTexHandle *)texPatBuf)->release();
 }
 
 u16 *VillagerClothModel::getItem() { return &clothItem; }
@@ -6148,7 +6148,7 @@ void VillagerTalkTopics::continuePresentLiked() {
     ((VillagerTalk *)this)->setTaskDoneFn(nZ::data_020d8008);
     r6 = PlayerErrandSlot_GetVillager(errandSlot, 0);
     SaveVillagers_AddRelation(gSaveVillagers, r6, r4->getVillagerId(), 0x14);
-    itemFromPlayer = *((VillagerDataProfileView *)(r4))->getShirt();
+    itemFromPlayer = *((VillagerData *)(r4))->getShirt();
     if (selectFn) {
         (this->*selectFn)(&out);
     }
@@ -6737,7 +6737,7 @@ extern "C" void VillagerRequest_PickShirtForStep(u16 *out, VillagerTalkRequestSt
         if (fn != 0) {
             VillagerData *r6 = self->actor->villagerData;
             u8 *r7 = Villager_GetFashionTaste(r6);
-            u16 t = *((VillagerDataProfileView *)(r6))->getShirt();
+            u16 t = *((VillagerData *)(r6))->getShirt();
             fn(out, r7, &t);
             return;
         }
@@ -7375,7 +7375,7 @@ void VillagerTalkTopics::checkRequestItem() {
             ((VillagerTalk *)this)->setTopicFns(&nZ::sRequestTopicsB[21]);
         } else {
             u8 *r7 = ((u8 *)Villager_GetFashionTaste(r4));
-            u16 *p = ((VillagerDataProfileView *)(r4))->getShirt();
+            u16 *p = ((VillagerData *)(r4))->getShirt();
             BOOL eq;
             if (Item_IsFurniture(&itemFromPlayer) != 0) {
                 s32 a = ((s32)Item_GetFurnitureIndex(&itemFromPlayer));
@@ -7498,8 +7498,8 @@ void VillagerTalkTopics::takeRequestItem() {
     Pocket_SetItem(&h, 0, r2);
     if (((VillagerTalk *)this)->getErrandRecord()->getKind() == 3) {
         ((ActorTalkRequest *)(this))->requestItemAct0F();
-        if (Unk_020242d8_R1(((VillagerDataProfileView *)(actor->villagerData))->getShirt(), 0x11a8, 0x12a7)) {
-            itemToPlayer = *((VillagerDataProfileView *)(actor->villagerData))->getShirt();
+        if (Unk_020242d8_R1(((VillagerData *)(actor->villagerData))->getShirt(), 0x11a8, 0x12a7)) {
+            itemToPlayer = *((VillagerData *)(actor->villagerData))->getShirt();
         }
     } else {
         ((ActorTalkRequest *)(this))->requestKeepItem();
@@ -7861,7 +7861,7 @@ void VillagerTalkTopics::selectEvArbeitReceive(TalkTopicMsg *out) {
         break;
     }
     case 0x11:
-        if (memory != 0 && ((VillagerDataProfileView *)(actor->villagerData))->hasLetterFrom((u16 *)(VillagerMemory_GetPlayerId(memory)))) {
+        if (memory != 0 && ((VillagerData *)(actor->villagerData))->hasLetterFrom((u16 *)(VillagerMemory_GetPlayerId(memory)))) {
             customFn2 = (Unk_020238b0_Fn)(nZ::data_020d7a30);
             unk_134 = memory;
             topicIndex = 0xe;
@@ -8896,7 +8896,7 @@ BOOL VillagerTalkTopics::selectTsuGhint() {
 
 BOOL VillagerTalkTopics::selectTsuDress() {
     VillagerData *r7 = actor->villagerData;
-    volatile u16 h = *(u16 *)((void *)((VillagerDataProfileView *)(r7))->getShirt());
+    volatile u16 h = *(u16 *)((void *)((VillagerData *)(r7))->getShirt());
     s32 r4 = -1;
     u16 *r5;
     Pattern *t;
@@ -9208,13 +9208,13 @@ void *VillagerTalkRumorTopics::pickMemoryDislikedOld(void **arr, s32 n) {
 }
 
 extern "C" s32 Talk_IsMemoryLetterSender(void *ctx, void *item) {
-    return ((VillagerDataProfileView *)(ctx))->hasLetterFrom((u16 *)(VillagerMemory_GetPlayerId(item)));
+    return ((VillagerData *)(ctx))->hasLetterFrom((u16 *)(VillagerMemory_GetPlayerId(item)));
 }
 
 extern "C" BOOL Talk_IsMemoryLetterSenderFromVillagerTown(void *ctx, void *item) {
     u16 *mine = (u16 *)&static_cast<VillagerData *>(ctx)->letterTown;
     BOOL r = FALSE;
-    if (((VillagerDataProfileView *)(ctx))->hasLetterFrom((u16 *)(VillagerMemory_GetPlayerId(item))) != 0) {
+    if (((VillagerData *)(ctx))->hasLetterFrom((u16 *)(VillagerMemory_GetPlayerId(item))) != 0) {
         u16 *p = (u16 *)PlayerId_GetTownId(VillagerMemory_GetPlayerId(item));
         if (*p == *mine) {
             if (memcmp(p + 1, mine + 1, 8) == 0) {
@@ -9255,7 +9255,7 @@ extern "C" BOOL Talk_IsMemoryLetterSenderResident(void *ctx, void *item) {
     void *id = VillagerMemory_GetPlayerId(item);
     BOOL r = FALSE;
     BOOL ok = FALSE;
-    if (((VillagerDataProfileView *)(ctx))->hasLetterFrom((u16 *)(id)) == 1) {
+    if (((VillagerData *)(ctx))->hasLetterFrom((u16 *)(id)) == 1) {
         ok = TRUE;
     }
     if (ok) {

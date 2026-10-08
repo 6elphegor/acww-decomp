@@ -11,6 +11,7 @@
 #include "gfx/AnimModel.h"
 #include "gfx/ModelSlotPool.h"
 #include "snd/BuildingSeEmitter.h"
+#include "town/BuildingLights.h"
 
 // Field building / structure actor (houses, shops, tents, signs, mailboxes, the taxi ...): Character with
 // TalkMsgRequest as secondary base at +0xec. Defined in src/ov009/unk_ov009_0225b880.cpp (+ _switch, same unit;
@@ -134,11 +135,7 @@ public:
     /* 0x132 */ u16 itemId;
     /* 0x134 */ u32 buildingIndex;
     /* 0x138 */ AnimModel model;          // the door animation is its AnimFrameCtrl base
-#ifdef HOST64
-    u8 lights[0x40] HOST_ALIGN8;  // BuildingLights (src/main/unk_020b0e60.cpp checks the size)
-#else
-    /* 0x1f0 */ u8 lights[0x228 - 0x1f0];  // BuildingLights (its class is local to src/main/unk_020b0e60.cpp)
-#endif
+    /* 0x1f0 */ BuildingLights lights;
     /* 0x228 */ u32 gridX;
     /* 0x22c */ u32 gridZ;
     /* 0x230 */ u8 exitDelay;

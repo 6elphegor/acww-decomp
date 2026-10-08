@@ -2,26 +2,13 @@
 // NO mwcc-flags line: Thumb with the default -O4,s (with -O4,p Ground_GetUnitAttr and TownBlockMap_IsBuried differ).
 #include "types.h"
 #include "gfx/VecFx32.h"
+#include "game/CollisionMap.h"
 #include "town/TownBlockCell.h"
 #include "gfx/Camera.h"
 #include "gfx/HBlankTask.h"
 #include "nitro/io_access.h"
 #include "proto/itcm/unk_01ffcb2c.h"
 #include "proto/itcm/unk_01ffcfc0.h"
-
-struct Chunk {
-    /* 0x00 */ u8 *attrs;
-    /* 0x04 */ u8 *walkLinks;
-};
-
-// CollisionMap (src/main/unk_0202fa70.cpp) by its members: the block references are pointers
-struct Grid {
-    Chunk blocks[6][6];
-    void *shapeQuery;
-    u32 numBlocksX;
-    u32 numBlocksZ;
-};
-
 
 struct CellGrid {
     /* 0x00 */ TownBlockCell *cells;
@@ -38,12 +25,11 @@ struct Obj {
 };
 
 extern "C" {
-extern Grid *gCurCollisionMap;
 extern HBlankTask *sHBlankListHead;
 }
 
-static inline Chunk *At(s32 x, s32 z) {
-    Grid *g = gCurCollisionMap;
+static inline CollisionBlockRef *At(s32 x, s32 z) {
+    CollisionMap *g = gCurCollisionMap;
     if (x >= 0 && z >= 0 && (u32)x < g->numBlocksX && (u32)z < g->numBlocksZ) {
         return &g->blocks[z][x];
     }
@@ -94,8 +80,8 @@ extern "C" void Camera_GetLookAtOffset(VecFx32 *out, Camera *c) {
     Vec_Add(out, (VecFx32 *)&c->currentOffset, (VecFx32 *)&c->unk_84);
 }
 
-extern "C" Chunk *CollisionMap_GetBlockRef(s32 x, s32 z) {
-    Chunk *p = At(x, z);
+extern "C" CollisionBlockRef *CollisionMap_GetBlockRef(s32 x, s32 z) {
+    CollisionBlockRef *p = At(x, z);
     if (p != 0) {
         return p;
     }
@@ -103,7 +89,7 @@ extern "C" Chunk *CollisionMap_GetBlockRef(s32 x, s32 z) {
 }
 
 extern "C" u32 Ground_GetUnitAttr(s32 x, s32 y) {
-    Chunk *c = CollisionMap_GetBlockRef(x >> 4, y >> 4);
+    CollisionBlockRef *c = CollisionMap_GetBlockRef(x >> 4, y >> 4);
     u32 v;
     if (c != 0) {
         v = c->attrs[(x & 15) + ((y & 15) << 4)];

@@ -57,16 +57,6 @@
 typedef void (BuildingActor::*Unk_ov009_0225c290_Fn)();
 typedef BOOL (BuildingActor::*Unk_ov009_0225c360_Fn)();
 
-// BuildingLights (BuildingActor::lights) is a class local to src/main/unk_020b0e60.cpp: its methods by their names.
-extern "C" {
-void _ZN14BuildingLightsC2Ev(void *self);
-void _ZN14BuildingLightsD2Ev(void *self);
-BOOL _ZN14BuildingLights5isLitEv(void *self);
-BOOL _ZN14BuildingLights6setLitEiii(void *self, BOOL on, s32 a, s32 b);
-void _ZN14BuildingLights12updateLightsEP3Ctx(void *self, void *mdl);
-void _ZN14BuildingLights4bindEP3Ctxi(void *self, void *mdl, BOOL on);
-}
-
 extern "C" {
 extern char sBuildingDefaultMsgFile[];
 extern char data_ov009_0225e3e8[];
@@ -138,7 +128,7 @@ BOOL Building_IsNight();
 void *BuildingActor_Create();
 BOOL BuildingResources_IsLoaded(BuildingResources *e);
 void *Building_GetFirstAnm(void *res);
-void *Building_GetFirstMdl(void *res);
+NNSG3dResMdl *Building_GetFirstMdl(void *res);
 void Building_InitModelCallback(NNSG3dRS *o);
 void Building_ModelCallback(struct NNSG3dRS *a);
 }
@@ -252,9 +242,9 @@ extern "C" void Building_InitModelCallback(NNSG3dRS *o) {
     o->cbVecTiming[6] = 2;
 }
 
-extern "C" void *Building_GetFirstMdl(void *res) {
+extern "C" NNSG3dResMdl *Building_GetFirstMdl(void *res) {
     u8 *p = (u8 *)NNS_G3dGetMdlSet(res);
-    return p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc);
+    return (NNSG3dResMdl *)(p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc));
 }
 
 extern "C" void *Building_GetFirstAnm(void *res) {
@@ -264,11 +254,9 @@ extern "C" void *Building_GetFirstAnm(void *res) {
 
 BuildingActor::BuildingActor() {
     itemId = 0xfff1;
-    _ZN14BuildingLightsC2Ev(lights);
 }
 
 BuildingActor::~BuildingActor() {
-    _ZN14BuildingLightsD2Ev(lights);
 }
 
 BOOL BuildingActor::initBuilding() { return TRUE; }
@@ -299,7 +287,7 @@ BOOL BuildingActor::onCreate() {
     Mtx43_RotateX(&m, ang);
     createColliders(&m);
     BuildingResources *r = getResources();
-    _ZN14BuildingLights4bindEP3Ctxi(lights, r ? r->bmd0 : NULL, 1);
+    lights.bind(r ? r->bmd0 : NULL, 1);
     setInteractionRange(0);
     if (getDoorPos(&entryPos, (s16 *)0)) {
         entryPos.z -= 0x4000;
@@ -331,8 +319,8 @@ BOOL BuildingActor::preExecute() {
     }
     BOOL on = areLightsOn();
     s32 b = hasFlickeringLights();
-    _ZN14BuildingLights6setLitEiii(lights, on, 1, b);
-    _ZN14BuildingLights12updateLightsEP3Ctx(lights, model.resMdl);
+    lights.setLit(on, 1, b);
+    lights.updateLights(model.resMdl);
     updateDoorExit();
     return TRUE;
 }
@@ -578,7 +566,7 @@ BOOL BuildingActor::setupModel(char *a, char *b, char *c) {
     loadResources(a, b, c);
     BuildingResources *r = getResources();
     if (r != NULL && r->bmd0 != 0) {
-        if (model.setResource((NNSG3dResMdl *)r->bmd0, NULL)) {
+        if (model.setResource(r->bmd0, NULL)) {
             NNSG3dResTex *x = PlayerHouseTex_Get(FieldStructureMgr_GetPlayerHouseTex());
             NNS_G3dBindMdlPltt(r->bmd0, x);
             if (r->tex) {
@@ -1665,7 +1653,7 @@ u32 BuildingActor::getGridX() { return gridX; }
 
 u32 BuildingActor::getGridZ() { return gridZ; }
 
-s32 BuildingActor::callIsLit() { return _ZN14BuildingLights5isLitEv(lights); }
+s32 BuildingActor::callIsLit() { return lights.isLit(); }
 
 BuildingSeEmitter::BuildingSeEmitter() {
     active = 0;

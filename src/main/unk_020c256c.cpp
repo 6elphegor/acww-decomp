@@ -3,7 +3,7 @@
 #include "npc/NpcTalkCtrl.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
-#include "npc/NpcResHandleView.h"
+#include "npc/NpcResHandle.h"
 #include "npc/NpcObstacleProbe.h"
 #include "npc/Unk_0201ad18.h"
 #include "npc/NpcFootstepFx.h"

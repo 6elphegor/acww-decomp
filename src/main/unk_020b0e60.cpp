@@ -15,6 +15,9 @@
 #include "net/CommManager.h"
 #include "save/Pattern.h"
 #include "town/BuildingActor.h"
+#include "town/BuildingLights.h"
+#include "field/FieldObjectShapeQuery.h"
+#include "gfx/NNSG3dResMdl.h"
 #include "save/TownStyleRecordView.h"
 #include "town/TownStyleRecord.h"
 #include "field/SnowmanRecords.h"
@@ -72,13 +75,6 @@ struct Grid {
     u32 h;
 };
 typedef Grid Map;
-
-struct Pal {
-    u8 pad[0x18];
-    u8 count;
-};
-
-struct Ctx;
 
 typedef ItemId Marker2;
 
@@ -146,53 +142,6 @@ struct BuildingStateStackPad {
 
 
 
-class DoorLight {
-public:
-    DoorLight();
-    ~DoorLight();
-    void apply(Ctx *c, s32 t);
-    void bindMaterial(Ctx *c);
-    /* 0x00 */ s8 matIdx;
-};
-
-class WindowLight {
-public:
-    WindowLight();
-    ~WindowLight();
-    void apply(Ctx *c, s32 t);
-    void bindMaterial(Ctx *c);
-    /* 0x00 */ s8 matIdx;
-};
-
-class LampLights {
-public:
-    LampLights();
-    ~LampLights();
-    virtual const char *getMaterialName(s32 i);
-    void apply(Pal *p, s32 t);
-    BOOL isLampMaterial(s32 v);
-    void bindMaterials(Ctx *c);
-
-    /* 0x04 */ s8 matIndices[3];
-    /* 0x08 */ LightLevel unk_08;
-};
-
-class BuildingLights : public LightLevel {
-public:
-    BuildingLights();
-    ~BuildingLights();
-    BOOL isLit();
-    BOOL setLit(BOOL on, s32 a, s32 b);
-    void updateLights(Ctx *c);
-    void bind(Ctx *c, BOOL on);
-
-    /* 0x14 */ DoorLight doorLight;
-    /* 0x18 */ LampLights lampLights;
-    /* 0x34 */ WindowLight windowLight;
-};
-#ifdef HOST64
-static_assert(sizeof(BuildingLights) <= 0x40, "BuildingActor::lights (include/town/BuildingActor.h)");
-#endif
 
 
 
@@ -202,11 +151,6 @@ static_assert(sizeof(BuildingLights) <= 0x40, "BuildingActor::lights (include/to
 
 
 // overlay class whose vtable is at 0x02232c00 (only its D1 is in this unit)
-class FieldObjectShapeQuery : public UnitShapeQueryX {
-public:
-    virtual BOOL getUnitShape(s32 *a, s32 *b, s32 *c, s32 x, s32 z);
-    MODERN_EMIT virtual ~FieldObjectShapeQuery() {}
-};
 
 
 extern "C" {
@@ -248,10 +192,10 @@ BOOL SceneId_IsHouseRoom(u32 a);
 void Math_StepS32(void *p, s32 a, s32 b);
 void NNS_FndUnmountArchive(void *file);
 BOOL NNS_FndMountArchive(void *file, const void *mode, void *arc);
-void NNS_G3dMdlSetMdlAlpha(Ctx *c, s32 i, u8 v);
-void NNS_G3dMdlSetMdlEmi(Pal *p, s32 i, u16 c);
-void NNS_G3dMdlSetMdlDiff(Ctx *c, s32 i, u16 v);
-void NNSi_G3dModifyMatFlag(Pal *p, s32 a, s32 b);
+void NNS_G3dMdlSetMdlAlpha(NNSG3dResMdl *mdl, s32 i, u8 v);
+void NNS_G3dMdlSetMdlEmi(NNSG3dResMdl *mdl, s32 i, u16 c);
+void NNS_G3dMdlSetMdlDiff(NNSG3dResMdl *mdl, s32 i, u16 v);
+void NNSi_G3dModifyMatFlag(NNSG3dResMdl *mdl, s32 a, s32 b);
 }
 
 
@@ -788,9 +732,9 @@ DoorLight::DoorLight() { matIdx = -1; }
 
 DoorLight::~DoorLight() {}
 
-void DoorLight::bindMaterial(Ctx *c) { matIdx = ((G3dResAccess *)(void *)(c))->findMatIdx("m_door"); }
+void DoorLight::bindMaterial(NNSG3dResMdl *c) { matIdx = ((G3dResAccess *)c)->findMatIdx("m_door"); }
 
-void DoorLight::apply(Ctx *c, s32 t)
+void DoorLight::apply(NNSG3dResMdl *c, s32 t)
 {
     if (matIdx != -1) {
         NNS_G3dMdlSetMdlDiff(c, matIdx, (u16)((u8)(t * 0xd >> 12) << 10 | ((u8)(t * 0x1f >> 12) | (u8)(t * 0x1b >> 12) << 5)));
@@ -801,9 +745,9 @@ WindowLight::WindowLight() { matIdx = -1; }
 
 WindowLight::~WindowLight() { matIdx = -1; }
 
-void WindowLight::bindMaterial(Ctx *c) { matIdx = ((G3dResAccess *)(void *)(c))->findMatIdx("m_window"); }
+void WindowLight::bindMaterial(NNSG3dResMdl *c) { matIdx = ((G3dResAccess *)c)->findMatIdx("m_window"); }
 
-void WindowLight::apply(Ctx *c, s32 t)
+void WindowLight::apply(NNSG3dResMdl *c, s32 t)
 {
     if (matIdx != -1) {
         NNS_G3dMdlSetMdlAlpha(c, matIdx, (u8)((t * 0x1d >> 12) + 1));
@@ -819,11 +763,11 @@ LampLights::LampLights()
 
 LampLights::~LampLights() {}
 
-void LampLights::bindMaterials(Ctx *c)
+void LampLights::bindMaterials(NNSG3dResMdl *c)
 {
     for (u32 i = 0; i < 3; i++) {
         if (getMaterialName(i)) {
-            s32 r = ((G3dResAccess *)(void *)(c))->findMatIdx(getMaterialName(i));
+            s32 r = ((G3dResAccess *)c)->findMatIdx(getMaterialName(i));
             if (r != -1) {
                 matIndices[i] = r;
             } else {
@@ -843,7 +787,7 @@ BOOL LampLights::isLampMaterial(s32 v)
     return FALSE;
 }
 
-void LampLights::apply(Pal *p, s32 t)
+void LampLights::apply(NNSG3dResMdl *p, s32 t)
 {
     if (t != 0) {
         NNSi_G3dModifyMatFlag(p, 1, 0x400);
@@ -852,7 +796,7 @@ void LampLights::apply(Pal *p, s32 t)
         s32 g = Math_LerpFx(t, (col & 0x1f) << 12, 0x1f000);
         s32 b = Math_LerpFx(t, ((col >> 5) & 0x1f) << 12, 0x1f000);
         u16 c2 = (r7 >> 12) << 10 | ((g >> 12) | (b >> 12) << 5);
-        for (s32 i = 0; i < p->count; i++) {
+        for (s32 i = 0; i < p->info.numMat; i++) {
             NNS_G3dMdlSetMdlEmi(p, i, isLampMaterial(i) ? c2 : col);
         }
     } else {
@@ -875,7 +819,7 @@ BuildingLights::BuildingLights() {}
 
 BuildingLights::~BuildingLights() {}
 
-void BuildingLights::bind(Ctx *c, BOOL on)
+void BuildingLights::bind(NNSG3dResMdl *c, BOOL on)
 {
     switchLightAnimated(on);
     if (c) {
@@ -885,12 +829,12 @@ void BuildingLights::bind(Ctx *c, BOOL on)
     }
 }
 
-void BuildingLights::updateLights(Ctx *c)
+void BuildingLights::updateLights(NNSG3dResMdl *c)
 {
     update();
     s32 v = getLevel();
     if (c) {
-        lampLights.apply((Pal *)c, v);
+        lampLights.apply(c, v);
         windowLight.apply(c, v);
         doorLight.apply(c, v);
     }

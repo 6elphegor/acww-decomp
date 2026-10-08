@@ -18,7 +18,7 @@
 #include "npc/Unk_0201ad18.h"
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
-#include "npc/NpcResHandleView.h"
+#include "npc/NpcResHandle.h"
 #include "gfx/MatTexPatAnim.h"
 #include "npc/NpcActionCtrl.h"
 #include "game/GroundInfo.h"
@@ -2489,16 +2489,16 @@ s32 NpcFaceAnim::getMouthAnim() {
 BOOL NpcFaceAnim::load(NpcActor *o) {
     using namespace nO;
     u8 *r6 = o->getTexturePath();
-    if (((NpcFaceAnimHandle *)(&texPatBuf))->getTexPatBufRef() == 0 && r6 != 0) {
-        if (!((NpcResHandle *)(&texPatBuf))->acquire()) {
+    if (texPatBuf.getTexPatBufRef() == 0 && r6 != 0) {
+        if (!texPatBuf.acquire()) {
             return FALSE;
         }
-        s32 *a = (s32 *)((NpcFaceAnimHandle *)(&texPatBuf))->getTexPatBufRef();
+        s32 *a = (s32 *)texPatBuf.getTexPatBufRef();
         NpcTexPatBufRef_LoadFile(a, r6);
-        if (!((NpcResHandle *)(&texPatHeap))->acquire()) {
+        if (!texPatHeap.acquire()) {
             return FALSE;
         }
-        void *h = ((NpcHeldItemModelHandle *)(&texPatHeap))->getTexPatHeapRef();
+        void *h = texPatHeap.getTexPatHeapRef();
         NNSG3dResMdl *fl = o->model.resMdl;
         void *x = NpcTexPatBufRef_GetBuffer(a);
         if (!((MatTexPatAnim *)(&eyeTexAnim))->init(fl, x, 1, (void *)(((CharaFaceAnimWorkRef *)(h))->getHeap()))) {
@@ -2509,7 +2509,7 @@ BOOL NpcFaceAnim::load(NpcActor *o) {
         if (!((MatTexPatAnim *)(&mouthTexAnim))->init(fl2, y, 1, (void *)(((CharaFaceAnimWorkRef *)(h))->getHeap()))) {
             return FALSE;
         }
-        if (!((NpcResHandle *)(&faceAnimRef))->acquire()) {
+        if (!faceAnimRef.acquire()) {
             return FALSE;
         }
         eyeAnimId = 0x16f;
@@ -2579,9 +2579,9 @@ BOOL NpcFaceAnim::isMouthCycleDone() {
 void NpcFaceAnim::setMouthAnim(s32 v, u32 w) {
     using namespace nO;
     if (isLoaded()) {
-        void *h = ((NpcTexPatHeapHandle *)(&faceAnimRef))->getFaceAnim();
+        void *h = faceAnimRef.getFaceAnim();
         ((CharaFaceAnimRef *)(h))->loadAnim(v, 1, 0);
-        ((MatTexPatAnim *)(&mouthTexAnim))->setAnim(((CharaFaceAnimRef *)(h))->getMouthAnimBuffer(), (void *)(0), 0, w, (void *)(0x1000));
+        mouthTexAnim.setAnim(((CharaFaceAnimRef *)(h))->getMouthAnimBuffer(), 0, 0, w, 0x1000);
         mouthTexAnim.curFrame = 0;
         mouthAnimId = v;
         randomizeTalkMouth();
@@ -2611,11 +2611,11 @@ void NpcFaceAnim::restoreMouthAnim() {
 void NpcFaceAnim::setFaceAnims(s32 t, s32 u, s32 x, s32 mode) {
     using namespace nO;
     if (isLoaded()) {
-        void *h = ((NpcTexPatHeapHandle *)(&faceAnimRef))->getFaceAnim();
+        void *h = faceAnimRef.getFaceAnim();
         if (t != 0 || eyeAnimId != t) {
             ((CharaFaceAnimRef *)(h))->loadAnim(t, 1, 0);
             NNS_G3dGetAnmByIdx(((CharaFaceAnimRef *)(h))->getEyeAnimBuffer(), 0);
-            ((MatTexPatAnim *)(&eyeTexAnim))->setAnim(((CharaFaceAnimRef *)(h))->getEyeAnimBuffer(), (void *)(0), 0, x, (void *)(0x1000));
+            eyeTexAnim.setAnim(((CharaFaceAnimRef *)(h))->getEyeAnimBuffer(), 0, 0, x, 0x1000);
             eyeAnimId = t;
             eyeTexAnim.curFrame = 0;
             ((MatTexPatAnim *)(&eyeTexAnim))->applyFrame();
@@ -2674,9 +2674,9 @@ void NpcFaceAnim::release() {
     using namespace nO;
     ((MatTexPatAnim *)(&eyeTexAnim))->release();
     ((MatTexPatAnim *)(&mouthTexAnim))->release();
-    ((NpcResHandle *)(&texPatBuf))->release();
-    ((NpcResHandle *)(&faceAnimRef))->release();
-    ((NpcResHandle *)(&texPatHeap))->release();
+    texPatBuf.release();
+    faceAnimRef.release();
+    texPatHeap.release();
 }
 
 void NpcFaceAnim::update(NpcActor *o) {
@@ -4549,21 +4549,15 @@ void NpcActionCtrl::mainAct15(NpcActor *o) {
     }
 }
 
-NpcAnimCtrl::NpcAnimCtrl() {
-    using namespace nI;
-    new (this) NpcBodyAnimHandle();
-}
+NpcAnimCtrl::NpcAnimCtrl() {}
 
-NpcAnimCtrl::~NpcAnimCtrl() {
-    using namespace nI;
-    ((NpcBodyAnimHandle *)(this))->NpcBodyAnimHandle::~NpcBodyAnimHandle();
-}
+NpcAnimCtrl::~NpcAnimCtrl() {}
 
 BOOL NpcAnimCtrl::initForActor(NpcActor *o, s32 a) {
     using namespace nI;
     ((NpcAnimCtrl *)(this))->setAnimSpeedFixed(0);
     animSpeedScale = a;
-    if (!((NpcResHandle *)(this))->acquire()) return FALSE;
+    if (!bodyAnim.acquire()) return FALSE;
     playAnim(o, 0, 0, 0, 0x1000, 0, 0);
     ((AnimModel *)(&o->model))->attachAnim();
     ((Model *)(&o->model))->setCallback(NpcActor_JointCalcLayer3Cb, 6, 1, o, 0);
@@ -4575,7 +4569,7 @@ BOOL NpcAnimCtrl::initForActor(NpcActor *o, s32 a) {
 
 void *NpcAnimCtrl::getAnimResource(s32 a, s32 b) {
     using namespace nI;
-    AnimSlotRef *p = ((NpcResHandle *)this)->getBodyAnimLayer(b);
+    AnimSlotRef *p = bodyAnim.getBodyAnimLayer(b);
     void *r = 0;
     if (p) {
         AnimSlotRef_Load(p, a, 0, 0);
@@ -4705,7 +4699,7 @@ BOOL NpcAnimCtrl::hasTalkGesture() {
 
 void NpcAnimCtrl::loadTalkGesture() {
     using namespace nH;
-    AnimSlotRef *p = ((NpcResHandle *)(this))->getBodyAnimLayer(2);
+    AnimSlotRef *p = bodyAnim.getBodyAnimLayer(2);
     if (p != NULL) {
         AnimSlotRef_Load(p, 0x143, 0, 0);
     }
@@ -4715,7 +4709,7 @@ void *NpcAnimCtrl::getTalkGestureData() {
     using namespace nH;
     void *r = NULL;
     if (hasTalkGesture()) {
-        AnimSlotRef *p = ((NpcResHandle *)(this))->getBodyAnimLayer(2);
+        AnimSlotRef *p = bodyAnim.getBodyAnimLayer(2);
         if (p != NULL) {
             r = func_021065f8(func_021065dc(AnimSlotRef_GetData(p)), 0);
         }
@@ -4771,8 +4765,8 @@ BOOL NpcAnimCtrl::isAnimFinished(NpcActor *scene) {
 
 s32 NpcAnimCtrl::getAnimId(u32 idx) {
     using namespace nH;
-    if (((NpcResHandle *)(this))->getBodyAnimLayer(idx) != NULL) {
-        return AnimSlotRef_GetAnimId(((NpcResHandle *)(this))->getBodyAnimLayer(idx));
+    if (bodyAnim.getBodyAnimLayer(idx) != NULL) {
+        return AnimSlotRef_GetAnimId(bodyAnim.getBodyAnimLayer(idx));
     }
     return 0x144;
 }
@@ -4845,7 +4839,7 @@ tail:
 
 void NpcAnimCtrl::release() {
     using namespace nH;
-    ((NpcResHandle *)(void *)this)->release();
+    bodyAnim.release();
 }
 
 void NpcAnimCtrl::syncMouthType(NpcActor *scene) {
@@ -7798,15 +7792,15 @@ HeldToolModel *HeldToolModel::destroy() {
 
 BOOL HeldToolModel::load(u16 *a) {
     using namespace nB;
-    if (!((NpcResHandle *)(&modelHandle))->acquire()) return FALSE;
-    if (!((NpcResHandleView *)(&modelHandle))->loadHeldItem(a)) return FALSE;
+    if (!((NpcHeldItemModelHandle *)modelHandle)->acquire()) return FALSE;
+    if (!((NpcHeldItemModelHandle *)modelHandle)->loadHeldItem(a)) return FALSE;
     heldItem = 0xfff1;
     return TRUE;
 }
 
 BOOL HeldToolModel::attach(NpcActor *a, u16 *b, u32 c, u16 d) {
     using namespace nB;
-    HeldItemModel *p = (HeldItemModel *)((NpcResHandleView *)(void *)(&modelHandle))->getHeldItemModel();
+    HeldItemModel *p = (HeldItemModel *)((NpcHeldItemModelHandle *)modelHandle)->getHeldItemModel();
     if (p) {
         HeldItemModel_SetItem(p, b, 0);
         a->animCtrl.playHoldItemPose(a, b, c, d);
@@ -7818,7 +7812,7 @@ BOOL HeldToolModel::attach(NpcActor *a, u16 *b, u32 c, u16 d) {
 
 void HeldToolModel::playAnim(u32 a, u32 b, u32 c) {
     using namespace nA;
-    HeldItemModel *r = (HeldItemModel *)((NpcResHandleView *)(&modelHandle))->getHeldItemModel();
+    HeldItemModel *r = (HeldItemModel *)((NpcHeldItemModelHandle *)modelHandle)->getHeldItemModel();
     if (r) HeldItemModel_PlayAnim(r, a, b, c);
 }
 
@@ -7895,11 +7889,11 @@ void HeldToolModel::playPitfallClimbOutAnim(u32 a, u32 b) {
 }
 
 void HeldToolModel::release() {
-    using namespace nA; ((NpcResHandle *)(&modelHandle))->release(); }
+    using namespace nA; ((NpcHeldItemModelHandle *)modelHandle)->release(); }
 
 void HeldToolModel::update(NpcActor *p) {
     using namespace nA;
-    HeldItemModel *r = (HeldItemModel *)((NpcResHandleView *)(&modelHandle))->getHeldItemModel();
+    HeldItemModel *r = (HeldItemModel *)((NpcHeldItemModelHandle *)modelHandle)->getHeldItemModel();
     if (r) {
         u32 v = p->model.frameStep;
         AnimFrameCtrl &s = *(BlendAnimModel *)HeldItemModel_GetModel((u8 *)r);
@@ -7911,7 +7905,7 @@ void HeldToolModel::update(NpcActor *p) {
 void HeldToolModel::draw(NpcActor *p) {
     using namespace nA;
     if (visible != 0) {
-        HeldItemModel *r = (HeldItemModel *)((NpcResHandleView *)(&modelHandle))->getHeldItemModel();
+        HeldItemModel *r = (HeldItemModel *)((NpcHeldItemModelHandle *)modelHandle)->getHeldItemModel();
         if (p) {
             Model_GetJointWorldMtx(&p->model, &handMtx, 0xe);
         }
@@ -7921,27 +7915,27 @@ void HeldToolModel::draw(NpcActor *p) {
 
 u32 HeldToolModel::getAnimSpeed() {
     using namespace nA;
-    HeldItemModel *r = (HeldItemModel *)((NpcResHandleView *)(&modelHandle))->getHeldItemModel();
+    HeldItemModel *r = (HeldItemModel *)((NpcHeldItemModelHandle *)modelHandle)->getHeldItemModel();
     if (r) return r->scale;
     return 0;
 }
 
 void HeldToolModel::setAnimSpeed(u32 v) {
     using namespace nA;
-    HeldItemModel *r = (HeldItemModel *)((NpcResHandleView *)(&modelHandle))->getHeldItemModel();
+    HeldItemModel *r = (HeldItemModel *)((NpcHeldItemModelHandle *)modelHandle)->getHeldItemModel();
     if (r) r->scale = v;
 }
 
 BlendAnimModel *HeldToolModel::getModel() {
     using namespace nA;
-    HeldItemModel *r = (HeldItemModel *)((NpcResHandleView *)(&modelHandle))->getHeldItemModel();
+    HeldItemModel *r = (HeldItemModel *)((NpcHeldItemModelHandle *)modelHandle)->getHeldItemModel();
     if (r) return (BlendAnimModel *)HeldItemModel_GetModel((u8 *)r);
     return 0;
 }
 
 void HeldToolModel::setModelAnimSpeed(u32 v) {
     using namespace nA;
-    HeldItemModel *r = (HeldItemModel *)((NpcResHandleView *)(&modelHandle))->getHeldItemModel();
+    HeldItemModel *r = (HeldItemModel *)((NpcHeldItemModelHandle *)modelHandle)->getHeldItemModel();
     if (r) HeldItemModel_SetAnimSpeed(r, v);
 }
 

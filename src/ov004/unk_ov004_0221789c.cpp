@@ -36,7 +36,7 @@
 #include "room/FtrActorGrid.h"
 #include "game/TouchPicker.h"
 #include "save/VillagerData.h"
-#include "npc/VillagerDataProfileView.h"
+#include "save/VillagerData.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02052b50.h"
