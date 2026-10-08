@@ -123,7 +123,6 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 #define PROTO_LOCAL_PlayerGlassesModelRef_GetModelId  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerHead_GetModelId  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TouchPickResult_GetTarget  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_sHouseRoachActiveCount  // declared below: the shared prototype conflicts with the calls here
@@ -134,6 +133,7 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/itcm/unk_01ffb4e8.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02004558.h"
 #include "proto/main/unk_02004558_extra.h"
 #include "proto/main/unk_0201106c.h"
 #include "proto/main/unk_020119cc.h"
@@ -245,7 +245,6 @@ union PM_02004ce8 {
 namespace nB {
 extern "C" {
 
-void WorldCurve_FromCurved(VecFx32 *dst, VecFx32 *src);
 void MTX_RotX33_(s32 *out, s32 a, s32 b);
 void MTX_RotY33_(s32 *out, s32 a, s32 b);
 void _ZN5Model8setAlphaEj(void *obj, u8 v);
@@ -375,7 +374,6 @@ extern "C" {
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void _ZN14CollisionState9beginStepEv(void *p);
 void _ZN11PlayerActor7setRotXEt(Unk_02007694 *o, u32 a);
-void WorldCurve_FromCurved(VecFx32 *out, VecFx32 *in);
 s32 FX_Div(s32 a, s32 b);
 void MTX_MultVec43(VecFx32 *v, Mtx43 *m, VecFx32 *out);
 void Math_ApproachS32(void *p, s32 a, s32 b, s32 c, s32 d);
@@ -433,7 +431,6 @@ void FishCatch_SetDisplayPosScale(void *, void *, void *);
 void PlayerActor_RequestFishShowCatch(PlayerActor *, u32, u32, s32);
 void PlayerActor_RequestInsectShowCatch(PlayerActor *, u32, u32, u32, u32, s32);
 void PlayerActor_RequestStowItem(PlayerActor *, u32, u32, u32, u32, u32, u32, s32);
-void WorldCurve_FromCurved(void *, void *);
 void PlayerActor_GetHeldItem(void *, PlayerActor *);
 BOOL Item_IsFurniture(void *);
 u32 Item_GetFurnitureIndex(void *);
@@ -960,7 +957,6 @@ BOOL _ZN11PlayerActor14testActionFlagEj(void *, s32 id);
 void _ZN11PlayerActor9setAngleYEPs(void *, u16 *p);
 void _ZN19PlayerActionRequest6assignEiis(void *, u32 a, u32 b, u32 c);
 u32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(void *, PlayerActionRequest *p);
-VecFx32Ctor PlayerActor_OffsetByAngle(void *, VecFx32Ctor *a, s16 *b, void *c);
 BOOL PlayerActor_IsWaitingForSlots(void *);
 void _ZN11PlayerActor15clearActionFlagEj(void *, s32 id);
 BOOL _ZN11PlayerActor15getHeldToolKindEv(void *);
@@ -1035,14 +1031,12 @@ s32 Math_Atan2(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void PlayerActor_OffsetByAngle(VecFx32 *out, PlayerActor *p, VecFx32 *v, s16 *ang, u32 arg);
 s32 _ZN11PlayerActor18updateBodyColliderEv(PlayerActor *p);
 s32 PlayerActor_ApproachAngle(s16 *p, s32 a, s32 b, s32 c, s32 d);
 s32 PlayerActor_GetTan(PlayerActor *p);
 s32 _ZN11CommManager11beginRecordEv(CommManager *g);
 s32 _ZN11CommManager11writeRecordEPhj(CommManager *g, void *p, s32 n);
 s32 _ZN11CommManager9endRecordEjj(CommManager *g, s32 a, s32 b);
-s32 WorldCurve_FromCurved(VecFx32 *v);
 s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 s32 Math_ApproachS32(s32 *p, s32 a, s32 b, s32 c, s32 d);
 void PlayerActor_CalcHandItemPos(VecFx32 *out, PlayerActor *p, void *args);
@@ -1069,7 +1063,6 @@ extern void *gSceneBlockMap;
 extern u32 data_020c6210[];
 s32 func_01ffcb0c(s32 a, s32 b);
 void MTX_MultVec43(VecFx32 *v, Mtx43 *m, VecFx32 *out);
-void WorldCurve_FromCurved(VecFx32 *dst, VecFx32 *src);
 BOOL _ZN11CommManager11isLocalSlotEj(void *a, s32 b);
 BOOL _ZN11PlayerActor14testActionFlagEj(PlayerActor *o, s32 id);
 void _ZN11PlayerActor19requestErrorMessageEhjj(PlayerActor *o, s32 a, s32 b, s32 c);
@@ -1083,7 +1076,6 @@ void Clock_GetDateTime(void *p);
 void MI_CpuCopy8(void *a, void *b, s32 n);
 s32 DateTime_Compare(void *a, void *b, s32 n);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *o, s32 id);
-void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
 void PlayerActor_GetFrontPoint(VecFx32 *out, PlayerActor *o);
 void PlayerActor_StepTowardXZ(PlayerActor *o, s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *a, VecFx32 *v);
@@ -1120,7 +1112,6 @@ void PlayerActor_CalcHandItemPos(VecFx32 *dst, PlayerActor *o, s32 *p);
 void PlayerActor_SetLastPlayDate(PlayerActor *o, s32 a, Unk_0200f17c_Date *d);
 s32 PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b);
 s32 PlayerActor_CompareLastPlayDateNow(void *o);
-void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
 void PlayerActor_GetFrontPoint(VecFx32 *out, PlayerActor *o);
 void PlayerActor_GetFrontUnitCenter(PlayerActor *a, PlayerActor *b);
 void PlayerActor_StepTowardXZ(PlayerActor *o, s32 a, s32 b);
@@ -1169,7 +1160,6 @@ BOOL TalkRequestFlags_IsResetti(void *);
 void TalkRequest_AddTalk(void *, void *);
 BOOL Character_FindInteractionTarget(void *);
 BOOL _ZN9Character16checkInteractionEPS_(void *, void *);
-void PlayerActor_OffsetByAngle(VecFx32 *, void *, void *, void *, void *);
 void _ZN14MatTexVramTask7requestEPvjS0_jj(void *, u32, void *, u32, u32, u32);
 void _ZN16CharaClothTexRef8loadItemEPtiii(void *, s32, void *, u32, u32);
 s32 func_01ffcb0c(s32, s32);
@@ -1520,7 +1510,8 @@ void PlayerActor::readInput() {
     s32 ax, ay, bx, by;
     s32 sp48, sp4c, len;
     VecFx32Ctor p50;
-    VecFx32Ctor r5c = PlayerActor_OffsetByAngle(this, (VecFx32Ctor *)&((PlayerActor *)this)->position, &((PlayerActor *)this)->rotY, data_020d5e50);
+    VecFx32Ctor r5c;
+    PlayerActor_OffsetByAngle(&r5c, this, &((PlayerActor *)this)->position, &((PlayerActor *)this)->rotY, (const s32 *)data_020d5e50);
     VecFx32Ctor p68;
     VecFx32Ctor pv[4];
     BOOL got = FALSE;
@@ -1626,7 +1617,7 @@ void PlayerActor::readInput() {
         ((PlayerActor *)this)->inputRun = 0;
         v10 = 1;
         ((PlayerActor *)this)->actionPressed = 1;
-        r5c = PlayerActor_OffsetByAngle(this, (VecFx32Ctor *)&((PlayerActor *)this)->position, &((PlayerActor *)this)->rotY, data_020d5e34);
+        PlayerActor_OffsetByAngle(&r5c, this, &((PlayerActor *)this)->position, &((PlayerActor *)this)->rotY, (const s32 *)data_020d5e34);
         mode = 2;
     } else {
         s32 fast = 0;
@@ -1725,7 +1716,7 @@ void PlayerActor::readInput() {
                 v10 = 0;
                 if (gPad.b & 2) {
                     v14 = 1;
-                    r5c = PlayerActor_OffsetByAngle(this, (VecFx32Ctor *)&((PlayerActor *)this)->position, &((PlayerActor *)this)->rotY, data_020d5e48);
+                    PlayerActor_OffsetByAngle(&r5c, this, &((PlayerActor *)this)->position, &((PlayerActor *)this)->rotY, (const s32 *)data_020d5e48);
                 }
             }
             keys = gPad.a;
@@ -2508,17 +2499,17 @@ void PlayerActor::drawReady() {
     t.x = a.m[9];
     t.y = a.m[10];
     t.z = a.m[11];
-    WorldCurve_FromCurved((VecFx32 *)&((PlayerActor *)this)->footPosA, &t);
+    WorldCurve_FromCurved(&((PlayerActor *)this)->footPosA, &t);
     Model_GetJointWorldMtx(&((PlayerActor *)this)->bodyModel, &a, 4);
     t.x = a.m[9];
     t.y = a.m[10];
     t.z = a.m[11];
-    WorldCurve_FromCurved((VecFx32 *)&((PlayerActor *)this)->footPosB, &t);
+    WorldCurve_FromCurved(&((PlayerActor *)this)->footPosB, &t);
     Model_GetJointWorldMtx(&((PlayerActor *)this)->bodyModel, &a, 0x10);
     t.x = a.m[9];
     t.y = a.m[10];
     t.z = a.m[11];
-    WorldCurve_FromCurved((VecFx32 *)&((PlayerActor *)this)->headTopPos, &t);
+    WorldCurve_FromCurved(&((PlayerActor *)this)->headTopPos, &t);
     *(Mtx43 *)&((PlayerActor *)this)->headModel0.mtx = ((PlayerActor *)this)->headMtx;
     ((Model *)(&((PlayerActor *)this)->headModel0))->setAlpha(((PlayerActor *)this)->alpha);
     ((Model *)(&((PlayerActor *)this)->headModel0))->drawScaled((s32 *)(0));

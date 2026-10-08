@@ -25,12 +25,12 @@
 #define PROTO_LOCAL_Quat_Normalize  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Quat_ToMtx43  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_Load  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02039c08.h"
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02094810.h"
@@ -111,7 +111,6 @@ s32 Math_ApproachS16Div(s16 *p, s32 a, s32 b, s32 c);
 void Vec_Scale(void *v, s32 ang);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s32 a);
-s32 WorldCurve_ToCurved(void *out, void *in);
 void Quat_Mul(void *a, void *b, void *out);
 void Quat_ToMtx43(void *a, void *out);
 void Quat_Normalize(void *a);
@@ -392,7 +391,7 @@ extern "C" void Snowball_UpdateCarry(Obj *o)
         }
         if (o->collider.isHitByGroup(4) != 0 && o->radius < 0xa00) {
             if (o->hitSeLatch == 0) {
-                Snd_SeEmitterPlayOneShot(o->seEmitter, 0x81c, 0x7f, 0);
+                Snd_SeEmitterPlayOneShot((SndSeEmitter *)o->seEmitter, 0x81c, 0x7f, 0);
             }
             o->hitSeLatch = 1;
         } else {
@@ -416,7 +415,7 @@ extern "C" void Snowball_UpdateRolling(Obj *o)
     Collision_Move(&o->collisionState, &o->position, &o->prevPosition, 0, o->collisionRadius, o, kind);
     u32 cur = o->collisionState.contacts.numContacts;
     if (cur > o->prevContactCount && o->talkAct == 0 && o->snowballState == 0) {
-        Snd_SeEmitterPlayOneShot(o->seEmitter, 0x81d, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot((SndSeEmitter *)o->seEmitter, 0x81d, 0x7f, 0);
     }
     o->prevContactCount = cur;
     u32 fa = 0x20;
@@ -600,7 +599,7 @@ extern "C" BOOL Snowball_TryPush(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s
     outPos->z = pv[1].z;
     o->snowballFlags.e = 1;
     o->pushAngle = h[0];
-    Snd_SeEmitterPlayHeld(o->seEmitter, 0x820, 0x7f, 0);
+    Snd_SeEmitterPlayHeld((SndSeEmitter *)o->seEmitter, 0x820, 0x7f, 0);
     {
         s32 t = FX_Div(o->radius - 0xa00, 0xa00);
         s32 r = func_01ffcb0c(0xc00, 0x1000 - t) + 0x200;

@@ -20,31 +20,27 @@ struct VecFx16 {
 // placeholder copy that declared them was folded into the variant with the same kind of members; constructor
 // overloads a unit does not call change nothing.
 // - VecFx32Ctor: empty default constructor and (x, y, z).
-struct VecFx32Ctor {
-    /* 0x0 */ s32 x, y, z;
+struct VecFx32Ctor : VecFx32 {
     VecFx32Ctor() {}
     VecFx32Ctor(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
 };
 
 // - VecFx32CtorDtor: VecFx32Ctor plus an empty inline destructor.
-struct VecFx32CtorDtor {
-    /* 0x0 */ s32 x, y, z;
+struct VecFx32CtorDtor : VecFx32 {
     VecFx32CtorDtor() {}
     VecFx32CtorDtor(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
     ~VecFx32CtorDtor() {}
 };
 
 // - VecFx32Copy: VecFx32Ctor plus a member-wise inline copy constructor.
-struct VecFx32Copy {
-    /* 0x0 */ s32 x, y, z;
+struct VecFx32Copy : VecFx32 {
     VecFx32Copy() {}
     VecFx32Copy(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
     VecFx32Copy(const VecFx32Copy &o) { x = o.x; y = o.y; z = o.z; }
 };
 
 // - VecFx32CopyDtor: VecFx32Copy plus an empty inline destructor.
-struct VecFx32CopyDtor {
-    /* 0x0 */ s32 x, y, z;
+struct VecFx32CopyDtor : VecFx32 {
     VecFx32CopyDtor() {}
     VecFx32CopyDtor(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
     VecFx32CopyDtor(const VecFx32CopyDtor &o) { x = o.x; y = o.y; z = o.z; }

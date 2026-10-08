@@ -36,14 +36,12 @@
 #define PROTO_LOCAL_ModelSlotHandle_Init  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0203e7d0.h"
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
@@ -201,7 +199,6 @@ TouchPicker *Scene_GetTouchPicker();
 
 s32 TriangleTrigger_Unregister(void *node);
 void TriangleTrigger_Register(void *node);
-s32 WorldCurve_ToCurved(void *out, void *in);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 void Mtx43_RotateX(void *m, s32 a);
 s32 NNS_FndMountArchive(void *buf, char *name, void *data);
@@ -235,7 +232,6 @@ BOOL func_0203e638(void *);
 BOOL func_0203e650(void *);
 void Character_setCharId(void *, u32);
 BOOL Camera_IsBlockingFocusView(void *, s32, s32);
-s32 WorldCurve_Apply(void *, void *);
 void NNS_G3dBindMdlPltt(void *, s32);
 void NNS_G3dBindMdlTex(void *, s32);
 
@@ -245,11 +241,9 @@ void ModelSlotHandle_Init(void *);
 void *func_021065dc(void *p);
 u32 func_021065f8(void *, u32);
 void *NNS_G3dGetMdlSet(void *p);
-void MTX_MultVec43(s32, s32, VecFx32 *);
-void WorldCurve_FromCurved(void *, VecFx32 *);
+void MTX_MultVec43(const VecFx32 *, const Mtx43 *, VecFx32 *);
 void __cxa_vec_cleanup(void *, s32, s32, void (*)(BuildingResources *));
 
-void Building_LocalToWorld(void *p, s32 a, s32 b);
 BOOL _ZN13BuildingActor13setEntryStateEi(void *self, s32 a);
 BOOL Building_IsNight();
 void *BuildingActor_Create();
@@ -312,7 +306,7 @@ extern "C" void *BuildingActor_Create() {
     return new BuildingActor();
 }
 
-extern "C" void Building_LocalToWorld(void *p, s32 a, s32 b) {
+extern "C" void Building_LocalToWorld(VecFx32 *p, const VecFx32 *a, const Mtx43 *b) {
     VecFx32 v;
     MTX_MultVec43(a, b, &v);
     WorldCurve_FromCurved(p, &v);
@@ -423,7 +417,7 @@ BOOL BuildingActor::onCreate() {
     ((Model *)(model))->setInitCallback((s32)((void *)Building_InitModelCallback), (s32)(this));
     b2 = b1;
     createShadows(&b2);
-    s32 ang = WorldCurve_Apply(&v, &position.x);
+    s32 ang = WorldCurve_Apply(&v, &position);
     Mtx43_SetTranslate(&m, v.x, v.y, v.z);
     Mtx43_RotateX(&m, ang);
     createColliders((Mtx43 *)&m);
@@ -905,7 +899,7 @@ void BuildingActor::createShadows(Mtx43 *m) {
                 BuildingShadowEntry *it = e->shadowTable->getEntry(i);
                 VecFx32Ctor v(it->offsetX, zero, it->offsetZ);
                 VecFx32 out;
-                Building_LocalToWorld(&out, (s32)&v, (s32)m);
+                Building_LocalToWorld(&out, &v, m);
                 p->build((VecFx32 *)&out, it->size, it->shift, it->texIndex, it->texLeft, it->texRight, (s32)heap);
             }
         }
@@ -923,7 +917,7 @@ void BuildingActor::updateShadows(Mtx43 *m) {
                 BuildingShadowEntry *it = e->shadowTable->getEntry(i);
                 VecFx32Ctor v(it->offsetX, zero, it->offsetZ);
                 VecFx32 out;
-                Building_LocalToWorld(&out, (s32)&v, (s32)m);
+                Building_LocalToWorld(&out, &v, m);
                 p->draw((VecFx32 *)&out);
             }
         }
@@ -962,9 +956,9 @@ void BuildingActor::createColliders(Mtx43 *m) {
             k = BuildingList_IndexOf(this);
             for (i = 0; i < colliderCount; e4++, e6++, i++) {
                 if (h->getTriangle(&a.x, &b.x, &c.x, i)) {
-                    Building_LocalToWorld(&wa, (s32)&a, (s32)m);
-                    Building_LocalToWorld(&wb, (s32)&b, (s32)m);
-                    Building_LocalToWorld(&wc, (s32)&c, (s32)m);
+                    Building_LocalToWorld(&wa, &a, m);
+                    Building_LocalToWorld(&wb, &b, m);
+                    Building_LocalToWorld(&wc, &c, m);
                     Vec_Add(&la, &position, &a);
                     Vec_Add(&lb, &position, &b);
                     Vec_Add(&lc, &position, &c);
@@ -1836,13 +1830,13 @@ void BuildingSeEmitter::deactivate() {
 
 void BuildingSeEmitter::playSe(u32 a) {
     if (active != 0) {
-        Snd_SeEmitterPlayOneShot(this, a, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot(&emitter, a, 0x7f, 0);
     }
 }
 
 void BuildingSeEmitter::playSeHeld(u32 a) {
     if (active != 0) {
-        Snd_SeEmitterPlayHeld(this, a, 0x7f, 0);
+        Snd_SeEmitterPlayHeld(&emitter, a, 0x7f, 0);
     }
 }
 

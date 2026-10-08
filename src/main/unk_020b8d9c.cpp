@@ -35,7 +35,6 @@
 #define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_CopyTo  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Weather_UpdateDaily  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
@@ -45,6 +44,7 @@
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020027b4.h"
 #include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_020407fc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
@@ -1000,7 +1000,6 @@ extern "C" {
 Mtx43 *Camera_GetViewMatrix(void);
 }
 extern "C" {
-void WorldCurve_Apply(void *out, void *in);
 }
 extern "C" {
 void MTX_MultVec43(void *a, void *b, void *c);
@@ -1272,10 +1271,10 @@ extern "C" void Sky_ProjectToScreenX(s32 *out, VecFx32 *in) {
     v.x = in->x;
     v.y = in->y;
     v.z = in->z;
-    u8 a[12];
+    VecFx32 a;
     s32 b[3];
-    WorldCurve_Apply(a, &v);
-    MTX_MultVec43(a, &data_021f47e0, b);
+    WorldCurve_Apply(&a, &v);
+    MTX_MultVec43(&a, &data_021f47e0, b);
     s32 c = ((Camera *)(gCamera))->getFovTan();
     s32 q = -FX_Div(0x60000, c);
     Vec_Scale(b, FX_Div(q, b[2]));

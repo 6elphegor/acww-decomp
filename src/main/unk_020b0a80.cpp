@@ -505,10 +505,10 @@ extern "C" u32 GroundAttr_ResolveCarpet(u32 a) {
     return a;
 }
 
-extern "C" u32 GroundAttr_GetAtPos(u32 a) {
+extern "C" u32 GroundAttr_GetAtPos(VecFx32 *a) {
     u8 buf[0x40];
     u32 r;
-    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)((void *)a), 0, 0);
+    ((GroundInfo *)(buf))->initAtPos(a, 0, 0);
     r = GroundAttr_ResolveCarpet(*(u32 *)(buf + 0x34));
     GroundInfo_Destruct(buf);
     return r;
@@ -518,8 +518,8 @@ extern "C" u32 Footstep_GetSeForAttr(u32 a) {
     return Footstep_AttrToSe(GroundAttr_ResolveCarpet(a));
 }
 
-extern "C" u32 Footstep_GetSeAtPos(u32 a) {
-    if (Ground_GetExitAtPos((void *)a) != (u32)-1) {
+extern "C" u32 Footstep_GetSeAtPos(VecFx32 *a) {
+    if (Ground_GetExitAtPos(a) != (u32)-1) {
         u32 b = Scene_GetCurrent();
         if (SceneId_IsNookShop(b)) {
             return Footstep_GetSeForAttr(5);

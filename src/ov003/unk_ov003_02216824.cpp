@@ -23,7 +23,7 @@
 #include "item/LetterView.h"
 #include "net/CommManager.h"
 #define PROTO_LOCAL_PlayerData_GetMailbox  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_020b0e60.h"
@@ -60,7 +60,6 @@ BOOL Building_RequestState(void *o, s32 v);
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 Ground_GetDefaultY(s32 a);
 BOOL PlayerActor_LocalRequestMailboxOpen(void *p);
-u32 WorldCurve_ToCurved(void *out, void *in);
 void Mtx43_Translate(void *m, s32 a, s32 b, s32 c);
 PlayerMailbox *PlayerData_GetMailbox(void *p);
 s32 Vec_DistXZ(void *a, void *b);
@@ -246,13 +245,11 @@ u32 Mailbox::isUsable() {
 }
 
 BOOL Mailbox::calcCustomBaseMatrix(Mtx43 *a) {
-    struct {
-        s32 a, b, c;
-    } v;
+    VecFx32 v;
     s32 z = position.z - 0x1000;
-    v.a = position.x + 0x2000;
-    v.b = 0;
-    v.c = z;
+    v.x = position.x + 0x2000;
+    v.y = 0;
+    v.z = z;
     drawTilt = WorldCurve_ToCurved(&drawPos, &v);
     makeCurvedMatrix((Mtx43 *)a);
     *(Mtx43 *)data_021f47e0 = *(Mtx43 *)a;

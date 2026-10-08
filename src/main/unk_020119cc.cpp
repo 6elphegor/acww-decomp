@@ -235,7 +235,6 @@ struct Unk_020133cc_Vec {
     s32 x;
     s32 y;
     s32 z;
-    s32 Footstep_GetSeAtPos();
 };
 
 // unk_020131a4.cpp
@@ -1234,7 +1233,7 @@ extern "C" void NpcActor_OnJointCalc(NNSG3dRS *self) {
             s32 r;
             va = *pv;
             vb = *pv;
-            r = WorldCurve_Apply((WorldCurve *)&va, (WorldCurve *)&vb);
+            r = WorldCurve_Apply(&va, &vb);
             pv->z = va.z;
             pv->y = va.y - WorldCurve_GetRadius();
             if (r != 0) {
@@ -1629,7 +1628,7 @@ BOOL NpcActor::preCreate() {
     talkLockHeld = 0;
     MI_CpuFill8(netUserBytes, 0, 4);
     ((SndSeEmitter *)(&seEmitter))->callInitAlt();
-    emotionFx.seEmitter = (s32)&seEmitter;
+    emotionFx.seEmitter = &seEmitter;
     ((NpcFootstepFx *)(&footstepFx))->resetFootsteps();
     collisionEnabled = 1;
     shadowEnabled = 1;
@@ -1754,7 +1753,7 @@ BOOL NpcActor::onExecute() {
     ((NpcLookAt *)(&lookAt))->update((NpcActor *)(this));
     ((NpcObstacleProbe *)(&obstacleProbe))->clear();
     ((NpcObstacleProbe *)(&obstacleProbe))->probe((Character *)(this));
-    drawTilt = WorldCurve_ToCurved((WorldCurve *)&drawPos, (WorldCurve *)&position);
+    drawTilt = WorldCurve_ToCurved(&drawPos, &position);
     ((Actor *)(this))->calcModelMatrix(&t);
     (*(Mtx43 *)&model.mtx) = t;
     if (netIsTalkLocked()) {
@@ -1825,13 +1824,13 @@ BOOL NpcActor::onDraw() {
     Model_GetJointWorldMtx(&model, &jointMtx, 0xb);
     Model_GetJointWorldMtx(&model, &buf, 0x10);
     t0 = *(VecFx32 *)&buf.m[9];
-    WorldCurve_FromCurved((WorldCurve *)&jointPos[0], (WorldCurve *)&t0);
+    WorldCurve_FromCurved(&jointPos[0], &t0);
     Model_GetJointWorldMtx(&model, &buf, 0x7);
     t1 = *(VecFx32 *)&buf.m[9];
-    WorldCurve_FromCurved((WorldCurve *)&jointPos[1], (WorldCurve *)&t1);
+    WorldCurve_FromCurved(&jointPos[1], &t1);
     Model_GetJointWorldMtx(&model, &buf, 0x4);
     t2 = *(VecFx32 *)&buf.m[9];
-    WorldCurve_FromCurved((WorldCurve *)&jointPos[2], (WorldCurve *)&t2);
+    WorldCurve_FromCurved(&jointPos[2], &t2);
     if (shadowEnabled != 0) {
         CharaShadow_Draw(&position, 0xb00, 0x4000, 0x1000);
     }
@@ -1864,7 +1863,7 @@ BOOL NpcActor::getHeldItemPos(VecFx32 *out) {
     out->x = a;
     out->y = jointMtx.m[10];
     out->z = jointMtx.m[11];
-    WorldCurve_FromCurved((WorldCurve *)out, (WorldCurve *)out);
+    WorldCurve_FromCurved(out, out);
     return TRUE;
 }
 
@@ -2423,7 +2422,7 @@ extern "C" s32 NpcLookAt_GetHeadPos(NpcLookAt *self, VecFx32 *out) {
         out->x = x;
         out->y = self->headPos.y;
         out->z = self->headPos.z;
-        WorldCurve_FromCurved((WorldCurve *)out, (WorldCurve *)out);
+        WorldCurve_FromCurved(out, out);
         r = 1;
     }
     return r;
@@ -4338,13 +4337,13 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep03EP12Unk_02006d14(NpcActionCtrl *s
 namespace nK {
 extern "C" void _ZN13NpcActionCtrl11act0EStep04EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
     s16 t;
-    s32 v[3];
+    VecFx32 v;
     if (((NpcAnimCtrl *)(&c->animCtrl))->isAnimFinished((NpcActor *)(c))) {
         switch (HandOverItem_GetNextMode()) {
         case 6:
             HandOverItem_End(c);
             _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x28, data_020c6cc8, 1, 0x1000, 0, 0);
-            Effect_PlayById2(0x61, HOST_AT(c, 0x5c, position.x, 0), 0, 0);
+            Effect_PlayById2(0x61, &c->position, 0, 0);
             Snd_SeEmitterPlayOneShotAlt(&c->seEmitter, 0x76, 0x7f, 0);
             s->actStep = 6;
             break;
@@ -4372,12 +4371,12 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep04EP12Unk_02006d14(NpcActionCtrl *s
             break;
         case 11:
             if (HandOverItem_RequestMode(11, c)) {
-                v[0] = c->jointPos[0].x;
-                v[1] = c->jointPos[0].y;
-                v[2] = c->jointPos[0].z;
+                v.x = c->jointPos[0].x;
+                v.y = c->jointPos[0].y;
+                v.z = c->jointPos[0].z;
                 t = c->rotY;
                 _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x29, data_020c6cc8, 1, 0x1000, 0, 0);
-                s->itemEffect = Effect_Create(0x40, v, &t, 0);
+                s->itemEffect = Effect_Create(0x40, &v, &t, 0);
                 s->actStep = 0xb;
             }
             break;
@@ -4429,12 +4428,12 @@ extern "C" BOOL _ZN13NpcActionCtrl15waitItemAnimEndEP12Unk_02006d14Ptjj(NpcActio
                 c->setShirt((u16 *)p, b);
                 break;
             case 0xd:
-                Effect_Create(0x22, HOST_AT(c, 0x5c, position.x, 0), 0, 0);
+                Effect_Create(0x22, &c->position, 0, 0);
                 break;
             case 3: {
                 s16 t = c->rotY;
-                Effect_Create(0x28, HOST_AT(c, 0x490, jointPos[2].x, 0), &t, 0);
-                Effect_Create(0x28, HOST_AT(c, 0x484, jointPos[1].x, 0), &t, 0);
+                Effect_Create(0x28, &c->jointPos[2], &t, 0);
+                Effect_Create(0x28, &c->jointPos[1], &t, 0);
                 break;
             }
             }
@@ -4672,7 +4671,7 @@ BOOL NpcActionCtrl::setupAct0F(Unk_02006d14 *o) {
         HandOverItem_End((Character *)o);
     }
     _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0x28, data_020c6cc8, 1, 0x1000, 0, 0);
-    Effect_PlayById2(0x61, &o->position, 0, 0);
+    Effect_PlayById2(0x61, (VecFx32 *)&o->position, 0, 0);
     Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x76, 0x7f, 0);
     ((NpcActionCtrl *)(this))->setActionDone(0);
     netAction = 0x14;
@@ -4817,15 +4816,15 @@ void NpcActionCtrl::mainAct12(Unk_02006d14 *o) {
 
 BOOL NpcActionCtrl::setupAct13(Unk_02006d14 *o) {
     using namespace nJ;
-    s32 v[3];
+    VecFx32 v;
     s16 ang;
-    v[0] = o->headTopPos.x;
-    v[1] = o->headTopPos.y;
-    v[2] = o->headTopPos.z;
+    v.x = o->headTopPos.x;
+    v.y = o->headTopPos.y;
+    v.z = o->headTopPos.z;
     ang = o->rotY;
     HandOverItem_RequestMode(0xb, (Character *)o);
     _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0x29, data_020c6cc8, 1, 0x1000, 0, 0);
-    itemEffect = Effect_Create(0x40, v, &ang, 0);
+    itemEffect = Effect_Create(0x40, &v, &ang, 0);
     Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x6f, 0x7f, 0);
     ((NpcActionCtrl *)(this))->setActionDone(0);
     return TRUE;
@@ -4886,7 +4885,7 @@ BOOL NpcActionCtrl::setupAct14(Unk_02006d14 *o) {
     if (o->curHeldTool) {
         ((HeldToolModel *)(o->curHeldTool))->playIdleAnim(t, 0);
     }
-    Effect_PlayById2(0x61, &o->position, 0, 0);
+    Effect_PlayById2(0x61, (VecFx32 *)&o->position, 0, 0);
     Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x76, 0x7f, 0);
     ((NpcActionCtrl *)(this))->setActionDone(0);
     return TRUE;
@@ -7449,20 +7448,20 @@ void NpcFootstepFx::updateFootsteps(NpcActor* p) {
         Unk_02013474_Half h;
         h.a = p->rotY;
         if (prevMoveMode == 0) {
-            Effect_Create(0x28, &p->jointPos[2], &h, 0);
-            Effect_Create(0x28, &p->jointPos[1], &h, 0);
+            Effect_Create(0x28, &p->jointPos[2], &h.a, 0);
+            Effect_Create(0x28, &p->jointPos[1], &h.a, 0);
         } else {
             BOOL r4 = ((AnimFrameCtrl *)(&(AnimFrameCtrl &)p->model))->hasPassedFrame(1);
             BOOL r0 = ((AnimFrameCtrl *)(&(AnimFrameCtrl &)p->model))->hasPassedFrame(9);
             if (r4 != 0 || r0 != 0) {
-                Unk_020133cc_Vec v;
+                VecFx32 v;
                 v.x = (r4 ? &p->jointPos[2] : &p->jointPos[1])->x;
                 v.y = (r4 ? &p->jointPos[2] : &p->jointPos[1])->y;
                 v.z = (r4 ? &p->jointPos[2] : &p->jointPos[1])->z;
                 h.b = p->rotY + 0x8000;
                 v.y = p->position.y;
                 if (st == 2) Effect_Create(0, &v, &h.b, 0);
-                Effect_Create(0x28, &v, &h, 0);
+                Effect_Create(0x28, &v, &h.a, 0);
                 playFootstepSe(p);
             }
         }

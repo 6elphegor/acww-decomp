@@ -7,6 +7,7 @@
 struct EffectSplPool;
 #ifdef __cplusplus
 #include "gfx/EffectSplEmitter.h"
+#include "gfx/VecFx32.h"
 #include "types.h"
 #include "uptr.h"
 class EffectModel;
@@ -50,16 +51,16 @@ void EffectCb_InitAtPos(EffectEmitterEntry *e);
 s32 EffectCb_UpdateTint(EffectEmitterEntry *e);
 #endif
 #ifndef PROTO_LOCAL_EffectSpl_CreateOneShot
-s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, void (**p3)(EffectSplEmitter *));
+s32 EffectSpl_CreateOneShot(s32 idx, VecFx32 *p1, s16 *p2, void (*const *p3)(EffectSplEmitter *));
 #endif
 #ifndef PROTO_LOCAL_EffectSpl_CreateTracked
-s32 EffectSpl_CreateTracked(s32 idx, s32 p1, s16 *p2, EffectEmitterCbs *p3);
+s32 EffectSpl_CreateTracked(s32 idx, VecFx32 *p1, s16 *p2, EffectEmitterCbs *p3);
 #endif
 #ifndef PROTO_LOCAL_EffectModel_Start
 void EffectModel_Start(s32 a, void (*b)(EffectModel *));
 #endif
 #ifndef PROTO_LOCAL_EffectSplEntry_Start
-s32 EffectSplEntry_Start(EffectEmitterEntry *e, s32 id, s32 a2, s32 a3, EffectEmitterCbs *cb, EffectEmitterTag tag);
+s32 EffectSplEntry_Start(EffectEmitterEntry *e, s32 id, VecFx32 *a2, s16 *a3, EffectEmitterCbs *cb, EffectEmitterTag tag);
 #endif
 #ifndef PROTO_LOCAL_EffectSplEntry_Release
 void EffectSplEntry_Release(EffectEmitterEntry *e);
@@ -68,7 +69,7 @@ void EffectSplEntry_Release(EffectEmitterEntry *e);
 EffectEmitterEntry *EffectSplPool_FindInactive(EffectSplPool *p, s32 id);
 #endif
 #ifndef PROTO_LOCAL_EffectSplPool_Alloc
-EffectEmitterEntry *EffectSplPool_Alloc(EffectSplPool *p, s32 id, s32 a2, s32 a3, EffectEmitterCbs *cb, u32 b, u32 c);
+EffectEmitterEntry *EffectSplPool_Alloc(EffectSplPool *p, s32 id, VecFx32 *a2, s16 *a3, EffectEmitterCbs *cb, u32 b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_EffectModels_LoadAll
 void EffectModels_LoadAll(EffectModelGroup *b);

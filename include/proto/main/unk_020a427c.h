@@ -29,9 +29,6 @@ void NetArea_SendStateToNewOwner();
 #ifndef PROTO_LOCAL_NetArea_SendStateToRequester
 void NetArea_SendStateToRequester();
 #endif
-#ifndef PROTO_LOCAL_NetSession_GetCtrl07Received
-void NetSession_GetCtrl07Received();
-#endif
 #ifndef PROTO_LOCAL_NetSession_Init
 void NetSession_Init();
 #endif
@@ -151,6 +148,9 @@ void NetArea_GetSlotStatus(s32 idx, u8 *a, u8 *b, u8 *c);
 #endif
 #ifndef PROTO_LOCAL_NetSession_SetCtrl07Received
 void NetSession_SetCtrl07Received(s32 a);
+#endif
+#ifndef PROTO_LOCAL_NetSession_GetCtrl07Received
+u8 NetSession_GetCtrl07Received();
 #endif
 #ifndef PROTO_LOCAL_NetArea_IsUnsharedScene
 BOOL NetArea_IsUnsharedScene(s32 v);

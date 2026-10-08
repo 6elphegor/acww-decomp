@@ -15,10 +15,9 @@
 #include "gfx/Model.h"
 #include "sys/Heap.h"
 #define PROTO_LOCAL_FishBobber_Draw  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gFishBobberHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_0205ef08.h"
 #include "proto/main/unk_0205f284.h"
@@ -88,8 +87,6 @@ void VEC_Subtract(VecFx32 *a, VecFx32 *b, VecFx32 *out);
 s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 void Vec_ShiftRight(VecFx32 *v, s32 n);
 void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
-void WorldCurve_FromCurved(void *p, VecFx32 *v);
-void WorldCurve_ToCurved(VecFx32 *a, VecFx32 *b);
 }
 
 
@@ -581,7 +578,7 @@ extern "C" void FishBobber_Draw(u8 *self, Mtx43 *m, s32 arg)
             v.x = mt.m[9];
             v.y = mt.m[10];
             v.z = mt.m[11];
-            WorldCurve_FromCurved(self + 8, &v);
+            WorldCurve_FromCurved(&((FishBobber *)self)->pos, &v);
         } else {
             v.x = *(s32 *)(self + 8);
             v.y = *(s32 *)(self + 12);
@@ -674,7 +671,7 @@ void FishBobberStates::updateCast()
 
 void FishBobberStates::updateFloat()
 {
-    u16 ang;
+    s16 ang;
     VecFx32 base;
     GroundInfo o;
     VecFx32 v, w;
@@ -722,7 +719,7 @@ void FishBobberStates::updateFloat()
             v.z = pos.z;
             v.y = o.waterSurfaceY;
             if (effect == -1) {
-                effect = Effect_Create(0xe, &v, (u32)&ang, 0);
+                effect = Effect_Create(0xe, &v, &ang, 0);
             } else {
                 Effect_SetPosition(effect, &v, &ang, 0);
             }

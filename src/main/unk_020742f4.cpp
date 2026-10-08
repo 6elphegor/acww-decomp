@@ -3029,12 +3029,12 @@ extern "C" BOOL CommSend_Chunked(u8 *p, void *data, u32 size, u32 type, u32 mask
     if (*p >= cnt) return TRUE;
     return FALSE;
 }
-extern "C" void CommSend_TownChunk(u8 *p, u32 v) {
+extern "C" BOOL CommSend_TownChunk(u8 *p, u32 v) {
     TownCompressBuffer *d = SaveManager_GetTownCompressBuf();
     u32 n = d->getSize();
     u32 sz;
     if (n == 0) sz = 0x15fe4; else sz = n + 4;
-    CommSend_Chunked(p, d, sz, 1, v);
+    return CommSend_Chunked(p, d, sz, 1, v);
 }
 extern "C" BOOL CommSend_VillagerTransfer(u8 *p) {
     void *d = TownExchange_GetForAid(4);
@@ -3104,8 +3104,8 @@ fail:
 extern "C" BOOL CommSend_PlayerData(u8 *p, u32 v) {
     return CommSend_Chunked(p, (void *)PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot)), 0x228c, 4, v);
 }
-extern "C" void CommSend_SyncVarChunk(u8 *p, u32 v) {
-    CommSend_Chunked(p, _ZN11CommManager13getSyncVarBufEv(gCommManager), 0x68c, 0xc, v);
+extern "C" BOOL CommSend_SyncVarChunk(u8 *p, u32 v) {
+    return CommSend_Chunked(p, _ZN11CommManager13getSyncVarBufEv(gCommManager), 0x68c, 0xc, v);
 }
 extern "C" BOOL CommSend_BuiltPacket(u32 a) {
     _Z20NetOverlay_AssertAnyv();

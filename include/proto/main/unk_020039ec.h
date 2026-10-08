@@ -4,9 +4,12 @@
 // Prototypes of the functions defined in src/main/unk_020039ec.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "proto/autoload_2/unk_020f4a5c.h"
+#include "snd/SndBgmViews.h"
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
 #include "snd/SndSceneBase.h"
+#include "snd/SndSeEmitter.h"
 #include "types.h"
 #endif
 
@@ -88,9 +91,6 @@ void Snd_MelodyStartTrackA(void *c);
 #ifndef PROTO_LOCAL_Snd_BgmSyncRelease
 void Snd_BgmSyncRelease(void *r);
 #endif
-#ifndef PROTO_LOCAL_Snd_BgmSyncReadBeat
-void Snd_BgmSyncReadBeat();
-#endif
 #ifndef PROTO_LOCAL_Snd_MelodyBeatInit
 void Snd_MelodyBeatInit(void *s);
 #endif
@@ -146,16 +146,16 @@ void Snd_PlayAuxSe(u32 a);
 void Snd_PlayAuxSeHeld(u32 a);
 #endif
 #ifndef PROTO_LOCAL_Snd_SeEmitterPlayOneShot
-void Snd_SeEmitterPlayOneShot(u32 a, u32 b, u32 c, u32 d);
+void Snd_SeEmitterPlayOneShot(SndSeEmitter *a, u32 b, u32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_Snd_SeEmitterPlayHeld
-void Snd_SeEmitterPlayHeld(u32 a, u32 b, u32 c, u32 d);
+void Snd_SeEmitterPlayHeld(SndSeEmitter *a, u32 b, u32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_Snd_SeEmitterPlayAlternate
 void Snd_SeEmitterPlayAlternate(void *e, u16 s);
 #endif
 #ifndef PROTO_LOCAL_Snd_SeEmitterPlayOneShotAlt
-void Snd_SeEmitterPlayOneShotAlt(u32 a, u32 b, u32 c, u32 d);
+void Snd_SeEmitterPlayOneShotAlt(SndSeEmitter *a, u32 b, u32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_Snd_PosNodePlay
 void Snd_PosNodePlay(u32 a, u32 b, VecFx32 *v);
@@ -233,10 +233,13 @@ void Snd_BgmSyncInit(void *r, u16 v);
 void Snd_BgmSyncSetState(void *r, u32 mode);
 #endif
 #ifndef PROTO_LOCAL_Snd_BgmSyncUpdate
-s32 Snd_BgmSyncUpdate(u32 a, VecFx32 *v);
+s32 Snd_BgmSyncUpdate(Rb *a, VecFx32 *v);
 #endif
 #ifndef PROTO_LOCAL_Snd_BgmSyncSetStartBeat
 void Snd_BgmSyncSetStartBeat(void *r, s8 v);
+#endif
+#ifndef PROTO_LOCAL_Snd_BgmSyncReadBeat
+u32 Snd_BgmSyncReadBeat();
 #endif
 #ifndef PROTO_LOCAL_Snd_BgmSyncPollStarted
 s32 Snd_BgmSyncPollStarted(void *r);
@@ -245,7 +248,7 @@ s32 Snd_BgmSyncPollStarted(void *r);
 void Snd_MelodyBeatStart(void *s, u16 id);
 #endif
 #ifndef PROTO_LOCAL_Snd_MelodyBeatUpdate
-void Snd_MelodyBeatUpdate(u32 a, VecFx32 *v);
+void Snd_MelodyBeatUpdate(Seq1 *a, VecFx32 *v);
 #endif
 }
 #ifndef PROTO_LOCAL_gSndScene

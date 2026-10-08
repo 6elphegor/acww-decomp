@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "gfx/VecFx32.h"
 #include "town/BuildingActor.h"
 #include "types.h"
 class HouseLightUpDeco;
@@ -100,10 +101,10 @@ u32 Field_GetDoorExitMode();
 void Field_SetDoorExitMode(u32 v);
 #endif
 #ifndef PROTO_LOCAL_Building_OpenDoorForEntryAt
-s32 Building_OpenDoorForEntryAt(s32 a);
+s32 Building_OpenDoorForEntryAt(VecFx32 *a);
 #endif
 #ifndef PROTO_LOCAL_Building_OpenDoorForExitAt
-s32 Building_OpenDoorForExitAt(s32 a);
+s32 Building_OpenDoorForExitAt(VecFx32 *a);
 #endif
 #ifndef PROTO_LOCAL_VillagerHouse_TryOpenDoorForEntry
 s32 VillagerHouse_TryOpenDoorForEntry(s32 a);
@@ -112,7 +113,7 @@ s32 VillagerHouse_TryOpenDoorForEntry(s32 a);
 s32 VillagerHouse_TryOpenDoorForExit(s32 a);
 #endif
 #ifndef PROTO_LOCAL_Building_FindNearPos
-void *Building_FindNearPos(s32 a);
+void *Building_FindNearPos(VecFx32 *a);
 #endif
 #ifndef PROTO_LOCAL_BuildingList_Add
 s32 BuildingList_Add(void *p);

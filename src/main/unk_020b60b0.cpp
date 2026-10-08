@@ -15,8 +15,6 @@
 #include "game/CollisionTriangle.h"
 #include "game/GroundInfo.h"
 #include "game/GroundInfoBase.h"
-#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_020027b4.h"
 #include "proto/main/unk_0203ecec.h"
@@ -64,7 +62,6 @@ void MTX_Inverse43(Mtx43 *a, Mtx43 *b);
 void MTX_MultVec43(VecFx32 *v, Mtx43 *m, VecFx32 *out);
 void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 void Vec_RotateY(VecFx32 *v, s32 angle);
-void WorldCurve_Apply(VecFx32 *out, VecFx32 *in);
 s32 Collision_CalcTriangleNormal(Plane *p, VecFx32 *a, VecFx32 *b, VecFx32 *c);
 BOOL _ZN17CollisionTriangle3setEP15Unk_0202f2ac_V3S1_S1_S1_(TouchPickTriangle *t, VecFx32 *a, VecFx32 *b, VecFx32 *c, Plane *p);
 }
@@ -269,7 +266,6 @@ void GroundInfo_Destruct(Unk_020b60dc_Cell *x);
 void TouchPick_CalcRay(Basis *out, s32 a, s32 b);
 BOOL TouchPick_HitCylinder(VecFx32 *out, VecFx32 *in, void *node, s32 a, s32 b);
 BOOL TouchPick_GetGroundPos(void *obj, VecFx32 *out);
-void WorldCurve_FromCurved(VecFx32 *out, VecFx32 *in);
 void *_ZN6Camera16getEyeCurveAngleEv(void *cam);
 void Mtx43_SetRotX(Mtx43 *m, void *p);
 void Mtx43_Translate(Mtx43 *m, s32 a, s32 b, s32 c);

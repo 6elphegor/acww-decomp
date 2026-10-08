@@ -214,9 +214,6 @@ class FieldVillager;
 class FieldVillagerAi;
 
 
-struct Unk_ov068_0225f858_Vec {
-    s32 a, b, c;
-};
 
 
 typedef BOOL (FieldVillager::*Unk_ov068_0226fb80_Fn)();
@@ -5228,7 +5225,7 @@ void FieldVillagerAiPlayerStates::approachStep0(FieldVillager *o) {
             h = *(s16 *)(HOST_AT(o, 0x8e, rotY, 0));
             FieldVillagerApproachFx *e = &sApproachAnimFx[Random_GlobalBelow(2)];
             Effect_Create(e->effectId, &v, &h, 0);
-            Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), e->seIndex + 0x84, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, e->seIndex + 0x84, 0x7f, 0);
         }
     } else {
         FieldVillagerAi_ChangeState(this, o, 0);
@@ -5577,7 +5574,7 @@ BOOL FieldVillagerAiTakeOut::enterTakeOutItem(FieldVillager *o) {
         step = 0;
     }
     ((VillagerActor *)(o))->setFlag834();
-    Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), 0x4f, 0x7f, 0);
+    Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x4f, 0x7f, 0);
     ((VillagerMood *)(HOST_AT(o, 0x838, mood.pad_00[0], 0)))->disableEffects();
     return TRUE;
 }
@@ -5617,7 +5614,7 @@ void FieldVillagerAiTakeOut::takeOutItemStep1(FieldVillager *o) {
             }
         } else if (((*(u32 *)(HOST_AT(o, 0x190, model.curFrame, 0)) << 4) >> 16) == 7) {
             *(HOST_AT(o, 0x9ec, heldTool.visible, 0)) = 1;
-            Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), 0x857, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x857, 0x7f, 0);
         }
     }
 }
@@ -5653,7 +5650,7 @@ BOOL FieldVillagerAiPutAway::enterPutAwayItem(FieldVillager *o) {
             ((AnimFrameCtrl *)((u8 *)p + 0x9c))->setup(bits, 3, 0x1000, (u16)(bits - 1));
         }
         ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->setAnimSpeed(0x1000);
-        Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), 0x858, 0x7f, 0);
+        Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x858, 0x7f, 0);
         step = 1;
     } else {
         u16 w = data_020c6cc8;
@@ -5664,7 +5661,7 @@ BOOL FieldVillagerAiPutAway::enterPutAwayItem(FieldVillager *o) {
         step = 0;
     }
     ((VillagerActor *)(o))->setFlag834();
-    Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), 0x4f, 0x7f, 0);
+    Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x4f, 0x7f, 0);
     pos[1] = 0xfff1;
     ((VillagerTalk *)(o))->setSpeakerStateUnk(&pos[1]);
     ((VillagerMood *)(HOST_AT(o, 0x838, mood.pad_00[0], 0)))->disableEffects();
@@ -5736,7 +5733,7 @@ BOOL FieldVillagerAiStates::enterPitfall(FieldVillager *o) {
     *(u32 *)(HOST_AT(o, 0x4e8, collider.groups, 0)) |= 2;
     ((VillagerActor *)(o))->setFlag834();
     ((NpcFootstepFx *)(HOST_AT(o, 0x558, footstepFx.footstepsEnabled, 0)))->disableFootsteps();
-    Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), 0x7ee, 0x7f, 0);
+    Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x7ee, 0x7f, 0);
     ((VillagerMood *)(HOST_AT(o, 0x838, mood.pad_00[0], 0)))->disableEffects();
     return TRUE;
 }
@@ -5828,7 +5825,7 @@ void FieldVillagerAiStates::pitfallStep1(FieldVillager *o) {
             } else {
                 Effect_PlayById(0x8e, &v, 0, 0);
             }
-            Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), 0x7e8, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x7e8, 0x7f, 0);
             ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->playPitfallHoleAnim(t, 1);
             ((NpcAnimCtrl *)(HOST_AT(o, 0x334, animCtrl.unk_00[0], 0)))->playHoldItemPose((NpcActor *)(o), (u16 *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)), (void *)(0x128), 3);
             step = 2;
@@ -5908,7 +5905,7 @@ void FieldVillagerAiStates::pitfallStep3(FieldVillager *o) {
             } else {
                 Effect_PlayById(0x90, &v, 0, 0);
             }
-            Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), 0x7e9, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x7e9, 0x7f, 0);
             step = 4;
             GroundInfo_Destruct(obj);
         } else {
@@ -5996,7 +5993,7 @@ BOOL FieldVillagerAiStates::enterPitfallClimbOut(FieldVillager *o) {
     } else {
         Effect_PlayById(0x90, &v, 0, 0);
     }
-    Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), 0x7e9, 0x7f, 0);
+    Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x7e9, 0x7f, 0);
     ((VillagerMood *)(HOST_AT(o, 0x838, mood.pad_00[0], 0)))->disableEffects();
     GroundInfo_Destruct(obj);
     return TRUE;
@@ -6530,7 +6527,7 @@ void FieldVillagerFxTimer::clear() {
 
 void FieldVillagerFxTimer::update(FieldVillager *o) {
     using namespace ns_0225f1a0;
-    Unk_ov068_0225f858_Vec buf;
+    VecFx32 buf;
     if (fleaEffectTimer > 0) {
         fleaEffectTimer = fleaEffectTimer - 1;
     }
@@ -6538,9 +6535,9 @@ void FieldVillagerFxTimer::update(FieldVillager *o) {
         holdCount = holdCount - 1;
     }
     if (fleaEffectTimer == 0) {
-        buf.a = o->jointPos[0].x;
-        buf.b = o->jointPos[0].y;
-        buf.c = o->jointPos[0].z;
+        buf.x = o->jointPos[0].x;
+        buf.y = o->jointPos[0].y;
+        buf.z = o->jointPos[0].z;
         Effect_PlayById(0x81, &buf, 0, 0);
         if (Villager_HasFlea(o->villagerData)) {
             fleaEffectTimer = Random_GlobalBelow(0xf) + 0xf;

@@ -1,6 +1,5 @@
 #include "types.h"
 #define PROTO_LOCAL_Melody_SaveDefaultPattern  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Snd_MelodyGetDefaultPattern  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gMelodyPlayer  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0206d988.h"
@@ -10,7 +9,6 @@ extern u8 gSaveTownTune[];
 // The melody state word (.data 0x020ddf8c): -1 at start, Melody_Init sets it back to -1; ov143 reads it.
 s32 data_020ddf8c = -1;
 
-u8 *Snd_MelodyGetDefaultPattern(void *);
 s64 func_02133540(u32, u32, u32);
 void Melody_SaveDefaultPattern();
 }
@@ -103,7 +101,7 @@ void Melody_SaveRandomPattern() {
 }
 
 void Melody_SaveDefaultPattern() {
-    u8 *p = Snd_MelodyGetDefaultPattern(&gMelodyPlayer);
+    u8 *p = Snd_MelodyGetDefaultPattern();
     if (p) {
         Melody_Pack((u32 *)gSaveTownTune, p);
     }

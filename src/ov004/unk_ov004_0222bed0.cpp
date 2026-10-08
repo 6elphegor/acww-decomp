@@ -11,8 +11,8 @@
 #include "snd/SndSeEmitter.h"
 #define PROTO_LOCAL_FtrMgr_GetSurfaceHeightAtPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ItemDropList_Draw  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/ov004/unk_ov004_0222bed0.h"
 #include "proto/ov004/unk_ov004_02233074.h"
@@ -95,7 +95,6 @@ void FieldPos_SnapToUnitCenter(void *a, void *b);
 u16 *BlockMap_GetItemPtrAtPos(void *g, void *v, s32 z);
 s32 FtrMgr_GetSurfaceHeightAtPos(void *p);
 s32 Item_GetInfoUnk07(u16 *p);
-u32 WorldCurve_ToCurved(void *a, void *b);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 void Mtx43_RotateX(void *m, s32 a);
 void Mtx43_RotateXYZ(void *m, s32 x, s32 y, s32 z);
@@ -172,9 +171,9 @@ void RoomItemIcons::drawIconModel(Model *model, Mtx43 m) {
 Model *RoomItemIcons::setupIconModel(u32 idx, const VecFx32Copy &pos, const VecFx32Copy &scale, s16 rx, s16 ry, s16 rz) {
     Model *model = (Model *)iconModels[idx];
     Mtx43 m;
-    s32 t[3];
-    u32 r = WorldCurve_ToCurved(t, (void *)&pos);
-    Mtx43_SetTranslate(data_021f47e0, t[0], t[1], t[2]);
+    VecFx32 t;
+    u32 r = WorldCurve_ToCurved(&t, &pos);
+    Mtx43_SetTranslate(data_021f47e0, t.x, t.y, t.z);
     Mtx43_RotateX(data_021f47e0, r);
     Mtx43_RotateXYZ(data_021f47e0, rx, ry, rz);
     Mtx43_Scale(data_021f47e0, scale.x, scale.y, scale.z);
@@ -393,7 +392,7 @@ extern "C" void ItemDrop_SetTrajectory(RoomItemDrop *e, Unk_ov004_0222bf34_P2 *p
     zero:
         e->unk_8e = 0;
     } else {
-        Snd_SeEmitterPlayOneShot(e->seEmitter, 0x75, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot((SndSeEmitter *)e->seEmitter, 0x75, 0x7f, 0);
     }
 }
 
@@ -411,7 +410,7 @@ extern "C" void ItemDrop_Update(RoomItemDrop *e) {
             u16 v1 = id;
             u16 v2 = id;
             if (v2 >= 0x1492 && v1 <= 0x14fd) in = TRUE;
-            if (in) Snd_SeEmitterPlayOneShot(e->seEmitter, 0x70, 0x7f, 0);
+            if (in) Snd_SeEmitterPlayOneShot((SndSeEmitter *)e->seEmitter, 0x70, 0x7f, 0);
         }
         e->pos.y = e->landPos.y;
         if (e->bounceCount == 0) {

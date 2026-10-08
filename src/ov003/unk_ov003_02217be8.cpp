@@ -28,7 +28,6 @@
 #define PROTO_LOCAL_FieldGround_ReleaseBackdrop  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FieldGround_ReleaseEnvChannel  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FieldGround_ResetEnvChannel  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_data_021ce63c  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_02036c58.h"
@@ -156,7 +155,6 @@ void *BgModelCache_getAcre(void *self, s32 i);
 s32 MapBlockAcre_getAcreId(void *self);
 s32 Camera_getEyeCurveAngle(void *self);
 void Camera_GetLookAtBlock(void *, s32 *, s32 *);
-s16 WorldCurve_ToCurved(VecFx32Ctor *out, VecFx32Ctor *v);
 void FieldUnit_FromBlockUnit(s32 *, s32 *, s32, s32, s32, s32);
 s32 Ground_GetSpecialPieceKind(s32, s32);
 void FieldPos_FromBlockUnitCenter(VecFx32Ctor *, s32, s32, s32, s32);
@@ -526,7 +524,7 @@ BOOL FieldGroundPiece::setup(VecFx32 *pos, s32 idx) {
         matAnims[1].addToRenderObj((u32)((Model *)&model)->getRenderObj());
     }
     VecFx32 tmp;
-    curveAngle = WorldCurve_ToCurved((VecFx32Ctor *)&tmp, (VecFx32Ctor *)&position);
+    curveAngle = WorldCurve_ToCurved(&tmp, &position);
     Mtx43_SetTranslate(data_021f47e0, position.x, 0, 0);
     Mtx43_RotateX(data_021f47e0, curveAngle);
     MODEL_AT_MTX(&model) = *(Mtx43 *)data_021f47e0;

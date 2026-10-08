@@ -23,11 +23,11 @@
 #define PROTO_LOCAL_EffectSpl_ToCurvedPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SPL_Draw  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SPL_Load  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gViewMtx  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020f8b44.h"
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0208f268.h"
 
@@ -43,7 +43,6 @@ s32 func_021067a4(s32 a, s32 b);
 void NNS_G3dMdlSetMdlEmi(void *p, s32 a, u32 b);
 void _ZN9ModelAnim14addToRenderObjEj(void *p, u32 a);
 u32 _ZN5Model12getRenderObjEv(void *p);
-s32 WorldCurve_ToCurved(void *out, void *in);
 s32 SceneLights_GetRoomColor();
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s32 v);
@@ -51,10 +50,10 @@ void Mtx43_RotateXYZ(void *m, s32 x, s32 y, s32 z);
 void Mtx43_Scale(void *m, s32 x, s32 y, s32 z);
 #define Heap_destroy _ZN4Heap7destroyEv
 void Heap_destroy(void *);
-void *SPL_Create(void *, s32, s32);
+void *SPL_Create(void *, s32, VecFx32 *);
 void *SPL_CreateWithInitialize(void *, u32, void (*)(EffectSplEmitter *));
 Unk_0209002c_Handle *SPL_Init(void *, s32, s32, s32, s32, s32);
-void func_020f8b44(void *, void *, s32);
+void func_020f8b44(void *, void *, VecFx32 *);
 void SPL_Draw(void *, void *, void *);
 void SPL_Calc(void *);
 void func_020f92d4(void *, void *);
@@ -87,7 +86,7 @@ public:
     BOOL loadModel(s32 idx);
 
     /* 0x00 */ s32 active;
-    /* 0x04 */ s32 position[3];
+    /* 0x04 */ VecFx32 position;
     /* 0x10 */ s32 scaleX;
     /* 0x14 */ s32 scaleY;
     /* 0x18 */ s32 scaleZ;
@@ -819,7 +818,7 @@ BOOL EffectSplProc::onExecute()
 extern "C" u16 EffectSpl_ToCurvedPos(void *a0, volatile s32 a1, volatile s32 a2, volatile s32 a3)
 {
     VecFx32Ctor t(a1, a2, a3);
-    return WorldCurve_ToCurved(a0, &t);
+    return WorldCurve_ToCurved((VecFx32 *)a0, &t);
 }
 
 BOOL EffectSplProc::onDraw()
@@ -908,7 +907,8 @@ extern "C" s32 EffectCb_UpdateTint(EffectEmitterEntry *e)
     return 1;
 }
 
-extern "C" s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, void (**p3)(EffectSplEmitter *))
+// p3: the emitters' init callbacks, one per emitter
+extern "C" s32 EffectSpl_CreateOneShot(s32 idx, VecFx32 *p1, s16 *p2, void (*const *p3)(EffectSplEmitter *))
 {
     EffectSplPool *pool;
     EffectSplProc *mgr;
@@ -938,7 +938,7 @@ extern "C" s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, void (**p3)(Eff
             }
         }
     }
-    sEffectSplEmitPos = (s32 *)p1;
+    sEffectSplEmitPos = &p1->x;
     if (row->reuseEmitters != 0) {
         ctx = &mgr->emitterMap;
         i = 0;
@@ -979,7 +979,7 @@ extern "C" s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, void (**p3)(Eff
     return 1;
 }
 
-extern "C" s32 EffectSpl_CreateTracked(s32 idx, s32 p1, s16 *p2, EffectEmitterCbs *p3)
+extern "C" s32 EffectSpl_CreateTracked(s32 idx, VecFx32 *p1, s16 *p2, EffectEmitterCbs *p3)
 {
     EffectSplPool *pool;
     s32 count;
@@ -1010,7 +1010,7 @@ extern "C" s32 EffectSpl_CreateTracked(s32 idx, s32 p1, s16 *p2, EffectEmitterCb
             }
         }
     }
-    sEffectSplEmitPos = (s32 *)p1;
+    sEffectSplEmitPos = &p1->x;
     zero = 0;
     for (i = 0; i < count; i++) {
         e = EffectSplPool_FindInactive(pool, *ids);
@@ -1026,7 +1026,7 @@ extern "C" s32 EffectSpl_CreateTracked(s32 idx, s32 p1, s16 *p2, EffectEmitterCb
                 cb->unk_00(e);
             }
         } else {
-            e = EffectSplPool_Alloc(pool, *ids, p1, (s32)p2, p3, sEffectSplProc->groupCounter, i);
+            e = EffectSplPool_Alloc(pool, *ids, p1, p2, p3, sEffectSplProc->groupCounter, i);
             if (e == NULL) {
                 ok = zero;
             }
@@ -1051,7 +1051,7 @@ extern "C" void EffectModel_Start(s32 a, void (*b)(EffectModel *))
     EffectModels_Start(sEffectSplProc->modelGroups, a, b);
 }
 
-extern "C" s32 EffectSplEntry_Start(EffectEmitterEntry *e, s32 id, s32 a2, s32 a3, EffectEmitterCbs *cb, EffectEmitterTag tag)
+extern "C" s32 EffectSplEntry_Start(EffectEmitterEntry *e, s32 id, VecFx32 *a2, s16 *a3, EffectEmitterCbs *cb, EffectEmitterTag tag)
 {
     s32 r;
     u32 d, c, b;
@@ -1170,7 +1170,7 @@ extern "C" EffectEmitterEntry *EffectSplPool_FindInactive(EffectSplPool *p, s32 
     return r;
 }
 
-extern "C" EffectEmitterEntry *EffectSplPool_Alloc(EffectSplPool *p, s32 id, s32 a2, s32 a3, EffectEmitterCbs *cb, u32 b, u32 c)
+extern "C" EffectEmitterEntry *EffectSplPool_Alloc(EffectSplPool *p, s32 id, VecFx32 *a2, s16 *a3, EffectEmitterCbs *cb, u32 b, u32 c)
 {
     EffectEmitterEntry *r = NULL;
     EffectEmitterTag tag;
@@ -1370,9 +1370,9 @@ void EffectModel::update() {
 
 void EffectModel::draw() {
     if (active != 0) {
-        s32 v[3];
-        s32 r = WorldCurve_ToCurved(v, position);
-        Mtx43_SetTranslate(data_021f47e0, v[0], v[1], v[2]);
+        VecFx32 v;
+        s32 r = WorldCurve_ToCurved(&v, &position);
+        Mtx43_SetTranslate(data_021f47e0, v.x, v.y, v.z);
         Mtx43_RotateX(data_021f47e0, r);
         Mtx43_RotateXYZ(data_021f47e0, rotX, rotY, rotZ);
         Mtx43_Scale(data_021f47e0, scaleX, scaleY, scaleZ);

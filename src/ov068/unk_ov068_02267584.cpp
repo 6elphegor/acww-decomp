@@ -138,24 +138,24 @@ extern "C" s32 Snowball_GetSizeRatioRank(s32 v) {
 
 void Snowball::spawnSnowballBreak() {
     VecFx32 v;
-    u16 h;
+    s16 h;
     Vec_Add(&v, &position, &drawOffset);
     v.y = v.y + (radius - 0x400);
     h = FX_Div(radius, 0x1000);
     Effect_Create(0x3e, &v, 0, &h);
-    Snd_SeEmitterPlayOneShot(seEmitter, 0x81f, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot((SndSeEmitter *)seEmitter, 0x81f, 0x7f, 0);
 }
 
 void Snowball::spawnSnowballSplash() {
     VecFx32 v;
-    u16 h;
+    s16 h;
     v.x = position.x;
     v.y = position.y;
     v.z = position.z;
     v.y = data_020c7c1c + 0x100;
     h = FX_Div(radius, 0x1000);
     Effect_Create(0x3f, &v, 0, &h);
-    Snd_SeEmitterPlayOneShot(seEmitter, 0x821, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot((SndSeEmitter *)seEmitter, 0x821, 0x7f, 0);
     FieldFish_ScareAround(&position, 0x5000);
 }
 
@@ -571,7 +571,7 @@ s32 Snowball::enterSnowballStack() {
     stepX = FX_Div(targetPos.x - position.x, 0x10000);
     stepZ = FX_Div(targetPos.z - position.z, 0x10000);
     stepCount = 0;
-    Snd_SeEmitterPlayOneShot(seEmitter, 0x81e, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot((SndSeEmitter *)seEmitter, 0x81e, 0x7f, 0);
     return 1;
 }
 

@@ -233,7 +233,6 @@ void *NNS_G3dGetMdlSet();
 void MTX_MultVec43(s32, s32, VecFx32 *);
 void __cxa_vec_cleanup(void *, s32, s32, void (*)(BuildingResources *));
 
-void Building_LocalToWorld(void *p, s32 a, s32 b);
 BOOL _ZN13BuildingActor13setEntryStateEi(void *self, s32 a);
 BOOL Building_IsNight();
 void *BuildingActor_Create();

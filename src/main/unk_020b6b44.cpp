@@ -7,9 +7,9 @@
 #include "game/CollisionTriangle.h"
 #include "game/CollisionCylinder.h"
 #include "gfx/Camera.h"
-#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_020027b4.h"
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_020b6b44.h"
 
 
@@ -35,7 +35,6 @@ void MTX_MultVec43(VecFx32 *v, Mtx43 *m, VecFx32 *out);
 void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 void Vec_RotateY(VecFx32 *v, s32 angle);
 void Vec_RotateX(VecFx32 *v, s32 angle);
-s32 WorldCurve_ToCurved(VecFx32 *out, VecFx32 *in);
 }
 
 struct Pair {

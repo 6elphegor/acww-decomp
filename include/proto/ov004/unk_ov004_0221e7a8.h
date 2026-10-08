@@ -85,7 +85,7 @@ void RoomObj_LoadResourcesByName(char *name, AnimModel *m, RoomObjRes *a, RoomOb
 void RoomObj_ReleaseResources(RoomObjRes *a, RoomObjTex *b);
 #endif
 #ifndef PROTO_LOCAL_RoomObj_PlaySeHeld
-void RoomObj_PlaySeHeld(s32 a, s32 b);
+void RoomObj_PlaySeHeld(void *a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_TestLocalFlag0F
 s32 PlayerActor_TestLocalFlag0F(void);
@@ -97,22 +97,22 @@ s32 PlayerActor_TestLocalFlag02(void);
 s32 PlayerActor_LocalSetHeadwearHidden(u32 a);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_LocalRequestBedApproach
-s32 PlayerActor_LocalRequestBedApproach(u32 *a, u32 *b, s16 *c, s32 d);
+s32 PlayerActor_LocalRequestBedApproach(const s32 *a, const s32 *b, const s16 *c, s32 d, s32 e);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_LocalRequestGetOutOfBed
 s32 PlayerActor_LocalRequestGetOutOfBed(u32 a, u32 b);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_LocalRequestSeatApproach
-s32 PlayerActor_LocalRequestSeatApproach(u32 *a, u32 *b, s16 *c, u8 *d);
+s32 PlayerActor_LocalRequestSeatApproach(const s32 *a, const s32 *b, const s16 *c, const u8 *d);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_LocalRequestStandUp
 s32 PlayerActor_LocalRequestStandUp(s32 t);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_LocalRequestStorageOpen
-s32 PlayerActor_LocalRequestStorageOpen(u32 *a, u32 *b, u32 *c, s16 *d);
+s32 PlayerActor_LocalRequestStorageOpen(const s32 *a, const s32 *b, const s32 *c, const s16 *d);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_LocalRequestStorageClose
-s32 PlayerActor_LocalRequestStorageClose(u32 *p);
+s32 PlayerActor_LocalRequestStorageClose(const s32 *p);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_LocalRequestLeaveRoom
 s32 PlayerActor_LocalRequestLeaveRoom(void);

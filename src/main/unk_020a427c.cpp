@@ -565,8 +565,8 @@ extern "C" void NetSession_SetCtrl07Received(s32 a) {
     ((NetSessionState *)(&gNetSessionState))->setCtrl07Received(a);
 }
 
-extern "C" void NetSession_GetCtrl07Received() {
-    gNetSessionState.getCtrl07Received();
+extern "C" u8 NetSession_GetCtrl07Received() {
+    return gNetSessionState.getCtrl07Received();
 }
 
 extern "C" BOOL NetArea_IsUnsharedScene(s32 v) {
