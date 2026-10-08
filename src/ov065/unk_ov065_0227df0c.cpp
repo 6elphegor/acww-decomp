@@ -132,7 +132,8 @@ s32 gpiCallCallback(GPConnection *h, GPICallbackData *n) {
     }
     GsUtil_Free(n->arg);
     n->arg = NULL;
-    return GsUtil_Free(n);
+    GsUtil_Free(n);
+    return 0; // (the callers ignore the result: the DS returned the free hook's)
 }
 }
 

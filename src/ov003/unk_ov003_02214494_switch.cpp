@@ -25,17 +25,7 @@
 
 
 
-extern "C" {
-s32 Scene_GetCurrent();
-extern u8 data_021ed2c0[];
-ReddPassword *_ZN8ReddShop11getPasswordEv(void *p);
-}
 
-extern "C" {
-extern u8 data_021ed2c0[];
-ReddPassword *_ZN8ReddShop11getPasswordEv(void *);
-s32 Scene_GetCurrent();
-}
 
 
 void ReddTent::onInteractionEvent(u32 a, u8 b) {

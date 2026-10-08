@@ -1,6 +1,7 @@
 #include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
+#include "game/TouchPicker.h"
 #include "talk/TalkStartMsg.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
@@ -92,8 +93,8 @@ s32 TalkRequest_IsActive();
 BOOL TalkRequest_SetTargetDone(NpcActor *self);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_ToUnit(s32 *bx, s32 *by, VecFx32 *pos);
-void *Scene_GetTouchPicker();
-void TouchPick_GetGroundPos(void *a, VecFx32 *b);
+u8 *Scene_GetTouchPicker();
+BOOL TouchPick_GetGroundPos(TouchPickResult *a, VecFx32 *b);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 void Item_FromPlacedForm(u16 *a, u16 *b);
@@ -1705,13 +1706,13 @@ BOOL SpNpcMabel::pickShopItemAtPlayer() {
     if (f) {
         void *o = FtrActorGrid_GetInstance()->getActor(bx, by, 0);
         if (o != 0) {
-            if (o != TouchPick_GetTargetObject(Scene_GetTouchPicker(), 0, 0)) {
+            if (o != TouchPick_GetTargetObject((TouchPicker *)Scene_GetTouchPicker(), 0, 0)) {
                 return FALSE;
             }
         } else {
             s32 bx2 = 0, by2 = 0;
             VecFx32 v2;
-            TouchPick_GetGroundPos(Scene_GetTouchPicker(), &v2);
+            TouchPick_GetGroundPos((TouchPicker *)Scene_GetTouchPicker(), &v2);
             FieldPos_ToUnit(&bx2, &by2, &v2);
             if (bx2 != bx || by2 != by) {
                 return FALSE;

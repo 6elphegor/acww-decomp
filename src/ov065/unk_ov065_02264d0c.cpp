@@ -1858,7 +1858,7 @@ void Ssl_ExpireSessions(s32 now) {
 }
 
 void Ssl_ClearSessionCache(void) {
-    MI_CpuFill8(sSslSessionCache, 0, 0x170);
+    MI_CpuFill8(sSslSessionCache, 0, sizeof(sSslSessionCache));
 }
 }
 

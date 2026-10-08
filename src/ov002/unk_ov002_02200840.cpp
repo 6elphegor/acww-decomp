@@ -625,7 +625,7 @@ void MenuProc::restartKeyRepeat() { keyRepeat.init(8, 1, 7); }
 void MenuProc::initKeyRepeat(s32 a, s32 b, s32 c) { keyRepeat.init(a, b, c); }
 
 void *MenuProc::operator new(size_t size) {
-    void *p = Heap_AllocTail(gMenuHeap, size);
+    void *p = Heap_AllocTail((Heap *)gMenuHeap, size);
     if (p == 0) {
         return 0;
     }
@@ -633,7 +633,7 @@ void *MenuProc::operator new(size_t size) {
     return p;
 }
 
-void MenuProc::operator delete(void *p) { Heap_Free(gMenuHeap, p); }
+void MenuProc::operator delete(void *p) { Heap_Free((Heap *)gMenuHeap, p); }
 
 s32 MenuProc::getSlideOffsetY() { return ((MenuSlideView *)&slide)->getOffsetY(); }
 

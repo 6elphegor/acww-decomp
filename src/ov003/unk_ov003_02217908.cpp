@@ -172,7 +172,7 @@ extern "C" void FieldGround_PlayEnvSe(SndEnvChannel *p, VecFx32 *v, u32 a) {
     t.y = v->y;
     t.z = v->z;
     p->callUpdateRelative(&t);
-    p->callRequest(a);
+    p->callRequest((void *)(uptr)a); // (the wrapper takes the id as void *)
 }
 
 extern "C" void FieldGround_ReleaseEnvChannel(SndEnvChannel *p) {
