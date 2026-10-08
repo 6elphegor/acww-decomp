@@ -262,7 +262,7 @@ void ResidentSelect::updateTouchSelect() {
         return;
     }
     if (InputMode_IsTouch() && Unk_ov004_0223e580_BothEf()) {
-        if (TouchPickResult_GetTarget(Scene_GetTouchPicker(), &out, &a, &c) && a == 1) {
+        if (TouchPickResult_GetTarget((TouchPickResult *)Scene_GetTouchPicker(), &out, &a, &c) && a == 1) {
             gCommManager->localSlot = c;
             selectedResident = c;
             changeState(3);

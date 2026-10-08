@@ -1,6 +1,7 @@
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "room/FtrActorTable.h"
+#include "game/TouchPicker.h"
 #include "proto/main/unk_020815f8.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_020b5e5c.h"
@@ -15,9 +16,6 @@
 #include "proto/ov004/unk_ov004_02229660.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 
-
-
-
 extern "C" u8 gFieldSceneKind;
 extern "C" u8 gTouchPrevHeld;
 extern "C" u8 gTouchPrevChanged;
@@ -27,7 +25,9 @@ inline BOOL IsBoth() { return gTouchPrevHeld && gTouchPrevChanged; }
 inline BOOL IsMode1() { return gFieldSceneKind == 1; }
 
 
-typedef s32 (*TouchTargetResolver)(s32);
+// The object a pick target of a kind is: from the target's index (a player's slot, a villager's ...); the kinds that
+// have one instance only ignore it.
+typedef void *(*TouchTargetResolver)(s32 index);
 #define FN(f) ((TouchTargetResolver)(f))
 
 extern "C" TouchTargetResolver sTouchTargetResolvers[23];
@@ -40,22 +40,22 @@ extern "C" TouchTargetResolver sTouchTargetResolvers[23] = {
     FN(TouchTarget_ResolveNone), FN(TouchTarget_ResolveNone), FN(TouchTarget_ResolveNone),
 };
 
-extern "C" BOOL TouchPickResult_GetTarget(u8 *obj, VecFx32 *out, s32 *a, u8 *b) {
+extern "C" BOOL TouchPickResult_GetTarget(TouchPickResult *obj, VecFx32 *out, s32 *a, u8 *b) {
     if (out) {
-        out->x = *(s32 *)(obj + 0xc);
-        out->y = *(s32 *)(obj + 0x10);
-        out->z = *(s32 *)(obj + 0x14);
+        out->x = obj->targetX;
+        out->y = obj->targetY;
+        out->z = obj->targetZ;
     }
     if (a) {
-        *a = obj[0x18];
+        *a = obj->targetKind;
     }
     if (b) {
-        *b = obj[0x19];
+        *b = obj->targetIndex;
     }
-    return TouchPickKind_HasTarget(obj[0x18]);
+    return TouchPickKind_HasTarget(obj->targetKind);
 }
 
-extern "C" s32 TouchPick_GetTargetObject(s32 a, s32 *pa, u8 *pb) {
+extern "C" void *TouchPick_GetTargetObject(TouchPickResult *a, s32 *pa, u8 *pb) {
     u8 tb;
     s32 ta;
     VecFx32 v;
@@ -65,96 +65,96 @@ extern "C" s32 TouchPick_GetTargetObject(s32 a, s32 *pa, u8 *pb) {
     if (pb == NULL) {
         pb = &tb;
     }
-    if (TouchPickResult_GetTarget((u8 *)a, &v, pa, pb)) {
+    if (TouchPickResult_GetTarget(a, &v, pa, pb)) {
         return TouchTarget_Resolve(*pa, *pb);
     }
-    return 0;
+    return NULL;
 }
 
-extern "C" s32 TouchPick_GetTappedObject(s32 a, s32 *pa, u8 *pb) {
+extern "C" void *TouchPick_GetTappedObject(TouchPickResult *a, s32 *pa, u8 *pb) {
     if (IsBoth()) {
         return TouchPick_GetTargetObject(a, pa, pb);
     }
-    return 0;
+    return NULL;
 }
 
-extern "C" s32 TouchTarget_ResolveNone(void) { return 0; }
+extern "C" void *TouchTarget_ResolveNone(void) { return NULL; }
 
-extern "C" s32 TouchTarget_ResolvePlayer(s32 a) { return PlayerActor_GetCharacter(a); }
+extern "C" void *TouchTarget_ResolvePlayer(s32 a) { return PlayerActor_GetCharacter(a); }
 
-extern "C" s32 TouchTarget_ResolveVillager(s32 a) { return NpcRegistry_FindVillager(a); }
+extern "C" void *TouchTarget_ResolveVillager(s32 a) { return NpcRegistry_FindVillager(a); }
 
-extern "C" s32 TouchTarget_ResolveSpNpc(s32 a) { return NpcRegistry_FindSpNpc(a); }
+extern "C" void *TouchTarget_ResolveSpNpc(s32 a) { return NpcRegistry_FindSpNpc(a); }
 
-extern "C" s32 TouchTarget_ResolveBuilding(s32 a) {
+extern "C" void *TouchTarget_ResolveBuilding(s32 a) {
     if (IsMode0()) {
         return BuildingList_GetAt(a);
     }
-    return 0;
+    return NULL;
 }
 
-extern "C" s32 TouchTarget_ResolveBuildingAlt(s32 a) { return TouchTarget_ResolveBuilding(a); }
+extern "C" void *TouchTarget_ResolveBuildingAlt(s32 a) { return TouchTarget_ResolveBuilding(a); }
 
-extern "C" s32 TouchTarget_ResolveFurniture(s32 a) {
+extern "C" void *TouchTarget_ResolveFurniture(s32 a) {
     if (IsMode1()) {
-        return (s32)((FtrActorTable *)FtrActorTable_GetInstance())->get(a);
+        return FtrActorTable_GetInstance()->get(a);
     }
-    return 0;
+    return NULL;
 }
 
-extern "C" s32 TouchTarget_ResolveVillagerBoard(s32 a) {
+extern "C" void *TouchTarget_ResolveVillagerBoard(s32 a) {
     if (IsMode0()) {
         return VillagerBoard_Get(a);
     }
-    return 0;
+    return NULL;
 }
 
-extern "C" s32 TouchTarget_ResolveAtm(void) {
+extern "C" void *TouchTarget_ResolveAtm(void) {
     if (IsMode1()) {
         return Atm_GetInstance();
     }
-    return 0;
+    return NULL;
 }
 
-extern "C" s32 TouchTarget_ResolveMuseumInfo(s32 a) {
+extern "C" void *TouchTarget_ResolveMuseumInfo(s32 a) {
     if (IsMode1()) {
         return MuseumExhibitInfo_GetByIndex(a);
     }
-    return 0;
+    return NULL;
 }
 
-extern "C" s32 TouchTarget_ResolveRecycleBox(void) {
+extern "C" void *TouchTarget_ResolveRecycleBox(void) {
     if (IsMode1()) {
         return RecycleBox_GetInstance();
     }
-    return 0;
+    return NULL;
 }
 
-extern "C" s32 TouchTarget_ResolvePhone(void) {
+extern "C" void *TouchTarget_ResolvePhone(void) {
     if (IsMode1()) {
         return RoomTelephone_GetInstance();
     }
-    return 0;
+    return NULL;
 }
 
-extern "C" s32 TouchTarget_ResolveBoardSign(s32 a) {
+extern "C" void *TouchTarget_ResolveBoardSign(s32 a) {
     if (IsMode1()) {
         return RoomBoardSign_GetByIndex(a);
     }
-    return 0;
+    return NULL;
 }
 
-extern "C" s32 TouchTarget_ResolveSnowball(s32 a) {
+extern "C" void *TouchTarget_ResolveSnowball(s32 a) {
     if (IsMode0()) {
         return Snowball_FindByParam(a);
     }
-    return 0;
+    return NULL;
 }
 
-extern "C" s32 TouchTarget_Resolve(s32 idx, s32 arg) {
+extern "C" void *TouchTarget_Resolve(s32 idx, s32 arg) {
     if (idx < 0x17) {
         return sTouchTargetResolvers[idx](arg);
     }
-    return 0;
+    return NULL;
 }
 

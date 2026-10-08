@@ -5,12 +5,12 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
 class BufferBmgReader;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 #ifndef PROTO_LOCAL_ChoiceWindow_BlankTiles
 void ChoiceWindow_BlankTiles(void *p, u32 n);
 #endif
@@ -20,7 +20,11 @@ s32 ChoiceWindow_GetLabelTile(s32 a, s32 mode);
 #ifndef PROTO_LOCAL_Choice_GetBmgName
 const void *Choice_GetBmgName(u32 i);
 #endif
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
 #ifndef PROTO_LOCAL_sChoiceBmgReader
 extern BufferBmgReader sChoiceBmgReader;
 #endif

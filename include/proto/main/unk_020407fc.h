@@ -7,7 +7,6 @@
 #include "sys/ProcProfile.h"
 struct EventAnnounceState;
 #ifdef __cplusplus
-#include "types.h"
 class EventAnnouncer;
 #endif
 
@@ -23,26 +22,14 @@ void EventAnnounce_Reset(void);
 #ifndef PROTO_LOCAL_EventAnnounce_Restart
 void EventAnnounce_Restart(void);
 #endif
+#ifndef PROTO_LOCAL_EventAnnounce_CanCheck
+BOOL EventAnnounce_CanCheck(void);
+#endif
 #ifndef PROTO_LOCAL_EventAnnounce_CheckEvents
 void EventAnnounce_CheckEvents(void);
 #endif
 #ifndef PROTO_LOCAL_EventAnnounce_Update
 void EventAnnounce_Update(void);
-#endif
-#ifndef PROTO_LOCAL_EventWeekSlots_Destruct
-void EventWeekSlots_Destruct(void);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_EventAnnouncer_Create
-EventAnnouncer *EventAnnouncer_Create();
-#endif
-#ifndef PROTO_LOCAL_EventAnnounce_CanCheck
-BOOL EventAnnounce_CanCheck(void);
 #endif
 #ifndef PROTO_LOCAL_EventAnnounce_IsBusy
 s32 EventAnnounce_IsBusy(void);
@@ -53,26 +40,8 @@ s32 EventAnnounce_GetActiveEvent(void);
 #ifndef PROTO_LOCAL_EventAnnounce_GetCurrentEvent
 s32 EventAnnounce_GetCurrentEvent(void);
 #endif
-#ifndef PROTO_LOCAL_EventAnnounce_RunIdle
-void EventAnnounce_RunIdle(s32);
-#endif
-#ifndef PROTO_LOCAL_EventAnnounce_RunWaitChimeStart
-void EventAnnounce_RunWaitChimeStart(s32);
-#endif
-#ifndef PROTO_LOCAL_EventAnnounce_RunWaitChimeEnd
-void EventAnnounce_RunWaitChimeEnd(s32);
-#endif
 #ifndef PROTO_LOCAL_EventAnnounce_RequestWarp
 BOOL EventAnnounce_RequestWarp(void);
-#endif
-#ifndef PROTO_LOCAL_EventAnnounce_RunWarp
-void EventAnnounce_RunWarp(s32);
-#endif
-#ifndef PROTO_LOCAL_EventAnnounce_RunShowMessage
-void EventAnnounce_RunShowMessage(EventAnnouncer *o);
-#endif
-#ifndef PROTO_LOCAL_EventAnnounce_RunWaitMessageEnd
-void EventAnnounce_RunWaitMessageEnd(s32);
 #endif
 #ifndef PROTO_LOCAL_EventAnnounce_SetState
 void EventAnnounce_SetState(s32 v);
@@ -86,6 +55,9 @@ BOOL EventAnnounce_IsBlockedScene(void);
 #ifndef PROTO_LOCAL_EventWeekSlots_Construct
 void EventWeekSlots_Construct(u8 *p);
 #endif
+#ifndef PROTO_LOCAL_EventWeekSlots_Destruct
+void EventWeekSlots_Destruct(void);
+#endif
 #ifndef PROTO_LOCAL_EventWeekSlots_InitNew
 void EventWeekSlots_InitNew(u8 *p);
 #endif
@@ -94,6 +66,33 @@ void EventWeekSlots_Reset(u8 *p);
 #endif
 #ifndef PROTO_LOCAL_EventWeekSlots_OnLoad
 void EventWeekSlots_OnLoad(u8 *p);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_EventAnnouncer_Create
+EventAnnouncer *EventAnnouncer_Create();
+#endif
+#ifndef PROTO_LOCAL_EventAnnounce_RunIdle
+void EventAnnounce_RunIdle(EventAnnouncer *);
+#endif
+#ifndef PROTO_LOCAL_EventAnnounce_RunWaitChimeStart
+void EventAnnounce_RunWaitChimeStart(EventAnnouncer *);
+#endif
+#ifndef PROTO_LOCAL_EventAnnounce_RunWaitChimeEnd
+void EventAnnounce_RunWaitChimeEnd(EventAnnouncer *);
+#endif
+#ifndef PROTO_LOCAL_EventAnnounce_RunWarp
+void EventAnnounce_RunWarp(EventAnnouncer *);
+#endif
+#ifndef PROTO_LOCAL_EventAnnounce_RunShowMessage
+void EventAnnounce_RunShowMessage(EventAnnouncer *o);
+#endif
+#ifndef PROTO_LOCAL_EventAnnounce_RunWaitMessageEnd
+void EventAnnounce_RunWaitMessageEnd(EventAnnouncer *);
 #endif
 }
 #ifndef PROTO_LOCAL_sEventAnnounceBusy

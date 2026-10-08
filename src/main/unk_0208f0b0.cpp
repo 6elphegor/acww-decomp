@@ -1,4 +1,3 @@
-#include "uptr.h"
 #include "types.h"
 #include "save/TownExchangeRecord.h"
 #include "game/ConstellationRecord.h"
@@ -34,24 +33,25 @@ TownExchangeRemoteRecords sTownExchangeRemoteRecords;
 
 TownExchangeRecord::TownExchangeRecord() {
     new (this) Letter();
-    new (HOST_AT(this, 0xf4, unk_0f4, 0)) ConstellationRecord();
-    VillagerTransfer_ConstructVillager(HOST_AT(this, 0x13c, villager[0], 0));
-    LostChildRecord_Construct(HOST_AT(this, 0x83e, lostChild[0], 0));
+    new (&unk_0f4) ConstellationRecord();
+    VillagerTransfer_ConstructVillager(villager);
+    LostChildRecord_Construct(lostChild);
 }
 
 TownExchangeRecord::~TownExchangeRecord() {
-    LostChildRecord_Destruct(HOST_AT(this, 0x83e, lostChild[0], 0));
-    VillagerTransfer_DestructVillager(HOST_AT(this, 0x13c, villager[0], 0));
-    ((ConstellationRecord *)(HOST_AT(this, 0xf4, unk_0f4, 0)))->~ConstellationRecord();
+    LostChildRecord_Destruct(lostChild);
+    VillagerTransfer_DestructVillager(villager);
+    ((ConstellationRecord *)&unk_0f4)->~ConstellationRecord();
     ((Letter *)(this))->Letter::~Letter();
 }
 
 extern "C" void TownExchange_InitNop() {}
 
 extern "C" void TownExchange_Clear(void *p) {
-    MI_CpuFill8(p, 0, 0x84c);
-    Letter_Clear(p);
-    ConstellationRecord_Clear((ConstellationRecord *)((u8 *)p + 0xf4));
+    TownExchangeRecord *r = (TownExchangeRecord *)p;
+    MI_CpuFill8(r, 0, sizeof(TownExchangeRecord));
+    Letter_Clear((LetterView *)r);
+    ConstellationRecord_Clear((ConstellationRecord *)&r->unk_0f4);  // (the save record keeps its bytes)
 }
 
 void TownExchangeRecord::setChecksum(u32 v) { checksum = v; }

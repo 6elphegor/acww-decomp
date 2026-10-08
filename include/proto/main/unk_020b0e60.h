@@ -7,6 +7,9 @@
 #include "game/NibblePair.h"
 #include "town/BuildingInfo.h"
 struct Flags1;
+#ifndef __cplusplus
+typedef struct Flags1 Flags1;
+#endif
 #ifdef __cplusplus
 #include "game/StrBSizeData.h"
 #include "gfx/VecFx32.h"

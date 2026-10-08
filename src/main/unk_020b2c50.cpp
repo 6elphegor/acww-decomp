@@ -10,6 +10,9 @@
 #include "talk/MsgRequest.h"
 #include "talk/MsgWalker.h"
 #include "talk/MsgString33.h"
+#include "talk/MsgString25.h"
+#include "talk/MsgString256.h"
+#include "talk/ArticleCacheEntry.h"
 #include "proto/autoload_2/unk_0212a120.h"
 #include "proto/autoload_2/unk_02133d04.h"
 #include "proto/main/unk_020501d4.h"
@@ -118,20 +121,11 @@ public:
     virtual void onTag(u8 *p);
     virtual BOOL canContinue();
 
-    /* 0x24 */ u32 text;
+    /* 0x24 */ u8 *text;
     /* 0x28 */ s32 remaining;
     /* 0x2c */ u32 curChar;
 };
 
-class MsgString25 : public MsgString {
-public:
-    MsgString25();
-    virtual ~MsgString25();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x14 */ u32 unk_14[6];
-};
 
 class BmgReader1K : public BmgReader {
 public:
@@ -156,26 +150,7 @@ public:
     /* 0x29 */ u8 nicknameMode;
 };
 
-class MsgString256 : public MsgString {
-public:
-    MsgString256();
-    virtual ~MsgString256();
-    virtual u32 capacity();
-    virtual u8 *data();
 
-    /* 0x12 */ u8 unk_14[0x100];
-};
-
-class ArticleCacheEntry : public MsgString {
-public:
-    ArticleCacheEntry();
-    virtual ~ArticleCacheEntry();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x12 */ u8 text[10]; // data() / capacity()
-    /* 0x1c */ u8 isLoaded;
-};
 
 // text loader, global at 0x021ee50c
 class StringBank {
@@ -214,7 +189,7 @@ MsgString25::~MsgString25() {}
 
 u32 MsgString25::capacity() { return 0x19; }
 
-u8 *MsgString25::data() { return HOST_AT(this, 0x12, attr, 10); }
+u8 *MsgString25::data() { return text; }
 
 MsgString256::MsgString256() { clear(); }
 
@@ -222,7 +197,7 @@ MsgString256::~MsgString256() {}
 
 u32 MsgString256::capacity() { return 0x100; }
 
-u8 *MsgString256::data() { return HOST_AT(this, 0x12, unk_14[0], 0); }
+u8 *MsgString256::data() { return text; }
 
 extern "C" MsgString256 *String_GetTabooScratch(void) {
     static MsgString256 inst;
@@ -238,7 +213,7 @@ u32 ArticleCacheEntry::capacity() {
 }
 
 u8 *ArticleCacheEntry::data() {
-    return HOST_AT(this, 0x12, text[0], 0);
+    return text;
 }
 
 BmgReader1K::BmgReader1K() : BmgReader(0) {}
@@ -528,7 +503,7 @@ BOOL StringExpander::canCheckName() {
 
 BOOL StringExpander::differsFromName() {
     u8 *p = bank->nameSource->data();
-    return strcmp(p, (u8 *)bank->output) != 0;
+    return strcmp((const char *)p, (const char *)bank->output) != 0;
 }
 
 TabooCensorWriter::TabooCensorWriter() {
@@ -1030,7 +1005,7 @@ BOOL StringBank::beginTabooCheck(MsgString *buf) {
         censor.resetWriter();
         censor.setSource(String_GetTabooScratch());
         censor.setDest(buf);
-        charReader.text = 0;
+        charReader.text = NULL;
         charReader.remaining = 0;
         charReader.curChar = 0;
         charReader.reset();
@@ -1046,7 +1021,7 @@ BOOL StringBank::censorTaboo() {
         char *s = (char *)start;
         s32 n = 0;
         for (; s != NULL && *s != 0xa; s = Msg_SkipLines(s, 1)) {
-            charReader.text = (u32)s;
+            charReader.text = (u8 *)s;
             n = matchTabooWord();
             if (n > 0) {
                 break;
@@ -1067,7 +1042,7 @@ s32 StringBank::matchTabooWord() {
     s32 count = 0;
     censor.restartScan();
     charReader.reset();
-    charReader.begin((u8 *)charReader.text);
+    charReader.begin(charReader.text);
     for (;;) {
         charReader.remaining = 1;
         charReader.curChar = 0;

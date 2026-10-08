@@ -228,11 +228,9 @@ s32 Effect_StartTracked(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *para
 
 s32 Effect_StartOneShot(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *cbs);
 
-s32 _ZN18EffectEmitterEntry13updateLandingEiPviS0_iS0_iS0_(void *p, s32 a, const char *b, s32 c, const char *d, s32 e, const char *f, s32 g, s32 h);
 
 s32 Effect_StartWaterColumn(s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *trackedCbs, const void *oneShotCbs, EffectModelInitFn fn);
 
-s32 _ZN14EffectModelObj10initAtSlotEi(s32 a, s32 b);
 
 s32 EffectCb_InitOneShotSetUnk54(s32 a, s32 b);
 
@@ -262,7 +260,6 @@ extern VecFx32 data_020d02c4;
 
 extern s16 data_02135f44[];
 
-s32 _ZN13EffectManager7setLifeEis(void *a, void *b, s32 c);
 
 void _ZN10EffectSlot5clearEv(void *r);
 
@@ -274,7 +271,6 @@ s32 EffectCb_FollowTrackedOffset(void *p, const char *a, const char *b);
 
 s32 EffectCb_InitTrackedOffset(void *p, const char *a, const char *b);
 
-s32 _ZN18EffectEmitterEntry13updateLandingEiPviS0_iS0_iS0_(void *p, s32 a, const char *b, s32 c, const char *d, s32 e, const char *f, s32 g, s32 h);
 
 s32 EffectCb_InitTracked(void *p);
 
@@ -390,7 +386,6 @@ s32 Effect_StartOneShot(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *para
 s32 _ZN10EffectSlot3setEijP7VecFx32PsS2_s(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 
 
-s32 _ZN16EffectSplEmitter19spawnLandingEffectsEiPviS0_iS0_iS0_(EffectSplEmitter *o, s32 a, void *b, s32 c, s32 d, s32 e, void *f, s32 g, void *h);
 
 s32 Effect_StartModel(s32 modelKind, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, EffectModelInitFn fn);
 
@@ -462,7 +457,6 @@ s32 EffectCb_InitTracked(void *);
 
 s32 EffectCb_InitOneShotSetUnk54(void *, s32);
 
-s32 _ZN14EffectModelObj10initAtSlotEi(void *, s32);
 
 s32 EffectCb_InitOneShot(void *);
 
@@ -473,7 +467,6 @@ s32 _ZN10EffectSlot3setEijP7VecFx32PsS2_s(void *, s32, s32, s32, s32, s32, s32);
 
 s32 _ZN10EffectSlot5clearEv(void *);
 
-s32 _ZN18EffectEmitterEntry13updateLandingEiPviS0_iS0_iS0_(void *, s32, void *, s32, s32, s32, s32, s32, s32);
 
 s32 Effect_SpawnParticleLandings(EffectSplEmitter *o, s32 waterId1, const void *waterCbs1, s32 waterId2, const void *waterCbs2, s32 groundId1, const void *groundCbs1, s32 groundId2, const void *groundCbs2);
 
@@ -597,7 +590,6 @@ extern s16 data_02135f44[];
 
 s32 EffectSpl_ApplySceneTint(void *);
 
-s32 _ZN13EffectManager7setLifeEis(void *, s32, s32);
 
 s32 _ZN10EffectSlot3setEijP7VecFx32PsS2_s(void *, s32, s32, s32, s32, s32, s32);
 
@@ -769,7 +761,8 @@ extern "C" s32 Effect_StartOneShot(s32 p0, s32 p1, VecFx32 *p2, s16 *p3, s16 *e,
 namespace R7 {
 extern "C" s32 Effect_EndDefault(s32 x)
 {
-    return _ZN13EffectManager7setLifeEis(gEffectManager, x, 0);
+    R1::gEffectManager.setLife(x, 0);
+    return 0;  // (the effect kinds' end callbacks: their result is not used)
 }
 }
 
@@ -1499,7 +1492,7 @@ extern "C" s32 EffectKind13_InitEmitter1(void *p) { return EffectCb_InitOneShot(
 }
 
 namespace R5 {
-extern "C" s32 EffectKind13_UpdateEmitter0(void *p) { return _ZN18EffectEmitterEntry13updateLandingEiPviS0_iS0_iS0_(p, 0x5f, data_020e16d4, -1, 0, -1, 0, -1, 0); }
+extern "C" s32 EffectKind13_UpdateEmitter0(void *p) { return ((EffectEmitterEntry *)p)->updateLanding(0x5f, data_020e16d4, -1, 0, -1, 0, -1, 0); }
 }
 
 namespace R5 {
@@ -1573,7 +1566,10 @@ extern "C" s32 EffectKind16_InitEmitter0A(void *p) { return EffectCb_InitOneShot
 }
 
 namespace R5 {
-extern "C" s32 EffectKind16_InitModel(void *p) { return _ZN14EffectModelObj10initAtSlotEi(p, 0xccd); }
+extern "C" s32 EffectKind16_InitModel(void *p) {
+    ((EffectModelObj *)p)->initAtSlot(0xccd);
+    return 0;  // (an EffectModelInitFn: the result is not used)
+}
 }
 
 namespace R5 {
@@ -1591,7 +1587,10 @@ extern "C" s32 EffectKind17_InitEmitter0A(void *p) { return EffectCb_InitOneShot
 }
 
 namespace R5 {
-extern "C" s32 EffectKind17_InitModel(void *p) { return _ZN14EffectModelObj10initAtSlotEi(p, 0x119a); }
+extern "C" s32 EffectKind17_InitModel(void *p) {
+    ((EffectModelObj *)p)->initAtSlot(0x119a);
+    return 0;  // (an EffectModelInitFn: the result is not used)
+}
 }
 
 namespace R5 {
@@ -1609,7 +1608,10 @@ extern "C" s32 EffectKind19_InitEmitter0A(void *p) { return EffectCb_InitOneShot
 }
 
 namespace R5 {
-extern "C" s32 EffectKind19_InitModel(void *p) { return _ZN14EffectModelObj10initAtSlotEi(p, 0x14cd); }
+extern "C" s32 EffectKind19_InitModel(void *p) {
+    ((EffectModelObj *)p)->initAtSlot(0x14cd);
+    return 0;  // (an EffectModelInitFn: the result is not used)
+}
 }
 
 namespace R5 {
@@ -1797,7 +1799,7 @@ extern "C" s32 EffectKind26_UpdateEmitter0(EffectEmitterEntry *o) {
         p->axis.x = tx;
         p->axis.y = ty;
         p->axis.z = tz;
-        _ZN16EffectSplEmitter19spawnLandingEffectsEiPviS0_iS0_iS0_(o->emitter, 0x71, data_020e16d4, -1, r, 0x71, data_020e16d4, 0x72, data_020e16d4);
+        o->emitter->spawnLandingEffects(0x71, data_020e16d4, -1, (void *)(sptr)r, 0x71, data_020e16d4, 0x72, data_020e16d4);
         if (e->life > 0) {
             e->life = e->life - 1;
         }
@@ -1806,7 +1808,7 @@ extern "C" s32 EffectKind26_UpdateEmitter0(EffectEmitterEntry *o) {
     if (r == 0) {
         o->emitter->stateFlags |= 2;
         if (o->emitter->particleCount > 0) {
-            r = _ZN16EffectSplEmitter19spawnLandingEffectsEiPviS0_iS0_iS0_(o->emitter, 0x71, data_020e16d4, -1, 0, 0x71, data_020e16d4, 0x72, data_020e16d4);
+            r = o->emitter->spawnLandingEffects(0x71, data_020e16d4, -1, NULL, 0x71, data_020e16d4, 0x72, data_020e16d4);
         }
     }
     if (r == 0) {
@@ -2633,7 +2635,8 @@ extern "C" s32 Effect_CreateKind3D(s32 a, VecFx32 *b, s16 *c, s16 *d)
 namespace R3 {
 extern "C" s32 Effect_EndKind3D(EffectEmitterEntry *p)
 {
-    return _ZN13EffectManager7setLifeEis(gEffectManager, p, 0xb);
+    R1::gEffectManager.setLife((s32)(sptr)p, 0xb);  // (the effect id: the entry's address)
+    return 0;
 }
 }
 

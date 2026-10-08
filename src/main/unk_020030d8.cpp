@@ -4,21 +4,11 @@
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
 #include "npc/VillagerId.h"
-#define PROTO_LOCAL_TownId_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_CopyFrom  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_CopyTo  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerId_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerId_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerId_ConstructCopy  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerId_CopyFrom  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerId_CopyTo  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerId_Destruct  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/main/unk_020030d8.h"
 #include "proto/main/unk_020116e0.h"
 #include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02087e70.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -26,11 +16,6 @@
 
 extern "C" {
 void MI_CpuCopy8(void *src, void *dst, u32 size);
-void TownId_Clear(VillagerId *p);
-void TownId_Destruct(VillagerId *p);
-void TownId_Construct(VillagerId *p);
-void TownId_CopyTo(VillagerId *p, VillagerId *other);
-void TownId_CopyFrom(VillagerId *p, VillagerId *other);
 }
 
 extern const s8 sHudIconSlideOffsets[8];
@@ -38,7 +23,6 @@ const s8 sHudIconSlideOffsets[8] = {-18, -12, -2, -1, 0, 0, 0, 0};
 extern u8 data_020d47a4[];
 
 struct SpriteAnimSeq;
-
 
 
 // Vtable at 0x020d5e0c
@@ -183,7 +167,7 @@ void HudLinkIcon::update() {
 
 void HudLinkIcon::draw() {
     if (slideStep != 0) {
-        Oam_DrawCell(0, data_020d467c[1].frames[level].cell, slideOffset + 0x80, 0x60, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(0, (GXOamAttr *)data_020d467c[1].frames[level].cell, slideOffset + 0x80, 0x60, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
 }
 
@@ -277,7 +261,7 @@ HudUnkSlideIcon::~HudUnkSlideIcon() {
 
 void HudUnkSlideIcon::draw() {
     if (slideStep != 0) {
-        void *h = anim.getCell();
+        GXOamAttr *h = (GXOamAttr *)anim.getCell();
         if (h != 0) {
             s32 x = getOriginX() + anim.getFrameX(-1);
             s32 y = getOriginY() + anim.getFrameY(-1);
@@ -436,35 +420,35 @@ void HudUnkSlideIcon::applyVariantRequest() {
 }
 
 extern "C" void VillagerId_CopyFrom(VillagerId *p, VillagerId *other) {
-    TownId_CopyFrom(p, other);
+    TownId_CopyFrom(&p->townId, &other->townId);
     p->species = other->species;
     p->personality = other->personality;
 }
 
 extern "C" void VillagerId_CopyTo(VillagerId *p, VillagerId *other) {
-    TownId_CopyTo(p, other);
+    TownId_CopyTo(&p->townId, &other->townId);
     other->species = p->species;
     other->personality = p->personality;
 }
 
 extern "C" VillagerId *VillagerId_Construct(VillagerId *p) {
-    TownId_Construct(p);
+    TownId_Construct();
     return p;
 }
 
 extern "C" VillagerId *VillagerId_ConstructCopy(VillagerId *p, VillagerId *other) {
-    TownId_Construct(p);
+    TownId_Construct();
     VillagerId_CopyFrom(p, other);
     return p;
 }
 
 extern "C" VillagerId *VillagerId_Destruct(VillagerId *p) {
-    TownId_Destruct(p);
+    TownId_Destruct();
     return p;
 }
 
 extern "C" void VillagerId_Clear(VillagerId *p) {
-    TownId_Clear(p);
+    TownId_Clear(&p->townId);
     p->species = 0xff;
     p->personality = 6;
 }

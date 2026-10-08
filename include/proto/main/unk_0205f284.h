@@ -45,7 +45,7 @@ extern "C" {
 FishBobber *FishBobber_GetFloating(s32 idx);
 #endif
 #ifndef PROTO_LOCAL_FishBobber_Draw
-void FishBobber_Draw(u8 *self, Mtx43 *m, VecFx32 *scale);
+void FishBobber_Draw(FishBobber *self, Mtx43 *m, VecFx32 *arg);
 #endif
 #ifndef PROTO_LOCAL_Fishing_CalcArcSpeed
 void Fishing_CalcArcSpeed(VecFx32 *a, VecFx32 *b, s32 *c, s32 *d, u8 mode);
@@ -53,36 +53,6 @@ void Fishing_CalcArcSpeed(VecFx32 *a, VecFx32 *b, s32 *c, s32 *d, u8 mode);
 }
 #ifndef PROTO_LOCAL_sFishBobberPool
 extern FishBobberPool sFishBobberPool;
-#endif
-#ifndef PROTO_LOCAL_data_020dc4c4
-extern void *data_020dc4c4[2];
-#endif
-#ifndef PROTO_LOCAL_data_020dc504
-extern void *data_020dc504[2];
-#endif
-#ifndef PROTO_LOCAL_data_020dc4fc
-extern void *data_020dc4fc[2];
-#endif
-#ifndef PROTO_LOCAL_data_020dc4f4
-extern void *data_020dc4f4[2];
-#endif
-#ifndef PROTO_LOCAL_data_020dc4ec
-extern void *data_020dc4ec[2];
-#endif
-#ifndef PROTO_LOCAL_data_020dc4bc
-extern void *data_020dc4bc[2];
-#endif
-#ifndef PROTO_LOCAL_data_020dc4e4
-extern void *data_020dc4e4[2];
-#endif
-#ifndef PROTO_LOCAL_data_020dc4d4
-extern void *data_020dc4d4[2];
-#endif
-#ifndef PROTO_LOCAL_data_020dc4cc
-extern void *data_020dc4cc[2];
-#endif
-#ifndef PROTO_LOCAL_data_020dc4dc
-extern void *data_020dc4dc[2];
 #endif
 #ifndef PROTO_LOCAL_sFishBobberPathBuf
 extern char sFishBobberPathBuf[0x14];

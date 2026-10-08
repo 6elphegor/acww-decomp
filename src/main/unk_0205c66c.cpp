@@ -60,7 +60,7 @@ void PlayerBodyModelPool::allocBuffers() {
         u32 a = PlayerBodyModel_GetTexVramSize();
         u32 b = PlayerBodyModel_GetTex4x4VramSize();
         u32 c = PlayerBodyModel_GetPlttVramSize();
-        vramSlots[i].alloc((void *)a, (void *)b, (void *)c);
+        vramSlots[i].alloc(a, b, c);
     }
     Heap *heap = static_cast<Heap *>(gPlayerBodyModelHeap);
     for (i = 0; i < cnt; i++) buffers[i] = Heap_AllocAligned(heap, PlayerBodyModel_GetBufferSize(), 4);

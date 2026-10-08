@@ -310,7 +310,7 @@ void RoomTelephone::execAct07() {
                 f = FALSE;
             }
             if (f) {
-                if (TouchPickResult_GetTarget((u8 *)Scene_GetTouchPicker(), &out, &a, &b)) {
+                if (TouchPickResult_GetTarget((TouchPickResult *)Scene_GetTouchPicker(), &out, &a, &b)) {
                     if (a == 0xd) {
                         changeAct(0xa);
                     }
@@ -389,9 +389,9 @@ void RoomTelephone::enterAct01() {
 }
 
 void RoomTelephone::execAct00() {
-    s32 r5 = TouchPick_GetTappedObject(Scene_GetTouchPicker(), 0, 0);
+    void *r5 = TouchPick_GetTappedObject(Scene_GetTouchPicker(), 0, 0);
     void *r0 = PlayerActor_GetActor(4);
-    if (r5 && r0 && (void *)r5 == r0) {
+    if (r5 && r0 && r5 == r0) {
         if (acceptsInteraction(PlayerActor_GetCharacter(4))) {
             TalkRequest_AddPlayerTalk6(this, 0);
             return;

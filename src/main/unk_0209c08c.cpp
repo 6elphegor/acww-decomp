@@ -60,7 +60,7 @@ BOOL ModelSlot::init(void *texSize, void *plttSize, u32 heapSize, Heap *parent) 
         heap = (Heap *)FrameHeap_Create((heapSize + 3) & ~3, parent);
     }
     if (texSize != 0 || plttSize != 0) {
-        if (vramSlot.alloc(texSize, 0, plttSize)) return TRUE;
+        if (vramSlot.alloc((u32)(uptr)texSize, 0, (u32)(uptr)plttSize)) return TRUE;  // (the pool passes the sizes as pointers)
         return FALSE;
     }
     return TRUE;

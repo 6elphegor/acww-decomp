@@ -1104,7 +1104,7 @@ BOOL SpNpcCeleste::isPlayerAtTelescope() {
             }
         }
         if (r6 != 0) {
-            if (TouchPickResult_GetTarget(Scene_GetTouchPicker(), &pos, &out, NULL) != 0) {
+            if (TouchPickResult_GetTarget((TouchPickResult *)Scene_GetTouchPicker(), &pos, &out, NULL) != 0) {
                 if (out == 0x16) {
                     result = TRUE;
                     goto end;

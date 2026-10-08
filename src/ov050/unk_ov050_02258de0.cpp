@@ -3047,7 +3047,7 @@ BOOL SpNpcNookShop::pickItemTopic() {
     if (f) {
         void *o = FtrActorGrid_GetInstance()->getActor(bx, by, 0);
         if (o != 0) {
-            if (o != TouchPick_GetTargetObject(Scene_GetTouchPicker(), 0, 0)) {
+            if (o != TouchPick_GetTargetObject((TouchPickResult *)Scene_GetTouchPicker(), 0, 0)) {
                 return FALSE;
             }
         } else {

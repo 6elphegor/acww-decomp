@@ -5,7 +5,6 @@
 
 // The screen transition state (fade / iris wipe / cut) of src/main/unk_020411dc.cpp: gScreenTransition.
 // state: 0 idle, 1 -> 2 (ScreenTransition_StartFadeIn, done at VBlank), 3 -> 0 (ScreenTransition_StartFadeOut).
-// (unk_020411dc.cpp still has its own identical definition; it should include this header instead.)
 struct ScreenTransition {
     u8 state;
     u8 type;

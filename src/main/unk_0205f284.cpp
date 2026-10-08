@@ -14,7 +14,7 @@
 #include "actor/Character.h"
 #include "gfx/Model.h"
 #include "sys/Heap.h"
-#define PROTO_LOCAL_gFishBobberHeap  // declared below: the shared prototype conflicts with the calls here
+#include "field/FishShadow.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_0205b7b0.h"
@@ -42,7 +42,6 @@ typedef void (FishBobber::*Unk_0205f8d4_Fn)();
 
 
 extern "C" {
-extern u32 gFishBobberHeap;
 extern CommManager *gCommManager;
 extern u8 gSaveSongSet[];
 extern u8 gSaveHouse[];
@@ -116,39 +115,29 @@ public:
 
 typedef void (FishBobberStates::*Unk_0205f360_Fn)();
 
-extern "C" void _ZN16FishBobberStates11updateAct09Ev(void);
-extern "C" void _ZN16FishBobberStates12updateEscapeEv(void);
-extern "C" void _ZN16FishBobberStates12updateReelInEv(void);
-extern "C" void _ZN16FishBobberStates12updateHookedEv(void);
-extern "C" void _ZN16FishBobberStates11updateFloatEv(void);
-extern "C" void _ZN16FishBobberStates10updateBiteEv(void);
-extern "C" void _ZN16FishBobberStates10updateCastEv(void);
-extern "C" void _ZN16FishBobberStates14updateCastFailEv(void);
-extern "C" void _ZN16FishBobberStates10updateHeldEv(void);
-extern "C" void _ZN16FishBobberStates10updateIdleEv(void);
 
 FishBobberPool sFishBobberPool;
-void *data_020dc4c4[2] = {(void *)_ZN16FishBobberStates12updateEscapeEv, 0};
-void *data_020dc504[2] = {(void *)_ZN16FishBobberStates10updateIdleEv, 0};
-void *data_020dc4fc[2] = {(void *)_ZN16FishBobberStates10updateHeldEv, 0};
-void *data_020dc4f4[2] = {(void *)_ZN16FishBobberStates14updateCastFailEv, 0};
-void *data_020dc4ec[2] = {(void *)_ZN16FishBobberStates10updateCastEv, 0};
-void *data_020dc4bc[2] = {(void *)_ZN16FishBobberStates11updateAct09Ev, 0};
-void *data_020dc4e4[2] = {(void *)_ZN16FishBobberStates10updateBiteEv, 0};
-void *data_020dc4d4[2] = {(void *)_ZN16FishBobberStates12updateHookedEv, 0};
-void *data_020dc4cc[2] = {(void *)_ZN16FishBobberStates12updateReelInEv, 0};
-void *data_020dc4dc[2] = {(void *)_ZN16FishBobberStates11updateFloatEv, 0};
+Unk_0205f360_Fn data_020dc4c4 = &FishBobberStates::updateEscape;
+Unk_0205f360_Fn data_020dc504 = &FishBobberStates::updateIdle;
+Unk_0205f360_Fn data_020dc4fc = &FishBobberStates::updateHeld;
+Unk_0205f360_Fn data_020dc4f4 = &FishBobberStates::updateCastFail;
+Unk_0205f360_Fn data_020dc4ec = &FishBobberStates::updateCast;
+Unk_0205f360_Fn data_020dc4bc = &FishBobberStates::updateAct09;
+Unk_0205f360_Fn data_020dc4e4 = &FishBobberStates::updateBite;
+Unk_0205f360_Fn data_020dc4d4 = &FishBobberStates::updateHooked;
+Unk_0205f360_Fn data_020dc4cc = &FishBobberStates::updateReelIn;
+Unk_0205f360_Fn data_020dc4dc = &FishBobberStates::updateFloat;
 Unk_0205f360_Fn sFishBobberStateFns[10] = {
-    *(Unk_0205f360_Fn *)data_020dc504,
-    *(Unk_0205f360_Fn *)data_020dc4fc,
-    *(Unk_0205f360_Fn *)data_020dc4f4,
-    *(Unk_0205f360_Fn *)data_020dc4ec,
-    *(Unk_0205f360_Fn *)data_020dc4dc,
-    *(Unk_0205f360_Fn *)data_020dc4e4,
-    *(Unk_0205f360_Fn *)data_020dc4d4,
-    *(Unk_0205f360_Fn *)data_020dc4cc,
-    *(Unk_0205f360_Fn *)data_020dc4c4,
-    *(Unk_0205f360_Fn *)data_020dc4bc
+    data_020dc504,
+    data_020dc4fc,
+    data_020dc4f4,
+    data_020dc4ec,
+    data_020dc4dc,
+    data_020dc4e4,
+    data_020dc4d4,
+    data_020dc4cc,
+    data_020dc4c4,
+    data_020dc4bc
 };
 char sFishBobberPathBuf[0x14];
 
@@ -157,7 +146,7 @@ static inline BOOL Unk_0205fbfc_Is1(u8 v) { return v == 1 ? TRUE : FALSE; }
 
 extern "C" void FishBobberPool_Create(void *parent)
 {
-    FishBobberHeap_Create(parent);
+    FishBobberHeap_Create((Heap *)parent);
     sFishBobberPool.allocBuffers();
     if (gFishBobberHeap != 0) {
         ((Heap *)(gFishBobberHeap))->adjust();
@@ -220,14 +209,14 @@ void FishBobberPool::allocBuffers()
     for (i = 0; i < n; i++) {
         u32 x = FishBobber_GetTexVramSize();
         u32 y = FishBobber_GetTex4x4VramSize();
-        texSlots[i].alloc((void *)x, (void *)y, (void *)FishBobber_GetPlttVramSize());
+        texSlots[i].alloc(x, y, FishBobber_GetPlttVramSize());
     }
     for (i = 4; i < m + 4; i++) {
         u32 x = FishBobber_GetTexVramSize();
         u32 y = FishBobber_GetTex4x4VramSize();
-        texSlots[i].alloc((void *)x, (void *)y, (void *)FishBobber_GetPlttVramSize());
+        texSlots[i].alloc(x, y, FishBobber_GetPlttVramSize());
     }
-    u32 heap = gFishBobberHeap;
+    Heap *heap = (Heap *)gFishBobberHeap;
     for (i = 0; i < n; i++) {
         modelBuffers[i] = Heap_AllocAligned(heap, FishBobber_GetModelSize(), 4);
     }
@@ -433,7 +422,7 @@ void FishBobber::endCatch()
 
 void FishBobber::startCatchLift()
 {
-    FishCatch_StartLift((void *)ownerAid, 0);
+    FishCatch_StartLift(ownerAid, 0);
     fish = 0;
 }
 
@@ -567,26 +556,28 @@ void FishBobber::update()
     (((FishBobberStates *)this)->*sFishBobberStateFns[curState])();
 }
 
-extern "C" void FishBobber_Draw(u8 *self, Mtx43 *m, VecFx32 *scale)
+// Draws the bobber with the scale (arg): at the rod tip (the matrix) while held or cast, else at its position, pulled
+// towards the hooked fish
+extern "C" void FishBobber_Draw(FishBobber *self, Mtx43 *m, VecFx32 *arg)
 {
-    if (*(s32 *)(self + 4) != 0) {
-        u8 *e = (u8 *)sFishBobberPool.getModel(*self);
+    if (self->curState != 0) {
+        CachedModel *e = sFishBobberPool.getModel(self->slot);
         Mtx43 mt = *m;
         VecFx32 v;
-        if (*(s32 *)(self + 4) <= 1) {
+        if (self->curState <= 1) {
             v.x = mt.m[9];
             v.y = mt.m[10];
             v.z = mt.m[11];
-            WorldCurve_FromCurved(&((FishBobber *)self)->pos, &v);
+            WorldCurve_FromCurved(&self->pos, &v);
         } else {
-            v.x = *(s32 *)(self + 8);
-            v.y = *(s32 *)(self + 12);
-            v.z = *(s32 *)(self + 16);
-            if (*(s32 *)(self + 4) == 6) {
-                s32 r = (s32)((FishBobber *)self)->getFish();
-                if (r != 0) {
+            v.x = self->pos.x;
+            v.y = self->pos.y;
+            v.z = self->pos.z;
+            if (self->curState == 6) {
+                FishShadow *r = (FishShadow *)self->getFish();
+                if (r != NULL) {
                     VecFx32 t;
-                    VecFx32 *pv = (VecFx32 *)(r + 0x120);
+                    VecFx32 *pv = &r->position;
                     t.x = pv->x;
                     t.y = pv->y;
                     t.z = pv->z;
@@ -601,8 +592,8 @@ extern "C" void FishBobber_Draw(u8 *self, Mtx43 *m, VecFx32 *scale)
             Mtx43_SetTranslate(&tmp, v.x, v.y, v.z);
             mt = tmp;
         }
-        *(Mtx43 *)(e + 0x64) = mt;
-        ((Model *)(e))->drawScaled(&scale->x);
+        ((Model *)e)->mtx = mt;
+        ((Model *)e)->drawScaled(&arg->x);
     }
 }
 

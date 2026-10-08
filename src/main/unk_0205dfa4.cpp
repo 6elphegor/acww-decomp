@@ -211,10 +211,10 @@ extern "C" void HeldItemModels_AllocVram(HeldItemModelBank *self) {
     m = n ? n : 1;
     end = Scene_GetMaxCharacters(Scene_GetCurrent()) + NpcSpawn_GetSpNpcSlotCount() - m;
     for (i = 0; i < n; i++) {
-        self->vramSlots[i].alloc((void *)HeldItem_GetTexVramSize(), (void *)HeldItem_GetTex4x4VramSize(), (void *)HeldItem_GetPlttVramSize());
+        self->vramSlots[i].alloc(HeldItem_GetTexVramSize(), HeldItem_GetTex4x4VramSize(), HeldItem_GetPlttVramSize());
     }
     for (i = 4; i < end + 4; i++) {
-        self->vramSlots[i].alloc((void *)HeldItem_GetTexVramSize(), (void *)HeldItem_GetTex4x4VramSize(), (void *)HeldItem_GetPlttVramSize());
+        self->vramSlots[i].alloc(HeldItem_GetTexVramSize(), HeldItem_GetTex4x4VramSize(), HeldItem_GetPlttVramSize());
     }
     heap = (Heap *)gHeldItemModelHeap;
     for (i = 0; i < n; i++) {
@@ -613,7 +613,7 @@ extern "C" void HeldItemModel_Draw(HeldItemModel *o, Mtx43 *src) {
             HeldItemModel_GetJointMtx(&E, o, 0);
             B = E;
         }
-        FishBobber_Draw((u8 *)&o->bobber, &B, &A);
+        FishBobber_Draw((FishBobber *)&o->bobber, &B, &A);
         F.x = B.m[9];
         F.y = B.m[10];
         F.z = B.m[11];
