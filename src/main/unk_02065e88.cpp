@@ -195,7 +195,7 @@ s32 TalkRenderProcessor::measureLine(u8 *text, BOOL centered) {
     s32 r = 0;
     if (centered != 0) {
         if (measureLabel != 0) {
-            measureLabel->textStart = (u32)(uptr)text;
+            measureLabel->textStart = text;
             measureLabel->alignCenter();
             r = measureLabel->xOffset;
             measureLabel->textStart = 0;
@@ -550,7 +550,7 @@ void TalkTextBox::redrawLines() {
     for (i = 0; i < numLines; i++) {
         MsgTextLabel *e = labels[i];
         if (e != 0 && lineDirty[i] != 0) {
-            e->textStart = (u32)(uptr)lineStarts[i];
+            e->textStart = lineStarts[i];
             e->textEnd = 0;
             e->xOffset = lineOffsets[i];
             e->fgColor = Talk_ColorTagToTextColor(lineColors[i]);
@@ -559,7 +559,7 @@ void TalkTextBox::redrawLines() {
     }
     if (numLines < 3) {
         MsgTextLabel *e = labels[numLines];
-        if (e != 0) e->textEnd = (u32)(uptr)(text + length);
+        if (e != 0) e->textEnd = text + length;
     }
 }
 void TalkTextBox::endText() {}
@@ -603,7 +603,7 @@ void TalkCharStepper::stepOnce() {
         run(FALSE);
     } else if (s == 2) {
         stepAllowed = 1;
-        run((BOOL)(sptr)endPos);  // (MsgWalker::run: the address to stop at)
+        run(endPos);
     }
 }
 BOOL TalkCharStepper::isIdle() {
@@ -2709,7 +2709,7 @@ void TalkWindowState::createNameLabel() {
         nameLabel->bgColor = 0xe;
         MsgString9 *o = request->getSpeakerName();
         MsgTextLabel *t = nameLabel;
-        t->textStart = (u32)(uptr)o->data();
+        t->textStart = o->data();
         nameLabel->alignCenter();
         nameLabel->fgColor = 2;
         nameLabel->requestRedraw();

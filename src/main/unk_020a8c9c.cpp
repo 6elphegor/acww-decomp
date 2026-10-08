@@ -1218,7 +1218,7 @@ void ChoiceListCursor::createLabels() {
         TextLabel *t = MsgTextLabel_CreateVram(size, 0xd, 2);
         if (t) {
             t->vramLoader = 1;
-            t->textStart = (u32)buf->data();
+            t->textStart = buf->data();
             t->copyMode = 2;
             t->bgColor = 0xe;
             t->fgColor = i + 1;
@@ -1520,7 +1520,7 @@ void ChoiceSliderCursor::createLabels() {
         TextLabel *o = MsgTextLabel_CreateVram(font, 13, 2);
         if (o) {
             o->vramLoader = 1;
-            o->textStart = (u32)text->data();
+            o->textStart = text->data();
             o->copyMode = 2;
             o->bgColor = 14;
             o->fgColor = i + 1;

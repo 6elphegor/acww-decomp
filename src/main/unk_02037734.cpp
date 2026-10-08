@@ -412,7 +412,7 @@ void CommCautionWindow::renderLine() {
         MsgTextLabel *o = MsgTextLabel_CreateBuffer(buf, 0x20, 2);
         if (o != NULL) {
             o->vramLoader = 5;
-            o->textStart = (u32)lineText.data();
+            o->textStart = lineText.data();
             o->group = 2;
             o->copyMode = 0;
             o->font = (GameFontDesc *)&gFontA;  // (a GameFont: a GameFontDesc)
@@ -446,7 +446,7 @@ void CommCautionWindow::renderCountdown(void *buf, s32 x) {
     MsgTextLabel *o = MsgTextLabel_CreateBuffer(buf, 0x20, 2);
     if (o != NULL) {
         o->vramLoader = 5;
-        o->textStart = (u32)((MsgString *)&t)->data();
+        o->textStart = ((MsgString *)&t)->data();
         o->group = 2;
         o->copyMode = 0;
         o->font = (GameFontDesc *)&gFontA;  // (a GameFont: a GameFontDesc)
