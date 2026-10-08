@@ -1,7 +1,7 @@
 #include "gfx/TexPatVramAnim.h"
+#include "gfx/TexPatVramUploader.h"
+#include "gfx/PatternTexCache.h"
 #include "uptr.h"
-// a TexPatVramTasks (0x38 on the DS)
-#define TEXPAT_TASKS_SIZE HOST_SIZED(0x38, TexPatVramTasks)
 #include "town/TownBlockCell.h"
 #include "types.h"
 #include "save/PatternOrder.h"
@@ -10,34 +10,26 @@
 #include "sys/OverlayHandle.h"
 #include "save/MuseumData.h"
 #include "sys/RecordFile.h"
+#include "sys/new.h"
 #include "save/Unk_020942c8.h"
 #include "save/Pattern.h"
+#include "save/BlancaFaceRecord.h"
+#include "save/TownId.h"
+#include "save/TownStyleRecordView.h"
 #include "room/HouseRoom.h"
 #include "talk/EncodedString16Buf.h"
+#include "talk/MsgString.h"
+#include "talk/MsgString9B.h"
+#include "talk/MsgString9C.h"
+#include "item/ItemId.h"
+#include "item/ItemName.h"
+#include "npc/VillagerId.h"
+#include "player/PlayerData.h"
+#include "player/PlayerId.h"
 #include "room/HouseData.h"
 #include "save/SaveData.h"
 #include "town/TownBlockMap.h"
 #include "net/CommManager.h"
-#define PROTO_LOCAL_ClothTex_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PatternPresetInfo_Apply  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PatternTexCache_ClearDirty  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PatternTexCache_ResetKeys  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerId_GetTownId  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownFlagPatternDefault_Extract  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownFlagPattern_GetPattern  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownFlagPattern_InitDefault  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_Assign  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_SetId  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_SetNameString  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e0498  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e049c  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sPatternPresetInfo  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sPatternTexCache  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sPlayerPatternTexKeys  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sPresetPatternBuffer  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_0200137c.h"
@@ -50,6 +42,7 @@
 #include "proto/main/unk_0206d49c.h"
 #include "proto/main/unk_02070560.h"
 #include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02093ff0.h"
 #include "proto/main/unk_02095cdc.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
@@ -59,14 +52,61 @@
 
 // U125: design (pattern) storage and display helpers, 0x02070560-0x020720f8
 
-class CommManager;
-class EncodedString16Buf;
-class Unk_020942c8;
+class StrBuf;
+class GateHouse;
+struct NNSG3dResTex;
+class TexVramSlot;
+struct VillagerData;
+struct VillagerPlan;
 
-namespace U125_calls {
-extern "C" void EncodedString_SetRaw(EncodedString16Buf *o, u8 *src, s32 n);
-extern "C" BOOL _ZN8PlayerId6equalsEPS_(Unk_020942c8 *self, Unk_020942c8 *o);
+// ---- declared here: SDK functions, data defined elsewhere, functions whose shared declaration is left out of the
+// generated headers (include/proto/.excluded: their parameter types are local to their source files)
+extern "C" {
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
+BOOL EncodedString_SetRaw(StrBuf *buf, const void *src, s32 len);
+u32 Scene_GetCurrent();
+BOOL Scene_InTown();
+BOOL Gfx3d_LoadTexAndPltt(NNSG3dResTex *a, TexVramSlot *b);
+void *ResCache_GetTex(void *a, u32 key);
+u8 *SaveVillagers_Get(u8 *base, s32 idx);
+// (defined with u32 a: the VillagerData's address, src/main/unk_02077ac4.cpp)
+u8 *Villager_GetFashionTaste(VillagerData *a);
+void *Villager_GetPlan(VillagerData *a);
+// (defined with S1 *s and u32 c: c is the u16 * the item is copied to, src/main/unk_020ac750.cpp)
+u16 *AbleShop_GetItem(void *s, u32 a, u16 *out);
+void Item_FromPlacedForm(u16 *out, u16 *in);
+TownBlockMap *TownBlockMap_Get();
+// (defined returning a RoomBlockMap *: the same layout as TownBlockMap, local to src/main/unk_0204cc1c.cpp)
+TownBlockMap *HouseRoomMaps_Get(s32 i);
+u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z);
+BOOL MapBlock_SetItem(void *cell, u16 *t, u32 x, u32 y, u8 z);
+// methods of classes defined in other source files (VillagerData: src/main/unk_02077ac4.cpp, VillagerPlan:
+// src/main/unk_02098e90.cpp), called by their symbols until the classes are in headers
+void *_ZN12VillagerData13getVillagerIdEv(VillagerData *self);
+void *_ZN12VillagerData10getPatternEv(VillagerData *self);
+u32 _ZN12VillagerPlan8getStateEv(VillagerPlan *self);
+
+extern SaveData gSaveData;
+extern CommManager *gCommManager;
+extern u8 gFieldSceneKind[];
+extern u8 gSavePlayers[];
+extern u8 gSaveVillagers[];
+extern AbleSistersPatterns gSaveAbleSistersPatterns;
+extern BlancaFaceRecord gSaveBlancaFace;
+extern TownStyleRecordView gSaveTownFlag;
+extern HouseData gSaveHouse;
+extern u8 data_021ed2d4[];  // the Able Sisters' shop (gSaveData.ableShop)
+extern u16 data_020cb6f4;
+extern u16 data_020d03cc;
+extern u16 data_020d03d0;
+extern u16 data_020d03d4;
+extern Pattern *(*const sPatternSourceGetters[10])(s32);  // (defined below)
 }
+
+// Unk_020942c8 is the PlayerId record (save/Unk_020942c8.h): the same layout, the PlayerId methods called on it.
+static inline PlayerId *AsPlayerId(Unk_020942c8 *p) { return (PlayerId *)(void *)p; }
+static inline Unk_020942c8 *AsIdRecord(PlayerId *p) { return (Unk_020942c8 *)(void *)p; }
+static inline Unk_020942c8 *TownIdOf(Unk_020942c8 *p) { return (Unk_020942c8 *)PlayerId_GetTownId(p); }
 
 // ======== types of unk_0206fe80.cpp ========
 
@@ -78,48 +118,8 @@ struct Unk_02070e4c_Bits {
     u32 e : 1;
     u32 f : 3;
 };
-struct ItemId {
-    u16 v;
-    u16 pad;
-    ItemId() : v(0xfff1) {}
-    ~ItemId();
-};
-class HouseData;
-class HouseRoom;
 
 // ======== types of unk_0207116c.cpp ========
-struct PatternPaletteFile {
-    u8 *fileData;
-    u8 *palettes[16];
-    PatternPaletteFile();
-    ~PatternPaletteFile();
-    void unload();
-    void load();
-    void clear();
-};
-struct PatternTexKeys {
-    u32 unk_00;
-    PatternTexKeys();
-    ~PatternTexKeys();
-};
-struct PatternTexCache {
-    PatternTexKeys texKeys;
-    PatternPaletteFile paletteFile;
-    PatternTexCache();
-    ~PatternTexCache();
-    void reset();
-    u8 *getPalette(s32 i);
-    void load();
-    void unload();
-    BOOL loadPresetPattern(s32 n);
-    void createTextures();
-    void *getPresetPattern();
-    void setAbleDirty(s32 bit);
-    BOOL testAndClearAbleDirty(s32 bit);
-    u32 getAbleTexKey(s32 i);
-    u32 getPlayerTexKey(s32 a, s32 b);
-};
-struct ClothTexStorage { u32 v[0xb1]; };
 struct PatternCopyBytes8 { u8 v[8]; };
 struct PatternCopyBytes16 { u8 v[16]; };
 struct PatternCopyPixels { u32 v[128]; };
@@ -135,113 +135,10 @@ struct PatternCopyView {
     u8 i;
 };
 
-// ======== types of unk_02071ae0.cpp ========
-enum Unk_020720f8_Id { Unk_020720f8_Id_0 = 0 };
-
-
-struct PatternPresetInfoFile {
-    RecordFile file;
-    PatternPresetInfoFile();
-    ~PatternPresetInfoFile();
-};
-
-// design object sPresetPatternBuffer (0x228 bytes)
-struct PresetPatternBuffer {
-    Pattern pattern;
-    PresetPatternBuffer();
-    ~PresetPatternBuffer();
-};
-
-
 // ======== unk_02071ae0.cpp ========
-namespace n4 {
-extern "C" {
-extern u32 OVERLAY_65_ID[];
-}
-extern "C" {
-extern u32 OVERLAY_66_ID[];
-}
-extern "C" {
-extern u32 OVERLAY_67_ID[];
-}
-extern "C" {
-extern u16 data_020cb6f4;
-}
-extern "C" {
-extern u16 data_020d03cc;
-}
-extern "C" {
-extern CommManager *gCommManager;
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void PatternPresetInfo_Apply(void *t, PatternInfo *s, s32 id);
-}
-extern "C" {
-Unk_020942c8 *PlayerId_GetTownId(Unk_020942c8 *p);
-}
-extern "C" {
-void TownId_SetId(Unk_020942c8 *p, u32 v);
-}
-extern "C" {
-void _ZN8PlayerId5setIdEt(Unk_020942c8 *p, u32 v);
-}
-extern "C" {
-void _ZN6TownId7setTownEPS_(Unk_020942c8 *a, Unk_020942c8 *b);
-}
-extern "C" {
-}
-extern "C" {
-void MI_CpuCopy8(void *src, void *dst, u32 n);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void *_ZN10PlayerData11getPlayerIdEv(void *p);
-}
-extern "C" {
-}
-extern "C" {
-u8 *_ZN15PatternTexCache10getPaletteEi(void *p, u32 v);
-}
-extern "C" {
-}
-extern "C" {
-void _ZN13EncodedString13fromMsgStringEP9MsgString(EncodedString16Buf *o, void *x);
-}
-extern "C" {
-void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *dst, EncodedString16Buf *o, u32 a, u32 b);
-}
-
-
-}
 BOOL PatternInfo::infoEquals(PatternInfo *o) {
-    using namespace n4;
     if (tastePalette.lo == o->tastePalette.lo && tastePalette.hi == o->tastePalette.hi && townId == o->townId &&
-        memcmp(&townName, &o->townName, 8) == 0 && U125_calls::_ZN8PlayerId6equalsEPS_(this, o) != 0) {
+        memcmp(&townName, &o->townName, 8) == 0 && AsPlayerId(this)->equals(AsPlayerId(o)) != 0) {
         for (u32 i = 0; i < 16; i++) {
             if (title.b[i] != o->title.b[i]) return FALSE;
         }
@@ -249,48 +146,27 @@ BOOL PatternInfo::infoEquals(PatternInfo *o) {
     }
     return FALSE;
 }
-namespace n4 {
-}
-PatternInfo::PatternInfo() {
-    using namespace n4;}
-namespace n4 {
-}
-PatternInfo::~PatternInfo() {
-    using namespace n4;}
-namespace n4 {
-}
+PatternInfo::PatternInfo() {}
+PatternInfo::~PatternInfo() {}
 u8 *PatternInfo::getPaletteData() {
-    using namespace n4;
-    void *p = PatternTexCache_Get();
-    return _ZN15PatternTexCache10getPaletteEi(p, getPalette());
-}
-namespace n4 {
+    PatternTexCache *p = PatternTexCache_Get();
+    return p->getPalette(getPalette());
 }
 u8 PatternInfo::getPalette() {
-    using namespace n4;
     u8 f = *(u8 *)&tastePalette;
     u32 t = (u32)(f << 24) >> 28;
     t &= 0xf;
     return t;
 }
-namespace n4 {
-}
 void PatternInfo::setPalette(u32 v) {
-    using namespace n4;
     u8 &f = *(u8 *)&tastePalette;
     u32 t = v & 0xf;
     f = (f & ~0xf0) | ((u8)t & 0xf) << 4;
 }
-namespace n4 {
-}
 void PatternInfo::setAuthorToCurrentPlayer() {
-    using namespace n4;
-    setAuthor((Unk_020942c8 *)_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
-}
-namespace n4 {
+    setAuthor(AsIdRecord(PlayerData_GetCurrent()->getPlayerId()));
 }
 void PatternInfo::setAuthor(Unk_020942c8 *src) {
-    using namespace n4;
     townId = src->townId;
     townName = src->townName;
     playerId = src->playerId;
@@ -298,70 +174,41 @@ void PatternInfo::setAuthor(Unk_020942c8 *src) {
     gender = src->gender;
     unk_15 = src->unk_15;
 }
-namespace n4 {
-}
-Unk_020942c8 *PatternInfo::getAuthor() {
-    using namespace n4; return this; }
-namespace n4 {
-}
+Unk_020942c8 *PatternInfo::getAuthor() { return this; }
 void PatternInfo::getTitle(void *x) {
-    using namespace n4;
     EncodedString16Buf s;
     getTitleEncoded(&s);
-    _ZN9MsgString11fromEncodedEP13EncodedStringii(x, &s, 0, 0);
-}
-namespace n4 {
+    ((MsgString *)x)->fromEncoded(&s, 0, 0);
 }
 void PatternInfo::getTitleEncoded(EncodedString16Buf *o) {
-    using namespace n4;
-    U125_calls::EncodedString_SetRaw(o, title.b, 16);
-}
-namespace n4 {
+    // (StrBuf: the byte buffer interface of src/main/unk_020a6974.cpp, the same one as EncodedStringBase)
+    EncodedString_SetRaw((StrBuf *)(void *)o, title.b, 16);
 }
 void PatternInfo::getTitleRaw(u8 *dst) {
-    using namespace n4;
     *(EncodedTitle16 *)dst = *(EncodedTitle16 *)&title;
 }
-namespace n4 {
-}
 void PatternInfo::setTitle(void *x) {
-    using namespace n4;
     EncodedString16Buf s;
-    _ZN13EncodedString13fromMsgStringEP9MsgString(&s, x);
+    s.fromMsgString((MsgString *)x);
     setTitleEncoded(&s);
 }
-namespace n4 {
-}
 void PatternInfo::setTitleEncoded(EncodedString16Buf *o) {
-    using namespace n4;
     o->copyTo(title.b, 16);
 }
-namespace n4 {
-}
 void PatternInfo::setTitleRaw(u8 *src) {
-    using namespace n4;
     *(EncodedTitle16 *)&title = *(EncodedTitle16 *)src;
 }
-namespace n4 {
-}
 u8 PatternInfo::getTaste() {
-    using namespace n4;
     return tastePalette.lo;
 }
-namespace n4 {
-}
 void PatternInfo::setTaste(u32 v) {
-    using namespace n4;
     u8 &f = *(u8 *)&tastePalette;
     f = (f & ~0xf) | ((u8)v & 0xf);
 }
-namespace n4 {
-}
 BOOL Pattern::equals(Pattern *o) {
-    using namespace n4;
     if (info.infoEquals(&o->info)) {
-        u32 *p = (u32 *)this;
-        u32 *q = (u32 *)o;
+        u32 *p = (u32 *)pixels;
+        u32 *q = (u32 *)o->pixels;
         for (u32 i = 0; i < 0x80; i++) {
             if (*p != *q) return FALSE;
             p++;
@@ -371,59 +218,32 @@ BOOL Pattern::equals(Pattern *o) {
     }
     return FALSE;
 }
-namespace n4 {
-}
-Pattern::Pattern() {
-    using namespace n4;}
-namespace n4 {
-}
-Pattern::~Pattern() {
-    using namespace n4;}
-namespace n4 {
-}
-u8 *Pattern::getPixels() {
-    using namespace n4; return (u8 *)this; }
-namespace n4 {
-}
+Pattern::Pattern() {}
+Pattern::~Pattern() {}
+u8 *Pattern::getPixels() { return (u8 *)pixels; }
 void Pattern::setPixels(void *dst) {
-    using namespace n4;
     MI_CpuCopy8(dst, getPixels(), 0x200);
 }
-namespace n4 {
-}
 void Pattern::fill(u32 v) {
-    using namespace n4;
     u8 b = v | (v << 4);
     u32 w = (b << 24) | ((b << 16) | (b | (b << 8)));
-    u32 *p = (u32 *)this;
-    u32 *end = (u32 *)(HOST_AT(this, 0x200, info.townId, 0));
+    u32 *p = (u32 *)pixels;
+    u32 *end = (u32 *)(pixels + 0x40);
     while (p < end) *p++ = w;
 }
-namespace n4 {
-}
 PatternInfo *Pattern::getInfo() {
-    using namespace n4;
     return &info;
 }
-namespace n4 {
-}
-PlayerPatterns::PlayerPatterns() {
-    using namespace n4;}
-namespace n4 {
-}
-PlayerPatterns::~PlayerPatterns() {
-    using namespace n4;}
-namespace n4 {
-}
+PlayerPatterns::PlayerPatterns() {}
+PlayerPatterns::~PlayerPatterns() {}
 void PlayerPatterns::initDefaultPatterns(Unk_020942c8 *a) {
-    using namespace n4;
     void *t = Mem_Alloc(0x1000);
     if (t) {
         if (t) PlayerPatternDefaults_Ctor(t);
         PlayerPatternDefaults_Load(t);
         for (s16 i = 0; (u32)i < 8; i++) {
             PlayerPatternDefaults_Extract(t, getPattern(i)->getPixels(), i);
-            void *tbl = PatternPresetInfo_Get();
+            PatternPresetInfoFile *tbl = PatternPresetInfo_Get();
             PatternPresetInfo_Apply(tbl, getPattern(i)->getInfo(), i);
             getPattern(i)->getInfo()->setAuthor(a);
         }
@@ -431,82 +251,46 @@ void PlayerPatterns::initDefaultPatterns(Unk_020942c8 *a) {
     }
     patternOrder.reset();
 }
-namespace n4 {
-}
 void PlayerPatterns::replaceAuthorTown(Unk_020942c8 *a, Unk_020942c8 *b) {
-    using namespace n4;
     for (u8 i = 0; i < 8; i++) {
         PatternInfo *s = getPattern(i)->getInfo();
         Unk_020942c8 *base = s->getAuthor();
-        Unk_020942c8 *p = PlayerId_GetTownId(base);
+        Unk_020942c8 *p = TownIdOf(base);
         if (p->townId == b->townId) {
             if (memcmp(&p->townName, &b->townName, 8) == 0) {
-                if (U125_calls::_ZN8PlayerId6equalsEPS_(base, a)) {
-                    _ZN6TownId7setTownEPS_(s->getAuthor(), PlayerId_GetTownId(a));
+                if (AsPlayerId(base)->equals(AsPlayerId(a))) {
+                    AsPlayerId(s->getAuthor())->setTown(AsPlayerId(TownIdOf(a)));
                 }
             }
         }
     }
 }
-namespace n4 {
-}
 Pattern *PlayerPatterns::getPattern(u8 i) {
-    using namespace n4;
     return &patterns[i & 7];
 }
-namespace n4 {
-}
 Pattern *PlayerPatterns::getPatternByOrder(u32 i) {
-    using namespace n4;
     return &patterns[patternOrder.getSlot(i)];
 }
-namespace n4 {
-}
 PatternOrder *PlayerPatterns::getPatternOrder() {
-    using namespace n4;
     return &patternOrder;
 }
-namespace n4 {
-}
-PatternOrder::PatternOrder() {
-    using namespace n4;}
-namespace n4 {
-}
-PatternOrder::~PatternOrder() {
-    using namespace n4;}
-namespace n4 {
-}
+PatternOrder::PatternOrder() {}
+PatternOrder::~PatternOrder() {}
 void PatternOrder::reset() {
-    using namespace n4;
     for (u8 i = 0; i < 8; i++) slots[i] = i;
 }
-namespace n4 {
-}
 void PatternOrder::swap(u32 a, u32 b) {
-    using namespace n4;
     u8 t = slots[a & 7];
     slots[a & 7] = slots[b & 7];
     slots[b & 7] = t;
 }
-namespace n4 {
-}
 u32 PatternOrder::getSlot(u32 i) {
-    using namespace n4;
     return (u8)(slots[i & 7] & 7);
 }
-namespace n4 {
-}
-AbleSistersPatterns::AbleSistersPatterns() {
-    using namespace n4;}
-namespace n4 {
-}
-AbleSistersPatterns::~AbleSistersPatterns() {
-    using namespace n4;}
-namespace n4 {
-}
+AbleSistersPatterns::AbleSistersPatterns() {}
+AbleSistersPatterns::~AbleSistersPatterns() {}
 // ---- callers first
 void AbleSistersPatterns::initDefaultPatterns() {
-    using namespace n4;
     void *t = Mem_Alloc(0x1000);
     if (t) {
         if (t) AblePatternDefaults_Ctor(t);
@@ -515,300 +299,37 @@ void AbleSistersPatterns::initDefaultPatterns() {
         u16 g2 = data_020d03cc;
         for (s16 i = 0; (u32)i < 8; i++) {
             AblePatternDefaults_Extract(t, getPattern(i)->getPixels(), i);
-            void *tbl = PatternPresetInfo_Get();
+            PatternPresetInfoFile *tbl = PatternPresetInfo_Get();
             PatternPresetInfo_Apply(tbl, getPattern(i)->getInfo(), i + 8);
-            TownId_SetId(PlayerId_GetTownId(getPattern(i)->getInfo()->getAuthor()), g1);
-            _ZN8PlayerId5setIdEt(getPattern(i)->getInfo()->getAuthor(), g2);
+            TownId_SetId(&TownIdOf(getPattern(i)->getInfo()->getAuthor())->townId, g1);
+            AsPlayerId(getPattern(i)->getInfo()->getAuthor())->setId(g2);
         }
         Mem_Free(t);
     }
 }
-namespace n4 {
-}
 Pattern *AbleSistersPatterns::getPattern(u8 i) {
-    using namespace n4;
     return &patterns[i & 7];
 }
-namespace n4 {
-}
-TownFlagPattern::TownFlagPattern() {
-    using namespace n4;}
-namespace n4 {
-}
-TownFlagPattern::~TownFlagPattern() {
-    using namespace n4;}
-namespace n4 {
-}
+TownFlagPattern::TownFlagPattern() {}
+TownFlagPattern::~TownFlagPattern() {}
 
 // ======== unk_0207116c.cpp ========
-namespace n3 {
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void *_ZN10RecordFile9getRecordEj(void *, s32);
-}
-extern "C" {
-s32 _ZN10RecordFile5closeEv(void *);
-}
-extern "C" {
-s32 _ZN10RecordFile4openEPvii(void *, void *, s32, s32);
-}
-extern "C" {
-void _ZN10RecordFileD1Ev(void *);
-}
-extern "C" {
-void _ZN10RecordFileC1Ev(void *);
-}
-extern "C" {
-}
-extern "C" {
-s32 _ZN10PlayerData8getIndexEv(PlayerData *p);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-s32 Scene_GetCurrent(void);
-}
-extern "C" {
-s32 Scene_InTown(void);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void ClothTex_Construct(void *p);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void *_ZN10PlayerData11getPatternsEv(void *p);
-}
-extern "C" {
-void *_ZN14PlayerPatterns10getPatternEh(void *p, u32 i);
-}
-extern "C" {
-}
-extern "C" {
-void *_ZN7Pattern9getPixelsEv(void *p);
-}
-extern "C" {
-}
-extern "C" {
-void *_ZN7Pattern7getInfoEv(void *p);
-}
-extern "C" {
-void *_ZN11PatternInfo14getPaletteDataEv(void *p);
-}
-extern "C" {
-}
-extern "C" {
-s32 Gfx3d_LoadTexAndPltt(void *a, u32 b);
-}
-extern "C" {
-void *ResCache_GetTex(void *a, u32 key);
-}
-extern "C" {
-}
-extern "C" {
-void *_ZN19AbleSistersPatterns10getPatternEh(void *tbl, u32 i);
-}
-extern "C" {
-void _ZN15TexPatVramTasksC1Ev(void *p);
-}
-extern "C" {
-void *_ZN11PatternInfo9getAuthorEv(void *p);
-}
-extern "C" {
-void *PlayerId_GetTownId(void *p);
-}
-extern "C" {
-void TownId_SetId(u16 *p, u16 v);
-}
-extern "C" {
-void _ZN8PlayerId5setIdEt(void *p, u16 v);
-}
-extern "C" {
-void _ZN7PatternD1Ev(void *p);
-}
-extern "C" {
-void _ZN7PatternC1Ev(void *p);
-}
-extern "C" {
-void _ZN11PatternInfo8setTitleEPv(void *a, void *b);
-}
-extern "C" {
-void _ZN11PatternInfo10setPaletteEj(void *a, u32 b);
-}
-extern "C" {
-void _ZN11PatternInfo8setTasteEj(void *a, u32 b);
-}
-extern "C" {
-void _ZN11PatternInfo9setAuthorEP12Unk_020942c8(void *a, void *b);
-}
-extern "C" {
-void _ZN9MsgString3setEPh(void *dst, void *src);
-}
-extern "C" {
-void _ZN8PlayerId13setNameStringEP9MsgString(void *a, void *b);
-}
-extern "C" {
-void _ZN6TownId7setTownEPS_(void *a, void *b);
-}
-extern "C" {
-void TownId_SetNameString(void *a, void *b);
-}
-extern "C" {
-void _ZN11MsgString9BC1Ev(void *);
-}
-extern "C" {
-void _ZN11MsgString9BD1Ev(void *);
-}
-extern "C" {
-void _ZN8PlayerIdC1EPv(void *);
-}
-extern "C" {
-void _ZN8PlayerIdC1Ev(void *);
-}
-extern "C" {
-void TownId_Construct(void *);
-}
-extern "C" {
-void TownId_Destruct(void *);
-}
-extern "C" {
-void _ZN11MsgString9CC2Ev(void *);
-}
-extern "C" {
-void _ZN11MsgString9CD1Ev(void *);
-}
-extern "C" {
-void _ZN8ItemNameC1Ev(void *);
-}
-extern "C" {
-void _ZN8ItemNameD1Ev(void *);
-}
-extern "C" {
-extern u8 gFieldSceneKind[];
-}
-extern "C" {
-extern char data_020e04ac[];
-}
-extern "C" {
-extern char data_020e04c4[];
-}
-extern "C" {
-extern char data_020e04dc[];
-}
-extern "C" {
-extern char data_020e04f8[];
-}
-extern "C" {
-extern char data_020e0514[];
-}
-extern "C" {
-extern char data_020e0524[];
-}
-extern "C" {
-extern u8 sPatternPresetInfo[];
-}
-extern "C" {
-}
-extern "C" {
-extern u32 sPlayerPatternTexKeys[4][8];
-}
-extern "C" {
-extern u8 sPatternTexCache[];
-}
-extern "C" {
-extern u8 sPresetPatternBuffer[];
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-extern SaveData gSaveData;
-}
-extern "C" {
-extern void *gCurrentHeap;
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-extern u16 data_020cb6f4;
-}
-extern "C" {
-extern u16 data_020d03d0;
-}
-extern "C" {
-}
-extern "C" {
-void PatternTexCache_ResetKeys(void *p);
-}
-extern "C" {
-}
-extern "C" {
-}
 static inline BOOL Unk_0207116c_Eq1(u8 *p) { return *p == 1 ? TRUE : FALSE; }
 static inline BOOL Unk_0207116c_Eq0(u8 *p) { return *p == 0 ? TRUE : FALSE; }
-namespace Unk_020718c0_Calls {
-extern "C" s32 PatternTexCache_ClearDirty(void *p);
-}
-namespace Unk_02071a50_Calls {
-extern "C" void *TownFlagPattern_GetPattern(void *p);
-extern "C" void TownId_Assign(void *p, void *q);
-extern "C" u16 data_020d03d4;
-extern "C" SaveData gSaveData;
-}
 
-extern "C" void TownFlagPattern_InitDefault(void *self);
-extern "C" void *TownFlagPattern_GetPattern(void *p);
 extern "C" void Pattern_CopyFields(PatternCopyView *dst, PatternCopyView *src);
-extern "C" void PatternTexCache_ClearDirty(void *p);
-extern "C" void PatternTexCache_ResetKeys(void *p);
-extern "C" BOOL PatternPresetInfo_Apply(void *tbl, void *dst, s32 idx);
-extern "C" BOOL TownFlagPatternDefault_Extract(void *a, void *b);
 
 extern "C" void TownFlagPattern_InitDefault(void *self) {
     void *buf = Mem_Alloc(0x200);
     if (buf != 0) {
         if (buf != 0) TownFlagPatternDefault_Ctor(buf);
         TownFlagPatternDefault_Load(buf);
-        TownFlagPatternDefault_Extract(buf, _ZN7Pattern9getPixelsEv(Unk_02071a50_Calls::TownFlagPattern_GetPattern(self)));
-        void *g = PatternPresetInfo_Get();
-        PatternPresetInfo_Apply(g, _ZN7Pattern7getInfoEv(Unk_02071a50_Calls::TownFlagPattern_GetPattern(self)), 0x10);
-        Unk_02071a50_Calls::TownId_Assign(
-            PlayerId_GetTownId(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(Unk_02071a50_Calls::TownFlagPattern_GetPattern(self)))),
-            Unk_02071a50_Calls::gSaveData.townId);
-        _ZN8PlayerId5setIdEt(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(Unk_02071a50_Calls::TownFlagPattern_GetPattern(self))),
-                      Unk_02071a50_Calls::data_020d03d4);
+        TownFlagPatternDefault_Extract(buf, ((Pattern *)TownFlagPattern_GetPattern(self))->getPixels());
+        PatternPresetInfoFile *g = PatternPresetInfo_Get();
+        PatternPresetInfo_Apply(g, ((Pattern *)TownFlagPattern_GetPattern(self))->getInfo(), 0x10);
+        TownId_Assign(PlayerId_GetTownId(((Pattern *)TownFlagPattern_GetPattern(self))->getInfo()->getAuthor()),
+                      gSaveData.townId);
+        AsPlayerId(((Pattern *)TownFlagPattern_GetPattern(self))->getInfo()->getAuthor())->setId(data_020d03d4);
         Mem_Free(buf);
     }
 }
@@ -824,110 +345,80 @@ extern "C" void Pattern_CopyFields(PatternCopyView *dst, PatternCopyView *src) {
     dst->h = src->h;
     dst->i = src->i;
 }
-}
-PresetPatternBuffer::PresetPatternBuffer() {
-    using namespace n3;}
-namespace n3 {
-}
-PresetPatternBuffer::~PresetPatternBuffer() {
-    using namespace n3;}
-namespace n3 {
-}
-BOOL PatternTexCache::loadPresetPattern(s32 n) {
-    using namespace n3;
+PresetPatternBuffer::PresetPatternBuffer() {}
+PresetPatternBuffer::~PresetPatternBuffer() {}
+// (DS symbols: PatternTexCache::loadPresetPattern / getPresetPattern, called on sPresetPatternBuffer)
+BOOL PresetPatternBuffer::load(s32 n) {
     if ((u32)n < 0x20) {
         void *buf = Mem_Alloc(0x200);
         if (buf != 0) {
             if (buf != 0) PresetPatternFile_Ctor(buf);
             PresetPatternFile_Load(buf, n);
-            PresetPatternFile_Extract(buf, _ZN7Pattern9getPixelsEv(getPresetPattern()));
-            void *g = PatternPresetInfo_Get();
-            PatternPresetInfo_Apply(g, _ZN7Pattern7getInfoEv(getPresetPattern()), n + 0x12);
-            TownId_SetId((u16 *)PlayerId_GetTownId(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(getPresetPattern()))), data_020cb6f4);
-            _ZN8PlayerId5setIdEt(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(getPresetPattern())), data_020d03d0);
+            PresetPatternFile_Extract(buf, getPattern()->getPixels());
+            PatternPresetInfoFile *g = PatternPresetInfo_Get();
+            PatternPresetInfo_Apply(g, getPattern()->getInfo(), n + 0x12);
+            TownId_SetId(&TownIdOf(getPattern()->getInfo()->getAuthor())->townId, data_020cb6f4);
+            AsPlayerId(getPattern()->getInfo()->getAuthor())->setId(data_020d03d0);
             Mem_Free(buf);
         }
         return TRUE;
     }
     return FALSE;
 }
-namespace n3 {
-}
-void *PatternTexCache::getPresetPattern() {
-    using namespace n3; return this; }
-namespace n3 {
-extern "C" void *PresetPatternBuffer_Get(void) { return sPresetPatternBuffer; }
-}
+Pattern *PresetPatternBuffer::getPattern() { return &pattern; }
+extern "C" PresetPatternBuffer *PresetPatternBuffer_Get(void) { return &sPresetPatternBuffer; }
 void PatternTexCache::reset() {
-    using namespace n3;
     paletteFile.clear();
-    PatternTexKeys_Clear(this);
-    Unk_020718c0_Calls::PatternTexCache_ClearDirty(this);
+    PatternTexKeys_Clear(&texKeys);
+    PatternTexCache_ClearDirty(this);
 }
-namespace n3 {
-}
-PatternTexCache::PatternTexCache() {
-    using namespace n3; reset(); }
-namespace n3 {
-}
-PatternTexCache::~PatternTexCache() {
-    using namespace n3;}
-namespace n3 {
-extern "C" void PatternTexCache_ClearDirty(void *p) {
+PatternTexCache::PatternTexCache() { reset(); }
+PatternTexCache::~PatternTexCache() {}
+extern "C" void PatternTexCache_ClearDirty(PatternTexCache *p) {
     u32 i;
     for (i = 0; i < 4; i++) data_021cbcac[i] = 0;
     sAbleDisplayDirtyBits = 0;
 }
-}
-void PatternTexCache::setAbleDirty(s32 bit) {
-    using namespace n3; sAbleDisplayDirtyBits |= 1 << bit; }
-namespace n3 {
-}
+void PatternTexCache::setAbleDirty(s32 bit) { sAbleDisplayDirtyBits |= 1 << bit; }
 BOOL PatternTexCache::testAndClearAbleDirty(s32 bit) {
-    using namespace n3;
     BOOL r;
     if (((sAbleDisplayDirtyBits >> bit) & 1) == 0) r = FALSE; else r = TRUE;
     sAbleDisplayDirtyBits &= ~(1 << bit);
     return r;
 }
-namespace n3 {
-}
 void PatternTexCache::load() {
-    using namespace n3;
     reset();
     paletteFile.load();
     createTextures();
-    void *h = gCurrentHeap;
-    u8 *a, *b, *c, *d;
+    Heap *h = gCurrentHeap;
+    ClothTexStorage *a, *c;
+    TexPatVramTasks *b, *d;
     u32 i, j;
-    sPlayerPatternTexWork = (u8 *)Heap_Alloc(h, 0x1620);
-    b = (u8 *)Heap_Alloc(h, 8 * TEXPAT_TASKS_SIZE);
+    sPlayerPatternTexWork = (ClothTexStorage *)Heap_Alloc(h, 8 * sizeof(ClothTexStorage));
+    b = (TexPatVramTasks *)Heap_Alloc(h, 8 * sizeof(TexPatVramTasks));
     sPlayerPatternVramTasks = b;
     a = sPlayerPatternTexWork;
     for (i = 0; i < 8; i++) {
-        if (a != 0) ClothTex_Construct(a);
-        if (b != 0) _ZN15TexPatVramTasksC1Ev(b);
-        a += 0x2c4;
-        b += TEXPAT_TASKS_SIZE;
+        if (a != 0) ClothTex_Construct();
+        if (b != 0) new (b) TexPatVramTasks();
+        a++;
+        b++;
     }
-    sAblePatternTexWork = (u8 *)Heap_Alloc(h, 0x1620);
-    d = (u8 *)Heap_Alloc(h, 8 * TEXPAT_TASKS_SIZE);
+    sAblePatternTexWork = (ClothTexStorage *)Heap_Alloc(h, 8 * sizeof(ClothTexStorage));
+    d = (TexPatVramTasks *)Heap_Alloc(h, 8 * sizeof(TexPatVramTasks));
     sAblePatternVramTasks = d;
     c = sAblePatternTexWork;
     for (j = 0; j < 8; j++) {
-        if (c != 0) ClothTex_Construct(c);
-        if (d != 0) _ZN15TexPatVramTasksC1Ev(d);
-        c += 0x2c4;
-        d += TEXPAT_TASKS_SIZE;
+        if (c != 0) ClothTex_Construct();
+        if (d != 0) new (d) TexPatVramTasks();
+        c++;
+        d++;
     }
 }
-namespace n3 {
-}
 void PatternTexCache::unload() {
-    using namespace n3;
     paletteFile.unload();
-    n3::PatternTexCache_ResetKeys(this);
-    void *h = gCurrentHeap;
+    PatternTexCache_ResetKeys(this);
+    Heap *h = gCurrentHeap;
     if (sPlayerPatternTexWork != 0) {
         Heap_Free(h, sPlayerPatternTexWork);
         sPlayerPatternTexWork = 0;
@@ -945,38 +436,17 @@ void PatternTexCache::unload() {
         sAblePatternVramTasks = 0;
     }
 }
-namespace n3 {
-}
-u32 PatternTexCache::getPlayerTexKey(s32 a, s32 b) {
-    using namespace n3; return PatternTexKeys_GetPlayer(this, a, b); }
-namespace n3 {
-}
-u32 PatternTexCache::getAbleTexKey(s32 i) {
-    using namespace n3; return PatternTexKeys_GetAble(this, i); }
-namespace n3 {
-}
-u8 *PatternTexCache::getPalette(s32 i) {
-    using namespace n3; return PatternPaletteFile_GetPalette((u8 **)&paletteFile, i); }
-namespace n3 {
-extern "C" void *PatternTexCache_Get(void) { return sPatternTexCache; }
-}
+u8 *PatternTexCache::getPlayerTexKey(s32 a, s32 b) { return PatternTexKeys_GetPlayer(&texKeys, a, b); }
+u8 *PatternTexCache::getAbleTexKey(s32 i) { return PatternTexKeys_GetAble(&texKeys, i); }
+u8 *PatternTexCache::getPalette(s32 i) { return PatternPaletteFile_GetPalette(&paletteFile, i); }
+extern "C" PatternTexCache *PatternTexCache_Get(void) { return &sPatternTexCache; }
 void PatternPaletteFile::clear() {
-    using namespace n3;
     fileData = 0;
     for (u32 i = 0; i < 16; i++) palettes[i] = 0;
 }
-namespace n3 {
-}
-PatternPaletteFile::PatternPaletteFile() {
-    using namespace n3; clear(); }
-namespace n3 {
-}
-PatternPaletteFile::~PatternPaletteFile() {
-    using namespace n3;}
-namespace n3 {
-}
+PatternPaletteFile::PatternPaletteFile() { clear(); }
+PatternPaletteFile::~PatternPaletteFile() {}
 void PatternPaletteFile::load() {
-    using namespace n3;
     if (fileData == 0) {
         fileData = (u8 *)File_Load("/menu/desi/b_myd_ten0_obj.bpl");
         if (fileData != 0) {
@@ -984,67 +454,55 @@ void PatternPaletteFile::load() {
         }
     }
 }
-namespace n3 {
-}
 void PatternPaletteFile::unload() {
-    using namespace n3;
     if (fileData != 0) {
         Mem_Free(fileData);
         fileData = 0;
     }
     clear();
 }
-namespace n3 {
-extern "C" u8 *PatternPaletteFile_GetPalette(u8 **self, s32 i) { return ((PatternPaletteFile *)self)->palettes[i & 15]; }
-}
-PatternTexKeys::PatternTexKeys() {
-    using namespace n3; PatternTexKeys_Clear(this); }
-namespace n3 {
-}
-PatternTexKeys::~PatternTexKeys() {
-    using namespace n3;}
-namespace n3 {
-extern "C" void PatternTexKeys_Clear(void *p) {
+extern "C" u8 *PatternPaletteFile_GetPalette(PatternPaletteFile *self, s32 i) { return self->palettes[i & 15]; }
+PatternTexKeys::PatternTexKeys() { PatternTexKeys_Clear(this); }
+PatternTexKeys::~PatternTexKeys() {}
+extern "C" void PatternTexKeys_Clear(PatternTexKeys *p) {
     u8 i, j;
     for (i = 0; i < 4; i++)
         for (j = 0; j < 8; j++) sPlayerPatternTexKeys[i][j] = 0;
     for (j = 0; j < 8; j++) sAblePatternTexKeys[j] = 0;
 }
-}
 void PatternTexCache::createTextures() {
-    using namespace n3;
-    ClothTexStorage *a = (ClothTexStorage *)Mem_Alloc(HOST_SIZED(0x2c4, ClothTexStorage));
-    ClothTexStorage *b = (ClothTexStorage *)Mem_Alloc(HOST_SIZED(0x2c4, ClothTexStorage));
+    ClothTexStorage *a = (ClothTexStorage *)Mem_Alloc(sizeof(ClothTexStorage));
+    ClothTexStorage *b = (ClothTexStorage *)Mem_Alloc(sizeof(ClothTexStorage));
     if (a != 0) {
         if (b != 0) {
             u8 i, j;
             u32 k1, k2;
             u16 v;
-            s32 t;
-            void *e;
-            u32 *row;
+            u32 t;
+            Pattern *e;
+            u8 **row;
             u8 *src, *p;
             u16 *q, *sp;
-            if (a != 0) ClothTex_Construct(a);
-            if (b != 0) ClothTex_Construct(b);
+            if (a != 0) ClothTex_Construct();
+            if (b != 0) ClothTex_Construct();
             v = 0x11a8;
             ClothTex_LoadItem(a, &v, 0);
             i = 0;
         loop1:
             {
                 j = 0;
-                row = (u32 *)sPlayerPatternTexKeys + i * 8;
+                row = sPlayerPatternTexKeys[i];
             loop0:
-                e = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(PlayerData_GetResident(((SaveData *)(u32)&gSaveData)->players, i)), j);
+                e = ((PlayerPatterns *)((PlayerData *)PlayerData_GetResident(gSaveData.players, i))->getPatterns())->getPattern(j);
                 *b = *a;
                 p = (u8 *)ClothTex_GetTexData(b);
-                src = (u8 *)_ZN7Pattern9getPixelsEv(e);
+                src = e->getPixels();
                 for (k1 = 0; k1 < 0x200; k1++) *p++ = *src++;
                 q = (u16 *)ClothTex_GetPlttData(b);
-                sp = (u16 *)_ZN11PatternInfo14getPaletteDataEv(_ZN7Pattern7getInfoEv(e));
+                sp = (u16 *)e->getInfo()->getPaletteData();
                 for (k2 = 0; k2 < 0x10; k2++) *q++ = *sp++;
-                if (Gfx3d_LoadTexAndPltt(ClothTex_GetTex(b), 0)) {
-                    row[j] = (u32)ResCache_GetTex(ClothTex_GetTex(b), 0x4e554c4c);
+                if (Gfx3d_LoadTexAndPltt((NNSG3dResTex *)ClothTex_GetTex(b), NULL)) {
+                    row[j] = (u8 *)ResCache_GetTex(ClothTex_GetTex(b), 0x4e554c4c);
                 }
                 j++;
                 if (j < 8) goto loop0;
@@ -1054,9 +512,9 @@ void PatternTexCache::createTextures() {
             t = Scene_GetCurrent();
             if (t == 10) {
                 for (j = 0; j < 8; j++) {
-                    ClothTex_LoadPattern(b, _ZN19AbleSistersPatterns10getPatternEh((u8 *)&gSaveData + 0xfafc, j));
-                    if (Gfx3d_LoadTexAndPltt(ClothTex_GetTex(b), 0)) {
-                        sAblePatternTexKeys[j] = (u32)ResCache_GetTex(ClothTex_GetTex(b), 0x4e554c4c);
+                    ClothTex_LoadPattern(b, gSaveAbleSistersPatterns.getPattern(j));
+                    if (Gfx3d_LoadTexAndPltt((NNSG3dResTex *)ClothTex_GetTex(b), NULL)) {
+                        sAblePatternTexKeys[j] = (u8 *)ResCache_GetTex(ClothTex_GetTex(b), 0x4e554c4c);
                     }
                 }
             }
@@ -1065,69 +523,60 @@ void PatternTexCache::createTextures() {
         }
     }
 }
-namespace n3 {
-extern "C" void PatternTexCache_ResetKeys(void *p) { PatternTexKeys_Clear(p); }
-extern "C" u32 PatternTexKeys_GetPlayer(void *self, s32 a, s32 b) { return sPlayerPatternTexKeys[a & 3][b & 7]; }
-extern "C" u32 PatternTexKeys_GetAble(void *self, s32 i) { return sAblePatternTexKeys[i & 7]; }
-}
-PatternPresetInfoFile::PatternPresetInfoFile() {
-    using namespace n3;}
-namespace n3 {
-}
-PatternPresetInfoFile::~PatternPresetInfoFile() {
-    using namespace n3;}
-namespace n3 {
-extern "C" void PatternPresetInfo_Open(void *p) { _ZN10RecordFile4openEPvii(p, (void *)"/myOrg/myD.bin", 0x2c, 0x32); }
-extern "C" s32 PatternPresetInfo_Close(void *p) { return _ZN10RecordFile5closeEv(p); }
-extern "C" BOOL PatternPresetInfo_Apply(void *tbl, void *dst, s32 idx) {
+extern "C" void PatternTexCache_ResetKeys(PatternTexCache *p) { PatternTexKeys_Clear(&p->texKeys); }
+extern "C" u8 *PatternTexKeys_GetPlayer(PatternTexKeys *self, s32 a, s32 b) { return sPlayerPatternTexKeys[a & 3][b & 7]; }
+extern "C" u8 *PatternTexKeys_GetAble(PatternTexKeys *self, s32 i) { return sAblePatternTexKeys[i & 7]; }
+PatternPresetInfoFile::PatternPresetInfoFile() {}
+PatternPresetInfoFile::~PatternPresetInfoFile() {}
+extern "C" void PatternPresetInfo_Open(PatternPresetInfoFile *p) { p->file.open((void *)"/myOrg/myD.bin", 0x2c, 0x32); }
+extern "C" void PatternPresetInfo_Close(PatternPresetInfoFile *p) { p->file.close(); }
+extern "C" BOOL PatternPresetInfo_Apply(PatternPresetInfoFile *tbl, PatternInfo *dst, s32 idx) {
     if (idx < 0x32) {
-        u8 *rec = (u8 *)_ZN10RecordFile9getRecordEj(tbl, idx);
+        u8 *rec = tbl->file.getRecord(idx);
         if (rec != 0) {
-            struct { u8 o0[0x24]; u8 o1[0x1c]; u8 o2[0x1c]; u8 o3[8]; u16 pad; u8 o4[0x16]; } l;
-            _ZN8ItemNameC1Ev(l.o0);
-            _ZN9MsgString3setEPh(l.o0, rec + 2);
-            _ZN11PatternInfo8setTitleEPv(dst, l.o0);
-            _ZN11PatternInfo10setPaletteEj(dst, rec[0]);
-            _ZN11PatternInfo8setTasteEj(dst, rec[1]);
-            _ZN11MsgString9CC2Ev(l.o1);
-            _ZN9MsgString3setEPh(l.o1, rec + 0x1e);
-            _ZN11MsgString9BC1Ev(l.o2);
-            _ZN9MsgString3setEPh(l.o2, rec + 0x13);
-            TownId_Construct(l.o3);
-            TownId_SetNameString(l.o3, l.o1);
-            _ZN8PlayerIdC1EPv(l.o4);
-            _ZN8PlayerId13setNameStringEP9MsgString(l.o4, l.o2);
-            _ZN6TownId7setTownEPS_(l.o4, l.o3);
-            _ZN11PatternInfo9setAuthorEP12Unk_020942c8(dst, l.o4);
-            _ZN8PlayerIdC1Ev(l.o4);
-            TownId_Destruct(l.o3);
-            _ZN11MsgString9BD1Ev(l.o2);
-            _ZN11MsgString9CD1Ev(l.o1);
-            _ZN8ItemNameD1Ev(l.o0);
+            // (real objects: the DS code built them in stack blobs of their DS sizes, too small on 64-bit hosts)
+            ItemName title;
+            title.set(rec + 2);
+            dst->setTitle(&title);
+            dst->setPalette(rec[0]);
+            dst->setTaste(rec[1]);
+            MsgString9C townName;
+            townName.set(rec + 0x1e);
+            MsgString9B playerName;
+            playerName.set(rec + 0x13);
+            TownId town;
+            TownId_Construct();
+            TownId_SetNameString((u8 *)&town, &townName);
+            PlayerId author((void *)NULL);
+            author.setNameString(&playerName);
+            author.setTown(&town);
+            dst->setAuthor(AsIdRecord(&author));
+            TownId_Destruct();  // (the DS code called PlayerId::PlayerId() on the author here: TownId_Destruct)
+            TownId_Destruct();
             return TRUE;
         }
     }
     return FALSE;
 }
-extern "C" void *PatternPresetInfo_Get(void) { return sPatternPresetInfo; }
+extern "C" PatternPresetInfoFile *PatternPresetInfo_Get(void) { return &sPatternPresetInfo; }
 extern "C" void PlayerPatternDefaults_Ctor(void *p) {}
 extern "C" void PlayerPatternDefaults_Load(void *p) { File_LoadToBuffer("menu/desi/b_myd_my_obj.bch", p, 0x1000); }
 extern "C" BOOL PlayerPatternDefaults_Extract(void *a, void *b, s32 x) {
     if (x < 0 || x >= 8) return FALSE;
-    Gfx2d_TilesInRow32ToLinear(a, b, x * 4, 4, 4);
+    Gfx2d_TilesInRow32ToLinear((u32 *)a, (u32 *)b, x * 4, 4, 4);
     return TRUE;
 }
 extern "C" void AblePatternDefaults_Ctor(void *p) {}
 extern "C" void AblePatternDefaults_Load(void *p) { File_LoadToBuffer("menu/desi/b_myd_bu_obj.bch", p, 0x1000); }
 extern "C" BOOL AblePatternDefaults_Extract(void *a, void *b, s32 x) {
     if (x < 0 || x >= 8) return FALSE;
-    Gfx2d_TilesInRow32ToLinear(a, b, x * 4, 4, 4);
+    Gfx2d_TilesInRow32ToLinear((u32 *)a, (u32 *)b, x * 4, 4, 4);
     return TRUE;
 }
 extern "C" void TownFlagPatternDefault_Ctor(void *p) {}
 extern "C" void TownFlagPatternDefault_Load(void *p) { File_LoadToBuffer("menu/desi/myc/obj0.bch", p, 0x200); }
 extern "C" BOOL TownFlagPatternDefault_Extract(void *a, void *b) {
-    Gfx2d_TilesToLinear4bpp(a, b, 4, 4);
+    Gfx2d_TilesToLinear4bpp((u32 *)a, (u32 *)b, 4, 4);
     return TRUE;
 }
 extern "C" void PresetPatternFile_Ctor(void *p) {}
@@ -1137,7 +586,7 @@ extern "C" void PresetPatternFile_Load(void *dst, s32 n) {
     File_LoadToBuffer(buf, dst, 0x200);
 }
 extern "C" BOOL PresetPatternFile_Extract(void *a, void *b) {
-    Gfx2d_TilesToLinear4bpp(a, b, 4, 4);
+    Gfx2d_TilesToLinear4bpp((u32 *)a, (u32 *)b, 4, 4);
     return TRUE;
 }
 extern "C" BOOL PatternSrc_OnChanged(s32 cmd, s32 x) {
@@ -1146,7 +595,7 @@ extern "C" BOOL PatternSrc_OnChanged(s32 cmd, s32 x) {
     case 9: {
         PlayerData *t = PlayerData_GetBySessionSlot(0);
         if (t != 0) {
-            s32 v = _ZN10PlayerData8getIndexEv(t);
+            s32 v = t->getIndex();
             if (v != -1) PatternTex_UploadPlayer((u8)(v & 3), x);
         }
         return TRUE;
@@ -1155,7 +604,7 @@ extern "C" BOOL PatternSrc_OnChanged(s32 cmd, s32 x) {
         if (Unk_0207116c_Eq1(gFieldSceneKind)) {
             if (Scene_GetCurrent() == 10) {
                 PatternTex_UploadAble(x);
-                ((PatternTexCache *)PatternTexCache_Get())->setAbleDirty(x & 7);
+                PatternTexCache_Get()->setAbleDirty(x & 7);
             }
         }
         return TRUE;
@@ -1163,7 +612,7 @@ extern "C" BOOL PatternSrc_OnChanged(s32 cmd, s32 x) {
         if (Unk_0207116c_Eq0(gFieldSceneKind)) {
             if (Scene_InTown()) {
                 void *gate = BuildingList_FindByItem(0x500b);
-                if (gate) GateHouse_ApplyTownFlag(gate);
+                if (gate) GateHouse_ApplyTownFlag((GateHouse *)gate);
             }
         }
         return TRUE;
@@ -1177,167 +626,27 @@ extern "C" BOOL PatternSrc_OnChanged(s32 cmd, s32 x) {
         return FALSE;
     }
 }
-}
 
 // ======== unk_02070790.cpp ========
-namespace n2 {
-static inline BOOL Unk_02070fbc_In(volatile u16 *p, u32 lo, u32 hi) {
-    u32 v = *p;
-    u32 w = *p;
-    BOOL r = FALSE;
-    if (w >= lo && v <= hi) {
-        r = TRUE;
-    }
-    return r;
-}
-extern "C" {
-extern CommManager *gCommManager;
-}
-extern "C" {
-extern u8 gSaveVillagers[];
-}
-extern "C" {
-extern u8 data_021ed2d4[];
-}
-extern "C" {
-extern u8 gSaveAbleSistersPatterns[];
-}
-extern "C" {
-extern HouseData gSaveHouse;
-}
-extern "C" {
-BOOL _ZN11CommManager8isOnlineEv(void *p);
-}
-extern "C" {
-}
-extern "C" {
-void *_ZN10PlayerData11getPatternsEv(void *p);
-}
-extern "C" {
-s32 _ZN14PlayerPatterns10getPatternEh(void *p, s32 i);
-}
-extern "C" {
-TownBlockMap *TownBlockMap_Get(void);
-}
-extern "C" {
-TownBlockMap *HouseRoomMaps_Get(s32 i);
-}
-extern "C" {
-u16 *MapBlock_GetItemPtr(void *cell, s32 x, s32 y, s32 z);
-}
-extern "C" {
-BOOL MapBlock_SetItem(void *cell, u16 *t, s32 x, s32 y, s32 v);
-}
-extern "C" {
-s32 _s32_div_f(s32 a, s32 b);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void _ZN11CommManager11beginRecordEv(void *g);
-}
-extern "C" {
-void _ZN11CommManager11writeRecordEPhj(void *g, void *p, s32 n);
-}
-extern "C" {
-void _ZN11CommManager9endRecordEjj(void *g, s32 a, s32 n);
-}
-extern "C" {
-void *SaveVillagers_Get(void *a, s32 x);
-}
-extern "C" {
-s32 _ZN12VillagerData13getVillagerIdEv(void *p);
-}
-extern "C" {
-s32 _ZN10VillagerId7isValidEv(s32 p);
-}
-extern "C" {
-u8 *Villager_GetFashionTaste(void *p);
-}
-extern "C" {
-s32 Villager_GetPlan(void *p);
-}
-extern "C" {
-}
-extern "C" {
-s32 _ZN12VillagerPlan8getStateEv(s32 p);
-}
-extern "C" {
-}
-extern "C" {
-void AbleShop_GetItem(void *tbl, s32 i, u16 *out);
-}
-extern "C" {
-void Item_FromPlacedForm(u16 *dst, u16 *src);
-}
-extern "C" {
-s32 _ZN19AbleSistersPatterns10getPatternEh(void *p, s32 i);
-}
-extern "C" {
-s32 _ZN7Pattern7getInfoEv(s32 p);
-}
-extern "C" {
-s32 _ZN11PatternInfo8getTasteEv(s32 p);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
 static inline s32 Unk_020707ec_K(u16 v, u32 lo, u32 hi) {
     if (v >= lo && v <= hi) {
         return (s32)(v - lo) >> 2;
     }
     return -1;
 }
-}
-extern "C" {
-static inline s32 Unk_020707ec_K2(u16 v, u32 lo, u32 hi) {
-    BOOL r = FALSE;
-    if (v >= lo && v <= hi) {
-        r = TRUE;
-    }
-    if (r) {
-        return (s32)(v - lo);
-    }
-    return -1;
-}
-}
-extern "C" {
 static inline s32 Unk_020707ec_K3(BOOL f, u16 v) {
     if (f) {
         return (s32)(v - 0x1188);
     }
     return -1;
 }
-}
-extern "C" {
-static inline BOOL Unk_020707ec_In(u16 v, u32 lo, u32 hi) {
-    BOOL r = FALSE;
-    if (v >= lo && v <= hi) {
-        r = TRUE;
-    }
-    return r;
-}
-}
-
 
 extern "C" BOOL Villager_MaybeCopyAblePattern(s32 a, s32 b) {
-    void *p = SaveVillagers_Get(gSaveVillagers, a);
+    VillagerData *p = (VillagerData *)SaveVillagers_Get(gSaveVillagers, a);
     if (p != NULL) {
-        if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(p)) != 0) {
+        if (((VillagerId *)_ZN12VillagerData13getVillagerIdEv(p))->isValid() != 0) {
             u32 val = *Villager_GetFashionTaste(p);
-            s32 mode = _ZN12VillagerPlan8getStateEv(VillagerPlanBlock_GetPlan(Villager_GetPlan(p)));
+            s32 mode = _ZN12VillagerPlan8getStateEv((VillagerPlan *)VillagerPlanBlock_GetPlan(Villager_GetPlan(p)));
             u32 rnd = Random_GlobalBelow(100);
             s32 fa, fb, fc;
             u16 bufw[2];
@@ -1388,10 +697,10 @@ extern "C" BOOL Villager_MaybeCopyAblePattern(s32 a, s32 b) {
                 }
             }
             if (fa) {
-                void *tbl = gSaveAbleSistersPatterns;
+                AbleSistersPatterns *tbl = &gSaveAbleSistersPatterns;
                 s32 cnt = 0;
                 for (u32 j = 0; j < 8; j++) {
-                    s32 x = _ZN11PatternInfo8getTasteEv(_ZN7Pattern7getInfoEv(_ZN19AbleSistersPatterns10getPatternEh(tbl, (u8)j)));
+                    s32 x = tbl->getPattern((u8)j)->getInfo()->getTaste();
                     if (fb) {
                         if (x == val) cnt++;
                     } else {
@@ -1403,7 +712,7 @@ extern "C" BOOL Villager_MaybeCopyAblePattern(s32 a, s32 b) {
                     s32 k = 0;
                     s32 j;
                     for (j = 0; (u32)j < 8; j++) {
-                        s32 x = _ZN11PatternInfo8getTasteEv(_ZN7Pattern7getInfoEv(_ZN19AbleSistersPatterns10getPatternEh(tbl, (u8)j)));
+                        s32 x = tbl->getPattern((u8)j)->getInfo()->getTaste();
                         if (fb) {
                             if (x == val) {
                                 if (pick == k) break;
@@ -1430,12 +739,12 @@ extern "C" BOOL PatternSrc_Copy(u32 a, u32 b, u32 c, u32 d, u32 e) {
     if (tc == 7) {
         return FALSE;
     }
-    Pattern *r4 = (Pattern *)PatternSrc_Get(ta, b);
-    Pattern *r6 = (Pattern *)PatternSrc_Get(tc, d);
+    Pattern *r4 = PatternSrc_Get(ta, b);
+    Pattern *r6 = PatternSrc_Get(tc, d);
     *r6 = *r4;
     PatternSrc_OnChanged(tc, d);
     if (*(u8 *)&e) {
-        if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+        if (gCommManager->isOnline()) {
             bits.a = ta;
             bits.b = b;
             bits.c = tc;
@@ -1443,16 +752,16 @@ extern "C" BOOL PatternSrc_Copy(u32 a, u32 b, u32 c, u32 d, u32 e) {
             bits.e = 0;
             bits.f = 0;
             CommManager *g = gCommManager;
-            _ZN11CommManager11beginRecordEv(g);
-            _ZN11CommManager11writeRecordEPhj(g, &bits, 4);
-            _ZN11CommManager9endRecordEjj(g, 0x15, 4);
+            g->beginRecord();
+            g->writeRecord((u8 *)&bits, 4);
+            g->endRecord(0x15, 4);
         }
     }
     return TRUE;
 }
 extern "C" s32 PatternSrc_ResolveKind(s32 t) {
     CommManager *g = gCommManager;
-    if (_ZN11CommManager8isOnlineEv(g) && t == 9) {
+    if (g->isOnline() && t == 9) {
         return g->myAid;
     }
     return t;
@@ -1464,8 +773,8 @@ extern "C" BOOL PatternSrc_Swap(u32 a, u32 b, u32 c, u32 d, u32 e) {
     if (ta == 7 || tc == 7) {
         return FALSE;
     }
-    Pattern *r5 = (Pattern *)PatternSrc_Get(ta, b);
-    Pattern *r4 = (Pattern *)PatternSrc_Get(tc, d);
+    Pattern *r5 = PatternSrc_Get(ta, b);
+    Pattern *r4 = PatternSrc_Get(tc, d);
     static Pattern tmp;
     tmp = *r4;
     *r4 = *r5;
@@ -1473,7 +782,7 @@ extern "C" BOOL PatternSrc_Swap(u32 a, u32 b, u32 c, u32 d, u32 e) {
     PatternSrc_OnChanged(ta, b);
     PatternSrc_OnChanged(tc, d);
     if (*(u8 *)&e) {
-        if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+        if (gCommManager->isOnline()) {
             bits.a = ta;
             bits.b = b;
             bits.c = tc;
@@ -1481,28 +790,22 @@ extern "C" BOOL PatternSrc_Swap(u32 a, u32 b, u32 c, u32 d, u32 e) {
             bits.e = 1;
             bits.f = 0;
             CommManager *g = gCommManager;
-            _ZN11CommManager11beginRecordEv(g);
-            _ZN11CommManager11writeRecordEPhj(g, &bits, 4);
-            _ZN11CommManager9endRecordEjj(g, 0x15, 4);
+            g->beginRecord();
+            g->writeRecord((u8 *)&bits, 4);
+            g->endRecord(0x15, 4);
         }
     }
     return TRUE;
 }
-}
 // ---- data created here (creation order found by inverting the heapsort; do not move or reorder)
-namespace U125_def {
 extern "C" {
-u8 *sAblePatternTexWork;
-}
+ClothTexStorage *sAblePatternTexWork;
 }
 PresetPatternBuffer sPresetPatternBuffer;
-namespace U125_def {
 extern "C" {
-u8 *sAblePatternVramTasks;
-u32 sPlayerPatternTexKeys[4][8];
+TexPatVramTasks *sAblePatternVramTasks;
+u8 *sPlayerPatternTexKeys[4][8];  // the players' pattern textures (copies in the resource cache)
 }
-}
-namespace n2 {
 extern "C" void Pattern_RemovePlayerItems(s32 p) {
     static ItemId t;
     s32 i, j;
@@ -1535,7 +838,7 @@ extern "C" void Pattern_RemovePlayerItems(s32 p) {
                                 }
                                 if (in) {
                                     if (p == (s32)(*v - 0xa7) / 8) {
-                                        MapBlock_SetItem(cell, &t.v, j, i, 0);
+                                        MapBlock_SetItem(cell, &t.id, j, i, 0);
                                     }
                                 }
                             }
@@ -1551,7 +854,7 @@ extern "C" void Pattern_RemovePlayerItems(s32 p) {
     do {
         TownBlockMap *g2 = HouseRoomMaps_Get(m);
         if (g2 != NULL) {
-            if ((u8 *)g2->width > (u8 *)0 && (u8 *)g2->height > (u8 *)0 && g2->blocks != NULL) {
+            if ((u32)g2->width > 0 && (u32)g2->height > 0 && g2->blocks != NULL) {
                 cells = g2->blocks;
             } else {
                 cells = NULL;
@@ -1570,23 +873,23 @@ extern "C" void Pattern_RemovePlayerItems(s32 p) {
                             }
                             if (f) {
                                 idx = ((Unk_020707ec_K(val, 0x3d84, 0x3e03) >> 3) & 3);
- if (idx == p) {
-                                    MapBlock_SetItem(cells, &t.v, x2, y2, 0);
+                                if (idx == p) {
+                                    MapBlock_SetItem(cells, &t.id, x2, y2, 0);
                                 }
                             } else if (val >= 0x3ea4 && val <= 0x3f23) {
                                 idx = ((Unk_020707ec_K(val, 0x3ea4, 0x3f23) >> 3) & 3);
- if (idx == p) {
-                                    MapBlock_SetItem(cells, &t.v, x2, y2, 0);
+                                if (idx == p) {
+                                    MapBlock_SetItem(cells, &t.id, x2, y2, 0);
                                 }
                             } else if (val >= 0x3f24 && val <= 0x3fa3) {
                                 idx = ((Unk_020707ec_K(val, 0x3f24, 0x3fa3) >> 3) & 3);
- if (idx == p) {
-                                    MapBlock_SetItem(cells, &t.v, x2, y2, 0);
+                                if (idx == p) {
+                                    MapBlock_SetItem(cells, &t.id, x2, y2, 0);
                                 }
                             } else if (val >= 0x4224 && val <= 0x42a3) {
                                 idx = ((Unk_020707ec_K(val, 0x4224, 0x42a3) >> 3) & 3);
- if (idx == p) {
-                                    MapBlock_SetItem(cells, &t.v, x2, y2, 0);
+                                if (idx == p) {
+                                    MapBlock_SetItem(cells, &t.id, x2, y2, 0);
                                 }
                             }
                         }
@@ -1613,7 +916,7 @@ extern "C" void Pattern_RemovePlayerItems(s32 p) {
                     f2 = TRUE;
                 }
                 idx = ((Unk_020707ec_K3(f2, v2) >> 3) & 3);
- if (idx == p) {
+                if (idx == p) {
                     tmp[0] = 0x113e;
                     e->setWallpaper(&tmp[0], 0);
                 }
@@ -1632,7 +935,7 @@ extern "C" void Pattern_RemovePlayerItems(s32 p) {
                     f4 = TRUE;
                 }
                 idx = ((Unk_020707ec_K3(f4, v4) >> 3) & 3);
- if (idx == p) {
+                if (idx == p) {
                     tmp[1] = 0x1182;
                     e->setCarpet(&tmp[1], 0);
                 }
@@ -1641,209 +944,73 @@ extern "C" void Pattern_RemovePlayerItems(s32 p) {
         m++;
     } while (m < 5);
 }
-extern "C" s32 PatternSrc_GetSessionPlayer(s32 a, s32 b) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
-        void *p = PlayerData_GetBySessionSlot(a);
+extern "C" Pattern *PatternSrc_GetSessionPlayer(s32 a, s32 b) {
+    if (gCommManager->isOnline()) {
+        PlayerData *p = PlayerData_GetBySessionSlot(a);
         if (p) {
-            return _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(p), b);
+            return ((PlayerPatterns *)p->getPatterns())->getPattern(b);
         }
     }
     return 0;
 }
-extern "C" s32 PatternSrc_GetSessionPlayer0(s32 x) { return PatternSrc_GetSessionPlayer(0, x); }
-extern "C" s32 PatternSrc_GetSessionPlayer1(s32 x) { return PatternSrc_GetSessionPlayer(1, x); }
-extern "C" s32 PatternSrc_GetSessionPlayer2(s32 x) { return PatternSrc_GetSessionPlayer(2, x); }
-extern "C" s32 PatternSrc_GetSessionPlayer3(s32 x) { return PatternSrc_GetSessionPlayer(3, x); }
-}
+extern "C" Pattern *PatternSrc_GetSessionPlayer0(s32 x) { return PatternSrc_GetSessionPlayer(0, x); }
+extern "C" Pattern *PatternSrc_GetSessionPlayer1(s32 x) { return PatternSrc_GetSessionPlayer(1, x); }
+extern "C" Pattern *PatternSrc_GetSessionPlayer2(s32 x) { return PatternSrc_GetSessionPlayer(2, x); }
+extern "C" Pattern *PatternSrc_GetSessionPlayer3(s32 x) { return PatternSrc_GetSessionPlayer(3, x); }
 
 // ======== unk_0206fe80.cpp ========
-namespace n1 {
-extern "C" {
-extern u8 gSavePlayers[];
-}
-extern "C" {
-extern u16 gSaveTownId[];
-}
-extern "C" {
-extern u8 gSaveData[];
-}
-extern "C" {
-extern u8 data_020e049c[];
-}
-extern "C" {
-extern u8 sMuseumOwlMailName[];
-}
-extern "C" {
-extern u8 data_020e0498[];
-}
-extern "C" {
-}
-extern "C" {
-extern u32 sPlayerPatternTexKeys[8][8];
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-extern u8 gSaveAbleSistersPatterns[];
-}
-extern "C" {
-extern u8 gSaveBlancaFace[];
-}
-extern "C" {
-extern u8 gSaveVillagers[];
-}
-extern "C" {
-extern u8 gSaveTownFlag[];
-}
-extern "C" {
-extern s32 (*sPatternSourceGetters[])(s32);
-}
-extern "C" {
-s32 FX_Div(s32 a, s32 b);
-}
-extern "C" {
-}
-extern "C" {
-s32 _ZN10PlayerData11getPlayerIdEv(void *p);
-}
-extern "C" {
-void _ZN8PlayerId13getNameStringEP9MsgString(s32 a, s32 b);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void Clock_GetDateTime(void *p);
-}
-extern "C" {
-s32 _ZN8SaveData8testFlagEj(void *p, s32 i);
-}
-extern "C" {
-void _ZN8SaveData7setFlagEj(void *p, s32 i);
-}
-extern "C" {
-s32 _ZN10PlayerData6isUsedEv(void *p);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void _ZN10LetterView10setPresentEtj(void *p, u32 a, s32 b);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-s32 _ZN19AbleSistersPatterns10getPatternEh(void *p, s32 i);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(void *a, u32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
-}
-extern "C" {
-void *_ZN10PlayerData11getPatternsEv(void *p);
-}
-extern "C" {
-void *_ZN14PlayerPatterns10getPatternEh(void *p, s32 i);
-}
-extern "C" {
-}
-extern "C" {
-s32 _ZN16BlancaFaceRecord10getPatternEv(void *p);
-}
-extern "C" {
-}
-extern "C" {
-s32 _ZN15PatternTexCache17loadPresetPatternEi(s32 t, s32 x);
-}
-extern "C" {
-s32 _ZN15PatternTexCache16getPresetPatternEv(s32 t);
-}
-extern "C" {
-void *SaveVillagers_Get(void *a, s32 x);
-}
-extern "C" {
-s32 _ZN12VillagerData10getPatternEv(void *p);
-}
-extern "C" {
-s32 _ZN19TownStyleRecordView11getTownFlagEv(void *p);
-}
-extern "C" {
-}
-static inline BOOL Unk_020703d8_R(u16 v, u32 lo, u32 hi) {
-    BOOL r = FALSE;
-    if (v >= lo && v <= hi) {
-        r = TRUE;
-    }
-    return r;
-}
-
 extern "C" void PatternSrc_ApplyNetMove(Unk_0206fe80_Bits *p);
 
-extern "C" s32 PatternSrc_GetAble(s32 x) {
-    return _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, x);
+extern "C" Pattern *PatternSrc_GetAble(s32 x) {
+    return gSaveAbleSistersPatterns.getPattern(x);
 }
-extern "C" void PatternSrc_GetTownFlag() {
-    TownFlag_GetPattern(_ZN19TownStyleRecordView11getTownFlagEv(gSaveTownFlag));
+// (was void: the DS returned TownFlag_GetPattern's result in r0, which PatternSrc_Get's callers use)
+extern "C" Pattern *PatternSrc_GetTownFlag(s32 x) {
+    return (Pattern *)TownFlag_GetPattern(gSaveTownFlag.getTownFlag());
 }
-extern "C" s32 PatternSrc_GetVillager(s32 x) {
-    void *p = SaveVillagers_Get(gSaveVillagers, x);
-    if (p) return _ZN12VillagerData10getPatternEv(p);
+extern "C" Pattern *PatternSrc_GetVillager(s32 x) {
+    VillagerData *p = (VillagerData *)SaveVillagers_Get(gSaveVillagers, x);
+    if (p) return (Pattern *)_ZN12VillagerData10getPatternEv(p);
     return 0;
 }
-extern "C" s32 PatternSrc_GetPreset(s32 x) {
-    s32 t = PresetPatternBuffer_Get();
-    _ZN15PatternTexCache17loadPresetPatternEi(t, x);
-    return _ZN15PatternTexCache16getPresetPatternEv(t);
+extern "C" Pattern *PatternSrc_GetPreset(s32 x) {
+    PresetPatternBuffer *t = PresetPatternBuffer_Get();
+    t->load(x);
+    return t->getPattern();
 }
-extern "C" s32 PatternSrc_GetBlancaFace() {
-    return _ZN16BlancaFaceRecord10getPatternEv(gSaveBlancaFace);
+extern "C" Pattern *PatternSrc_GetBlancaFace(s32 x) {
+    return (Pattern *)gSaveBlancaFace.getPattern();
 }
-extern "C" void *PatternSrc_GetCurrentPlayer(s32 i) {
-    void *p = PlayerData_GetCurrent();
-    if (p) return _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(p), i);
+extern "C" Pattern *PatternSrc_GetCurrentPlayer(s32 i) {
+    PlayerData *p = PlayerData_GetCurrent();
+    if (p) return ((PlayerPatterns *)p->getPatterns())->getPattern(i);
     return 0;
 }
-extern "C" s32 PatternSrc_Get(s32 i, s32 a) {
+extern "C" Pattern *PatternSrc_Get(s32 i, s32 a) {
     if (i < 10) return sPatternSourceGetters[i](a);
     return 0;
 }
 extern "C" BOOL PatternTex_UploadPlayer(u32 a, u32 b) {
     u8 x = a & 7;
     u8 y = b & 7;
-    u32 t = sPlayerPatternTexKeys[x][y];
+    u8 *t = sPlayerPatternTexKeys[x][y];
     if (t && sPlayerPatternTexWork && sPlayerPatternVramTasks) {
-        void *q = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(PlayerData_GetResident(gSavePlayers, x)), y);
-        s32 off = y * 0x2c4;
-        ClothTex_LoadPattern(sPlayerPatternTexWork + off, (s32)q);
-        _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(sPlayerPatternVramTasks + y * TEXPAT_TASKS_SIZE, t, 0, 0, ClothTex_GetTex(sPlayerPatternTexWork + off), 0, 0);
+        Pattern *q = ((PlayerPatterns *)((PlayerData *)PlayerData_GetResident(gSavePlayers, x))->getPatterns())->getPattern(y);
+        ClothTexStorage *tex = &sPlayerPatternTexWork[y];
+        ClothTex_LoadPattern(tex, q);
+        // (TexPatVramUploader: the upload methods of a TexPatVramTasks)
+        ((TexPatVramUploader *)(void *)&sPlayerPatternVramTasks[y])->uploadByIdx(t, 0, 0, (u8 *)ClothTex_GetTex(tex), 0, 0);
         return TRUE;
     }
     return FALSE;
 }
 extern "C" BOOL PatternTex_UploadAble(u32 x) {
     u8 i = x & 7;
-    u32 t = sAblePatternTexKeys[i];
+    u8 *t = sAblePatternTexKeys[i];
     if (t && sAblePatternTexWork && sAblePatternVramTasks) {
-        s32 off = i * 0x2c4;
-        ClothTex_LoadPattern(sAblePatternTexWork + off, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, x));
-        _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(sAblePatternVramTasks + i * TEXPAT_TASKS_SIZE, t, 0, 0, ClothTex_GetTex(sAblePatternTexWork + off), 0, 0);
+        ClothTexStorage *tex = &sAblePatternTexWork[i];
+        ClothTex_LoadPattern(tex, gSaveAbleSistersPatterns.getPattern(x));
+        ((TexPatVramUploader *)(void *)&sAblePatternVramTasks[i])->uploadByIdx(t, 0, 0, (u8 *)ClothTex_GetTex(tex), 0, 0);
         return TRUE;
     }
     return FALSE;
@@ -1861,26 +1028,23 @@ extern "C" void PatternSrc_ApplyNetMove(Unk_0206fe80_Bits *p) {
         PatternSrc_Copy(a, b, c, d, 0);
     }
 }
-}
 
 // ======== data created after the functions (creation order found by inverting the heapsort; do not reorder)
 PatternTexCache sPatternTexCache;
-namespace U125_def {
 extern "C" {
 
-u8 *sPlayerPatternTexWork;
-u8 *sPlayerPatternVramTasks;
-u32 sAblePatternTexKeys[8];
+ClothTexStorage *sPlayerPatternTexWork;
+TexPatVramTasks *sPlayerPatternVramTasks;
+u8 *sAblePatternTexKeys[8];  // the Able Sisters' pattern textures (copies in the resource cache)
 
-extern s32 (*const sPatternSourceGetters[10])(s32);
-s32 (*const sPatternSourceGetters[10])(s32) = {
+extern Pattern *(*const sPatternSourceGetters[10])(s32);
+Pattern *(*const sPatternSourceGetters[10])(s32) = {
     PatternSrc_GetSessionPlayer0, PatternSrc_GetSessionPlayer1, PatternSrc_GetSessionPlayer2, PatternSrc_GetSessionPlayer3, PatternSrc_GetAble,
     PatternSrc_GetTownFlag, PatternSrc_GetVillager, PatternSrc_GetPreset, PatternSrc_GetBlancaFace, PatternSrc_GetCurrentPlayer,
 };
 
 u8 data_021cbcac[4];
 u8 sAbleDisplayDirtyBits;
-}
 }
 
 PatternPresetInfoFile sPatternPresetInfo;

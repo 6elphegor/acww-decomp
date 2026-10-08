@@ -23,6 +23,7 @@
 #include "talk/MsgTextLabel.h"
 #include "talk/MsgString.h"
 #include "talk/MsgString33.h"
+#include "talk/ChoiceString.h"
 #include "sys/ProcProfile.h"
 #define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_File_ReadRange  // declared below: the shared prototype conflicts with the calls here
@@ -403,16 +404,7 @@ class BmgReader;
 
 
 
-// Buffer defined in another file (ctor func_020aa8e0, dtor func_020aa8c8), 0x34 bytes
-class ChoiceString : public MsgString {
-public:
-    ChoiceString();
-    virtual ~ChoiceString();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x12 */ u8 unk_14[0x20];
-};
+// ChoiceString: talk/ChoiceString.h
 
 
 class MsgProcessor;

@@ -119,7 +119,6 @@ typedef BOOL (BuildingActor::*Unk_ov009_0225c360_Fn)();
 #define Model_clearResource _ZN5Model13clearResourceEv
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
-#define TalkAutoAdvance_start _ZN15TalkAutoAdvance5startEi
 #define BuildingLights_isLit _ZN14BuildingLights5isLitEv
 #define BuildingLights_setLit _ZN14BuildingLights6setLitEiii
 #define BuildingLights_updateLights _ZN14BuildingLights12updateLightsEP3Ctx
@@ -172,7 +171,6 @@ void Vec_Add(VecFx32 *, void *, VecFx32 *);
 void *TriangleTrigger_getCenter(void *);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
-void TalkAutoAdvance_start(void *, u32);
 void *Scene_GetWarpRequest();
 void Scene_ResetTownReturnPos();
 s32 Math_AngleDiffAbs(s32, s32);
@@ -1610,7 +1608,7 @@ void BuildingActor::onMessageEnd(u32) {
         }
     }
     if (!ok) {
-        TalkAutoAdvance_start(window, 0x64);
+        window->startAutoAdvance(0x64);
     }
 }
 

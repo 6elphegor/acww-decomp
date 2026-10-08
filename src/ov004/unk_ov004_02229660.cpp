@@ -125,10 +125,6 @@ class ChoiceList;
 #define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
 #define TalkWindowState_openChoices _ZN15TalkWindowState11openChoicesEi
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
-#define TalkVoice_clearMsgModeOverride _ZN9TalkVoice20clearMsgModeOverrideEv
-#define TalkVoice_setMsgModeOverride _ZN9TalkVoice18setMsgModeOverrideEi
-#define TalkVoice_clearVoiceOverride _ZN9TalkVoice18clearVoiceOverrideEv
-#define TalkVoice_setVoiceOverride _ZN9TalkVoice16setVoiceOverrideEi
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define SaveData_clearFlag _ZN8SaveData9clearFlagEj
 #define SaveData_setFlag _ZN8SaveData7setFlagEj
@@ -161,10 +157,6 @@ void TalkWindowState_attachRequest(TalkWindowState *p, TalkMsgRequest *sec);
 ChoiceList *TalkWindowState_getChoiceList(TalkWindowState *p);
 void TalkWindowState_openChoices(TalkWindowState *p, u32 v);
 void TalkWindowState_setNextMessage(TalkWindowState *p, u8 *src, const void *s);
-void TalkVoice_clearMsgModeOverride(void *p);
-void TalkVoice_setMsgModeOverride(void *p, s32 a);
-void TalkVoice_clearVoiceOverride(void *p);
-void TalkVoice_setVoiceOverride(void *p, s32 a);
 BOOL CommManager_isOnline(void *g);
 void SaveData_clearFlag(void *p, u32 n);
 void SaveData_setFlag(void *p, u32 n);
@@ -568,12 +560,12 @@ void RoomTelephone::onMessageEnd(u32) {
         changeAct(0xd);
         break;
     case 0x20:
-        TalkVoice_clearVoiceOverride(m->voice);
+        m->voice.clearVoiceOverride();
         break;
     case 0x2a:
     case 0x2b:
     case 0x2c:
-        TalkVoice_clearMsgModeOverride(m->voice);
+        m->voice.clearMsgModeOverride();
         break;
     }
 }
@@ -582,12 +574,12 @@ void RoomTelephone::onMessageStart(u32) {
     TalkWindowState *m = window;
     switch (msgIndex) {
     case 0xe:
-        TalkVoice_setVoiceOverride(m->voice, 0);
+        m->voice.setVoiceOverride(0);
         break;
     case 0x2a:
     case 0x2b:
     case 0x2c:
-        TalkVoice_setMsgModeOverride(m->voice, 0);
+        m->voice.setMsgModeOverride(0);
         break;
     }
 }

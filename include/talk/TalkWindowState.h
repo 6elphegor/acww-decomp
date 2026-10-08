@@ -2,13 +2,30 @@
 #define TALK_TALKWINDOWSTATE_H
 
 #include "types.h"
-#include "uptr.h"
+#include "talk/TalkFrame.h"
+#include "talk/ChoiceMenu.h"
+#include "talk/ChoiceList.h"
+#include "talk/TalkTextBox.h"
+#include "talk/TalkBmgReader.h"
+#include "talk/TalkParser.h"
+#include "talk/MsgRunner.h"
+#include "talk/BmgMsgAttr.h"
+#include "talk/MsgString33.h"
+#include "talk/MsgString25.h"
+#include "talk/MsgString11.h"
+#include "talk/MsgString9C.h"
+#include "talk/MsgString9B.h"
+#include "talk/MsgString17.h"
+#include "talk/MsgString17B.h"
+#include "talk/TalkVoice.h"
 
 class TalkMsgRequest;
-class ChoiceList;
+class MsgTextLabel;
 
-// Talk window state machine (0x1a1c bytes): open / print / wait / choice / close states, message and choice
-// buffers, text variables (date, names, ...) and the voice. Members defined in src/main/unk_02065e88.cpp.
+// A talk window (0x1a1c bytes on the DS; gTalkWindows: two of them): open / print / wait / choice / close states,
+// the frame, choice menu, text box, message buffer and parser, the text variables (date, names, ...) and the voice.
+// The request attached to it (TalkMsgRequest) supplies the message and gets its notifications.
+// Defined in src/main/unk_02065e88.cpp.
 class TalkWindowState {
 public:
     TalkWindowState();
@@ -18,7 +35,6 @@ public:
     void reloadMessage();
     void loadNextMessage();
     void resetTextVars();
-    void stopAutoAdvance();
     void execClosed();
     void enterClosed();
     void execClosing();
@@ -45,16 +61,16 @@ public:
     void loadInputMode();
     void refreshNameColor();
     void startShake(s32 a, s32 b, s32 c, s32 d);
-    void *getNumber1714Text();
-    void *getMinuteText();
-    void *getHourText();
-    void *getWeekdayText();
-    void *getDayText();
-    void *getMonthText();
-    void *getYearText();
-    s32 resetVoice();
+    MsgString *getNumber1714Text();
+    MsgString *getMinuteText();
+    MsgString *getHourText();
+    MsgString *getWeekdayText();
+    MsgString *getDayText();
+    MsgString *getMonthText();
+    MsgString *getYearText();
+    void resetVoice();
     void setVoicePlaying(BOOL v);
-    s32 onCharPrinted(s32 a);
+    void onCharPrinted(s32 c);
     void draw();
     void update();
     void setSilent();
@@ -62,12 +78,12 @@ public:
     void disableInput();
     void detachRequest();
     void attachRequest(TalkMsgRequest *p);
-    s32 hideBusyIcon();
-    s32 showBusyIcon(u32 se);
+    void hideBusyIcon();
+    void showBusyIcon(u32 se);
     u8 isVoicePlaying();
     ChoiceList *getChoiceList();
     void openChoices(s32 v);
-    void setNamedSlot(s32 idx, void *p, u32 val);
+    void setNamedSlot(s32 idx, void *p, u32 color);
     void setSlotFromString(s32 idx, u8 *key, const char *bank);
     s32 setSlot(s32 idx, void *p);
     void clearAdvancePending();
@@ -77,151 +93,100 @@ public:
     void setNextMessage(u8 *src, void *s);
     BOOL setNextMessageIfUnset(u8 *src, void *s);
 
-#ifdef HOST64
-    // the 64-bit layout (tools/host_view_layout.py: the members at their places in TalkWindow)
-    u32 index;  // DS +0x0
-    s32 state;  // DS +0x4
-    s32 nextState;  // DS +0x8
-    s32 stateStep;  // DS +0xc
-    u32 unk_10;  // DS +0x10
-    s32 openMode;  // DS +0x14
-    u8 choicePending;  // DS +0x18
-    u8 pad_19[0x7];  // DS +0x19 [0x3]
-    u8 frame[0xa0];  // DS +0x1c [0x80]
-    s32 scrollY;  // DS +0x9c
-    s16 shakeAngle;  // DS +0xa0
-    u8 pad_a2[0x2];  // DS +0xa2 [0x2]
-    s32 shakeAmplitude;  // DS +0xa4
-    s32 shakeDecay;  // DS +0xa8
-    s32 shakeScaleX;  // DS +0xac
-    s32 shakeScaleY;  // DS +0xb0
-    u8 choiceMenu[0x330];  // DS +0xb4 [0x260]
-    u8 choiceList[0x300];  // DS +0x314 [0x278]
-    u8 textBox[0x4e0];  // DS +0x58c [0x490]
-    u8 msgBuffer[0x8d8];  // DS +0xa1c [0x8a4]
-    u8 parser[0x44];  // DS +0x12c0 [0x30]
-    s32 parserPrintStatus;  // DS +0x12f0
-    u8 pad_12f4[0xe0];  // DS +0x12f4 [0xa4]
-    u8 parserChoiceDeferred;  // DS +0x1398
-    u8 pad_1399[0x17];  // DS +0x1399 [0xb]
-    u8 runner[0x18];  // DS +0x13a4 [0xc]
-    TalkMsgRequest * request;  // DS +0x13b0
-    u8 msgAttr[0x10];  // DS +0x13b4 [0xc]
-    u8 slots[0x2c0];  // DS +0x13c0 [0x23c]
-    u8 namedSlots[0x100];  // DS +0x15fc [0xd0]
-    uptr namedSlotColors[0x4];  // DS +0x16cc [0x10] (pointers)
-    u8 voice[0x38];  // DS +0x16dc [0x2c]
-    s32 year;  // DS +0x1708
-    u8 day;  // DS +0x170c
-    u8 month;  // DS +0x170d
-    u8 minute;  // DS +0x170e
-    u8 hour;  // DS +0x170f
-    s32 weekday;  // DS +0x1710
-    s32 second;  // DS +0x1714
-    s32 timeOfDay;  // DS +0x1718
-    u8 hpad_0[0x4];
-    u8 yearText[0x38];  // DS +0x171c [0x2c]
-    u8 monthText[0x40];  // DS +0x1748 [0x34]
-    u8 dayText[0x38];  // DS +0x177c [0x2c]
-    u8 weekdayText[0x40];  // DS +0x17a8 [0x34]
-    u8 hourText[0x38];  // DS +0x17dc [0x2c]
-    u8 minuteText[0x38];  // DS +0x1808 [0x2c]
-    u8 secondText[0x38];  // DS +0x1834 [0x2c]
-    u8 catchphrase[0x30];  // DS +0x1860 [0x20]
-    u8 townName[0x28];  // DS +0x1880 [0x1c]
-    u8 playerName[0x28];  // DS +0x189c [0x1c]
-    u8 friendName[0x28];  // DS +0x18b8 [0x1c]
-    u8 enemyName[0x28];  // DS +0x18d4 [0x1c]
-    u8 randomVillagerName[0x28];  // DS +0x18f0 [0x1c]
-    u8 otherResidentName[0x28];  // DS +0x190c [0x1c]
-    u8 trend[0x40];  // DS +0x1928 [0x34]
-    u8 impression[0x40];  // DS +0x195c [0x34]
-    u8 nickname[0x28];  // DS +0x1990 [0x1c]
-    u8 compliment[0x30];  // DS +0x19ac [0x24]
-    u8 greeting[0x33];  // DS +0x19d0 [0x27]
-    u8 nextMsgIndex;  // DS +0x19f7
-    u8 nextFileName[0x1a];  // DS +0x19f8 [0x1a]
-    u8 advancePending;  // DS +0x1a12
-    u8 advanceLocked;  // DS +0x1a13
-    u8 pad_1a14[0x2];  // DS +0x1a14 [0x2]
-    u8 choiceNotifyPending;  // DS +0x1a16
-    u8 voicePlaying;  // DS +0x1a17
-    u8 inputDisabled;  // DS +0x1a18
-    u8 noOpenSe;  // DS +0x1a19
-    u8 silent;  // DS +0x1a1a
-    u8 pad_1a1b;  // DS +0x1a1b
-#else
+    // auto advance (the message tag 0x0110, or a request's own)
+    void startAutoAdvance(s32 frames);
+    void stopAutoAdvance();
+    BOOL tickAutoAdvance();
+
+    // the message and its text variables
+    void loadMessageAttr();
+    const char *matchSubdirPrefix(const char *s);
+    const char *matchDirPrefix(const char *s);
+    char *buildMessagePath(const char *a, const char *b);
+    void scanMessageTags();
+    void startMessage();
+    void playMessageSe();
+    void notifyChoice();
+    void notifyMessageEnd();
+    void notifyMessageStart();
+    void destroyNameLabel();
+    void createNameLabel();
+    void applyFriendshipDelta(s32 idx);
+    BOOL buildGreeting();
+    void clearGreeting();
+    BOOL buildCompliment();
+    void clearCompliment();
+    BOOL buildNickname();
+    void clearNickname();
+    BOOL buildImpression();
+    void clearImpression();
+    BOOL buildTrend();
+    void clearTrend();
+    BOOL buildOtherResidentName();
+    void clearOtherResidentName();
+    BOOL buildRandomVillagerName();
+    void clearRandomVillagerName();
+    BOOL buildEnemyName();
+    void clearEnemyName();
+    BOOL buildFriendName();
+    void clearFriendName();
+    BOOL buildPlayerName();
+    void clearPlayerName();
+    BOOL buildTownName();
+    void clearTownName();
+    BOOL buildCatchphrase();
+    void clearCatchphrase();
+    void clearNamedSlots();
+    void clearSlots();
+    void reset();
+    void resetVars();
+
     /* 0x0000 */ u32 index;
-    /* 0x0004 */ s32 state;
-    /* 0x0008 */ s32 nextState;
+    /* 0x0004 */ s32 state;      // 0 idle, 1 opening, 2 wait input, 3 printing, 4 closing, 5 closed
+    /* 0x0008 */ s32 nextState;  // 6: none
     /* 0x000c */ s32 stateStep;
-    /* 0x0010 */ u32 unk_10;
+    /* 0x0010 */ s32 autoAdvanceTimer;
     /* 0x0014 */ s32 openMode;
     /* 0x0018 */ u8 choicePending;
-    u8 pad_19[3];
-    /* 0x001c */ u8 frame[0x9c - 0x1c];
+    /* 0x001c */ TalkFrame frame;
     /* 0x009c */ s32 scrollY;
     /* 0x00a0 */ s16 shakeAngle;
-    u8 pad_a2[2];
     /* 0x00a4 */ s32 shakeAmplitude;
     /* 0x00a8 */ s32 shakeDecay;
     /* 0x00ac */ s32 shakeScaleX;
     /* 0x00b0 */ s32 shakeScaleY;
-    /* 0x00b4 */ u8 choiceMenu[0x314 - 0xb4];
-    /* 0x0314 */ u8 choiceList[0x58c - 0x314];
-    /* 0x058c */ u8 textBox[0xa1c - 0x58c];
-    /* 0x0a1c */ u8 msgBuffer[0x12c0 - 0xa1c];
-    /* 0x12c0 */ u8 parser[0x30];
-    /* 0x12f0 */ s32 parserPrintStatus;
-    u8 pad_12f4[0x1398 - 0x12f4];
-    /* 0x1398 */ u8 parserChoiceDeferred;
-    u8 pad_1399[0x13a4 - 0x1399];
-    /* 0x13a4 */ u8 runner[0xc];
+    /* 0x00b4 */ ChoiceMenu choiceMenu;
+    /* 0x0314 */ ChoiceList choiceList;
+    /* 0x0588 */ MsgTextLabel *nameLabel;
+    /* 0x058c */ TalkTextBox textBox;
+    /* 0x0a1c */ TalkBmgReader msgBuffer;
+    /* 0x12c0 */ TalkParser parser;
+    /* 0x13a4 */ MsgRunner runner;
     /* 0x13b0 */ TalkMsgRequest *request;
-    /* 0x13b4 */ u8 msgAttr[0xc];
-    /* 0x13c0 */ u8 slots[0x15fc - 0x13c0];
-    /* 0x15fc */ u8 namedSlots[0x16cc - 0x15fc];
+    /* 0x13b4 */ BmgMsgAttr msgAttr;
+    /* 0x13c0 */ MsgString33 slots[11];
+    /* 0x15fc */ MsgString33 namedSlots[4];
     /* 0x16cc */ u32 namedSlotColors[4];
-    /* 0x16dc */ u8 voice[0x1708 - 0x16dc];
+    /* 0x16dc */ TalkVoice voice;
     /* 0x1708 */ s32 year;
-    /* 0x170c */ u8 day;
-    /* 0x170d */ u8 month;
-    /* 0x170e */ u8 minute;
-    /* 0x170f */ u8 hour;
-    /* 0x1710 */ s32 weekday;
-    /* 0x1714 */ s32 second;
-    /* 0x1718 */ s32 timeOfDay;
-    /* 0x171c */ u8 yearText[0x1748 - 0x171c];
-    /* 0x1748 */ u8 monthText[0x177c - 0x1748];
-    /* 0x177c */ u8 dayText[0x17a8 - 0x177c];
-    /* 0x17a8 */ u8 weekdayText[0x17dc - 0x17a8];
-    /* 0x17dc */ u8 hourText[0x1808 - 0x17dc];
-    /* 0x1808 */ u8 minuteText[0x1834 - 0x1808];
-    /* 0x1834 */ u8 secondText[0x1860 - 0x1834];
-    /* 0x1860 */ u8 catchphrase[0x1880 - 0x1860];
-    /* 0x1880 */ u8 townName[0x189c - 0x1880];
-    /* 0x189c */ u8 playerName[0x18b8 - 0x189c];
-    /* 0x18b8 */ u8 friendName[0x18d4 - 0x18b8];
-    /* 0x18d4 */ u8 enemyName[0x18f0 - 0x18d4];
-    /* 0x18f0 */ u8 randomVillagerName[0x190c - 0x18f0];
-    /* 0x190c */ u8 otherResidentName[0x1928 - 0x190c];
-    /* 0x1928 */ u8 trend[0x195c - 0x1928];
-    /* 0x195c */ u8 impression[0x1990 - 0x195c];
-    /* 0x1990 */ u8 nickname[0x19ac - 0x1990];
-    /* 0x19ac */ u8 compliment[0x19d0 - 0x19ac];
-    /* 0x19d0 */ u8 greeting[0x19f7 - 0x19d0];
-    /* 0x19f7 */ u8 nextMsgIndex;
-    /* 0x19f8 */ u8 nextFileName[0x1a12 - 0x19f8];
-    /* 0x1a12 */ u8 advancePending;
-    /* 0x1a13 */ u8 advanceLocked;
-    u8 pad_1a14[2];
-    /* 0x1a16 */ u8 choiceNotifyPending;
-    /* 0x1a17 */ u8 voicePlaying;
-    /* 0x1a18 */ u8 inputDisabled;
-    /* 0x1a19 */ u8 noOpenSe;
-    /* 0x1a1a */ u8 silent;
-    u8 pad_1a1b;
-#endif
+    /* 0x170c */ u8 day, month, minute, hour;
+    /* 0x1710 */ s32 weekday, second, timeOfDay;
+    /* 0x171c */ MsgString25 yearText;
+    /* 0x1748 */ MsgString33 monthText;
+    /* 0x177c */ MsgString25 dayText;
+    /* 0x17a8 */ MsgString33 weekdayText;
+    /* 0x17dc */ MsgString25 hourText, minuteText, secondText;
+    /* 0x1860 */ MsgString11 catchphrase;
+    /* 0x1880 */ MsgString9C townName;
+    /* 0x189c */ MsgString9B playerName, friendName, enemyName, randomVillagerName, otherResidentName;
+    /* 0x1928 */ MsgString33 trend, impression;
+    /* 0x1990 */ MsgString9B nickname;
+    /* 0x19ac */ MsgString17 compliment;
+    /* 0x19d0 */ MsgString17B greeting;
+    /* 0x19f4 */ u8 randomVillagerNameBuilt, otherResidentNameBuilt, otherResidentIsVillager, nextMsgIndex;
+    /* 0x19f8 */ u8 nextFileName[0x1a];
+    /* 0x1a12 */ u8 advancePending, advanceLocked, startNotifyPending, endNotifyPending, choiceNotifyPending,
+        voicePlaying, inputDisabled, noOpenSe, silent;
 };
 
 #endif // TALK_TALKWINDOWSTATE_H

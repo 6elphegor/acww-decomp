@@ -7,7 +7,6 @@
 #ifdef __cplusplus
 #include "talk/TalkWindowState.h"
 #include "types.h"
-class TalkFrame;
 #endif
 
 #ifdef __cplusplus
@@ -45,12 +44,6 @@ extern char sTalkMessagePath[0x40];
 extern "C" {
 #ifndef PROTO_LOCAL_gTalkWindows
 extern TalkWindowState *gTalkWindows;
-#endif
-#ifndef PROTO_LOCAL_TalkFrame_FreeBuffers
-void TalkFrame_FreeBuffers(TalkFrame *p);
-#endif
-#ifndef PROTO_LOCAL_TalkFrame_UploadBg
-void TalkFrame_UploadBg(TalkFrame *p);
 #endif
 #ifndef PROTO_LOCAL_Talk_ColorTagToTextColor
 u8 Talk_ColorTagToTextColor(u32 x);

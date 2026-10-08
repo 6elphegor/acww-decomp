@@ -12,7 +12,6 @@
 #define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_data_020e0498  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_data_020e049c  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sPlayerPatternTexKeys  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203c638.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_020637e4.h"
@@ -30,7 +29,6 @@ extern "C" {
 extern u8 gSavePlayers[];
 extern u16 gSaveTownId[];
 extern u8 gSaveData[];
-extern u32 sPlayerPatternTexKeys[8][8];
 extern u8 gSaveAbleSistersPatterns[];
 extern u8 gSaveBlancaFace[];
 extern u8 gSaveVillagers[];
