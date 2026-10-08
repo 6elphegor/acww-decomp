@@ -48,20 +48,14 @@ extern u8 sKkShowFxActive;
 #ifndef PROTO_LOCAL_sKkShowFx
 extern StaffRoll *sKkShowFx;
 #endif
+#ifndef PROTO_LOCAL_sRoomSceneEntries
+extern SceneWarp sRoomSceneEntries[3];
+#endif
 #ifndef PROTO_LOCAL_sRoomSceneEntryList
 extern SceneWarpList sRoomSceneEntryList;
 #endif
-#ifndef PROTO_LOCAL_data_ov004_0225893c
-extern SceneWarp data_ov004_0225893c;
-#endif
 #ifndef PROTO_LOCAL_sRoomCommonProfileCount
 extern u32 sRoomCommonProfileCount;
-#endif
-#ifndef PROTO_LOCAL_data_ov004_02258958
-extern SceneWarp data_ov004_02258958;
-#endif
-#ifndef PROTO_LOCAL_data_ov004_02258974
-extern SceneWarp data_ov004_02258974;
 #endif
 #ifndef PROTO_LOCAL_sRoomCommonProfiles
 extern u32 sRoomCommonProfiles[17];

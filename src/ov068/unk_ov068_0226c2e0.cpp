@@ -224,7 +224,7 @@ void RoomCamera_KkShowPickShot(void);
 void RoomCamera_KkShowResetShot(void);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, u32 b, u32 c);
 void NNS_G3dMdlSetMdlLightEnableFlagAll(u8 *m, u32 x);  // (src/autoload_2/unk_02105d50.c)
-// src/ov004/unk_ov004_0223f2c8.cpp (its shared header defines data_ov004_0225893c)
+// src/ov004/unk_ov004_0223f2c8.cpp (its shared header defines sRoomSceneEntries)
 void KkShowFx_Start(void);
 void KkShowFx_Stop();
 void KkShowFx_Update(void);

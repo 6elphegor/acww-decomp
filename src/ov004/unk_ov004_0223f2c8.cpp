@@ -72,14 +72,17 @@ s32 KkShowFx_GetState() {
 
 u8 sKkShowFxActive;
 StaffRoll *sKkShowFx;
-// {pointer to the first static entry, count}
-// (a SceneWarpList: the count is the next variable on the DS, the pointer is larger here)
-SceneWarpList sRoomSceneEntryList = {&data_ov004_0225893c, 3};
+// the house rooms' exits: {the entries, their count} (a SceneWarpList: the count is the next variable on the DS, the
+// pointer is larger here). The three entries are one array (symbols.txt names each; the room code reads entries[id]
+// for ids 0-2: as three variables the second and third were whatever the linker put after the first)
+SceneWarp sRoomSceneEntries[3] = {
+    SceneWarp(1, VecFx32Copy(0xf000, 0x200, 0x1d000), 0x11000000, 0x4000, 2, 2, -0x4000, 2),
+    SceneWarp(5, VecFx32Copy(0x11000, 0x200, 0x1d000), 0x11000000, -0x4000, 2, 2, 0x4000, 2),
+    SceneWarp(0x3e, VecFx32Copy(0, 0, 0), 0x800000, 0, 2, 2, 0, 0),
+};
+SceneWarpList sRoomSceneEntryList = {sRoomSceneEntries, sizeof sRoomSceneEntries / sizeof sRoomSceneEntries[0]};
 extern "C" u32 data_ov004_0224f2d0 = 3;  // unreferenced: kept by its symbols.txt name
-SceneWarp data_ov004_0225893c(1, VecFx32Copy(0xf000, 0x200, 0x1d000), 0x11000000, 0x4000, 2, 2, -0x4000, 2);
 u32 sRoomCommonProfileCount = ROOM_COMMON_PROFILE_COUNT;
-SceneWarp data_ov004_02258958(5, VecFx32Copy(0x11000, 0x200, 0x1d000), 0x11000000, -0x4000, 2, 2, 0x4000, 2);
-SceneWarp data_ov004_02258974(0x3e, VecFx32Copy(0, 0, 0), 0x800000, 0, 2, 2, 0, 0);
 // list of 17 ids
 u32 sRoomCommonProfiles[17] = {0xc9, 0xca, 0xe, 0x7, 0x8c, 0x8e, 0xc6, 0x8b, 0xd6, 0xc5, 0x89, 0xd5, 0xbf, 0xd1, 0xd2, 0x8d, 0x2a};
 
@@ -89,12 +92,10 @@ u32 sRoomCommonProfiles[17] = {0xc9, 0xca, 0xe, 0x7, 0x8c, 0x8e, 0xc6, 0x8b, 0xd
 HOST_OVERLAY_VARS(unk_ov004_0223f2c8) {
     HOST_OVERLAY_VAR(sKkShowFxActive),
     HOST_OVERLAY_VAR(sKkShowFx),
+    HOST_OVERLAY_VAR(sRoomSceneEntries),
     HOST_OVERLAY_VAR(sRoomSceneEntryList),
     HOST_OVERLAY_VAR(data_ov004_0224f2d0),
-    HOST_OVERLAY_VAR(data_ov004_0225893c),
     HOST_OVERLAY_VAR(sRoomCommonProfileCount),
-    HOST_OVERLAY_VAR(data_ov004_02258958),
-    HOST_OVERLAY_VAR(data_ov004_02258974),
     HOST_OVERLAY_VAR(sRoomCommonProfiles),
     HOST_OVERLAY_VARS_END
 };
