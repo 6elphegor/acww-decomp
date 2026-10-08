@@ -400,6 +400,10 @@ def _init(decls):
         if r.get('asm'):
             ASM_NAMES.add(r['name'])
     AMBIGUOUS.update(n for n, fs in where.items() if len(fs) > 1)
+    if not os.path.exists('include/proto'):
+        os.makedirs('include/proto')
+    with open('include/proto/.ambiguous', 'w') as fh:  # (for --only, which scans just a few files)
+        fh.write('\n'.join(sorted(AMBIGUOUS)) + '\n')
     excluded = set()
     if os.path.exists('include/proto/.excluded'):
         excluded = set(open('include/proto/.excluded').read().split())
@@ -418,6 +422,8 @@ def regen_only(files):
     os.unlink(tmp)
     global DEFS
     DEFS = data['defs']
+    if os.path.exists('include/proto/.ambiguous'):  # type names defined in several files (the full scan's list)
+        AMBIGUOUS.update(open('include/proto/.ambiguous').read().split())
     excluded = set()
     if os.path.exists('include/proto/.excluded'):
         excluded = set(open('include/proto/.excluded').read().split())
