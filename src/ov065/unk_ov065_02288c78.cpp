@@ -381,10 +381,10 @@ s32 SBServerAddKeyValue(_SBServer *a, char *k, char *v) {
 
 namespace F02288e2c {
 extern "C" {
-void SBServerAddIntKeyValue(void *a, char *b) {
+void SBServerAddIntKeyValue(_SBServer *a, char *b, s32 v) {
     char buf[0x14];
-    OS_SPrintf(buf, "%d");
-    SBServerAddKeyValue((_SBServer *)a, b, buf);
+    OS_SPrintf(buf, "%d", v);
+    SBServerAddKeyValue(a, b, buf);
 }
 }
 }

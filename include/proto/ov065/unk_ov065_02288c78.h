@@ -43,9 +43,6 @@ void RefStringFree(void **p);
 #ifndef PROTO_LOCAL_SBRefStrHashCleanup
 void SBRefStrHashCleanup();
 #endif
-#ifndef PROTO_LOCAL_SBServerAddIntKeyValue
-void SBServerAddIntKeyValue(void *a, char *b);
-#endif
 #ifndef PROTO_LOCAL_SBServerGetStringValueA
 char *SBServerGetStringValueA(void *a, char *k, char *d);
 #endif
@@ -108,6 +105,9 @@ void SBServerFree(_SBServer **pp);
 #endif
 #ifndef PROTO_LOCAL_SBServerAddKeyValue
 s32 SBServerAddKeyValue(_SBServer *a, char *k, char *v);
+#endif
+#ifndef PROTO_LOCAL_SBServerAddIntKeyValue
+void SBServerAddIntKeyValue(_SBServer *a, char *b, s32 v);
 #endif
 #ifndef PROTO_LOCAL_SBServerGetPublicInetAddress
 u32 SBServerGetPublicInetAddress(_SBServer *o);
