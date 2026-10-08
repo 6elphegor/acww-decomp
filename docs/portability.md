@@ -23,8 +23,8 @@ No worktree was needed. All compiles read the main checkout and wrote only to th
 | B | Pointers kept in 32-bit integers (works only below 4 GB) | C: 121 pointer-to-int + 96 int-to-pointer casts (55 files); C++: 186 int-to-pointer casts (67 files); explicit `(u32)(uptr)` 92 and `(T*)(uptr)` 31; PXI 26-bit pointers; snd7 38 conversions; DMA source/destination registers; resource offsets relocated in place | macOS arm64 and every build with memory above 4 GB | Real pointer types; offsets resolved when used; ARM7 services called directly. A low-4 GB poisoning harness finds the remaining sites on Linux. **Steps 3.0/3.1 done:** the harness (`ACWW_HIGHMEM`) runs every script; 0 C and 0 C++ int/pointer casts left (`--strict-c` clean); PXI, snd7 and DMA with real pointers |
 | C | DS addresses used as numbers in the source | Casts of DS constants to pointers (I/O excluded): 229 (system work area/DTCM 160 in 56 files, VRAM 32, palette 18, OAM 5, main RAM 10, WRAM 2, GBA slot 2). Address range checks: about 25 in 8 files. VRAM address tables: 2. I/O register casts: 830 in 121 files (harmless: only used as numbers by `IO_*`) | A, B | Named host objects through macros (`HW_SYSWORK`, `HW_PLTT`, `HW_OAM`, `HostVram_CpuPtr`) |
 | D | Signals and CPU tricks | SIGSEGV I/O emulation and single-stepping (x86 only), interrupt injection under SP (`-mno-red-zone`, irq_entry.S), SIGFPE division emulation, SIGVTALRM hang guard, SIGPROF, `ucontext` gregs | macOS (different ucontext, no x86), Windows (no signals), arm64 (no division trap) | Already almost unused: 0 trapped I/O accesses in 11043 attract-demo frames (`ACWW_IOHIST`); hang guard silent over 25001 play frames; 1 division-by-zero site (`spl_scl_in_out`). Replace with explicit code. **Done 2026-10-08 (phase 1): only debug aids remain, behind `HOST_DEBUG_POSIX`** |
-| E | ELF / GNU-ld-only build steps | `ld -r -T` (2 partial links), 291 `--wrap` thunks in x86 asm, `--defsym`, `objcopy --localize-symbols` (76 names), provides.ld (7784 PROVIDE, of which 99 labels + 133 aliases are referenced), `.init_array` per-overlay ranges, `__start_/__stop_` symbols, gap data as ELF inline asm (113 objects), `.set` absolute symbols, `--allow-multiple-definition` | ld64 (Mac), lld-link / ld.bfd for PE (Windows) | Generated C instead of linker features; source-level fixes. **Done except the two partial links** (2.4-2.7, 2.9-2.11, 0.2): left are `ld -r -T order.ld` (variable order, 2.8), `ld -r -T dtcm.ld` (3.2) and the `--section-start`/`-Ttext-segment` options (3.3) |
-| F | GCC-only leniency and flags | Clang (Apple's only compiler) rejects 47 units with 2370 errors (1735 distinct) that GCC accepts. **0 after step 2.1.** GCC-only flags: `-malign-data=abi`, `-fpcc-struct-return` (unsupported by clang off i386; changes 39 functions in 17 units) | macOS | Fix the declarations (the PROTO_LOCAL backlog); drop the flags after testing them |
+| E | ELF / GNU-ld-only build steps | `ld -r -T` (2 partial links), 291 `--wrap` thunks in x86 asm, `--defsym`, `objcopy --localize-symbols` (76 names), provides.ld (7784 PROVIDE, of which 99 labels + 133 aliases are referenced), `.init_array` per-overlay ranges, `__start_/__stop_` symbols, gap data as ELF inline asm (113 objects), `.set` absolute symbols, `--allow-multiple-definition` | ld64 (Mac), lld-link / ld.bfd for PE (Windows) | Generated C instead of linker features; source-level fixes. **Done except the two partial links** (2.4-2.11, 0.2): left are `ld -r -T game.ld` (only names the data and bss `gdata`/`gbss`; the DS variable order is gone, 2.8), `ld -r -T dtcm.ld` (3.2) and the `--section-start`/`-Ttext-segment` options (3.3) |
+| F | GCC-only leniency and flags | Clang (Apple's only compiler) rejects 47 units with 2370 errors (1735 distinct) that GCC accepts. **0 after step 2.1.** GCC-only flags: `-malign-data=abi` (**dropped, 2.8**), `-fpcc-struct-return` (unsupported by clang off i386; changes 39 functions in 17 units; dropped on x86-64, 2.2) | macOS | Fix the declarations (the PROTO_LOCAL backlog); drop the flags after testing them |
 | G | LLP64 (Windows) | 831 errors (mostly `IO_ADDR_`'s `(unsigned long)` cast), 8 `__LP64__` checks, `unsigned long` pointer words in modern/ds/overlays.c. **0 beyond the baseline with `-mno-ms-bitfields` after step 2.3.** MS bitfield layout breaks the save `static_assert`s (696 + 54 + others); the MSVC ABI also breaks member-pointer casts (133) and the MWCC_LAYOUT tail-padding trick | Windows | One-line `IO_ADDR_` fix; MinGW-w64 (clang or gcc, Itanium C++ ABI) with `-mno-ms-bitfields`, **not MSVC**. With these, only 11 extra diagnostics remain |
 | H | Display and frontend | melonDS (GPL-3.0, patched, 32-bit core for i386) behind 8 `melon_*` functions; a separate SDL2 viewer process through `shm_open` + `fork`/`execl` | Licence; process model on Windows | In-process SDL frontend; own renderer behind the same 8-function interface |
 | I | Compiler assumptions | char signedness changes 21 functions in 11 units; `wchar_t` 72 uses / `L""` 11; `long` 196 uses (7 casts); `s64`/`u64` `aligned(4)` typedef; arm64 member-function-pointer (PMF) encoding differs from x86 (12 hand-encoded PMFs in gap data) | – | Keep `-fsigned-char` (gcc and clang support it on every target); `char16_t`; PMFs as typed C |
@@ -41,7 +41,7 @@ The good news:
 
 | Region | DS address | How the host provides it | Evidence |
 |---|---|---|---|
-| Game initialised data `gdata` | 0x02001000 | `-Wl,--section-start=gdata=0x02001000`; variables in DS order (order.ld) | tools/configure_host.py:65-66; tools/host_order.py |
+| Game initialised data `gdata` | 0x02001000 | `-Wl,--section-start=gdata=0x02001000`; variables where the compiler and linker put them (the DS order is gone: 2.8) | tools/configure_host.py |
 | Game bss `gbss` | 0x02040000 | `--section-start=gbss=0x02040000` (x86-64: 0x11bbf0 bytes, ends at 0x0215bbf0) | configure_host.py:66; `readelf -S build/host64_usa/acww` |
 | DTCM module variables `.dtcm` | 0x027e0000 (16 KB) | separate `ld -r -T dtcm.ld` of `src/dtcm/*` (9 units), `--section-start=.dtcm` | configure_host.py:160-167, :65 |
 | Main RAM, 4 MB, mirrored to 0x02ffffff | 0x02000000 | `memfd_create` + 5 `MAP_FIXED` mappings; gdata/gbss copied into it via `__stop_gdata`, `__start_gbss`, `__stop_gbss` | modern/host/hw.c:859-883 |
@@ -119,7 +119,7 @@ there**). They worked on x86-64 only because everything was kept below 4 GB.
 | Feature | Where | What for | Replacement |
 |---|---|---|---|
 | `ld -r -T dtcm.ld` | configure_host.py:163-167 | DTCM variables in one 0x4000 block at 0x027e0000 | DTCM block as a host array; DTCM variables as ordinary variables |
-| `ld -r -T order.ld` with `-fdata-sections` and `-malign-data=abi` | configure_host.py:51, :201-203; tools/host_order.py | Variables in DS order (some code runs from one variable into the next); per-overlay data/bss/constructor ranges | Find and fix the overruns (guard-padding variant of order.ld on Linux), then drop the ordering. Overlay reset by a generated C table (`{&var, sizeof var}` per overlay) |
+| ~~`ld -r -T order.ld` with `-fdata-sections` and `-malign-data=abi`~~ | – | **Gone (2.8)**: the overruns fixed (guard variant, `configure_host.py --guards`), no DS order; the partial link's `game.ld` only names the sections `gdata`/`gbss` (goes with 3.3) | – |
 | ~~`.init_array` → `host_ovinit` ranges~~ | – | **Gone (2.9)**: each overlay unit lists its variables (`HOST_OVERLAY_VARS`), explicit `StaticInit_<unit>`; modern/gen/overlay_table.c | – |
 | ~~`--wrap` (291) and x86 asm thunks~~ | – | **Gone (2.10)**: typed C dispatchers, call sites renamed | – |
 | ~~`--defsym=_Znwj=_Znwm`, `_Znaj=_Znam`~~ | – | **Gone (2.5)**: the global operators are the host's (modern/host/newdelete.cpp), the game allocates by name | – |
@@ -164,7 +164,7 @@ there**). They worked on x86-64 only because everything was kept below 4 GB.
 |---|---|---|---|---|
 | GCC leniency: per-namespace `extern "C"` redeclarations with different types (the "views" trick: `namespace R1 { extern EffectManager gEffectManager; }`) | Clang errors in **47 units, 2370 errors** (1644 conflicting types, 536 redeclarations, 163 C-linkage conflicts, 20 redefinitions, 4 `void *` arithmetic, 2 ambiguous calls, 1 no matching call); g++ accepts them (notes only) | **Blocks Apple clang** | Blocks clang-mingw | Fix as part of the PROTO_LOCAL/views backlog. The libclang sweep is the check; the goal is 0 |
 | `-fpcc-struct-return` | **Dropped on x86-64 (2.2)**, oracle identical; on i386 kept but a no-op (866 units: same code without it) | clash gone | – | – |
-| `-malign-data=abi` | GCC x86 only | clang: unknown | – | Drop after the overrun fixes (section 3) |
+| ~~`-malign-data=abi`~~ | **Dropped (2.8)**, oracle identical | – | – | – |
 | char signedness | `-funsigned-char` changes 21 functions in 11 units (`OS_VSNPrintf`, `StringExpander`, `DebugText_PutString`, GameSpy ov065) | Apple arm64 char is signed anyway; `-fsigned-char` works | MinGW char signed | Keep `-fsigned-char` (Linux arm64 needs it). Optionally make those 21 functions use `s8` |
 | `-fshort-wchar` | `wchar_t` 72 uses in 4 files, `L""` 11 in 2 files | Supported by clang | wchar_t is 16-bit natively | Optional: `char16_t`/`u""`, then drop the flag |
 | `-fno-short-enums`, `-fno-strict-aliasing`, `-ffreestanding -nostdinc -fno-builtin`, C++ flags | – | Supported | Supported (gcc/clang) | Keep |
@@ -216,7 +216,7 @@ After phase 1 the runtime has no ucontext, no x86 decoding and no `-mno-red-zone
 ### Phase 2: toolchain neutrality (Linux, 2-3 weeks; overlaps phase 3)
 8. **2.1** Clang-clean the game. Fix the 47 units / 1735 distinct clang errors (namespace views → real types; this is the existing PROTO_LOCAL backlog). The portcheck reaching 0 is the check. Then get an LLVM toolchain into `~/acww/toolchains` (prebuilt tarball, no sudo needed) and add `--cc clang` to configure_host.py. Check: the clang x86-64 build passes the oracle. This catches most Apple-clang problems on Linux.
    **Source part done**: portcheck baseline 1638 errors / 45 units → **0** (each unit's own per-namespace declarations replaced by the definitions' types, call sites and data tables retyped; per-object code comparison against the previous tree, i386 oracle quick and play identical; x86-64 play and quick sound identical to the same tree's pre-change run, the two quick screenshots differ because of the `Insect_TickFrame` fix below - with only that fix undone the x86-64 run is identical bit for bit). Real bugs found on the way (mostly 64-bit only: DS offsets into `Insect` (its frame counter: the attract demo's insects animate differently on x86-64 now), `BlendAnimModel`, `Actor::position`, `MapBlock` stride, `FtrBed` rows, a pointer's upper half incremented in `gpiProfileListAdd`; Wi-Fi tables reached through PROVIDE labels past their object; lost arguments in the server browser) are fixed in separate commits. `configure_host.py --cc clang` exists (separate build `build_host64_clang.ninja`, `build/host64_clang_usa`; it drops `-malign-data=abi` and, on x86-64, `-fpcc-struct-return`, and uses `-fstandalone-debug`). **Not done:** the LLVM toolchain download into `~/acww/toolchains` (needs the user's permission in this environment), so the clang build has not been compiled or run against the oracle yet.
-9. **2.2** Drop `-fpcc-struct-return` on x86-64 (39 functions / 17 units change); oracle. Drop `-malign-data=abi` after step 2.8.
+9. **2.2** Drop `-fpcc-struct-return` on x86-64 (39 functions / 17 units change); oracle. `-malign-data=abi` is dropped in step 2.8.
    **Done (2026-10-08)** for x86-64: the 64-bit build's quick and play captures (screens and sound) are identical to the
    build's own captures from before. The 32-bit build keeps the flag while it is the reference, but there it changes
    nothing: all 866 units compile to the same code with and without it (`objdump -d` of each), since returning structs
@@ -272,7 +272,7 @@ After phase 1 the runtime has no ucontext, no x86 decoding and no `-mno-red-zone
     64-bit sizes: before, they had their DS sizes on x86-64 and `MBWork`/`WMMsg` ran into the next label); labels
     inside a larger object became macros over it (the WFC-ID block, the multiboot beacon, the cartridge buffer); the
     ones whose users are only in overlays are in src/autoload_2/gap_vars.c (an overlay's variables are reset on load,
-    these must not be). They are now game variables in `gbss`, in DS order (order.ld), not host bss. Stale DS
+    these must not be). They are now game variables in `gbss` (then in DS order, order.ld; since 2.8 where the linker puts them), not host bss. Stale DS
     numerals: of the 19 in the DS RAM range, 6 are in `BuildInfo` (the SDK's build strings, unused: no `nm -u`
     reference in either build; not emitted) and 13 in `data_020d0a7c`, the building table (`BuildingInfo[0x22]`, 10
     bytes of u8/u16 fields, no pointer: packed bytes that look like addresses); the I/O/VRAM-range ones are in the gap
@@ -284,6 +284,47 @@ After phase 1 the runtime has no ucontext, no x86 decoding and no `-mno-red-zone
     - then drop order.ld's ordering, `-fdata-sections` and `-malign-data`.
 
     Check: oracle with and without the guard variant.
+
+    **Done (2026-10-08).** The guard variant: `configure_host.py --guards [--arch x86_64]` (build_host[64]_guards.ninja,
+    build/host[64]_guards_<v>). It links the game once as usual with a map (`ld -r -Map`), then `tools/host_guards.py`
+    writes a linker script that places every input section of gdata, .rodata and gbss where that link put it, each
+    followed by 64 guard bytes, and the guards' table (`{guard, kind, size, name, object}`); merged strings and
+    constants get none. `modern/host/guards.c` fills the guards after the memory is mapped (`ACWW_GUARDS_FILL`, default
+    0xa5; read-only ones through `mprotect`), and with `ACWW_GUARDS=1` compares them every frame and reports a changed
+    one (variable, object, frame, the first changed byte's address for a gdb hardware watchpoint), then restores it.
+    `--only LO-HI` gives only some variables guards (bisecting a layout dependence). 9063 guards on i386 in the DS
+    order (4665 data, 2822 read-only, 1576 bss), 9060 after the drop. The variant's gbss starts at 0x02080000 (its gdata
+    is larger); `host_guards_init` checks that gbss still ends below the main arena.
+
+    Found and fixed (each a separate commit; the writers from gdb watchpoints):
+    - **Gfx2d state** (main, written past the end on every host): sGfx2dBgScroll, sGfx2dSubBg3Mtx, sGfx2dDispCtrl,
+      sGfx2dWindowBlend are one object on the DS; `Gfx2d_Init` cleared the sub BG3 affine block (0x20 bytes) through
+      the 0x10-byte sGfx2dSubBg3Mtx and window 0's rectangle across sGfx2dDispCtrl's end. Now one `Gfx2dState` with
+      typed members (`Gfx2dOffset`, `Gfx2dAffine`, `Gfx2dWindowRect`).
+    - **ov069's topic table copy** (`VillagerTalkTopics_CopyTables`, every host; 64-bit also lost data): the 15 tables
+      were copied with DS byte counts (24 bytes per entry of three member function pointers; 48 on x86-64, so every
+      table got only its first half), and the request topics A and B (26 + 47 entries) as one block into A, running
+      into B. Now the tables' sizes with `static_assert`s, A and B apart.
+    - **Sound archive objects** (64-bit only): data_021f5a1c/data_021f5aac were byte arrays sized by adding the
+      members' sizes, 4 bytes short of the struct on x86-64 (alignment of the FSFile member): the `info` pointer was
+      stored past the end. Now `NNSSndArc` (include/nnsys/snd_arc.h), also the type of unk_0210b448.c's and
+      unk_0210b1b0.c's `Arc`.
+    - **A read past an end:** `TvSound_GetMaxSize` looped over sTvSoundSizes until the address of data_020c6190, the
+      next variable in the DS layout. Without the DS order the TV sound heap got another size: the new-game save
+      script's sound changed from frame ~27870 and the continue run crashed at frame 4290. Found by bisecting with
+      `--only` (the guard after sTvSoundSizes alone changed the sound; 6 rounds of 4 runs). It uses the table's bounds.
+
+    Checks. The guard variant over quick, play, the town script, the save script and the continue run (i386; x86-64:
+    quick, play, town) reports **0 overruns** after the fixes (before: 3 on i386, 4 on x86-64). Fills 0xa5, 0x00, 0x5a
+    and 0xff give the same quick and play output (reads past an end there would show as differences). With the drop
+    (no order.ld ordering, no `-fdata-sections`, no `-malign-data=abi`; tools/host_order.py deleted; the partial link
+    keeps a 3-line `game.ld` that names `gdata`/`gbss` until 3.3): oracle quick and play identical (i386 with the
+    captures, x86-64 with modern's own run), the save, continue and town scripts identical to modern's (screenshots,
+    sound, save files), x86-64 also with `ACWW_HIGHMEM=1`. Two things seen on the way, not layout bugs: the x86-64
+    guard variant hung once in the attract demo because the per-frame check restored a guard the 4-byte-short sound
+    archive had stored its pointer in (gone with that fix); and it crashed in `HappyRoom_Evaluate` in the town
+    script - the room score sources' struct-return bug fixed on modern in 549c0c7c (stack layout decides whether it
+    shows).
 16. **2.9** Overlay reset without the linker:
     - generate `overlay_table.c` with each overlay's variables (`{&var, sizeof var}`, from config symbols.txt and the overlay units), the pristine copy taken per variable;
     - make the 98 overlay constructors explicit (a generated `OvNNN_StaticInit()` per overlay calling the units' init functions, or the objects made constant-initialised).
@@ -299,7 +340,7 @@ After phase 1 the runtime has no ucontext, no x86 decoding and no `-mno-red-zone
       out of date, function-local statics and unexpected static initialisers). modern/gen/overlay_table.c (generated,
       committed) collects the lists and the units' `StaticInit_<unit>` per overlay. `modern/host/overlay.c` copies the
       variables in `HostOverlay_Init()`, called first in `main()` (no constructor priority), restores them when the
-      overlay is loaded and runs its StaticInits in link order. order.ld keeps only the variable order: no
+      overlay is loaded and runs its StaticInits in link order. order.ld kept only the variable order (gone in 2.8): no
       `host_ovNNN_*` symbols, no `host_ovinit`.
     - The initialisers became constant data where they are constant: constexpr constructors (`DebugColor`,
       `VecFx32Ctor`/`VecFx32Copy`, `FxVec3`, `SceneWarp`, `ItemId(u16)` and local value types), trivial destructors
@@ -367,8 +408,8 @@ After phase 1 the runtime has no ucontext, no x86 decoding and no `-mno-red-zone
 
 After phase 2 the game links with a plain `cc *.o`: no `ld -r`, linker script, `--wrap`, `objcopy` or PROVIDE.
 **Status (2026-10-08):** no `--wrap`, `objcopy`, PROVIDE, `--defsym` or DWARF reading. Left: the two partial links
-(`ld -r -T order.ld` for the variables' DS order, step 2.8; `ld -r -T dtcm.ld` for the DTCM block, step 3.2) and the
-final link's `--section-start=gdata/gbss/.dtcm` and `-Ttext-segment` (step 3.3).
+(`ld -r -T game.ld`, which only names the game's data and bss `gdata`/`gbss` since 2.8, goes with step 3.3;
+`ld -r -T dtcm.ld` for the DTCM block, step 3.2) and the final link's `--section-start=gdata/gbss/.dtcm` and `-Ttext-segment` (step 3.3).
 
 ### Phase 3: memory anywhere (Linux x86-64 above 4 GB, 3-6 weeks)
 19. **3.0** Low-4 GB poisoning harness (`ACWW_HIGHMEM=1` on x86-64):

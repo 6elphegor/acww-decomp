@@ -161,8 +161,9 @@ The runtime (`modern/host/`):
   `frontend.c` + `viewer/` (window, input, sound; the viewer holds its audio queue at a target level by playing up
   to 0.5% faster or slower).
 
-The build (`tools/configure_host.py`): the game linked as one object, its variables in their original order
-(`tools/host_order.py`, `-fdata-sections -malign-data=abi`), DTCM's variables at 0x027e0000, its C library's
+The build (`tools/configure_host.py`): the game linked as one object (its data and bss named `gdata`/`gbss`,
+`build/.../game.ld`; the variables where the compiler and linker put them - no code depends on the DS's variable
+order since docs/portability.md 2.8), DTCM's variables at 0x027e0000, its C library's
 names renamed to `ds_*` (`include/host_libc_rename.h`, included first in every game unit; the program's global
 operator new/delete are the host's, `modern/host/newdelete.cpp`: the game allocates from its heaps by name,
 `new (kGameHeap) T` / `Mem_AllocForNew`, and blocks of its heaps go back to them on delete), calls to addresses
@@ -188,7 +189,12 @@ Differences from the DS that the sources handle under `HOST` (or MODERN):
   (`PXI_PointerWord`, include/nitro/pxi_ptr.h); the message itself is sent as on the DS. The DMA functions hand the
   whole source and destination to the DMA model the same way (include/nitro/dma_host.h).
 - Reading through NULL is harmless on the DS (address 0 is mapped) but not on the host.
-- Code that ran over one variable into the next (a clear spanning two arrays) needs the original order or a fix.
+- Code that ran over one variable into the next (a clear spanning two arrays, a loop ending at the next variable's
+  address) is fixed (docs/portability.md 2.8). The guard variant finds new cases: `python3 tools/configure_host.py
+  --guards [--arch x86_64] && ninja -f build_host[64]_guards.ninja` puts 64 poisoned bytes after every game variable
+  (`tools/host_guards.py`); `ACWW_GUARDS=1` reports every guard that changed, once per frame (the variable, the frame
+  and an address for `watch *(int *)<addr>` in gdb), `ACWW_GUARDS_FILL=<byte>` changes the poison (a run that
+  changes with it reads past an end), `host_guards.py --only LO-HI` (by hand on the map) bisects such a read.
 - Integer division by zero: the DS's division routine (`_s32_div_f`) gives the dividend as the quotient and 0 as
   the remainder; x86 traps (hw.c gives the DS's result and reports the site), arm64 gives 0. The game does it (e.g.
   `spl_scl_in_out` at the end of a particle animation).
