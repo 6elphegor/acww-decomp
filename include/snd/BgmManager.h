@@ -7,7 +7,7 @@
 #include "snd/BgmVolumeMixer.h"
 #include "snd/BgmSceneFade.h"
 
-class BgmManagerView;
+class BgmManager;
 
 // 0x1c-byte slot
 class BgmRequest {
@@ -41,13 +41,14 @@ public:
 class BgmRequestView : public BgmRequest {
 public:
     BOOL clearPlaying();
+    BOOL clearVolumePending();
 };
 
 typedef BOOL (BgmRequestView::*Unk_02034574_Fn)();
 
 class EventBgm {
 public:
-    u32 manager;
+    BgmManager *manager;
     u16 newYearFanfareBgm;
     u16 newYearNightBgm;
     u16 newYearDayBgm;
@@ -58,7 +59,7 @@ public:
     u8 keep;
     u8 active;
     virtual ~EventBgm();
-    EventBgm(u32 a);
+    EventBgm(BgmManager *a);
     void updateYearChanged();
     void stopCountdownFade();
     void startCountdownFade(u32 a);
@@ -88,12 +89,12 @@ public:
 
 class FieldSpecialBgm {
 public:
-    u32 manager;
+    BgmManager *manager;
     u16 currentBgm;
     u8 keep;
     u8 active;
 
-    FieldSpecialBgm(u32 a);
+    FieldSpecialBgm(BgmManager *a);
     virtual ~FieldSpecialBgm();
     void stopBgm();
     void play(s32 a, u32 b, u32 c);
@@ -108,14 +109,14 @@ public:
 
 class HourlyBgm {
 public:
-    u32 manager;
+    BgmManager *manager;
     s32 hour;
     u16 currentBgm;
     u8 hourFadeActive;
     u8 keep;
     u8 active;
 
-    HourlyBgm(u32 v);
+    HourlyBgm(BgmManager *v);
     virtual ~HourlyBgm();
     void updateHourFade();
     void stopHourFade();
@@ -134,17 +135,17 @@ public:
 
 class BgmCommandQueue {
 public:
-    BgmCommandQueue(void *owner);
+    BgmCommandQueue(BgmManager *owner);
     ~BgmCommandQueue();
     void flush();
     void clear();
-    BgmCommandQueue *init(void *owner);
+    BgmCommandQueue *init(BgmManager *owner);
     void requestVolume(s32 a, s32 b);
     void requestStop(s32 a);
     void requestPlay(u16 a);
     void func_02035740();
 
-    u32 manager;
+    BgmManager *manager;
     u8 playPending;
     u8 pad_05;
     u16 playBgmId;
@@ -187,7 +188,7 @@ public:
     FieldSpecialBgm specialBgm;
     EventBgm eventBgm;
     virtual ~FieldBgm();
-    FieldBgm(u32 a);
+    FieldBgm(BgmManager *a);
     void setKeep(u32 a);
     void end();
     void start();
@@ -199,7 +200,7 @@ public:
 
 class RoomBgm {
 public:
-    u32 manager;
+    BgmManager *manager;
     u8 currentScene;
     u16 sceneBgm;
     u8 closingFadeActive;
@@ -221,17 +222,17 @@ public:
     void update();
     void exit();
     void init();
-    RoomBgm(u32 a);
+    RoomBgm(BgmManager *a);
 };
 
 
 class FaintBgm {
 public:
     virtual ~FaintBgm();
-    BgmManagerView *manager;
+    BgmManager *manager;
     u16 currentBgm;
     u8 silenceActive;
-    FaintBgm(BgmManagerView *o);
+    FaintBgm(BgmManager *o);
     void stop();
     void exit();
     void init();
@@ -246,7 +247,7 @@ public:
     BgmTracks();
 };
 
-// composite object seen by the first file (data_021c1b3c)
+// The BGM manager (data_021c1b3c while it exists).
 class BgmManager {
 public:
     BgmManager();

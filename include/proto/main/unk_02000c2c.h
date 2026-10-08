@@ -6,6 +6,7 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "types.h"
+#include "uptr.h"
 #endif
 
 #ifdef __cplusplus
@@ -50,9 +51,6 @@ void NitroMain(void);
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_sPanicFile
-extern u32 sPanicFile;
-#endif
 #ifndef PROTO_LOCAL_sCrashContext
 extern u32 *sCrashContext;
 #endif
@@ -75,22 +73,22 @@ extern u32 sCrashPC;
 extern u32 sCrashPrevKeys;
 #endif
 #ifndef PROTO_LOCAL_sCrashScreenMain
-extern u32 sCrashScreenMain;
+extern u16 *sCrashScreenMain;
 #endif
 #ifndef PROTO_LOCAL_sCrashScreenSub
-extern u32 sCrashScreenSub;
+extern u16 *sCrashScreenSub;
 #endif
 #ifndef PROTO_LOCAL_Fatal_PanicV
 void Fatal_PanicV(const char *a, u32 b, const char *c, void *d);
 #endif
 #ifndef PROTO_LOCAL_CrashScreen_IsValidAddress
-BOOL CrashScreen_IsValidAddress(u32 addr, u32 len);
+BOOL CrashScreen_IsValidAddress(uptr addr, u32 len);
 #endif
 #ifndef PROTO_LOCAL_CrashScreen_DumpWords
-void CrashScreen_DumpWords(u8 *dst, u32 src, u32 size);
+void CrashScreen_DumpWords(u16 *dst, uptr src, u32 size);
 #endif
 #ifndef PROTO_LOCAL_CrashScreen_Fill
-void CrashScreen_Fill(u32 a, u32 b, u32 c);
+void CrashScreen_Fill(u32 a, u16 *b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_LitCedarPos_Construct
 void LitCedarPos_Construct(u32 *p);

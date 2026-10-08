@@ -5,7 +5,7 @@
 // talk, menu). Defined in src/main/unk_02034438.cpp; the menu overlays call setMenuDuck / endMenuDuck.
 #include "types.h"
 
-class BgmManagerOwnerView;
+class BgmManager;
 
 class BgmVolumeChannel {
 public:
@@ -24,7 +24,7 @@ public:
 
 class BgmVolumeMixer {
 public:
-    BgmVolumeMixer(BgmManagerOwnerView *owner);
+    BgmVolumeMixer(BgmManager *owner);
     ~BgmVolumeMixer();
     void clearMasks();
     void clearChanged();
@@ -52,7 +52,7 @@ public:
     void exit();
     void init();
 
-    /* 0x00 */ BgmManagerOwnerView *manager;
+    /* 0x00 */ BgmManager *manager;
     /* 0x04 */ BgmVolumeChannel channels[8];
     /* 0x84 */ s32 talkDuckHold;
 };

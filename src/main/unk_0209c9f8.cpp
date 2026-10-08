@@ -75,7 +75,7 @@ BOOL GameRoot::onCreate() {
     FgData_Load((u32)gCurrentHeap);
     TownBlockMap_Create((u32)gCurrentHeap);
     HouseRoomMaps_Create((u32)gCurrentHeap);
-    Comm_CreateHeap((u32)gCurrentHeap);
+    Comm_CreateHeap((Heap *)gCurrentHeap);
     NetSession_Init();
     NpcSpawn_ResetAll();
     return TRUE;

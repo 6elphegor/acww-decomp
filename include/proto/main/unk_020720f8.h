@@ -6,6 +6,7 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "net/CommManager.h"
+#include "sys/Heap.h"
 #include "types.h"
 #endif
 
@@ -79,7 +80,7 @@ s32 Comm_WriteSyncReply(u32 a);
 void Comm_RemoveMember(s32 a);
 #endif
 #ifndef PROTO_LOCAL_Comm_CreateHeap
-void Comm_CreateHeap(u32 a);
+void Comm_CreateHeap(Heap *a);
 #endif
 #ifndef PROTO_LOCAL_Comm_Start
 void Comm_Start(s32 a, u32 b, u32 c);

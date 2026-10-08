@@ -2,7 +2,7 @@
 #define PLAYER_PLAYERDAILYTALKFLAGS_H
 
 // A player's per-day talk flags and the day they belong to (PlayerData::getDailyTalkFlags). Methods in
-// src/main/unk_02085940.cpp, which still has its own copy of this class.
+// src/main/unk_02085940.cpp.
 #include "types.h"
 
 class PlayerDailyTalkFlags {

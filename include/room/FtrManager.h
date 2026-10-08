@@ -2,6 +2,7 @@
 #define ROOM_FTRMANAGER_H
 
 #include "types.h"
+#include "room/FtrActorGrid.h"
 #include "gfx/VecFx32.h"
 #include "snd/SndPosNode.h"
 
@@ -65,19 +66,7 @@ public:
 };
 
 // sFtrActorGrid (FtrActorGrid_GetInstance): the furniture actor (its FtrActorTable index) on each unit, per layer
-class FtrActorGrid {
-public:
-    u8 cells[2][16][16];
-    FtrActorGrid();
-    ~FtrActorGrid();
-    FtrActor *getActorAtPos(void *p, s32 layer);
-    FtrActor *getActor(s32 x, s32 y, s32 layer);
-    s32 getIndex(s32 x, s32 y, s32 layer);
-    // (o: the actor; other units call these by their symbols, with the actor's address as an s32)
-    BOOL clearCell(s32 o, s32 x, s32 y, u8 layer);
-    BOOL setCell(s32 o, s32 x, s32 y, u8 layer);
-    void clear();
-};
+// FtrActorGrid: room/FtrActorGrid.h
 
 // sFtrActorHeap (FtrActorHeap_GetInstance): the heap of the furniture actors (FtrActor::operator new)
 class FtrActorHeap {

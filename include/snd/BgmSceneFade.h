@@ -5,9 +5,11 @@
 // (src/main/unk_02034438.cpp).
 #include "types.h"
 
+class BgmManager;
+
 class BgmSceneFade {
 public:
-    BgmSceneFade(u32 owner);
+    BgmSceneFade(BgmManager *owner);
     virtual ~BgmSceneFade();
     void update();
     BOOL hasExitSilence();
@@ -21,7 +23,7 @@ public:
     void onFadeIn();
     void onFadeOut();
 
-    /* 0x04 */ u32 manager;
+    /* 0x04 */ BgmManager *manager;
     /* 0x08 */ u8 keepForWarp;
     /* 0x09 */ u8 sameSceneBgm;
     /* 0x0a */ u8 keepRequested;

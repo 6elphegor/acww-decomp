@@ -14,26 +14,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL__ZN8BgmClockC1Ev
-void BgmClock_ctor(void);
-#endif
-#ifndef PROTO_LOCAL__ZN8BgmClockD1Ev
-void BgmClock_dtor(void);
-#endif
 #ifndef PROTO_LOCAL_BgmClock_Exit
 void BgmClock_Exit(void);
-#endif
-#ifndef PROTO_LOCAL_Bgm_GetClock
-void *Bgm_GetClock(void);
-#endif
-#ifndef PROTO_LOCAL_Bgm_GetTracks
-void *Bgm_GetTracks(void);
-#endif
-#ifndef PROTO_LOCAL_Bgm_GetFieldBgm
-void *Bgm_GetFieldBgm(void);
-#endif
-#ifndef PROTO_LOCAL_Bgm_GetRoomBgm
-void *Bgm_GetRoomBgm(void);
 #endif
 #ifndef PROTO_LOCAL_BgmSceneFade_Update
 void BgmSceneFade_Update(void *p);
@@ -92,6 +74,18 @@ s32 Bgm_GetSceneBgmId(s32 a);
 #ifndef PROTO_LOCAL_Bgm_IsSameSceneBgm
 s32 Bgm_IsSameSceneBgm(void);
 #endif
+#ifndef PROTO_LOCAL_Bgm_GetClock
+BgmClock *Bgm_GetClock(void);
+#endif
+#ifndef PROTO_LOCAL_Bgm_GetTracks
+BgmTracks *Bgm_GetTracks(void);
+#endif
+#ifndef PROTO_LOCAL_Bgm_GetFieldBgm
+FieldBgm *Bgm_GetFieldBgm(void);
+#endif
+#ifndef PROTO_LOCAL_Bgm_GetRoomBgm
+RoomBgm *Bgm_GetRoomBgm(void);
+#endif
 #ifndef PROTO_LOCAL_BgmSceneFade_Reset
 void BgmSceneFade_Reset(BgmSceneFade *p);
 #endif
@@ -99,13 +93,13 @@ void BgmSceneFade_Reset(BgmSceneFade *p);
 BgmSceneFade *Bgm_GetSceneFade(void);
 #endif
 #ifndef PROTO_LOCAL_BgmTracks_OnBgmStart
-void BgmTracks_OnBgmStart(s32 a, s32 b);
+void BgmTracks_OnBgmStart(BgmTracks *a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_BgmTracks_Update
-void BgmTracks_Update(s32 a);
+void BgmTracks_Update(BgmTracks *a);
 #endif
 #ifndef PROTO_LOCAL_BgmTracks_UpdateWeatherVariant
-void BgmTracks_UpdateWeatherVariant(s32 x);
+void BgmTracks_UpdateWeatherVariant(BgmTracks *x);
 #endif
 #ifndef PROTO_LOCAL_Bgm_Request
 void Bgm_Request(s32 a, s32 b, s32 c, u8 d);

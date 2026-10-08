@@ -4,10 +4,9 @@
 // Prototypes of the functions defined in src/main/unk_02085940.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-struct Unk_020874e8_Bits;
+#include "save/DramaPart.h"
 #ifdef __cplusplus
 #include "types.h"
-#include "uptr.h"
 #endif
 
 #ifdef __cplusplus
@@ -45,6 +44,9 @@ void DramaRecord_Clear(void *a);
 #endif
 #ifndef PROTO_LOCAL_DramaRecord_GetLastPart
 void DramaRecord_GetLastPart(void *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_DramaRecord_SetLastPart
+void DramaRecord_SetLastPart(void *a, void *b);
 #endif
 #ifndef PROTO_LOCAL_LostChildRecord_Construct
 void *LostChildRecord_Construct(void *p);
@@ -115,9 +117,6 @@ s32 Oam_AllocAffine(u8 *self, s32 *cnt, s32 *v);
 #ifndef PROTO_LOCAL_Oam_UseBufferA
 BOOL Oam_UseBufferA(s32 t);
 #endif
-#ifndef PROTO_LOCAL_DramaRecord_SetLastPart
-void DramaRecord_SetLastPart(s32 a, void *b);
-#endif
 #ifndef PROTO_LOCAL_DramaRecord_GetDate
 u8 *DramaRecord_GetDate(u8 *p);
 #endif
@@ -171,7 +170,7 @@ extern char data_020e0c58[];
 extern char data_020e0c98[];
 #endif
 #ifndef PROTO_LOCAL_sContestResultBbsFiles
-extern uptr sContestResultBbsFiles[4];
+extern char *sContestResultBbsFiles[4];
 #endif
 #ifndef PROTO_LOCAL_sContestResultMailFiles
 extern void *sContestResultMailFiles[4];
