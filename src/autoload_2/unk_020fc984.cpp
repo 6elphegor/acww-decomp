@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "gfx/SplReal.h"
 // mwcc-flags: -nothumb -O4,p
 // G015a: autoload_2 0x020fc984-0x020fe4b4 (22 functions). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL: plain func_ names, nothing defined but the functions.
@@ -175,7 +176,7 @@ extern "C" void spl_calc_gravity(GravF *f, P *p, VecFx32 *acc) {
 }
 
 extern "C" void spl_calc_random(RandF *f, P *p, VecFx32 *acc) {
-    if (p->age % f->intv != 0) {
+    if (DS_MOD(p->age, f->intv) != 0) {
         return;
     }
     data_021f5c3c = data_021f5c3c * 0x5eedf715 + 0x1b0cb173;
@@ -263,14 +264,14 @@ extern "C" void spl_scl_in_out(P *p, Ctx *c, s32 t) {
     s32 t1 = r->t1;
     s32 t2 = r->t2;
     if (t < t1) {
-        p->s34 = r->s0 + (t * (r->s2 - r->s0)) / t1;
+        p->s34 = r->s0 + DS_DIV((t * (r->s2 - r->s0)), t1);
         return;
     }
     if (t < t2) {
         p->s34 = r->s2;
         return;
     }
-    p->s34 = r->s4 + ((t - 255) * (r->s4 - r->s2)) / (255 - t2);
+    p->s34 = r->s4 + DS_DIV(((t - 255) * (r->s4 - r->s2)), (255 - t2));
 }
 
 extern "C" void spl_clr_in_out(P *p, Ctx *c, s32 t) {
@@ -298,7 +299,7 @@ extern "C" void spl_clr_in_out(P *p, Ctx *c, s32 t) {
         }
         s32 d = t2 - t1;
         s32 u = t - t1;
-        p->col = (br + (u * (ar - br)) / d) | ((bg + (u * (ag - bg)) / d) << 5) | ((bb + (u * (ab - bb)) / d) << 10);
+        p->col = (br + DS_DIV((u * (ar - br)), d)) | ((bg + DS_DIV((u * (ag - bg)), d)) << 5) | ((bb + DS_DIV((u * (ab - bb)), d)) << 10);
         return;
     }
     if (t < t3) {
@@ -316,7 +317,7 @@ extern "C" void spl_clr_in_out(P *p, Ctx *c, s32 t) {
         }
         s32 d = t3 - t2;
         s32 u = t - t2;
-        p->col = (ar + (u * (cr - ar)) / d) | ((ag + (u * (cg - ag)) / d) << 5) | ((ab + (u * (cb - ab)) / d) << 10);
+        p->col = (ar + DS_DIV((u * (cr - ar)), d)) | ((ag + DS_DIV((u * (cg - ag)), d)) << 5) | ((ab + DS_DIV((u * (cb - ab)), d)) << 10);
         return;
     }
     p->col = r->c2;
@@ -328,11 +329,11 @@ extern "C" void spl_alp_in_out(P *p, Ctx *c, s32 t) {
     s32 t2 = r->t2;
     s32 v;
     if (t < t1) {
-        v = (t * (r->c.g - r->c.r)) / t1 + r->c.r;
+        v = DS_DIV((t * (r->c.g - r->c.r)), t1) + r->c.r;
     } else if (t < t2) {
         v = r->c.g;
     } else {
-        v = ((t - 255) * (r->c.b - r->c.g)) / (255 - t2) + r->c.b;
+        v = DS_DIV(((t - 255) * (r->c.b - r->c.g)), (255 - t2)) + r->c.b;
     }
     data_021f5c3c = data_021f5c3c * 0x5eedf715 + 0x1b0cb173;
     p->fl.alpha = (u16)((v * (255 - ((r->b2 * (s32)(data_021f5c3c >> 24)) >> 8))) >> 8);
@@ -453,7 +454,7 @@ extern "C" void spl_gen_ptcl(E *e, PList *freeList) {
         }
         case 3: {
             VecFx32 v;
-            s32 q = ang / count;
+            s32 q = DS_DIV(ang, count);
             ang += 0x10000;
             v.x = FX_Mul(SIN_IDX(q), e->radius);
             v.y = FX_Mul(COS_IDX(q), e->radius);
@@ -602,14 +603,14 @@ extern "C" void spl_gen_ptcl(E *e, PList *freeList) {
         if (h->f.f11 && res->p10->x.bf.f16) {
             LCG();
             Tab *tb = res->p10;
-            p->b2c = tb->v[(data_021f5c3c >> 20) % tb->x.b.n];
+            p->b2c = tb->v[DS_UMOD((data_021f5c3c >> 20), tb->x.b.n)];
         } else if (h->f.f11 && !res->p10->x.bf.f16) {
             p->b2c = res->p10->v[0];
         } else {
             p->b2c = h->b43;
         }
-        p->h28 = 0xffff / res->hdr->b44;
-        p->h2a = 0xffff / p->life;
+        p->h28 = DS_DIV(0xffff, res->hdr->b44);
+        p->h2a = DS_DIV(0xffff, p->life);
         p->b2d = 0;
         if (h->f.f20) {
             LCG();

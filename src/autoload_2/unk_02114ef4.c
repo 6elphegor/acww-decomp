@@ -1,4 +1,5 @@
 // mwcc-flags: -nothumb -O4,p
+#include "ds_div.h"
 #include "nitro/os_rtc.h"
 #include "nitro/os_alarm.h"
 // NitroSDK OS alarm (os_alarm.c), autoload_2 0x02114ef4-0x021153f8 (the former unit 0x02114ef4-0x0211565c split into its files by
@@ -113,7 +114,7 @@ void OSi_InsertAlarm(OSAlarm *alarm, u64 fire) {
         fire = alarm->start;
         if (fire < tick) {
             delta = tick - fire;
-            fire += alarm->period * (1 + delta / alarm->period);
+            fire += alarm->period * (1 + DS_UDIV64(delta, alarm->period));
         }
     }
     alarm->fire = fire;

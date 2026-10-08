@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "proto/autoload_2/unk_02119020.h"
 #include "proto/autoload_2/unk_02119434.h"
 #include "proto/autoload_2/unk_02122114.h"
@@ -105,7 +106,7 @@ BOOL MBi_MakeBlockInfoTable(WDst *dst, WSrc *src) {
         WSeg *e = &src->seg[i];
         u32 sz = W32(data_0220001c + 0x1000, 0x318);
         u32 len = e->w8;
-        u16 nx = tab[i] + (u16)((len + sz - 1) / sz);
+        u16 nx = tab[i] + (u16)(DS_UDIV((len + sz - 1), sz));
         if (IsAbleToLoad(i, e->w4, len) == 0) return 0;
         if (i < 2) tab[i + 1] = nx;
         else W16(dst, 18) = nx;

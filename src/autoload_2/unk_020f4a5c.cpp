@@ -9,6 +9,7 @@
 // 0x0213597c.. (after the 0x18-byte name table of the task manager: new file; followed by a 4-byte object: next file) are all in
 // 0x020f4a5c-0x020f5b9c; the pan-curve code (0x020f44f0-0x020f4a5c, with Snd_CalcListenerDistance) uses only bss 0x021f5bfc-0x021f5c28.
 // The unit's own compile reproduces the order of all six objects with the definitions at the end of the file in address order.
+#include "ds_div.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "snd/Melody.h"
@@ -175,7 +176,7 @@ extern "C" u8 MelodyTrack_GetStepNote(MelodyTrack *self, u8 idx) {
 // MelodyTrack: start the sound of the current step, volume by position
 extern "C" void MelodyTrack_PlayStep(MelodyTrack *self) {
     u32 v = MelodyTrack_GetStepNote(self, self->pos);
-    s32 d = 153600 / (self->s14 * 120);
+    s32 d = DS_DIV(153600, (self->s14 * 120));
     switch (v) {
     case 13:
         Snd_StartSeqArc(v + 1 + SndMgr_Rand(&gSndMgr, 6), self->id, self);

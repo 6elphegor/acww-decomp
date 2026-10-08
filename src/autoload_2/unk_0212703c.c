@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK-era library code, autoload_2 0x0212703c-0x02128030. ARM code, mwcc 1.2/base, -O4,p.
+#include "ds_div.h"
 #include "types.h"
 #include "nitro/io_access.h"
 
@@ -217,7 +218,7 @@ u32 __fread(void *ptr, u32 memb_size, u32 num_memb, FILE *file) {
         file->buffer_len = 0;
     }
 
-    return bytes_read / memb_size;
+    return DS_UDIV(bytes_read, memb_size);
 }
 
 // __convert_from_newlines

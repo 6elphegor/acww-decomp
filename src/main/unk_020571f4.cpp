@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "snd/SndSeEmitter.h"
 #include "save/VillagerData.h"
 #include "uptr.h"
@@ -212,7 +213,7 @@ u8 data_021c5a2c[4] = { data_020ca680[1] - data_020ca680[0], data_020ca680[2] - 
 u8 data_021c5a28[4] = { data_020ca684[1] - data_020ca684[0], data_020ca684[2] - data_020ca684[1] };
 u8 data_021c5a24[4] = { data_020ca67c[1] - data_020ca67c[0] };
 FxVec3 data_021c5acc(0, 0, 0xd00);
-s32 data_021c5ae8[4] = { 0, Unk_020574cc_Abs(data_020ca6c4[1] / data_021c5a30[0]), Unk_020574cc_Abs(data_020ca6c4[2] / data_021c5a30[1]), Unk_020574cc_Abs(data_020ca6c4[3] / data_021c5a30[2]) };
+s32 data_021c5ae8[4] = { 0, Unk_020574cc_Abs(DS_DIV(data_020ca6c4[1], data_021c5a30[0])), Unk_020574cc_Abs(DS_DIV(data_020ca6c4[2], data_021c5a30[1])), Unk_020574cc_Abs(DS_DIV(data_020ca6c4[3], data_021c5a30[2])) };
 FxVec3 data_021c5a84(0, 0, 0x1300);
 
 // ---- own functions (declared for forward references) ----
@@ -582,13 +583,13 @@ void HandOverItem::act01Phase0()
         s32 n, t;
         (*(volatile u8 *)&phase) = (*(volatile u8 *)&phase) + 1;
         n = data_021c5a30[0];
-        t = (basePos.x - itemPos.x) / n;
+        t = DS_DIV((basePos.x - itemPos.x), n);
         if (t < 0) t = -t;
         moveStep.x = t;
-        t = basePos.y / n;
+        t = DS_DIV(basePos.y, n);
         if (t < 0) t = -t;
         moveStep.y = t;
-        t = (basePos.z - itemPos.z) / n;
+        t = DS_DIV((basePos.z - itemPos.z), n);
         if (t < 0) t = -t;
         moveStep.z = t;
     }
@@ -886,7 +887,7 @@ void HandOverItem::act0BPhase0()
         frame = frame + 1;
         if ((s32)frame >= data_020ca67c[phase]) {
             s32 a, b, c;
-    c = scale.x / data_021c5a24[phase];
+    c = DS_DIV(scale.x, data_021c5a24[phase]);
             if (c < 0) c = -c;
             scaleStep = c;
             phase = phase + 1;
@@ -1008,11 +1009,11 @@ void HandOverItem::act01V1Phase1()
             target.y = target.y + 0x1000;
             s32 m = data_021c5a2c[1];
             s32 a, b, c;
-    c = (target.z - itemPos.z) / m;
+    c = DS_DIV((target.z - itemPos.z), m);
             if (c < 0) c = -c;
-            b = (target.y - itemPos.y) / m;
+            b = DS_DIV((target.y - itemPos.y), m);
             if (b < 0) b = -b;
-            a = (target.x - itemPos.x) / m;
+            a = DS_DIV((target.x - itemPos.x), m);
             if (a < 0) a = -a;
             moveStep.x = a;
             moveStep.y = b;
@@ -1248,9 +1249,9 @@ void HandOverItem::act09V1Phase0(void) {
         }
         VEC_Add(&target, &worldOffset, &target);
         u32 d = data_021c5a28[0];
-        a = Unk_020574cc_Abs((target.z - itemPos.z) / (s32)d);
-        b = Unk_020574cc_Abs((target.y - itemPos.y) / (s32)d);
-        c = Unk_020574cc_Abs((target.x - itemPos.x) / (s32)d);
+        a = Unk_020574cc_Abs(DS_DIV((target.z - itemPos.z), (s32)d));
+        b = Unk_020574cc_Abs(DS_DIV((target.y - itemPos.y), (s32)d));
+        c = Unk_020574cc_Abs(DS_DIV((target.x - itemPos.x), (s32)d));
         moveStep.x = c;
         moveStep.y = b;
         moveStep.z = a;
@@ -1297,7 +1298,7 @@ void HandOverItem::act09V1Phase1(void) {
 }
 
 void HandOverItem::act09V1Phase2(void) {
-    static s32 step = Unk_020574cc_Abs(0x1000 / data_021c5a28[1]);
+    static s32 step = Unk_020574cc_Abs(DS_DIV(0x1000, data_021c5a28[1]));
     s32 tmp = scale.x;
     s32 n = data_020ca684[2];
     if (frame >= n) {

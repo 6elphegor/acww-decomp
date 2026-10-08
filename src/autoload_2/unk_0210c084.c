@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "uptr.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) sound archive: sndarc_stream.c's MakeWaveData and stream thread, sndarc_player.c (starting
@@ -191,7 +192,7 @@ void MakeWaveData(NNSSndStrmLoadCommand *command)
             break;
         }
 
-        blockNo = player->curSample / player->info.blockSamples;
+        blockNo = DS_UDIV(player->curSample, player->info.blockSamples);
 
         if (blockNo < player->info.numBlocks - 1)
         {

@@ -4,6 +4,7 @@
 // Owns .data 0x0213a748-0x0213af4c (the atan table) and autoload_3 .bss 0x021f4768-0x021f4770.
 // G001a (0x020e7500-0x020e8558) was split into four units by its data: each bss group of the range is sorted by size on
 // its own (4,4 | 1,1,2,2,8,0x48 | 1,2,6 | 0x30), so the range is at least four source files.
+#include "ds_div.h"
 #include "types.h"
 #include "sys/TreeNode.h"
 #include "gfx/VecFx32.h"
@@ -397,7 +398,7 @@ extern "C" BOOL Math_IsInRange(s32 v, s32 a, s32 b) {
 }
 
 extern "C" void Math_ApproachS16Div(s16 *p, s16 target, s16 div, s16 max) {
-    s16 d = (s16)(target - *p) / div;
+    s16 d = DS_DIV((s16)(target - *p), div);
     if (d > max) {
         *p += max;
         return;

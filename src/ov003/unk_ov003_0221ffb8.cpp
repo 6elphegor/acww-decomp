@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "gfx/Model.h"
 #include "proto/main/unk_0202fa70.h"
 #include "snd/SndSeEmitter.h"
@@ -2898,12 +2899,12 @@ extern "C" BOOL FieldFish_StepParabola(V3_f5 *p, V3_f5 *a, V3_f5 *b, s32 n, s32 
     }
     y = b->y;
     mm = m * m;
-    t = ((k - (y >> 1)) << 3) / mm;
+    t = DS_DIV(((k - (y >> 1)) << 3), mm);
     d = Vec_DistXZ(a, b);
     ang = FishAngleXZ(a, b);
     s32 nn = n * n;
-    p->y = a->y + (n * ((y + ((mm * t) >> 1)) / m) - ((nn * t) >> 1));
-    FieldFish_MoveXZ(p, d / m, ang);
+    p->y = a->y + (n * (DS_DIV((y + ((mm * t) >> 1)), m)) - ((nn * t) >> 1));
+    FieldFish_MoveXZ(p, DS_DIV(d, m), ang);
     return TRUE;
 }
 

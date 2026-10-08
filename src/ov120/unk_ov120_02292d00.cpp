@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -1155,7 +1156,7 @@ void MapViewerMenu::updateListScroll() {
                 listScroll = listScrollTarget;
             }
         }
-        knobPos = listScroll * 0x58 / n;
+        knobPos = DS_DIV(listScroll * 0x58, n);
     }
 }
 

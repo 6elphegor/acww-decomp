@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 
+#include "ds_div.h"
 #include "types.h"
 #include "net/darray.h"
 #include "net/SockAddrIn.h"
@@ -206,8 +207,8 @@ u8 *gti2GetResponse(u8 *out, u8 *in) {
                 c = in[i - 1];
             }
             t = (u8)in[i];
-            x = ("3b8dd8995f7c40a9a5c5b7dd5b481341"[(i + t) % klen] + i * t) % 0x20;
-            out[i] = abs((u8)in[x] ^ "3b8dd8995f7c40a9a5c5b7dd5b481341"[(c * j) % klen]) % 0x5d + 0x21;
+            x = ("3b8dd8995f7c40a9a5c5b7dd5b481341"[DS_MOD((i + t), klen)] + i * t) % 0x20;
+            out[i] = abs((u8)in[x] ^ "3b8dd8995f7c40a9a5c5b7dd5b481341"[DS_MOD((c * j), klen)]) % 0x5d + 0x21;
         }
         j += 0x4647;
     }

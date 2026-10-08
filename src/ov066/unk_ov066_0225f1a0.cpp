@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "uptr.h"
 // mwcc-flags: -O4,p
 #include "types.h"
@@ -1270,7 +1271,7 @@ s32 LocalWl_PickChannel(u32 start) {
         if (data_ov066_022647bc != 0) {
             u8 i = 0;
             u32 t = LocalWl_Rand();
-            u32 sel = (u8)(t % data_ov066_022647bc);
+            u32 sel = (u8)(DS_UMOD(t, data_ov066_022647bc));
             u16 m = data_ov066_022647c0;
             do {
                 if ((m & (1 << i)) != 0) {

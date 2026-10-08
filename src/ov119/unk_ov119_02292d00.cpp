@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "uptr.h"
 #include "talk/EncodedString8B.h"
 #include "talk/MsgString9B.h"
@@ -1271,9 +1272,9 @@ u16 FriendRosterTab::blendColor(s32 c1, s32 c2, s32 t, s32 n)
     u8 g = (c2 & 0x3e0) >> 5;
     u8 b = (c2 & 0x7c00) >> 10;
     s32 k = n - t;
-    r = ((u8)(c1 & 0x1f) * t + r * k) / n;
-    g = ((u8)((c1 & 0x3e0) >> 5) * t + g * k) / n;
-    b = ((u8)((c1 & 0x7c00) >> 10) * t + b * k) / n;
+    r = DS_DIV(((u8)(c1 & 0x1f) * t + r * k), n);
+    g = DS_DIV(((u8)((c1 & 0x3e0) >> 5) * t + g * k), n);
+    b = DS_DIV(((u8)((c1 & 0x7c00) >> 10) * t + b * k), n);
     return r | (g << 5) | (b << 10);
 }
 

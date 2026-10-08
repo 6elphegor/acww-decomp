@@ -1,4 +1,5 @@
 // mwcc-flags: -O4,p -str reuse
+#include "ds_div.h"
 #include "types.h"
 #include "net/gpiSearch.h"
 #include "net/gpiProfile.h"
@@ -846,7 +847,7 @@ s32 gpiProcessSearches(GPConnection *h) {
 }
 
 s32 gpiProfilesTableHash(s32 *p, s32 n) {
-    return *p % n;
+    return DS_MOD(*p, n);
 }
 
 s32 gpiProfilesTableCompare(s32 *a, s32 *b) {

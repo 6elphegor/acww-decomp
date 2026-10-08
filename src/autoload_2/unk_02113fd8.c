@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "sys/OSThread.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK OS (os_printf.c tail, os_thread.c, os_system.c, os_message.c, os_mutex.c): autoload_2 0x02113088-0x02114410.
@@ -160,7 +161,7 @@ BOOL OS_SendMessage(OSMessageQueue *mq, void *msg, s32 flags) {
         }
         OS_SleepThread(&mq->sendQueue);
     }
-    mq->msgArray[(mq->firstIndex + mq->usedCount) % mq->msgCount] = msg;
+    mq->msgArray[DS_MOD((mq->firstIndex + mq->usedCount), mq->msgCount)] = msg;
     mq->usedCount++;
     OS_WakeupThread(&mq->recvQueue);
     OS_RestoreInterrupts(e);
@@ -178,7 +179,7 @@ BOOL OS_ReceiveMessage(OSMessageQueue *mq, void **msg, s32 flags) {
         OS_SleepThread(&mq->recvQueue);
     }
     if (msg != 0) *msg = mq->msgArray[mq->firstIndex];
-    mq->firstIndex = (mq->firstIndex + 1) % mq->msgCount;
+    mq->firstIndex = DS_MOD((mq->firstIndex + 1), mq->msgCount);
     mq->usedCount--;
     OS_WakeupThread(&mq->sendQueue);
     OS_RestoreInterrupts(e);
@@ -195,7 +196,7 @@ BOOL OS_JamMessage(OSMessageQueue *mq, void *msg, s32 flags) {
         }
         OS_SleepThread(&mq->sendQueue);
     }
-    mq->firstIndex = (mq->firstIndex + mq->msgCount - 1) % mq->msgCount;
+    mq->firstIndex = DS_MOD((mq->firstIndex + mq->msgCount - 1), mq->msgCount);
     mq->msgArray[mq->firstIndex] = msg;
     mq->usedCount++;
     OS_WakeupThread(&mq->recvQueue);

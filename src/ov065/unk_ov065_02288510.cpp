@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
@@ -370,7 +371,7 @@ u32 keyrand(Cipher *c, u32 n, u8 *key, u32 keylen, u8 *j, u32 *idx) {
         r = mask & *j;
         cnt++;
         if (cnt > 11) {
-            r = r % n;
+            r = DS_UMOD(r, n);
         }
     } while (r > n);
     return (u8)r;

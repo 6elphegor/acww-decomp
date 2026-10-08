@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
@@ -1568,7 +1569,7 @@ extern "C" void Aoss_Rc4Init(AossRc4State *st, u8 *key, u32 klen, u32 n) {
     for (i = 0; i < n; i++) {
         u32 si = s[i];
         u32 sj;
-        j = (j + key[k] + si) % st->n;
+        j = DS_UMOD((j + key[k] + si), st->n);
         sj = s[j];
         s[j] = si;
         s[i] = sj;
@@ -1591,15 +1592,15 @@ extern "C" void Aoss_Rc4Crypt(AossRc4State *st, u8 *out, u8 *in, u32 n) {
 extern "C" u32 Aoss_Rc4NextByte(AossRc4State *st) {
     u8 *s = st->s;
     u32 n = st->n;
-    u32 i = (u8)((st->i + 1) % n);
+    u32 i = (u8)(DS_UMOD((st->i + 1), n));
     u32 si = s[i];
-    u32 j = (u8)((si + st->j) % n);
+    u32 j = (u8)(DS_UMOD((si + st->j), n));
     u32 sj = s[j];
     st->i = i;
     st->j = j;
     s[j] = si;
     s[i] = sj;
-    return s[(si + sj) % st->n];
+    return s[DS_UMOD((si + sj), st->n)];
 }
 
 extern "C" u8 Aoss_CalcCrc32Low8(u8 *data, s32 len) {
@@ -1663,7 +1664,7 @@ extern "C" s32 Aoss_Scramble(u8 *out, s32 n, u8 *key, s32 klen) {
 
 extern "C" void Aoss_MakeRoundKey(s32 x, char *b, s32 n, char *key, s32 klen) {
     s32 h = n / 2;
-    s32 k = x % klen;
+    s32 k = DS_MOD(x, klen);
     s32 i;
     for (i = 0; i < h; i++) {
         b[i] = i;

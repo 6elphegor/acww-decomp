@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "uptr.h"
 #include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
@@ -240,7 +241,7 @@ s32 NNSi_SndFaderGet(Fader *f)
     s32 start;
     if (f->cnt >= f->frames) return f->end;
     start = f->start;
-    return start + (f->cnt * (f->end - start)) / f->frames;
+    return start + DS_DIV((f->cnt * (f->end - start)), f->frames);
 }
 
 // NNSiSndFader_Update

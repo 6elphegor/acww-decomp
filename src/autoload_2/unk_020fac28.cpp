@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "gfx/SplReal.h"
 // mwcc-flags: -nothumb -O4,p
 #include "types.h"
@@ -218,8 +219,8 @@ extern "C" void spl_gen_child(Part *a, Emit *b, void *list) {
         p->h36 = ch->h6;
         p->h38 = 0;
         p->c44 = ch->c15;
-        p->h40 = 0xffff / (s32)((u32)a->h36 >> 1);
-        p->h42 = 0xffff / a->h36;
+        p->h40 = DS_DIV(0xffff, (s32)((u32)a->h36 >> 1));
+        p->h42 = DS_DIV(0xffff, a->h36);
         p->c45 = 0;
         i++;
     } while (i < (s32)ch->count);

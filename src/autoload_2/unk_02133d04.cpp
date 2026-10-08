@@ -4,6 +4,7 @@
 // __SetupCatchInfo, __FindExceptionHandler, __HandleUnexpected, __IsInSpecification, the rethrow catch-info
 // lookup and __UnwindStack. C++ with exceptions on (like the original): owns main's .exceptix entries
 // 0x020c2bd4-0x020c2c40 and .exception tables 0x020c2b04-0x020c2b2c.
+#include "ds_div.h"
 #include "types.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/autoload_2/unk_0212703c.h"
@@ -389,7 +390,7 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
                 total = *(u32 *)(context->FP + bytes);
             }
             ptr += total;
-            for (n = total / size; n; n--) {
+            for (n = DS_UDIV(total, size); n; n--) {
                 ptr -= size;
                 dtor(ptr, -1);
             }

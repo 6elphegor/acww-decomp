@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "nnsys/snd_arcstrm.h"
 #include "proto/autoload_2/unk_0210b448.h"
 #include "proto/autoload_2/unk_0210c084.h"
@@ -298,7 +299,7 @@ u32 func_0210e648(NNSSndStrmPlayer **h)
 {
     NNSSndStrmPlayer *c = *h;
     if (c == 0) return 0;
-    return (u64)c->curSample * (u64)1000 / (u64)c->info.sampleRate;
+    return DS_UDIV64((u64)c->curSample * (u64)1000, (u64)c->info.sampleRate);
 }
 
 // NNS_SndArcStrmGetTotalTime-like (ms)
@@ -306,7 +307,7 @@ u32 func_0210e5fc(NNSSndStrmPlayer **h)
 {
     NNSSndStrmPlayer *c = *h;
     if (c == 0) return 0;
-    return (u64)c->info.loopEnd * (u64)1000 / (u64)c->info.sampleRate;
+    return DS_UDIV64((u64)c->info.loopEnd * (u64)1000, (u64)c->info.sampleRate);
 }
 
 // NNS_SndArcStrmMain-like (per-frame update of the 4 contexts: start, fade, volume)
@@ -436,7 +437,7 @@ BOOL PrepareStrmCore(NNSSndStrmPlayer **h, NNSSndArcStrmInfo *info, s32 playerNo
         FreePlayer(c);
         return 0;
     }
-    if (NNS_SndStrmSetup(PlayerStrm(c), fmt, NNSi_SndArm7Addr(c->buffer), (c->bufSize * n) / c->numChannels, c->info.timer, 4,
+    if (NNS_SndStrmSetup(PlayerStrm(c), fmt, NNSi_SndArm7Addr(c->buffer), DS_UDIV((c->bufSize * n), c->numChannels), c->info.timer, 4,
                          StrmDataCallback, c) == 0) {
         FreeChannel(c);
         FS_CloseFile(&c->file);

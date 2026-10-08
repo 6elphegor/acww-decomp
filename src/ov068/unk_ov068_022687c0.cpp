@@ -1,4 +1,5 @@
 // mwcc-version: 1.2/base
+#include "ds_div.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "field/Insect.h"
@@ -1290,7 +1291,7 @@ void Insect::insectWanderSteer(s16 *p, s32 a, s32 b, u8 thr, s32 sc) {
     u32 rnd = (u8)Random_GlobalBelow(100);
     VecFx32 *d = &position;
     VecFx32Ctor vec;
-    if (frameCounter % b == 0 && rnd > thr) {
+    if (DS_MOD(frameCounter, b) == 0 && rnd > thr) {
         if (flag == 0) {
             flag = 1;
         } else {

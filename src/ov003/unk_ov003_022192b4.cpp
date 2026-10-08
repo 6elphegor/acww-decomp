@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "snd/SndSeEmitter.h"
 #include "sys/ProcProfile.h"
 #include "uptr.h"
@@ -4845,7 +4846,7 @@ void TreeLeafFx_UpdatePos(Rec *r, Tgt *t) {
             break;
         }
         e = r->frame;
-        if (e < lim) ang = (s16)(e * ang / lim);
+        if (e < lim) ang = (s16)(DS_DIV(e * ang, lim));
         d = ((u16)ang >> 4) * 2;
         x = r->posX + ((sc * data_02135f44[d]) >> 12);
         y = r->posY + ((sc * data_02135f44[d + 1]) >> 12);

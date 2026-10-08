@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -894,7 +895,7 @@ void SceneLight::update()
             switch (lightSwitch.switchMode) {
             case 0:
             case 3:
-                lightSwitch.lightLevel.switchLight(1, 1, 0, 0x1000 / lightSwitch.fadeFrames);
+                lightSwitch.lightLevel.switchLight(1, 1, 0, DS_DIV(0x1000, lightSwitch.fadeFrames));
                 break;
             case 1:
                 lightSwitch.lightLevel.switchLight(1, 1, 1, 0x800);
@@ -907,7 +908,7 @@ void SceneLight::update()
             switch (lightSwitch.switchMode) {
             case 0:
             case 3:
-                lightSwitch.lightLevel.switchLight(0, 1, 0, 0x1000 / lightSwitch.fadeFrames);
+                lightSwitch.lightLevel.switchLight(0, 1, 0, DS_DIV(0x1000, lightSwitch.fadeFrames));
                 break;
             default:
                 lightSwitch.lightLevel.switchLight(0, 0, 0, 0x800);

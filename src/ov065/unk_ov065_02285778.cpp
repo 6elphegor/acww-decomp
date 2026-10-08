@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 
+#include "ds_div.h"
 #include "types.h"
 #include "net/gt2Main.h"
 #include "net/GsInAddr.h"
@@ -377,7 +378,7 @@ void gti2MessageCheck(u8 **s, s32 *len) {
 namespace N02285f3c { extern "C" {
 u32 gti2ConnectionHash(Conn062 **pp, u32 n) {
     Conn062 *p = *pp;
-    return (p->ip * p->port) % n;
+    return DS_UMOD((p->ip * p->port), n);
 }
 } }
 

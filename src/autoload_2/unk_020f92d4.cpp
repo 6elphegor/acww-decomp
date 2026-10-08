@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "gfx/SplReal.h"
 #include "uptr.h"
 // mwcc-flags: -nothumb -O4,p
@@ -145,7 +146,7 @@ extern "C" void spl_calc(MU *m, EU *e) {
     s32 acc[3];
     if (e->cb) e->cb(e, 0);
     if (hp->h56 == 0 || e->h56 < hp->h56) {
-        if (e->h56 % e->c104 == 0 && !e->fl.b0 && !e->fl.b1 && e->fl.b4) spl_gen_ptcl(e, &m->freelist);
+        if (DS_MOD(e->h56, e->c104) == 0 && !e->fl.b0 && !e->fl.b1 && e->fl.b4) spl_gen_ptcl(e, &m->freelist);
     }
     if (h.b8) {
         arr[n].fn = spl_scl_in_out;
@@ -198,7 +199,7 @@ extern "C" void spl_calc(MU *m, EU *e) {
             if (h.b16) {
                 s32 d = (p->h38 << 12) - (FxMul(p->h36 << 12, b14->c13 << 12) >> 8);
                 if (d >= 0) {
-                    if ((d >> 12) % b14->c14 == 0) spl_gen_child(p, e, &m->freelist);
+                    if (DS_MOD((d >> 12), b14->c14) == 0) spl_gen_child(p, e, &m->freelist);
                 }
             }
             if (((HdrU *)e->res->p0)->b30) {
@@ -230,7 +231,7 @@ extern "C" void spl_calc(MU *m, EU *e) {
         if (p != 0) {
             do {
                 next = p->next;
-                fr[0] = (p->h38 << 8) / p->h36;
+                fr[0] = DS_DIV((p->h38 << 8), p->h36);
                 for (i = 0; i < n; i++) arr2[i].fn(p, res, fr[0]);
                 acc[0] = acc[1] = acc[2] = 0;
                 if (b14->b5) {

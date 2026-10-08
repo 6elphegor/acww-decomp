@@ -1,4 +1,5 @@
 // mwcc-flags: -O4,p -str reuse
+#include "ds_div.h"
 #include "types.h"
 #include "net/GsSocket.h"
 #include "net/SockHostEnt.h"
@@ -680,7 +681,7 @@ s32 Util_RandInt(s32 a, s32 b) {
         return a;
     }
     s32 q = longrand();
-    s32 m = q % d;
+    s32 m = DS_MOD(q, d);
     return m + a;
 }
 }

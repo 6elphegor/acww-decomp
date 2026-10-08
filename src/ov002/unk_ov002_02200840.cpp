@@ -1,4 +1,5 @@
 // ov002: shared library overlay (menu / cursor / slider helpers used by the scene overlays).
+#include "ds_div.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
@@ -196,7 +197,7 @@ MenuTween::~MenuTween() {}
 void MenuTween::start(u32 n)
 {
     progress = 0x1000;
-    stepSize = 0x1000 / n;
+    stepSize = DS_UDIV(0x1000, n);
 }
 
 BOOL MenuTween::step()

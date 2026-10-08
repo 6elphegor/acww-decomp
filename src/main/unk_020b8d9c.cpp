@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "gfx/HBlankTask.h"
 #include "uptr.h"
 #include "types.h"
@@ -6173,7 +6174,7 @@ extern "C" void SkyGradient_Build()
         } else if (i >= s1) {
             out = in2;
         } else {
-            s32 t = ((i - s0) << 8) / span;
+            s32 t = DS_DIV(((i - s0) << 8), span);
             s32 u = 0x100 - t;
             u32 col = (u16)((c1b * u + c2b * t) >> 8) << 10;
             col |= (u16)((c1r * u + c2r * t) >> 8) | (u16)((c1g * u + c2g * t) >> 8) << 5;
@@ -6220,7 +6221,7 @@ extern "C" void Sky_UpdateLineTables()
             SkyLineAffine *q = gWeatherManager.lineAffine[i];
             for (j = 0; j < 0xc0; j++) {
                 s32 t = -(j << 8) / 0xc0;
-                q->pa = 0x10000 / (t + 0x200);
+                q->pa = DS_DIV(0x10000, (t + 0x200));
                 s32 n = (q->pa - 0x100) << 7;
                 n = -n;
                 q->x = a + n;

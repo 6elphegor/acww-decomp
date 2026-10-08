@@ -1,4 +1,5 @@
 // mwcc-flags: -O4,p -str reuse
+#include "ds_div.h"
 #include "types.h"
 #include "net/darray.h"
 #include "net/GsInAddr.h"
@@ -529,7 +530,7 @@ void gs_encrypt(u8 *key, s32 keylen, u8 *data, s32 datalen) {
     p = q;
     for (; i < 0x100; i++) {
         j = (*q + key[x] + j) % 0x100;
-        x = (x + 1) % keylen;
+        x = DS_MOD((x + 1), keylen);
         swap_byte(q, p + j);
         q++;
     }
