@@ -1,4 +1,5 @@
 #include "types.h"
+#include "field/MoneyRockState.h"
 #include "town/TownState.h"
 #include "town/TownEventRecord.h"
 #include "town/TownBlockMap.h"
@@ -14,7 +15,7 @@
 // Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
 // size order (linkprep check); the original file is this one or another file between those neighbours.
 
-u8 data_021c47bc[8];
+MoneyRockState data_021c47bc;
 
 
 struct ItemId {
@@ -191,7 +192,6 @@ s32 ItemInfo_TestFlag4(u16 *p);
 BOOL ItemInfo_TestFlag3(u16 *p);
 s32 Fish_GetBaseSize(s32 x);
 void Item_FromPlacedForm(u16 *out, u16 *in);
-s32 Item_GetPrice(void *p);
 BOOL Item_IsTreeStage0(u16 *p);
 u16 Item_MakePlayerHouse(u32 x);
 BOOL Item_IsPlayerHouse(u16 *p);
@@ -912,10 +912,10 @@ extern "C" s32 Item_FindMoneyBagForAmount(s32 a, BOOL up, s32 *out) {
     if (out) *out = 0;
     if (up) {
         Item_Assign(&e.v, 0x14fd);
-        if (Item_GetPrice(&e) < a) return 0xfff1;
+        if (Item_GetPrice(&e.v) < a) return 0xfff1;
         for (i = 0; i < 0x6c; i++) {
             Item_Assign(&e.v, Item_MakeMoneyBag(i));
-            s32 v = Item_GetPrice(&e);
+            s32 v = Item_GetPrice(&e.v);
             if (v >= a) {
                 if (out) *out = v - a;
                 return Item_GetId(&e.v);
@@ -923,10 +923,10 @@ extern "C" s32 Item_FindMoneyBagForAmount(s32 a, BOOL up, s32 *out) {
         }
     } else {
         Item_Assign(&e.v, 0x1492);
-        if (Item_GetPrice(&e) > a) return 0xfff1;
+        if (Item_GetPrice(&e.v) > a) return 0xfff1;
         for (i = 0x6c; i != 0; i--) {
             Item_Assign(&e.v, Item_MakeMoneyBag(i - 1));
-            s32 v = Item_GetPrice(&e);
+            s32 v = Item_GetPrice(&e.v);
             if (a >= v) {
                 if (out) *out = a - v;
                 return Item_GetId(&e.v);

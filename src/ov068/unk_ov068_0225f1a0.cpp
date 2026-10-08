@@ -2142,10 +2142,10 @@ extern "C" {
 void FieldVillager_StopEmotion(FieldVillager *o) {
     if (o->actionCtrl.getAction() == 8) {
         if (o->actionCtrl.getEmotionId() != 0) {
-            NpcEmotionEntry *r = Emotion_GetEntry(0);
+            const NpcEmotionEntry *r = Emotion_GetEntry(0);
             if (r != 0) {
                 o->emotionFx.emotionId = 0;
-                o->emotionFx.startEntry((NpcEmotionPhase *)(r), 0);
+                o->emotionFx.startEntry((const NpcEmotionPhase *)(r), 0);
             }
         }
     }

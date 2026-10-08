@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_0204a780.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "field/MoneyRockState.h"
 #include "sys/ClockDate.h"
 #include "town/TownEventRecord.h"
 #ifdef __cplusplus
@@ -537,7 +538,7 @@ void TownState_UpdatePerfectStreak(TownState *p, s32 k, s32 add);
 #endif
 }
 #ifndef PROTO_LOCAL_data_021c47bc
-extern u8 data_021c47bc[8];
+extern MoneyRockState data_021c47bc;
 #endif
 #endif
 

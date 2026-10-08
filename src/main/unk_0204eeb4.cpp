@@ -46,9 +46,6 @@ static inline BOOL Unk_0204e8b0_Bit(u16 *m, u32 x, u32 y) {
 namespace Unk_0204eba0_Ns {
 }
 
-namespace Unk_0204eee4_Ns {
-extern "C" s32 OverlayMgr_UnloadSlot(OverlaySlot *e);
-}
 
 
 extern "C" {
@@ -204,7 +201,7 @@ extern "C" void OverlayMgr_Release(u32 id) {
         Fatal_Trap();
     }
     if (e->refCount == 0) {
-        Unk_0204eee4_Ns::OverlayMgr_UnloadSlot(e);
+        OverlayMgr_UnloadSlot(e);
     }
 }
 

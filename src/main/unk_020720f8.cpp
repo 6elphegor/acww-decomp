@@ -70,7 +70,7 @@ struct CommDeferredFlushLocals {
 // ======== unk_020739b8.cpp ========
 namespace n4 {
 extern "C" {
-extern CommManager *gCommManager;
+extern CommManager *const gCommManager;
 }
 extern "C" {
 void MI_CpuFill8(void *, u32, u32);
@@ -82,7 +82,7 @@ extern "C" {
 void MI_CpuCopy8(const void *, void *, u32);
 }
 extern "C" {
-void Scene_GetCurrent();
+s32 Scene_GetCurrent();
 }
 extern "C" {
 void OS_EnableInterrupts();
@@ -445,7 +445,7 @@ extern "C" void Comm_ProcessReceived(s32 x) {
 // ======== new_020733e4.cpp ========
 namespace n5 {
 extern "C" {
-extern CommManager *gCommManager;
+extern CommManager *const gCommManager;
 }
 
 extern "C" void Comm_Update(s32 a) {
@@ -715,7 +715,7 @@ extern "C" {
 s32 Scene_GetCurrent();
 }
 extern "C" {
-extern CommManager *gCommManager;
+extern CommManager *const gCommManager;
 }
 
 extern "C" BOOL Comm_SendEmpty() { return gCommManager->sendPackets(0, 0, 0, 0, 0, 0, 0, 0, 0); }
@@ -1024,7 +1024,7 @@ extern "C" {
 s32 Scene_GetCurrent();
 }
 extern "C" {
-extern CommManager *gCommManager;
+extern CommManager *const gCommManager;
 }
 
 }
@@ -1488,10 +1488,10 @@ extern "C" {
 extern u16 data_020d03cc;
 }
 extern "C" {
-extern CommManager *gCommManager;
+extern CommManager *const gCommManager;
 }
 extern "C" {
-void MI_CpuCopy8(void *src, void *dst, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 
 }

@@ -43,7 +43,7 @@ struct NpcEmotionFx {
     void stopSound();
     void keepSound();
     void playSound(NpcEmotionFxSlot *s);
-    void startEntry(NpcEmotionPhase *tbl, s32 idx);
+    void startEntry(const NpcEmotionPhase *tbl, s32 idx);
     void setSlots(const void *a, u32 b, s32 c);
     s32 findFreeHandle();
     void copySlots(void *dst, const void *src, s32 n);

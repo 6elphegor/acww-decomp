@@ -19,7 +19,7 @@ struct NpcActionParams {
     Character *handOverPartner;  // the player the item is handed to / taken from (ActorTalkRequest::talkPlayer)
     u8 handOverMode;
     u32 handOverVariant;
-    void *clear();
+    void clear();
     void copyFrom(NpcActionParams *src);
 };
 
@@ -173,7 +173,7 @@ struct NpcActionCtrl {
     /* 0x9c */ s32 moveMode;
     /* 0xa0 */ s16 unk_a0;
     /* 0xa2 */ u8 pad_a2[2];
-    /* 0xa4 */ NpcEmotionEntry *emotionEntry;
+    /* 0xa4 */ const NpcEmotionEntry *emotionEntry;
     /* 0xa8 */ u8 emotionIntro;
     /* 0xa9 */ u8 emotionId;
     /* 0xaa */ u8 pad_aa[2];
