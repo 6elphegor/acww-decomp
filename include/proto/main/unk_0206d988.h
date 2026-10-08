@@ -67,7 +67,7 @@ void Melody_Update(void);
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_Melody_PlayAt
-void Melody_PlayAt(VecFx32 *a, u32 b);
+void Melody_PlayAt(VecFx32 *pos, u32 b);
 #endif
 }
 #ifndef PROTO_LOCAL_sMelodyTimer

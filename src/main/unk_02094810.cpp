@@ -12,29 +12,25 @@
 
 typedef VecFx32Ctor Unk_02006d14_V3;
 
-// An enum-typed local keeps the constant in a callee-saved register across the call.
-// _ZN11PlayerActor12requestAct79Ejj is declared with the enum parameter (real type u32) so the argument is
-// passed with `movs r1, r5` instead of `adds r1, r5, #0`.
+// An enum-typed local keeps the constant in a callee-saved register across the call (the DS code's register use).
 enum Unk_02094a08_Limit { Unk_02094a08_LIMIT_5 = 5 };
 enum Unk_02094d60_Limit { Unk_02094d60_LIMIT_5 = 5, Unk_02094d60_LIMIT_6 = 6 };
 
-
-
-struct Unk_02095338_E { u32 a, b, c; };
 struct Unk_02095338_D { u16 a : 7; u16 b : 4; u16 c : 5; };
 
-struct PlayerSessionTable {
-    u32 actors[4];
+class PlayerSessionTable {  // (a class: the generated prototype headers declare it for C++ only)
+public:
+    PlayerActor *actors[4];
     u8 dataIndices[4];
     u8 gfxSlots[4];
     Unk_02095338_D lastPlayDate;
     u16 tanTimer;
     u8 sessionFlags;
     u8 pad_1d[3];
-    u32 lastActions[4];
+    s32 lastActions[4];
     u8 lastScenes[4];
-    Unk_02095338_E lastPositions[4];
-    u16 lastAngles[4];
+    VecFx32 lastPositions[4];  // (FxVec3s: an empty constructor and destructor)
+    s16 lastAngles[4];
     PlayerSessionTable();
     ~PlayerSessionTable();
 };
@@ -53,8 +49,6 @@ extern CommManager *gCommManager;
 
 extern "C" {
 
-s32 _ZN11PlayerActor12requestAct79Ejj(PlayerActor *o, Unk_02094a08_Limit a, s32 b);
-s32 _ZN11PlayerActor12requestAct30EPtjjjjjs(PlayerActor *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
 s32 PlayerActor_RequestExitWalkOut(PlayerActor *o, VecFx32Ctor *v, u32 a, s32 b);
 
 s32 Scene_InHouseRoom();
@@ -77,7 +71,6 @@ void __cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor);
 void __cxa_vec_cleanup(void *p, s32 n, s32 size, void *dtor);
 s32 Scene_GetCurrent();
 void MI_CpuCopy8(const void *src, void *dst, s32 n);
-u32 _ZN11CommManager10getSyncVarEj(CommManager *g, u32 v);
 
 }
 
@@ -85,14 +78,15 @@ extern "C" PlayerActor *PlayerActor_Get(s32 idx) {
     if (idx == 4) {
         idx = gCommManager->localSlot;
     }
-    return (PlayerActor *)PlayerSessionTable_GetActor(&gPlayerSessionTable, idx);
+    return PlayerSessionTable_GetActor(&gPlayerSessionTable, idx);
 }
 
-extern "C" u32 PlayerActor_GetNetPosVar(s32 idx) { return _ZN11CommManager10getSyncVarEj(gCommManager, sPlayerPosSyncVars[idx]); }
+// A remote player's synchronised variables: the position (packed x / z), the angle, the state (scene, action ...)
+extern "C" u8 *PlayerActor_GetNetPosVar(s32 idx) { return gCommManager->getSyncVar(sPlayerPosSyncVars[idx]); }
 
-extern "C" u32 PlayerActor_GetNetAngleVar(s32 idx) { return _ZN11CommManager10getSyncVarEj(gCommManager, sPlayerAngleSyncVars[idx]); }
+extern "C" u8 *PlayerActor_GetNetAngleVar(s32 idx) { return gCommManager->getSyncVar(sPlayerAngleSyncVars[idx]); }
 
-extern "C" u32 PlayerActor_GetNetStateVar(s32 idx) { return _ZN11CommManager10getSyncVarEj(gCommManager, sPlayerStateSyncVars[idx]); }
+extern "C" u8 *PlayerActor_GetNetStateVar(s32 idx) { return gCommManager->getSyncVar(sPlayerStateSyncVars[idx]); }
 
 // ---------------------------------------------------------------- functions (file unk_02095670)
 extern "C" BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx) {
@@ -110,14 +104,14 @@ extern "C" BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32
         }
         return FALSE;
     }
-    u32 t = PlayerActor_GetNetStateVar(idx);
-    if (t == 0) return FALSE;
+    u8 *t = PlayerActor_GetNetStateVar(idx);
+    if (t == NULL) return FALSE;
     s32 v;
     if (!PlayerActor_GetSlotAction((u32 *)&v, mode, idx)) return FALSE;
     if (v >= 0x93) return FALSE;
-    u32 t2 = PlayerActor_GetNetPosVar(idx);
-    if (t2 == 0) return FALSE;
-    s32 a, b;
+    u8 *t2 = PlayerActor_GetNetPosVar(idx);
+    if (t2 == NULL) return FALSE;
+    u32 a, b;
     NetBuf_UnpackPair20(t2, &a, &b);
     *x = a;
     *y = b;
@@ -148,7 +142,7 @@ extern "C" BOOL PlayerActor_GetSlotAngle(s16 *out, s32 a, s32 idx)
     if ((s32)st >= 0x93) {
         return FALSE;
     }
-    u8 *q = (u8 *)PlayerActor_GetNetAngleVar(idx);
+    u8 *q = PlayerActor_GetNetAngleVar(idx);
     if (!q) {
         return FALSE;
     }
@@ -170,7 +164,7 @@ extern "C" BOOL PlayerActor_GetSlotAction(u32 *out, s32 a, s32 idx)
         }
         return FALSE;
     }
-    u8 *p = (u8 *)PlayerActor_GetNetStateVar(idx);
+    u8 *p = PlayerActor_GetNetStateVar(idx);
     if (!p) {
         return FALSE;
     }
@@ -192,7 +186,7 @@ extern "C" void PlayerActor_PackNetState(void *dst, s32 x)
             l.t[1] = l.out + 1;
         }
         NetBuf_WriteS16(l.t + 2, o->netSeq);
-        MI_CpuCopy8((u8 *)o + 0x8ec, l.t + 4, 8);
+        MI_CpuCopy8(&o->netData, l.t + 4, 8);
     } else {
         l.t[1] = 0x94;
     }
@@ -222,22 +216,22 @@ extern "C" void PlayerActor_UnpackHair(u8 *src, u8 *a, u8 *b)
     *b = (src[0] >> 4) & 7;
 }
 
-extern "C" void PlayerSessionTable_SetActor(PlayerSessionTable *p, s32 i, u32 v)
+extern "C" void PlayerSessionTable_SetActor(PlayerSessionTable *p, s32 i, PlayerActor *v)
 {
     p->actors[i] = v;
 }
 
 extern "C" void PlayerSessionTable_ClearActor(PlayerSessionTable *p, s32 i)
 {
-    PlayerSessionTable_SetActor(p, i, 0);
+    PlayerSessionTable_SetActor(p, i, NULL);
 }
 
-extern "C" u32 PlayerSessionTable_GetActor(PlayerSessionTable *p, s32 i)
+extern "C" PlayerActor *PlayerSessionTable_GetActor(PlayerSessionTable *p, s32 i)
 {
     if (i < 4) {
         return p->actors[i];
     }
-    return 0;
+    return NULL;
 }
 
 extern "C" void PlayerSessionTable_SetDataIndex(PlayerSessionTable *p, s32 i, s32 v)
@@ -301,9 +295,9 @@ PlayerSessionTable::PlayerSessionTable()
         PlayerSessionTable_ClearGfxSlot(&gPlayerSessionTable, i);
         lastActions[i] = 0x93;
         lastScenes[i] = 0x33;
-        lastPositions[i].a = 0;
-        lastPositions[i].b = 0;
-        lastPositions[i].c = 0;
+        lastPositions[i].x = 0;
+        lastPositions[i].y = 0;
+        lastPositions[i].z = 0;
         lastAngles[i] = 0;
     }
     lastPlayDate.a = 0;
@@ -318,7 +312,7 @@ PlayerSessionTable::~PlayerSessionTable()
     __cxa_vec_cleanup(lastPositions, 4, 12, (void *)_ZN6FxVec3D1Ev);
 }
 
-extern "C" void PlayerSession_SetActor(s32 i, u32 v)
+extern "C" void PlayerSession_SetActor(s32 i, PlayerActor *v)
 {
     PlayerSessionTable_SetActor(&gPlayerSessionTable, i, v);
 }
@@ -358,7 +352,7 @@ extern "C" u8 *PlayerSession_GetSessionFlags()
     return &gPlayerSessionTable.sessionFlags;
 }
 
-extern "C" u32 *PlayerSession_GetLastAction(s32 i)
+extern "C" s32 *PlayerSession_GetLastAction(s32 i)
 {
     return &gPlayerSessionTable.lastActions[i];
 }
@@ -368,12 +362,12 @@ extern "C" u8 *PlayerSession_GetLastScene(s32 i)
     return &gPlayerSessionTable.lastScenes[i];
 }
 
-extern "C" Unk_02095338_E *PlayerSession_GetLastPos(s32 i)
+extern "C" VecFx32 *PlayerSession_GetLastPos(s32 i)
 {
     return &gPlayerSessionTable.lastPositions[i];
 }
 
-extern "C" u16 *PlayerSession_GetLastAngle(s32 i)
+extern "C" s16 *PlayerSession_GetLastAngle(s32 i)
 {
     return &gPlayerSessionTable.lastAngles[i];
 }
@@ -382,10 +376,10 @@ extern "C" void PlayerSession_ResetLastState(s32 i)
 {
     *PlayerSession_GetLastAction(i) = 0x93;
     *PlayerSession_GetLastScene(i) = 0x33;
-    Unk_02095338_E *e = PlayerSession_GetLastPos(i);
-    e->a = 0;
-    e->b = 0;
-    e->c = 0;
+    VecFx32 *e = PlayerSession_GetLastPos(i);
+    e->x = 0;
+    e->y = 0;
+    e->z = 0;
     *PlayerSession_GetLastAngle(i) = 0;
 }
 
@@ -832,7 +826,7 @@ extern "C" s32 PlayerActor_RequestTurnTo(s32 a, u32 idx) {
 extern "C" s32 PlayerActor_RequestAct30(u16 *a, u32 *b, u8 *c, u32 *d, u32 e) {
     PlayerActor *o = PlayerActor_Get(4);
     if (o) {
-        return _ZN11PlayerActor12requestAct30EPtjjjjjs(o, (u32)a, *b, *c, *d, e, 6, -1);
+        return o->requestAct30(a, *b, *c, *d, e, 6, -1);
     }
     return 0;
 }

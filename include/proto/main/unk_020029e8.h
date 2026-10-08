@@ -14,14 +14,16 @@ extern "C" {
 #ifndef PROTO_LOCAL_AbAllObjGfx_Upload
 void AbAllObjGfx_Upload(void);
 #endif
-#ifndef PROTO_LOCAL_AbAllObjGfx_InitFile
-void AbAllObjGfx_InitFile(void *p);
-#endif
 #ifdef __cplusplus
 }
 #endif
 
 #ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_AbAllObjGfx_InitFile
+void AbAllObjGfx_InitFile(AbAllObjGfx *p);
+#endif
+}
 #ifndef PROTO_LOCAL_sAbAllObjGfx
 extern AbAllObjGfx sAbAllObjGfx;
 #endif

@@ -5,18 +5,12 @@
 #include "town/Unk_0204e858_Grid.h"
 #include "sys/OverlaySlot.h"
 #include "town/MapBlockEntry.h"
-#define PROTO_LOCAL_FS_GetOverlayFileID  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OverlayMgr_Acquire  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_0211a6c0.h"
 #include "proto/main/unk_0204eeb4.h"
 #include "proto/main/unk_0204f134.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206d49c.h"
-
-
-
-
-
 
 
 OverlaySlot sOverlaySlots[12];
@@ -50,135 +44,21 @@ static inline BOOL Unk_0204e8b0_Bit(u16 *m, u32 x, u32 y) {
 }
 
 namespace Unk_0204eba0_Ns {
-extern "C" u16 *BlockMap_GetItemPtr(Unk_0204e858_Grid *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 }
 
 namespace Unk_0204eee4_Ns {
 extern "C" s32 OverlayMgr_UnloadSlot(OverlaySlot *e);
 }
 
-extern "C" {
-void FieldPos_ToBlockUnit2(s32 *a, s32 *c, VecFx32 *v);
-}
-
-extern "C" {
-void FieldPos_ToBlockUnit(s32 *ax, s32 *az, s32 *cx, s32 *cz, VecFx32 *v);
-}
-
-extern "C" {
-void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
-}
-
-extern "C" {
-void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 z);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
 
 extern "C" {
 void OverlayMgr_UnloadSlot(OverlaySlot *e);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void *FS_LoadOverlayInfo(void *p, s32 v, u32 n);
-}
-
-extern "C" {
-void FS_GetOverlayFileID(void *a, void *b);
-}
-
-extern "C" {
-s32 MapBlock_ClearBuried(TownBlockCell *c, s32 a, s32 b);
-}
-
-extern "C" {
-s32 MapBlock_SetBuried(TownBlockCell *c, s32 a, s32 b);
-}
-
-extern "C" {
-s32 MapBlock_HasAnyAttr(TownBlockCell *c, s32 a);
-}
-
-extern "C" {
-s32 MapBlock_HasAllAttr(TownBlockCell *c, s32 a);
-}
-
-extern "C" {
-s32 MapBlock_GetAttr(TownBlockCell *c);
-}
-
-extern "C" {
-s32 MapBlock_FindItemInRange(TownBlockCell *c, s32 a, s32 b, s32 d, s32 e, s32 f);
-}
-
-extern "C" {
-s32 MapBlock_GetItemPtr(TownBlockCell *c, s32 a, s32 b, u8 d);
-}
-
-extern "C" {
-void *MapBlock_SetItem(TownBlockCell *c, s32 a, s32 b, s32 d, u8 e);
-}
-
-extern "C" {
+BOOL FS_LoadOverlayInfo(FSOverlayInfo *p, int target, u32 id);
 void Clock_GetDayMonth(void *p);
 }
 
-extern "C" {
-void Clock_GetMinuteHour(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 BlockMap_IsBuried(Unk_0204e858_Grid *g, u32 hx, u32 hy, u32 lx, u32 ly);
-}
-
-extern "C" {
-s32 BlockMap_ClearBuried(Unk_0204e858_Grid *g, u32 hx, u32 hy, u32 lx, u32 ly);
-}
-
-extern "C" {
-s32 BlockMap_SetBuried(Unk_0204e858_Grid *g, u32 hx, u32 hy, u32 lx, u32 ly);
-}
-
-extern "C" {
-void *BlockMap_SetItem(Unk_0204e858_Grid *g, s32 a, u32 hx, u32 hy, u32 lx, u32 ly, u8 d);
-}
 // prototypes
 extern "C" void OverlayMgr_UnloadSlot(OverlaySlot *e);
-extern "C" void OverlayMgr_Acquire(u32 id);
 
 
 extern "C" u32 FishTable_GetHourSlot(u32 r) {
@@ -240,7 +120,7 @@ extern "C" s32 Fish_GetWaterKind(s32 r) {
 }
 
 extern "C" void OverlayMgr_GetInfo(void *p, u32 id) {
-    FS_LoadOverlayInfo(p, 0, id);
+    FS_LoadOverlayInfo((FSOverlayInfo *)p, 0, id);
 }
 
 extern "C" void OverlayMgr_LoadOverlay(u32 id) {
@@ -252,21 +132,21 @@ extern "C" void OverlayMgr_UnloadOverlay(u32 id) {
 }
 
 extern "C" void OverlayMgr_LoadSlot(OverlaySlot *e, u32 id) {
-    u32 buf[HOST_SIZED(44, FSOverlayInfo) / 4] HOST_ALIGN8;  // FSOverlayInfo (56 bytes on 64-bit hosts)
-    OverlayMgr_GetInfo(buf, id);
+    FSOverlayInfo info;
+    OverlayMgr_GetInfo(&info, id);
     OverlayMgr_LoadOverlay(id);
     e->overlayId = id;
     e->refCount = 1;
     e->unk_02 = 0;
-    e->ramStart = buf[1];
-    e->ramSize = buf[2] + buf[3];
+    e->ramStart = info.header.ram_address;
+    e->ramSize = info.header.ram_size + info.header.bss_size;
 }
 
 extern "C" void OverlayMgr_UnloadSlot(OverlaySlot *e) {
-    u32 buf[HOST_SIZED(44, FSOverlayInfo) / 4] HOST_ALIGN8;  // FSOverlayInfo (56 bytes on 64-bit hosts)
+    FSOverlayInfo info;
     u32 id = e->overlayId;
     OverlayMgr_UnloadOverlay(id);
-    OverlayMgr_GetInfo(buf, id);
+    OverlayMgr_GetInfo(&info, id);
     e->overlayId = 0xff;
     e->refCount = 0;
     e->unk_02 = 0;
@@ -278,8 +158,7 @@ extern "C" void OverlayMgr_Acquire(u32 id) {
     OverlaySlot *free = NULL;
     s32 i;
     u32 lo, hi;
-    u8 buf[HOST_SIZED(8, FSFileID)] HOST_ALIGN8;  // FSFileID
-    u32 info[HOST_SIZED(44, FSOverlayInfo) / 4] HOST_ALIGN8;  // FSOverlayInfo
+    FSOverlayInfo info;
     for (i = 0; (u32)i < 12; i++) {
         OverlaySlot *e = &sOverlaySlots[i];
         if (e->overlayId == id) {
@@ -290,9 +169,9 @@ extern "C" void OverlayMgr_Acquire(u32 id) {
             free = e;
         }
     }
-    OverlayMgr_GetInfo(info, id);
-    FS_GetOverlayFileID(buf, info);
-    for (i = 0, lo = info[1], hi = lo + (info[2] + info[3]); (u32)i < 12; i++) {
+    OverlayMgr_GetInfo(&info, id);
+    FS_GetOverlayFileID(&info.header);  // (the file id is not used)
+    for (i = 0, lo = info.header.ram_address, hi = lo + (info.header.ram_size + info.header.bss_size); (u32)i < 12; i++) {
         OverlaySlot *e = &sOverlaySlots[i];
         if (e->overlayId != id && ((volatile OverlaySlot *)e)->overlayId != 0xff && e->ramStart + e->ramSize > lo && hi > e->ramStart) {
             if (e->refCount == 0) {

@@ -12,24 +12,6 @@ void MI_CpuCopy8(void *src, void *dst, u32 n);
 // ---- flag object at 0x021c3264
 
 PlayerOptions sPlayerOptions;
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
 extern "C" PlayerOptions *PlayerOptions_Get() { return &sPlayerOptions; }
 
 extern "C" BOOL PlayerOptions_IsHiragana() { return sPlayerOptions.isHiragana(); }
@@ -58,7 +40,7 @@ extern "C" void PlayerOptions_SetTalkVoice(u32 v) {
 extern "C" void PlayerOptions_Commit() {
     PlayerOptions *r5, *r4;
     u8 l;
-    r5 = PlayerData_GetCurrent()->getOptions();
+    r5 = static_cast<PlayerOptions *>(PlayerData_GetCurrent()->getOptions());  // (the u8 options[1] of PlayerData)
     r4 = PlayerOptions_Get();
     if (r4->isHiraganaChanged()) {
         if (PlayerOptions_IsHiragana() == 1) r5->setHiragana();

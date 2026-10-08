@@ -8,11 +8,12 @@
 #include "npc/VillagerAnimHeapRefSlot.h"
 #include "npc/NpcBodyAnimSlot.h"
 #include "npc/VillagerAnimHeapRefPool.h"
+#include "npc/NpcBodyAnimPool.h"
+#include "npc/NpcResPools.h"
 #include "player/HeldItemModel.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_0205dfa4.h"
 #include "proto/main/unk_020821c4.h"
-
 
 
 extern "C" {
@@ -20,142 +21,6 @@ void NpcTexPatBufRef_Assign(void *, s32 v);
 void SpNpcAnimHeapRef_Assign(void *, s32 x);
 void VillagerAnimHeapRef_Assign(void *, s32 x);
 }
-
-struct NpcTexPatBufRef {
-    u32 pad;
-    NpcTexPatBufRef();
-    ~NpcTexPatBufRef();
-};
-
-// ---- 0x020e077c
-struct NpcFaceAnimSlot : NpcResSlot {
-    NpcFaceAnimSlot();
-    ~NpcFaceAnimSlot();
-    CharaFaceAnimRef faceAnim;
-    void assign(u32 id);
-};
-
-struct NpcFaceAnimPool : NpcResPool {
-    NpcFaceAnimSlot slots[5];
-    NpcFaceAnimPool();
-    virtual ~NpcFaceAnimPool();
-    virtual void occupySlot(u32 i);
-    virtual NpcFaceAnimSlot *getSlot(u32 i);
-    CharaFaceAnimRef *getFaceAnim(u32 i);
-};
-
-extern "C" NpcFaceAnimPool *NpcFaceAnimPool_Get();
-
-// ---- 0x020e0798
-
-
-
-// ---- 0x020e07b4
-struct NpcTexPatBufRefSlot : NpcResSlot {
-    NpcTexPatBufRefSlot();
-    ~NpcTexPatBufRefSlot();
-    NpcTexPatBufRef bufRef;
-    void assign(u32 id);
-};
-
-struct NpcTexPatBufRefPool : NpcResPool {
-    NpcTexPatBufRefSlot slots[5];
-    NpcTexPatBufRefPool();
-    virtual ~NpcTexPatBufRefPool();
-    virtual void occupySlot(u32 i);
-    virtual NpcTexPatBufRefSlot *getSlot(u32 i);
-    NpcTexPatBufRef *getBufRef(u32 i);
-};
-
-extern "C" NpcTexPatBufRefPool *NpcTexPatBufRefPool_Get();
-
-// ---- 0x020e07d0
-struct NpcClothTexSlot : NpcResSlot {
-    NpcClothTexSlot();
-    ~NpcClothTexSlot();
-    CharaClothTexRef clothTex;
-    void assign(u32 id);
-    void release();
-};
-
-struct NpcClothTexPool : NpcResPool {
-    NpcClothTexSlot slots[5];
-    NpcClothTexPool();
-    virtual ~NpcClothTexPool();
-    virtual void occupySlot(u32 i);
-    virtual void releaseSlot(u32 i);
-    virtual NpcClothTexSlot *getSlot(u32 i);
-    CharaClothTexRef *getClothTex(u32 i);
-};
-
-extern "C" NpcClothTexPool *NpcClothTexPool_Get();
-
-// ---- 0x020e07ec
-struct NpcHeldItemModelSlot : NpcResSlot {
-    NpcHeldItemModelSlot();
-    ~NpcHeldItemModelSlot();
-    HeldItemModel model;
-    void unload();
-    void load(u32 id, u16 *p);
-};
-
-struct NpcHeldItemModelPool : NpcResPool {
-    NpcHeldItemModelSlot slots[5];
-    NpcHeldItemModelPool();
-    virtual ~NpcHeldItemModelPool();
-    virtual void occupySlot(u32 i);
-    virtual void releaseSlot(u32 i);
-    virtual NpcHeldItemModelSlot *getSlot(u32 i);
-    HeldItemModel *getModel(u32 i);
-    BOOL loadItem(u32 i, u16 *p);
-};
-
-extern "C" NpcHeldItemModelPool *NpcHeldItemModelPool_Get();
-
-// ---- 0x020e0808
-
-struct SpNpcAnimHeapRefPool : NpcResPool {
-    SpNpcAnimHeapRefSlot slots[4];
-    SpNpcAnimHeapRefPool();
-    virtual ~SpNpcAnimHeapRefPool();
-    virtual void occupySlot(u32 i);
-    virtual SpNpcAnimHeapRefSlot *getSlot(u32 i);
-    SpNpcAnimHeapRef *getHeapRef(u32 i);
-};
-
-extern "C" SpNpcAnimHeapRefPool *SpNpcAnimHeapRefPool_Get();
-
-// ---- 0x020e0824
-struct NpcTexPatHeapSlot : NpcResSlot {
-    NpcTexPatHeapSlot();
-    ~NpcTexPatHeapSlot();
-    CharaFaceAnimWorkRef workRef;
-    void assign(u32 id);
-};
-
-struct NpcTexPatHeapPool : NpcResPool {
-    NpcTexPatHeapSlot slots[5];
-    NpcTexPatHeapPool();
-    virtual ~NpcTexPatHeapPool();
-    virtual void occupySlot(u32 i);
-    virtual NpcTexPatHeapSlot *getSlot(u32 i);
-    CharaFaceAnimWorkRef *getHeapRef(u32 i);
-};
-
-extern "C" NpcTexPatHeapPool *NpcTexPatHeapPool_Get();
-
-// ---- 0x020e0840
-
-struct NpcBodyAnimPool : NpcResPool {
-    NpcBodyAnimSlot slots[5];
-    NpcBodyAnimPool();
-    virtual ~NpcBodyAnimPool();
-    virtual NpcBodyAnimSlot *getSlot(u32 i);
-    virtual void occupySlot(u32 i);
-    AnimSlotRef *getLayer(u32 i, u32 off);
-};
-
-extern "C" NpcBodyAnimPool *NpcBodyAnimPool_Get();
 
 extern const s32 sNpcBodyAnimLayerIdBases[];
 const s32 sNpcBodyAnimLayerIdBases[3] = {4, 0xd, 0x12};
@@ -204,8 +69,7 @@ void NpcBodyAnimPool::occupySlot(u32 i) {
     if (i < (u32)numSlots) {
         for (s32 k = 0; k < 3; k++) {
             NpcBodyAnimPool_Get()->slots[i].assignLayer(i + sNpcBodyAnimLayerIdBases[k], k);
-            NpcBodyAnimSlot *a = NpcBodyAnimPool_Get()->slots;
-            *(u8 *)(i * 4 + (u32)a) = 1;
+            NpcBodyAnimPool_Get()->slots[i].inUse = 1;
         }
     }
 }
@@ -218,7 +82,7 @@ NpcBodyAnimSlot *NpcBodyAnimPool::getSlot(u32 i) {
 
 AnimSlotRef *NpcBodyAnimPool::getLayer(u32 i, u32 off) {
     AnimSlotRef *r = 0;
-    if (i < (u32)numSlots) r = (AnimSlotRef *)((u8 *)&NpcBodyAnimPool_Get()->slots[i] + 1 + off);
+    if (i < (u32)numSlots) r = &NpcBodyAnimPool_Get()->slots[i].layers[off];
     return r;
 }
 

@@ -182,9 +182,6 @@ static inline s16 *FtrFootprint_Tile(FtrFootprint *b, u32 i) {
 
 
 // main's 0x18-byte pool object
-class Heap;
-typedef Heap *(*ModelSlotAllocFunc)(u32 size, Heap *parent);
-typedef void (*ModelSlotFreeFunc)();
 
 // main object, vtable 0x0224e9d8
 class FurnitureManager : public GameProc {
@@ -3230,7 +3227,7 @@ extern "C" BOOL FtrMgr_BroadcastStereosAct0() {
     for (; (u32)i < FtrMgr_GetMaxFurniture(); i++) {
         FtrActor *e = FtrActorTable_GetInstance()->get(i);
         if (e != NULL && FtrActor_PredIsStereo(e) && e->switchState.isOn()) {
-            FtrSync_ChangeAct((s32)(sptr)e, z, 0xff, 1);
+            FtrSync_ChangeAct(e, z, 0xff, 1);
         }
     }
     return TRUE;

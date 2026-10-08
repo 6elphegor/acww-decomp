@@ -118,7 +118,7 @@ BOOL RoomBoardSign::onCreate() {
 
 BOOL RoomBoardSign::onExecute() {
     execAct();
-    (Scene_GetTouchPicker())->addSphere((TouchPickSphere *)touchSphere, (VecFx32 *)(&position), (VecFx32 *)(radius), 0x10, index);
+    (Scene_GetTouchPicker())->addSphere((TouchPickSphere *)touchSphere, (VecFx32 *)(&position), radius, 0x10, index);
     return TRUE;
 }
 

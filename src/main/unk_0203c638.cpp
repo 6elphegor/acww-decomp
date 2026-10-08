@@ -12,7 +12,7 @@
 #include "gfx/G3dResAccess.h"
 #include "player/PlayerData.h"
 #include "save/Pattern.h"
-#define PROTO_LOCAL_sPlayerOptions  // declared below: the shared prototype conflicts with the calls here
+#include "save/SaveData.h"
 #include "proto/main/unk_0203c638.h"
 #include "proto/main/unk_0203c92c.h"
 #include "proto/main/unk_02063904.h"
@@ -23,111 +23,8 @@
 // ---- 0x020d94b8 base (MsgRequest at 0x020e2a30)
 
 
-
-extern "C" {
-void MI_CpuFill8(void *dst, u32 value, u32 size);
-}
-
 extern "C" {
 void MI_CpuCopy8(void *src, void *dst, u32 n);
-}
-
-extern "C" {
-void *func_02135714(void *p, u32 n, u32 size, void *ctor, void *dtor);
-}
-
-extern "C" {
-void *func_021355f0(void *p, u32 n, u32 size, void *dtor);
-}
-
-extern "C" {
-void func_020a71b8(void *);
-}
-
-extern "C" {
-void func_020a71d0(void *);
-}
-
-extern "C" {
-}
-
-extern "C" {
-extern u8 *data_020d9504[];
-}
-
-extern "C" {
-extern u8 *data_020d9514[];
-}
-
-extern "C" {
-extern uptr sMailPartDirs[];
-}
-
-extern "C" {
-extern uptr sMailFolderDirs[];
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 func_020a7bd8(void *, void *);
-}
-
-extern "C" {
-void func_0203d458(void *);
-}
-
-extern "C" {
-void func_0203d48c(void *);
-}
-
-extern "C" {
-void func_0203d4a4(void *);
-}
-
-extern "C" {
-void func_0203d3d8(void *);
-}
-
-extern "C" {
-void func_0203d3f8(void *, void *);
-}
-
-// ---- 0x020d94b8
-
-// ---- container singleton at 0x021c3280
-
-// ---- free functions on the 0x34-byte entries at 0x021c3784
-extern "C" Unk_0203ce24_Elem data_021c3784[];
-extern "C" MailTextBuilder gMailTextBuilder;
-
-// ---- flag object at 0x021c3264
-
-extern "C" PlayerOptions sPlayerOptions;
-extern "C" PlayerOptions *func_0203c9b4(PlayerOptions *p);
-extern "C" PlayerOptions *func_0203c9c4(PlayerOptions *p);
-
-extern "C" {
-}
-
-extern "C" {
-PlayerOptions *_ZN10PlayerData10getOptionsEv();
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 }
 
 // ---- 0x0203c638 .. 0x0203c924
@@ -142,44 +39,13 @@ struct Catalog {
 
 extern "C" {
 void Catalog_Clear(Catalog *p);
-}
-
-extern "C" {
 void *NNS_G3dGetTex(void *p);
 }
 
-extern "C" {
-}
+extern SaveData gSaveData;
 
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-extern u8 gSaveAbleSistersPatterns[];
-}
-
-extern "C" {
+static inline AbleSistersPatterns *ClothTex_AblePatterns() {
+    return (AbleSistersPatterns *)gSaveData.ableSistersPatterns;
 }
 
 static inline BOOL Unk_0203c764_InRange(u16 *p, u32 lo, u32 hi) {
@@ -201,24 +67,24 @@ extern "C" BOOL ClothTex_LoadItem(void *self, u16 *p, void *q) {
         else i1 = -1;
         res = FALSE;
         if (i1 != -1) {
-            if (q == 0) res = ClothTex_LoadPattern(self, ((AbleSistersPatterns *)(gSaveAbleSistersPatterns))->getPattern((u8)i1));
-            else res = ClothTex_LoadPattern(self, ((PlayerPatterns *)(((PlayerData *)(q))->getPatterns()))->getPattern((u8)i1));
+            if (q == 0) res = ClothTex_LoadPattern(self, ClothTex_AblePatterns()->getPattern((u8)i1));
+            else res = ClothTex_LoadPattern(self, static_cast<PlayerPatterns *>(static_cast<PlayerData *>(q)->getPatterns())->getPattern((u8)i1));
         }
     } else if (*p >= 0x1429 && *p <= 0x1430) {
         if (*p >= 0x1429 && *p <= 0x1430) i2 = *p - 0x1429;
         else i2 = -1;
         res = FALSE;
         if (i2 != -1) {
-            if (q == 0) res = ClothTex_LoadPattern(self, ((AbleSistersPatterns *)(gSaveAbleSistersPatterns))->getPattern((u8)i2));
-            else res = ClothTex_LoadPattern(self, ((PlayerPatterns *)(((PlayerData *)(q))->getPatterns()))->getPattern((u8)i2));
+            if (q == 0) res = ClothTex_LoadPattern(self, ClothTex_AblePatterns()->getPattern((u8)i2));
+            else res = ClothTex_LoadPattern(self, static_cast<PlayerPatterns *>(static_cast<PlayerData *>(q)->getPatterns())->getPattern((u8)i2));
         }
     } else if (*p >= 0x13a0 && *p <= 0x13a7) {
         if (*p >= 0x13a0 && *p <= 0x13a7) i3 = *p - 0x13a0;
         else i3 = -1;
         res = FALSE;
         if (i3 != -1) {
-            if (q == 0) res = ClothTex_LoadPattern(self, ((AbleSistersPatterns *)(gSaveAbleSistersPatterns))->getPattern((u8)i3));
-            else res = ClothTex_LoadPattern(self, ((PlayerPatterns *)(((PlayerData *)(q))->getPatterns()))->getPattern((u8)i3));
+            if (q == 0) res = ClothTex_LoadPattern(self, ClothTex_AblePatterns()->getPattern((u8)i3));
+            else res = ClothTex_LoadPattern(self, static_cast<PlayerPatterns *>(static_cast<PlayerData *>(q)->getPatterns())->getPattern((u8)i3));
         }
     } else {
         if (*p >= 0x11a8 && *p <= 0x12a7) i4 = *p - 0x11a8;
@@ -239,9 +105,10 @@ extern "C" BOOL ClothTex_LoadPattern(void *a, void *b) {
     u16 id = 0x11a8;
     if (ClothTex_LoadItem(a, &id, 0)) {
         if (b != 0) {
-            void *dst = ((Pattern *)(b))->getPixels();
+            Pattern *pat = static_cast<Pattern *>(b);
+            void *dst = pat->getPixels();
             MI_CpuCopy8(dst, ClothTex_GetTexData(a), 0x200);
-            void *dst2 = ((PatternInfo *)(((Pattern *)(b))->getInfo()))->getPaletteData();
+            void *dst2 = pat->getInfo()->getPaletteData();
             MI_CpuCopy8(dst2, ClothTex_GetPlttData(a), 0x20);
             return TRUE;
         }

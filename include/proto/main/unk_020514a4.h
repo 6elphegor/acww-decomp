@@ -4,15 +4,15 @@
 // Prototypes of the functions defined in src/main/unk_020514a4.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-struct FtrPlaceRecord;
-struct Unk_020520a8_W;
-struct Unk_02052134_W;
 struct Unk_0205242c_Item;
-struct Unk_0205242c_Self;
 #ifdef __cplusplus
 #include "room/RoomFtrState.h"
-#include "types.h"
+class FtrActor;
+class FtrPlaceRecord;
 class SpotReservationTable;
+class Unk_020520a8_W;
+class Unk_02052134_W;
+class Unk_0205242c_Self;
 #endif
 
 #ifdef __cplusplus
@@ -21,23 +21,11 @@ extern "C" {
 #ifndef PROTO_LOCAL_RoomFtrState_ResetAll
 void RoomFtrState_ResetAll();
 #endif
-#ifndef PROTO_LOCAL_SpotSync_Release
-void SpotSync_Release(void *arg);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_RoomFtrState_ResetScene
 BOOL RoomFtrState_ResetScene(u32 v);
 #endif
 #ifndef PROTO_LOCAL_RoomFtrState_ResetVillagerHouse
 BOOL RoomFtrState_ResetVillagerHouse(u32 idx);
-#endif
-#ifndef PROTO_LOCAL_RoomFtrState_GetForScene
-RoomFtrState *RoomFtrState_GetForScene(u32 id);
 #endif
 #ifndef PROTO_LOCAL_RoomFtrState_GetSwitch
 s32 RoomFtrState_GetSwitch(s32 a, s32 b, s32 c, u32 d);
@@ -54,29 +42,8 @@ s32 RoomFtrState_SetGyroidBeat(s32 a, s32 b, s32 c, u32 d);
 #ifndef PROTO_LOCAL_RoomFtrState_RemoveGyroidBeat
 s32 RoomFtrState_RemoveGyroidBeat(s32 a, s32 b, u32 c);
 #endif
-#ifndef PROTO_LOCAL_FtrFootprint_Init
-Unk_0205242c_Self *FtrFootprint_Init(Unk_0205242c_Self *p, u16 *q);
-#endif
-#ifndef PROTO_LOCAL_FtrFootprint_GetTileCount
-s32 FtrFootprint_GetTileCount(Unk_0205242c_Self *p);
-#endif
-#ifndef PROTO_LOCAL_FtrFootprint_GetTileOffset
-Unk_0205242c_Item *FtrFootprint_GetTileOffset(Unk_0205242c_Self *p, u32 idx);
-#endif
-#ifndef PROTO_LOCAL_FtrSync_ApplyState
-s32 FtrSync_ApplyState(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool g, bool h, volatile u8 i);
-#endif
 #ifndef PROTO_LOCAL_FtrSync_OnStateRecord
 void FtrSync_OnStateRecord(u32 *pp);
-#endif
-#ifndef PROTO_LOCAL_FtrSync_OnRemoveRecord
-void FtrSync_OnRemoveRecord(s32 a, Unk_02052134_W *w);
-#endif
-#ifndef PROTO_LOCAL_FtrSync_OnPlaceRecord
-void FtrSync_OnPlaceRecord(s32 a, FtrPlaceRecord *w);
-#endif
-#ifndef PROTO_LOCAL_FtrSync_OnTopItemRecord
-void FtrSync_OnTopItemRecord(s32 a, Unk_020520a8_W *w);
 #endif
 #ifndef PROTO_LOCAL_FtrSync_ToggleGyroidAt
 void FtrSync_ToggleGyroidAt(u8 a, s32 b, s32 c, u8 d, u8 e);
@@ -93,14 +60,8 @@ s32 SpotSync_OnRelease(s32 x);
 #ifndef PROTO_LOCAL_FtrSync_SendState
 s32 FtrSync_SendState(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g);
 #endif
-#ifndef PROTO_LOCAL_FtrSync_ChangeAct
-s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d);
-#endif
 #ifndef PROTO_LOCAL_FtrSync_ChangeActAt
 s32 FtrSync_ChangeActAt(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g);
-#endif
-#ifndef PROTO_LOCAL_FtrSync_RequestAct
-s32 FtrSync_RequestAct(s32 a, s32 b, u8 c, u8 d);
 #endif
 #ifndef PROTO_LOCAL_FtrSync_RequestActAt
 s32 FtrSync_RequestActAt(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g);
@@ -140,6 +101,45 @@ void SpotSync_RequestStandUpSpot(s32 *p);
 #endif
 #ifndef PROTO_LOCAL_SpotSync_GetStandUpSpotResult
 u32 SpotSync_GetStandUpSpotResult();
+#endif
+#ifndef PROTO_LOCAL_SpotSync_Release
+void SpotSync_Release(s32 aid);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_RoomFtrState_GetForScene
+RoomFtrState *RoomFtrState_GetForScene(u32 id);
+#endif
+#ifndef PROTO_LOCAL_FtrFootprint_Init
+Unk_0205242c_Self *FtrFootprint_Init(Unk_0205242c_Self *p, u16 *q);
+#endif
+#ifndef PROTO_LOCAL_FtrFootprint_GetTileCount
+s32 FtrFootprint_GetTileCount(Unk_0205242c_Self *p);
+#endif
+#ifndef PROTO_LOCAL_FtrFootprint_GetTileOffset
+Unk_0205242c_Item *FtrFootprint_GetTileOffset(Unk_0205242c_Self *p, u32 idx);
+#endif
+#ifndef PROTO_LOCAL_FtrSync_ApplyState
+s32 FtrSync_ApplyState(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool g, bool h, volatile u8 i);
+#endif
+#ifndef PROTO_LOCAL_FtrSync_OnRemoveRecord
+void FtrSync_OnRemoveRecord(s32 a, Unk_02052134_W *w);
+#endif
+#ifndef PROTO_LOCAL_FtrSync_OnPlaceRecord
+void FtrSync_OnPlaceRecord(s32 a, FtrPlaceRecord *w);
+#endif
+#ifndef PROTO_LOCAL_FtrSync_OnTopItemRecord
+void FtrSync_OnTopItemRecord(s32 a, Unk_020520a8_W *w);
+#endif
+#ifndef PROTO_LOCAL_FtrSync_ChangeAct
+s32 FtrSync_ChangeAct(FtrActor *a, s32 b, u8 c, u8 d);
+#endif
+#ifndef PROTO_LOCAL_FtrSync_RequestAct
+s32 FtrSync_RequestAct(FtrActor *a, s32 b, u8 c, u8 d);
 #endif
 }
 #ifndef PROTO_LOCAL_sVillagerHouseFtrStates

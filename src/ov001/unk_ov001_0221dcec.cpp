@@ -55,10 +55,10 @@ void WfcConfig_SetEditGateway(u8 *s);
 void WfcConfig_SetEditSubnetMask(u8 *s);
 void WfcConfig_SetEditIp(u8 *s);
 void WfcConfig_SetEditWepKey(u8 *s);
-void WfcConfig_SetEditSsid(void *a);
+void WfcConfig_SetEditSsid(u8 *ssid);
 void WfcConfig_SetEditAutoDns(u32 v);
 void WfcConfig_SetEditAutoIp(u32 v);
-u8 *WfcConfig_GetEdit();
+WfcConfigSlot *WfcConfig_GetEdit();
 void WfcConfig_Shutdown();
 void WfcConfig_Init();
 }
@@ -78,15 +78,15 @@ void WfcConfig_Init()
 
 void WfcConfig_Shutdown() { WfcHeap_FreeAndClear(&sWfcConfig); }
 
-u8 *WfcConfig_GetEdit() { return (u8 *)&sWfcConfig->editSlot; }
+WfcConfigSlot *WfcConfig_GetEdit() { return &sWfcConfig->editSlot; }
 
 void WfcConfig_SetEditAutoIp(u32 v) { sWfcConfig->editSlot.editAutoIp = v; }
 
 void WfcConfig_SetEditAutoDns(u32 v) { sWfcConfig->editSlot.editAutoDns = v; }
 
-void WfcConfig_SetEditSsid(void *a)
+void WfcConfig_SetEditSsid(u8 *ssid)
 {
-    MI_CpuCopy8(a, sWfcConfig->editSlot.ssid, 0x20);
+    MI_CpuCopy8(ssid, sWfcConfig->editSlot.ssid, 0x20);
     sWfcConfig->editSlot.status = 0;
 }
 

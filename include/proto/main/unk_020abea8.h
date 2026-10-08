@@ -4,21 +4,18 @@
 // Prototypes of the functions defined in src/main/unk_020abea8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "gfx/Mtx43.h"
 #include "gfx/ObjShadowTexture.h"
 #ifdef __cplusplus
 #include "gfx/ObjShadowStrip.h"
 #include "gfx/VecFx32.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_ObjShadow_NormalizeAxes
-void ObjShadow_NormalizeAxes(void *a, void *b);
-#endif
 #ifndef PROTO_LOCAL_ObjShadow_Init
-void ObjShadow_Init(void *arg);
+void ObjShadow_Init(BOOL outdoor);
 #endif
 #ifndef PROTO_LOCAL_ObjShadow_Update
 void ObjShadow_Update();
@@ -32,6 +29,9 @@ void ObjShadow_Exit();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_ObjShadow_NormalizeAxes
+void ObjShadow_NormalizeAxes(Mtx43 *m, VecFx32 *axes);
+#endif
 #ifndef PROTO_LOCAL_ObjShadow_CalcAlpha
 u8 ObjShadow_CalcAlpha(VecFx32 *p, s32 q, u8 r4);
 #endif
@@ -88,10 +88,10 @@ extern s32 sObjShadowSkew;
 extern u8 sCharaShadowAlpha;
 #endif
 #ifndef PROTO_LOCAL_sObjShadowNormMtx
-extern u8 sObjShadowNormMtx[0x24];
+extern VecFx32 sObjShadowNormMtx[3];
 #endif
 #ifndef PROTO_LOCAL_sObjShadowViewMtx
-extern u8 sObjShadowViewMtx[0x30];
+extern Mtx43 sObjShadowViewMtx;
 #endif
 #endif
 

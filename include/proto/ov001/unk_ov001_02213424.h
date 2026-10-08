@@ -4,15 +4,15 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02213424.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_sWfcTextEditStoreFuncs
-extern void *sWfcTextEditStoreFuncs[2];
+#ifndef PROTO_LOCAL_sWfcTextEditTitleMsgs
+extern u8 sWfcTextEditTitleMsgs[4];
+#endif
+#ifndef PROTO_LOCAL_sWfcTextEditConfirmMsgs
+extern u32 sWfcTextEditConfirmMsgs[2];
 #endif
 #ifndef PROTO_LOCAL_WfcTextEdit_Enter
 void WfcTextEdit_Enter();
@@ -62,6 +62,9 @@ void WfcTextEdit_WaitConfirmDialog();
 #ifndef PROTO_LOCAL_WfcTextEdit_ApplyAndExit
 void WfcTextEdit_ApplyAndExit();
 #endif
+#ifndef PROTO_LOCAL_WfcTextEdit_ValidateInput
+BOOL WfcTextEdit_ValidateInput();
+#endif
 #ifndef PROTO_LOCAL_WfcTextEdit_WaitErrorDialog
 void WfcTextEdit_WaitErrorDialog();
 #endif
@@ -69,20 +72,6 @@ void WfcTextEdit_WaitErrorDialog();
 void WfcTextEdit_ReturnToInput();
 #endif
 #ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcTextEditTitleMsgs
-extern u8 sWfcTextEditTitleMsgs[4];
-#endif
-#ifndef PROTO_LOCAL_sWfcTextEditConfirmMsgs
-extern u32 sWfcTextEditConfirmMsgs[2];
-#endif
-#ifndef PROTO_LOCAL_WfcTextEdit_ValidateInput
-BOOL WfcTextEdit_ValidateInput();
-#endif
 }
 #endif
 

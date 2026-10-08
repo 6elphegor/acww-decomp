@@ -8,8 +8,9 @@
 #include "talk/MsgString33.h"
 #include "gfx/Camera.h"
 #include "item/ItemName.h"
-#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020d5d14  // declared below: the shared prototype conflicts with the calls here
+#include "gfx/Mtx43.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_020d5d0c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02037734.h"
 #include "proto/main/unk_0203ecec.h"
@@ -20,38 +21,21 @@
 #include "proto/main/unk_020b2c50.h"
 #include "proto/main/unk_020b7190.h"
 
-typedef VecFx32 Vec;
 
-struct Mat {
-    s32 m[12];
-};
-
-
-
-
-
-
-
-
+// (defined in C units / units whose declarations aren't shared yet: as they are defined)
 extern "C" {
-// Other files
-void func_02089b18(void *p);
-
-extern u8 data_020d5d14[];
-extern u32 gCamera;
+extern Camera *gCamera;
 extern u8 gFieldSceneKind;
-extern Mat data_021f47e0;
 
-Mat *Camera_GetViewMatrix(void);
-Vec *PlayerActor_GetBodyPos(s32 a);
-void MTX_MultVec43(void *a, void *b, void *c);
+Mtx43 *Camera_GetViewMatrix(void);  // (MtxFx43 there: the same 12 words)
+void MTX_MultVec43(const VecFx32 *src, const Mtx43 *m, VecFx32 *dst);
 s32 FX_Div(s32 a, s32 b);
-void Vec_Scale(void *a, s32 b);
 u32 Scene_GetCurrent(void);
 BOOL TalkRequest_IsTalking(void);
 BOOL TalkRequest_IsSaveMenuRunning(void);
 BOOL TalkRequest_IsPlayerMessage(void);
 }
+extern Mtx43 data_021f47e0;  // the model code's work matrix (src/autoload_2/unk_020e82bc.cpp: the same 12 words)
 
 class FieldInfoBalloon {
 public:
@@ -141,7 +125,7 @@ BOOL FieldInfoLabelBalloon::isBlinkVisible() {
 
 void FieldInfoLabelBalloon::restartMarkerAnim() {
     s32 r4 = ((SpriteAnim *)(((LabelBalloon *)(this))->getAnim()))->getFrameIndex();
-    ((SpriteAnim *)(&markerAnim))->setSeq((SpriteAnimSeq *)(data_020d5d14));
+    ((SpriteAnim *)(&markerAnim))->setSeq(data_020d5d14);
     ((SpriteAnim *)(&markerAnim))->setPlayOnce(1);
     ((SpriteAnim *)(&markerAnim))->setSpeed(0);
     ((SpriteAnim *)(&markerAnim))->setFrame(r4, 0);
@@ -309,18 +293,18 @@ void FieldInfoBalloon::updateFacingItem() {
 
 void FieldInfoBalloon::placeOverPlayer() {
     data_021f47e0 = *Camera_GetViewMatrix();
-    Vec *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = PlayerActor_GetBodyPos(4);
     if (p) {
-        Vec v;
+        VecFx32 v;
         v.x = p->x;
         v.y = p->y;
         v.z = p->z;
-        Vec w;
-        Vec x;
+        VecFx32 w;
+        VecFx32 x;
         v.y += 0x3c00;
         WorldCurve_Apply(&w, &v);
         MTX_MultVec43(&w, &data_021f47e0, &x);
-        s32 d = ((Camera *)(gCamera))->getFovTan();
+        s32 d = gCamera->getFovTan();
         s32 q = FX_Div(0x60000, d);
         s32 r = FX_Div(-q, x.z);
         Vec_Scale(&x, r);

@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include "sys/DebugText.h"
+#include "ds_stdarg.h"
 #ifdef __cplusplus
 #include "types.h"
 #endif
@@ -31,7 +32,7 @@ void DebugText_PutChar(u16 *dst, u32 base, s32 c);
 void DebugText_PutString(u16 *dst, u32 base, const char *s);
 #endif
 #ifndef PROTO_LOCAL_DebugText_VPrintf
-void DebugText_VPrintf(u16 *a, u32 b, const char *fmt, char *ap);
+void DebugText_VPrintf(u16 *a, u32 b, const char *fmt, DS_VA_LIST ap);
 #endif
 #ifndef PROTO_LOCAL_DebugText_Print
 void DebugText_Print(DebugText *self, u16 *dst, const char *s);
@@ -49,10 +50,10 @@ void TexVram_AllocNormal(u32 *o, u32 size);
 u32 PlttVram_AllocRaw(u32 a);
 #endif
 #ifndef PROTO_LOCAL_TexVram_Alloc
-u32 TexVram_Alloc(u32 a, u32 b);
+u32 TexVram_Alloc(u32 a, BOOL b, u32 opt);
 #endif
 #ifndef PROTO_LOCAL_PlttVram_Alloc
-u32 PlttVram_Alloc(u32 a);
+u32 PlttVram_Alloc(u32 a, BOOL is4pltt, u32 opt);
 #endif
 }
 #ifndef PROTO_LOCAL_sTexVramTexelALo

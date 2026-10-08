@@ -19,7 +19,7 @@ public:
     void setDest(MsgString *v);
     void setPart(u32 v);
     void setFolder(u32 v);
-    u32 getPartDir();
+    const char *getPartDir();
     BOOL isAppendPart();
 
     /* 0x20 */ u32 folder;

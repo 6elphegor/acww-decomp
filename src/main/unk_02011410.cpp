@@ -10,10 +10,10 @@ void GX_LoadOBJ(void *p, u32 src, u32 size);
 void GXS_LoadOBJ(void *p, u32 src, u32 size);
 void GX_LoadOBJPltt(void *p, u32 src, u32 size);
 void GXS_LoadOBJPltt(void *p, u32 src, u32 size);
-BOOL FS_OpenFile(void *self, const void *path);
-BOOL FS_SeekFile(void *self, u32 off, s32 z);
-s32 FS_ReadFile(void *self, void *dst, u32 size);
-BOOL FS_CloseFile(void *self);
+BOOL FS_OpenFile(FSFile *file, const char *path);
+BOOL FS_SeekFile(FSFile *file, s32 off, s32 whence);
+s32 FS_ReadFile(FSFile *file, void *dst, s32 len);
+BOOL FS_CloseFile(FSFile *file);
 }
 
 
@@ -31,30 +31,30 @@ const char *HudObjGfx::getCharPath(s32 mode) {
 }
 
 BOOL HudObjGfx::loadPalette(s32 mode) {
-    void *r6 = (void *)FS_OpenFile(this, getPalettePath(mode));
+    BOOL opened = FS_OpenFile(&file, getPalettePath(mode));
     BOOL ok;
-    paletteBuf = (s32)Mem_AllocTail(0x180);
-    if (paletteBuf != 0) {
-        ok = FS_ReadFile(this, (void *)paletteBuf, 0x180) != -1 ? TRUE : FALSE;
+    paletteBuf = (u8 *)Mem_AllocTail(0x180);
+    if (paletteBuf != NULL) {
+        ok = FS_ReadFile(&file, paletteBuf, 0x180) != -1 ? TRUE : FALSE;
     } else {
         ok = FALSE;
     }
-    s32 r0 = FS_CloseFile(this);
-    if (r6 != 0 && ok != 0 && r0 != 0 && paletteBuf != 0) return TRUE;
+    BOOL closed = FS_CloseFile(&file);
+    if (opened != 0 && ok != 0 && closed != 0 && paletteBuf != NULL) return TRUE;
     return FALSE;
 }
 
 BOOL HudObjGfx::loadChars() {
-    void *r6 = (void *)FS_OpenFile(this, getCharPath(4));
+    BOOL opened = FS_OpenFile(&file, getCharPath(4));
     BOOL ok;
-    charBuf = (s32)Mem_AllocTail(0x3000);
-    if (charBuf != 0) {
-        ok = FS_ReadFile(this, (void *)charBuf, 0x3000) != -1 ? TRUE : FALSE;
+    charBuf = (u8 *)Mem_AllocTail(0x3000);
+    if (charBuf != NULL) {
+        ok = FS_ReadFile(&file, charBuf, 0x3000) != -1 ? TRUE : FALSE;
     } else {
         ok = FALSE;
     }
-    s32 r0 = FS_CloseFile(this);
-    if (r6 != 0 && ok != 0 && r0 != 0 && charBuf != 0) return TRUE;
+    BOOL closed = FS_CloseFile(&file);
+    if (opened != 0 && ok != 0 && closed != 0 && charBuf != NULL) return TRUE;
     return FALSE;
 }
 
@@ -99,7 +99,7 @@ void HudObjGfxIo::uploadChars(s32 which) {
 }
 
 BOOL HudObjGfxIo::loadKindChars(s32 k) {
-    BOOL a = FS_OpenFile(this, ((HudObjGfx *)this)->getCharPath(k));
+    BOOL a = FS_OpenFile(&file, static_cast<HudObjGfx *>(this)->getCharPath(k));
     BOOL ok;
     s32 z1 = 0, z2 = 0, z3 = 0, z4 = 0, z5 = 0;
     u32 src;
@@ -109,11 +109,11 @@ BOOL HudObjGfxIo::loadKindChars(s32 k) {
     if (charBuf != NULL) {
         src = z1;
         for (i = 0; (u32)i < 2; i++, src += 0x400) {
-            if (!FS_SeekFile(this, src, z1)) ok = z2;
-            if (FS_ReadFile(this, charBuf + i * 0x280, 0x280) == ~z4) ok = z3;
+            if (!FS_SeekFile(&file, src, z1)) ok = z2;
+            if (FS_ReadFile(&file, charBuf + i * 0x280, 0x280) == ~z4) ok = z3;
         }
     }
-    BOOL r = FS_CloseFile(this);
+    BOOL r = FS_CloseFile(&file);
     if (a && ok && r && charBuf != NULL) return TRUE;
     return FALSE;
 }

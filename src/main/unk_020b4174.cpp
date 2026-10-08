@@ -5,8 +5,6 @@
 #include "nitro/io_access.h"
 #include "save/SaveData.h"
 #include "save/SaveRecord4.h"
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gVBlanksPerFrame  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_0210fa84.h"
 #include "proto/itcm/unk_01ffa4a0.h"
@@ -15,6 +13,7 @@
 #include "proto/main/unk_02052b50.h"
 #include "proto/main/unk_020536dc.h"
 #include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_02060b7c.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_0209eb94.h"
 #include "proto/main/unk_020b4174.h"
@@ -34,8 +33,6 @@ void VramQueueTex_Init(void);
 void GX_SetBankForSubBG(u32 x);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 
-extern u32 gVBlanksPerFrame;
-extern void *gCurrentHeap;
 extern u8 gSaveData;
 extern u8 gSaveFooter;
 }
@@ -58,9 +55,9 @@ public:
     /* 0x5d */ u8 slot1Result;
     /* 0x5e */ u8 loadResult;
     /* 0x5f */ u8 loadState;
-    /* 0x60 */ void *bufferHeap;
-    /* 0x64 */ void *slot0Buffer;
-    /* 0x68 */ void *slot1Buffer;
+    /* 0x60 */ Heap *bufferHeap;
+    /* 0x64 */ u8 *slot0Buffer;  // the two save slots as read
+    /* 0x68 */ u8 *slot1Buffer;
 };
 
 extern "C" BootLogoScene *BootLogoScene_Create(void) { return new BootLogoScene; }
@@ -73,8 +70,8 @@ BOOL BootLogoScene::onCreate() {
     Snd_CreateScene();
     logoState = 0;
     bufferHeap = gCurrentHeap;
-    slot0Buffer = Heap_Alloc(bufferHeap, 0x15fe0);
-    slot1Buffer = Heap_Alloc(bufferHeap, 0x15fe0);
+    slot0Buffer = (u8 *)Heap_Alloc(bufferHeap, 0x15fe0);
+    slot1Buffer = (u8 *)Heap_Alloc(bufferHeap, 0x15fe0);
     return TRUE;
 }
 

@@ -1,4 +1,3 @@
-#include "uptr.h"
 #include "types.h"
 #include "net/CommManager.h"
 #include "net/NetSessionParts.h"
@@ -9,17 +8,8 @@
 #include "save/TownId.h"
 #include "sys/ProcProfile.h"
 #include "nitro/io_access.h"
-#define PROTO_LOCAL_NetArea_BuildStateA  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetArea_BuildStateB  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetArea_SendStateA  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetArea_SendStateB  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetSceneMsg_Fini  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetSceneMsg_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetSceneMsg_Set  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetStatusUpdateMsg_Pack  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetSyncMsg_Fini  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetSyncMsg_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
+#include "gfx/ScreenTransition.h"
+#include "player/PlayerData.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/autoload_2/unk_0210fa84.h"
@@ -46,37 +36,21 @@
 #include "proto/main/unk_020a647c.h"
 #include "proto/main/unk_020a6564.h"
 #include "proto/main/unk_020a65fc.h"
+#include "proto/main/unk_020a6914.h"
 #include "proto/main/unk_020b7190.h"
-
-
-
-
-
-
-
-
-
-
-// stack objects with plain-function constructors and destructors
-extern "C" {
-void NetStatusUpdateMsg_Pack(void *, u32, u32, u32, u32);
-void *NetSceneMsg_Init(void *);
-void *NetSceneMsg_Fini(void *);
-void NetSceneMsg_Set(void *, u32);
-}
-
+// stack objects with plain-function constructors and destructors (the messages' packed bytes)
 struct NetStatusUpdateMsg {
-    u32 unk_00[2];
+    u8 bytes[8];
     NetStatusUpdateMsg() { NetStatusUpdateMsg_Init(this); }
     ~NetStatusUpdateMsg() { NetStatusUpdateMsg_Fini(this); }
-    void NetStatusUpdateMsg_Pack(u32 a, u32 b, u32 c, u32 d) { ::NetStatusUpdateMsg_Pack(this, a, b, c, d); }
+    void NetStatusUpdateMsg_Pack(u32 a, u32 b, u32 c, u32 d) { ::NetStatusUpdateMsg_Pack(bytes, a, b, c, d); }
 };
 
 struct NetSceneMsg {
-    u32 unk_00[2];
-    NetSceneMsg() { NetSceneMsg_Init(this); }
-    ~NetSceneMsg() { NetSceneMsg_Fini(this); }
-    void NetSceneMsg_Set(u32 a) { ::NetSceneMsg_Set(this, a); }
+    u8 bytes[8];
+    NetSceneMsg() { NetSceneMsg_Init(); }
+    ~NetSceneMsg() { NetSceneMsg_Fini(); }
+    void NetSceneMsg_Set(u32 a) { ::NetSceneMsg_Set(bytes, a); }
 };
 
 struct NetStatusMsg {
@@ -92,8 +66,17 @@ public:
     /* 0x0c */ NetMoveRequest moveQueue[4];
     /* 0x2c */ NetMoveReady moveReady[4];
     /* 0x3c */ NetPendingStatus pendingStatus[4];
-    /* 0x5c */ u8 pad_5c[0x84 - 0x5c];
-    /* 0x84 */ s32 syncState[4];
+    /* 0x5c */ u8 becomesOwner;
+    /* 0x60 */ s32 moveState;
+    /* 0x64 */ s32 handoffSlot;
+    /* 0x68 */ u8 memberAck[4];
+    /* 0x6c */ s32 notifiedOwnerMover;
+    /* 0x70 */ s32 stateSourceSlot;
+    /* 0x74 */ s32 stateRequester;
+    /* 0x78 */ s32 arrivingSlot;
+    /* 0x7c */ u8 ownerAck;
+    /* 0x80 */ s32 notifiedMemberMover;
+    /* 0x84 */ u32 syncState[4];
     /* 0x94 */ s32 lastSyncSlot;
     /* 0x98 */ u16 syncMemberMask;
     /* 0x9c */ s32 syncPhase;
@@ -135,27 +118,7 @@ public:
     void setLastSyncSlot(s32 v);
     void updateSyncHost();
     void resetSlot(s32 idx);
-};
-
-// The singleton, second view (methods of the 0x020a512c class); same memory as NetSessionState
-struct NetSessionAreaView {
-    u8 slotStatus[12];
-    NetMoveRequest moveQueue[4];
-    u32 moveReady[4];
-    u8 pendingStatus[4][8];
-    u8 becomesOwner;
-    u8 pad_5d[3];
-    s32 moveState;
-    s32 handoffSlot;
-    u8 memberAck[4];
-    s32 notifiedOwnerMover;
-    s32 stateSourceSlot;
-    s32 stateRequester;
-    s32 arrivingSlot;
-    u8 ownerAck;
-    u8 pad_7d[3];
-    s32 notifiedMemberMover;
-    u32 syncState[4];
+    // (the area-moving half: the methods of the 0x020a512c class)
     void rejectSyncRequest(u32 a, u32 b);
     void resetSyncStates();
     u32 getSyncState(s32 i);
@@ -196,9 +159,9 @@ struct NetSessionAreaView {
 };
 
 
+
 extern "C" {
 extern CommManager *gCommManager;
-extern u8 gScreenTransition;
 extern TownId gSaveTownId;
 }
 
@@ -213,11 +176,6 @@ void TalkRequest_EndNetSyncHold(void);
 BOOL TalkRequest_BeginNetSyncHold(void);
 s32 TalkRequestQueue_Reset(void);
 void Field_UpdateActions(void);
-LostChildRecord *_ZN10PlayerData18getLostChildRecordEv(PlayerData *a);
-void NetArea_BuildStateB(s32 a);
-void NetArea_BuildStateA(s32 a);
-void NetSyncMsg_Fini(void *p);
-void NetSyncMsg_Init(void *p);
 s32 Scene_GetWarpRequest(void);
 u32 Scene_GetRequestedScene(void);
 s32 SceneWarp_GetScene(s32 a);
@@ -230,17 +188,8 @@ void MI_CpuCopy8(void *src, void *dst, u32 size);
 }
 
 
-static inline NetSessionState &V2() { return gNetSessionState; }
-static inline NetSessionAreaView &V3() { return *(NetSessionAreaView *)&gNetSessionState; }
 
 
-// callers pass an untruncated int to these u8/u16 parameters
-
-// own prototypes
-extern "C" {
-void NetArea_SendStateA(s32 a);
-void NetArea_SendStateB(s32 a);
-}
 
 
 extern "C" s32 NetArea_GetSlotScene(s32 a) {
@@ -280,10 +229,10 @@ extern "C" s32 NetArea_IsLocalOwner() {
     if (v[2] == 0) {
         return v[1];
     }
-    if (V3().getMoveState() < 7) {
+    if (gNetSessionState.getMoveState() < 7) {
         return v[1];
     }
-    return V3().getBecomesOwner();
+    return gNetSessionState.getBecomesOwner();
 }
 
 extern "C" s32 NetArea_IsLocalMoving() {
@@ -356,7 +305,7 @@ extern "C" s32 NetArea_ResolveRoute(s32 a, s32 b, u32 c, u8 *d) {
             if (a == r4) goto fail;
             return a;
         } else {
-            s32 t = V3().getArrivingSlot();
+            s32 t = gNetSessionState.getArrivingSlot();
             if (t >= 4) goto fail;
             if (t != a) goto fail;
             if (a == r4) goto fail;
@@ -368,7 +317,7 @@ fail:
 }
 
 extern "C" void NetArea_SendStateA(s32 a) {
-    NetArea_BuildStateA(a);
+    NetArea_BuildStateA();
     CommManager *o = gCommManager;
     o->beginRecord();
     u8 *r6 = o->getAuxBufA();
@@ -379,7 +328,7 @@ extern "C" void NetArea_SendStateA(s32 a) {
 }
 
 extern "C" void NetArea_SendStateB(s32 a) {
-    NetArea_BuildStateB(a);
+    NetArea_BuildStateB();
     CommManager *o = gCommManager;
     o->beginRecord();
     u8 *r6 = o->getAuxBufB();
@@ -432,11 +381,11 @@ extern "C" void NetArea_SendMoveTarget() {
 }
 
 extern "C" void NetSession_SetSyncState(s32 a, s32 b) {
-    V3().setSyncState(a, b);
+    gNetSessionState.setSyncState(a, b);
 }
 
 extern "C" s32 NetSession_GetSyncState(s32 a) {
-    return V3().getSyncState(a);
+    return gNetSessionState.getSyncState(a);
 }
 
 extern "C" void NetSession_SetSyncMemberMask(s32 a) {
@@ -480,23 +429,23 @@ extern "C" void NetSession_SetLastSyncSlot(s32 a) {
 }
 
 extern "C" void NetArea_SetMoveState(s32 a) {
-    V3().setMoveState(a);
+    gNetSessionState.setMoveState(a);
 }
 
 extern "C" s32 NetArea_GetMoveState() {
-    return V3().getMoveState();
+    return gNetSessionState.getMoveState();
 }
 
 extern "C" void NetArea_SetMemberAck(s32 a, s32 b) {
-    V3().setMemberAck(a, b);
+    gNetSessionState.setMemberAck(a, b);
 }
 
 extern "C" void NetArea_SetStateRequester(s32 a) {
-    V3().setStateRequester(a);
+    gNetSessionState.setStateRequester(a);
 }
 
 extern "C" void NetArea_SetOwnerAck(s32 a) {
-    V3().setOwnerAck(a);
+    gNetSessionState.setOwnerAck(a);
 }
 
 extern "C" void NetArea_GetSlotStatus(s32 idx, u8 *a, u8 *b, u8 *c) {
@@ -530,7 +479,7 @@ extern "C" void NetArea_OnStateAReceived() {
 
 extern "C" void NetArea_ApplyStateB() {
     CommManager *o = gCommManager;
-    if (o->isSlotActive(*(s32 *)(HOST_AT(o, 0x64, myAid, 0)))) {
+    if (o->isSlotActive(o->myAid)) {
         if (((CommManager *)(o))->getAuxLenB()) {
             NetArea_ParseStateB();
         }
@@ -539,12 +488,12 @@ extern "C" void NetArea_ApplyStateB() {
 
 extern "C" void NetArea_SendStateToNewOwner() {
     if (gCommManager->isSlotActive(gCommManager->myAid)) {
-        if (V3().getMoveState() == 3) {
-            if (IsZero_020a5d4c(gScreenTransition)) {
+        if (gNetSessionState.getMoveState() == 3) {
+            if (IsZero_020a5d4c(gScreenTransition.state)) {
                 if (!NetArea_IsUnsharedScene(Scene_GetCurrent())) {
-                    NetArea_SendStateA(V3().getHandoffSlot());
+                    NetArea_SendStateA(gNetSessionState.getHandoffSlot());
                 }
-                V3().setMoveState(5);
+                gNetSessionState.setMoveState(5);
             }
         }
     }
@@ -552,11 +501,11 @@ extern "C" void NetArea_SendStateToNewOwner() {
 
 extern "C" void NetArea_SendStateToRequester() {
     if (gCommManager->isSlotActive(gCommManager->myAid)) {
-        s32 r4 = V3().getStateRequester();
+        s32 r4 = gNetSessionState.getStateRequester();
         if (r4 < 4) {
             NetArea_SendStateB(r4);
-            V3().setArrivingSlot(r4);
-            V3().setStateRequester(4);
+            gNetSessionState.setArrivingSlot(r4);
+            gNetSessionState.setStateRequester(4);
         }
     }
 }
@@ -591,7 +540,7 @@ extern "C" void NetSession_OnBeginHost() {
 }
 
 extern "C" void NetSession_Reset() {
-    V3().reset();
+    gNetSessionState.reset();
 }
 
 extern "C" void NetSession_RemoveSlot(s32 a) {
@@ -601,21 +550,21 @@ extern "C" void NetSession_RemoveSlot(s32 a) {
 extern "C" void NetSession_Update() {
     s32 r4 = gCommManager->myAid;
     if (gCommManager->isSlotActive(r4)) {
-        V3().updateArrivingSlot();
-        V3().notifyMovingMember();
+        gNetSessionState.updateArrivingSlot();
+        gNetSessionState.notifyMovingMember();
         if (r4 == 0) {
-            V3().updateMoveQueue();
-            V3().flushStatusUpdates();
+            gNetSessionState.updateMoveQueue();
+            gNetSessionState.flushStatusUpdates();
         }
         if (r4 != 0) {
-            V3().sendMoveReady();
+            gNetSessionState.sendMoveReady();
         }
         if (r4 == 0) {
             gNetSessionState.updateSyncHost();
         }
         gNetSessionState.updateSyncClient();
-        V3().updateMove();
-        V3().notifyMovingOwner();
+        gNetSessionState.updateMove();
+        gNetSessionState.notifyMovingOwner();
     }
 }
 
@@ -623,7 +572,7 @@ extern "C" void NetSession_PostUpdate() {
 }
 
 NetSessionState::NetSessionState() {
-    ((NetSessionAreaView *)this)->reset();
+    reset();
 }
 
 NetSessionState::~NetSessionState() {
@@ -635,43 +584,43 @@ void NetSessionState::resetSlot(s32 idx) {
     moveReady[idx].reset();
     pendingStatus[idx].reset();
     resetMemberSyncReply(idx);
-    ((NetSessionAreaView *)this)->setMemberAck(idx, 0);
+    setMemberAck(idx, 0);
     if (idx != 0) {
-        ((NetSessionAreaView *)this)->setSyncState(idx, 7);
+        setSyncState(idx, 7);
     }
-    if (idx == ((NetSessionAreaView *)this)->getHandoffSlot()) {
-        ((NetSessionAreaView *)this)->setHandoffSlot(4);
+    if (idx == getHandoffSlot()) {
+        setHandoffSlot(4);
     }
-    if (idx == ((NetSessionAreaView *)this)->getNotifiedOwnerMover()) {
-        ((NetSessionAreaView *)this)->setNotifiedOwnerMover(4);
+    if (idx == getNotifiedOwnerMover()) {
+        setNotifiedOwnerMover(4);
     }
-    if (idx == ((NetSessionAreaView *)this)->getNotifiedMemberMover()) {
-        ((NetSessionAreaView *)this)->setNotifiedMemberMover(4);
+    if (idx == getNotifiedMemberMover()) {
+        setNotifiedMemberMover(4);
     }
-    if (idx == ((NetSessionAreaView *)this)->getStateRequester()) {
-        ((NetSessionAreaView *)this)->setStateRequester(4);
+    if (idx == getStateRequester()) {
+        setStateRequester(4);
     }
-    if (idx == ((NetSessionAreaView *)this)->getArrivingSlot()) {
-        ((NetSessionAreaView *)this)->setArrivingSlot(4);
+    if (idx == getArrivingSlot()) {
+        setArrivingSlot(4);
     }
-    if (idx == ((NetSessionAreaView *)this)->getStateSourceSlot()) {
-        ((NetSessionAreaView *)this)->setStateSourceSlot(4);
+    if (idx == getStateSourceSlot()) {
+        setStateSourceSlot(4);
     }
 }
 
-void NetSessionAreaView::reset() {
+void NetSessionState::reset() {
     s32 i;
     for (i = 3; i >= 0; i--) {
-        ((NetSlotStatus *)(&slotStatus[i * 3]))->reset();
-        ((NetMoveRequest *)(&moveQueue[i]))->reset();
-        ((NetMoveReady *)(&moveReady[i]))->reset();
-        ((NetPendingStatus *)(pendingStatus[i]))->reset();
+        slotStatus[i].reset();
+        moveQueue[i].reset();
+        moveReady[i].reset();
+        pendingStatus[i].reset();
     }
-    ((NetSessionState *)this)->resetSyncPhase();
-    ((NetSessionState *)this)->resetSyncRequester();
-    ((NetSessionState *)this)->resetSyncKind();
-    ((NetSessionState *)this)->resetAllMemberSyncReplies();
-    ((NetSessionState *)this)->setReplyTimer(0);
+    resetSyncPhase();
+    resetSyncRequester();
+    resetSyncKind();
+    resetAllMemberSyncReplies();
+    setReplyTimer(0);
     resetSyncStates();
     setHandoffSlot(4);
     clearMemberAcks();
@@ -682,11 +631,11 @@ void NetSessionAreaView::reset() {
     setStateSourceSlot(4);
     setOwnerAck(0);
     setNotifiedMemberMover(4);
-    ((NetSessionState *)this)->setLastSyncSlot(4);
+    setLastSyncSlot(4);
     setBecomesOwner(0);
-    ((NetSessionState *)this)->setGoDelay(0);
-    ((NetSessionState *)this)->setActiveSyncKind(4);
-    ((NetSessionState *)this)->setCtrl07Received(0);
+    setGoDelay(0);
+    setActiveSyncKind(4);
+    setCtrl07Received(0);
 }
 
 u8 sSceneFadeInType;
@@ -694,7 +643,7 @@ u8 data_021eda58;
 NetSessionState gNetSessionState;
 ProcProfile sSceneBaseProfile = {(void *(*)())SceneBase_Create, 2, 1};
 
-void NetSessionAreaView::updateMoveQueue() {
+void NetSessionState::updateMoveQueue() {
     struct {
         u8 b0, b1, b2;
         u8 buf[5];
@@ -710,7 +659,7 @@ void NetSessionAreaView::updateMoveQueue() {
         u32 off = i << 2;
         s32 r7 = *(u32 *)((u8 *)idx + off);
         if (r7 < 4) {
-            ((NetSlotStatus *)(&slotStatus[r7 * 3]))->get(&l.b0, &l.b1, &l.b2);
+            slotStatus[r7].get(&l.b0, &l.b1, &l.b2);
             NetStatusMsg_Init(l.buf);
             NetStatusMsg_Pack(l.buf, r7, l.b0, l.b1, l.b2, *(u32 *)((u8 *)cnt + off));
             o->beginRecord();
@@ -721,7 +670,7 @@ void NetSessionAreaView::updateMoveQueue() {
     }
 }
 
-void NetSessionAreaView::startNextMove(u32 *a, u32 *b) {
+void NetSessionState::startNextMove(u32 *a, u32 *b) {
     s32 r5 = 4;
     s32 i;
     for (i = 3; i >= 0; i--) {
@@ -740,57 +689,57 @@ void NetSessionAreaView::startNextMove(u32 *a, u32 *b) {
     }
 }
 
-s32 NetSessionAreaView::peekMoveRequest() {
+s32 NetSessionState::peekMoveRequest() {
     s32 v;
     u8 byte;
-    ((NetMoveRequest *)(moveQueue))->get(&v, &byte);
+    moveQueue[0].get(&v, &byte);
     return v;
 }
 
-void NetSessionAreaView::popMoveRequest() {
+void NetSessionState::popMoveRequest() {
     if (peekMoveRequest() < 4) {
-        u8 *p = (u8 *)moveQueue;
+        NetMoveRequest *p = moveQueue;
         s32 i;
         for (i = 2; i >= 0; i--) {
-            u8 *q = p + 8;
+            NetMoveRequest *q = p + 1;
             s32 v;
             u8 byte;
-            ((NetMoveRequest *)(q))->get(&v, &byte);
+            q->get(&v, &byte);
             if (v >= 4) break;
-            MI_CpuCopy8(q, p, 8);
-            p += 8;
+            MI_CpuCopy8(q, p, sizeof(NetMoveRequest));
+            p++;
         }
-        ((NetMoveRequest *)(p))->reset();
+        p->reset();
     }
 }
 
-void NetSessionAreaView::sendMoveReady() {
+void NetSessionState::sendMoveReady() {
     s32 idx = ((volatile CommManager *)gCommManager)->myAid;
-    u32 *p = &moveReady[idx];
+    NetMoveReady *p = &moveReady[idx];
     s32 v;
-    ((NetMoveReady *)(p))->get((u32 *)(void *)(&v));
+    p->get((u32 *)&v);
     if (v != 0) {
         u8 b = v;
         CommManager *o = gCommManager;
         o->beginRecord();
         o->writeRecord(&b, 1);
         o->endRecord(10, 0);
-        ((NetMoveReady *)(p))->reset();
+        p->reset();
     }
 }
 
-void NetSessionAreaView::processMoveRequest(u32 *a, u32 *b) {
+void NetSessionState::processMoveRequest(u32 *a, u32 *b) {
     CommManager *o;
     s32 r5 = peekMoveRequest();
     if (r5 < 4) {
-        u32 *p = &moveReady[r5];
+        NetMoveReady *p = &moveReady[r5];
         s32 v;
-        ((NetMoveReady *)(p))->get((u32 *)(void *)(&v));
+        p->get((u32 *)&v);
         if (v == 1) {
             s32 r7 = 1;
             s32 tmp;
             u8 byte;
-            ((NetMoveRequest *)(moveQueue))->get(&tmp, &byte);
+            moveQueue[0].get(&tmp, &byte);
             s32 i;
             i = 3;
             o = gCommManager;
@@ -801,7 +750,7 @@ void NetSessionAreaView::processMoveRequest(u32 *a, u32 *b) {
                 }
             }
             NetArea_SetSlotStatus(r5, byte, r7, 0, 7);
-            ((NetMoveReady *)(p))->reset();
+            p->reset();
             popMoveRequest();
             *a = r5;
             *b = 7;
@@ -809,15 +758,15 @@ void NetSessionAreaView::processMoveRequest(u32 *a, u32 *b) {
     }
 }
 
-void NetSessionAreaView::flushStatusUpdates() {
+void NetSessionState::flushStatusUpdates() {
     u32 i = 0;
     CommManager *o = gCommManager;
     for (; i < 4; i++) {
         u8 b0, b1, b2;
         u8 buf[5];
         u32 out;
-        u8 *p = pendingStatus[i];
-        ((NetPendingStatus *)(p))->get(&b0, &b1, &b2, &out);
+        NetPendingStatus *p = &pendingStatus[i];
+        p->get(&b0, &b1, &b2, &out);
         if (out != 0) {
             NetArea_SetSlotStatus(i, b0, b1, b2, out);
             NetStatusMsg_Init(buf);
@@ -825,21 +774,21 @@ void NetSessionAreaView::flushStatusUpdates() {
             o->beginRecord();
             o->writeRecord(buf, 2);
             o->endRecord(9, 4);
-            ((NetPendingStatus *)(p))->reset();
+            p->reset();
             NetStatusMsg_Fini(buf);
         }
     }
 }
 
-void NetSessionAreaView::setBecomesOwner(u32 v) { becomesOwner = v; }
+void NetSessionState::setBecomesOwner(u32 v) { becomesOwner = v; }
 
-u32 NetSessionAreaView::getBecomesOwner() { return becomesOwner; }
+u32 NetSessionState::getBecomesOwner() { return becomesOwner; }
 
-void NetSessionAreaView::setMoveState(s32 v) { moveState = v; }
+void NetSessionState::setMoveState(s32 v) { moveState = v; }
 
-s32 NetSessionAreaView::getMoveState() { return moveState; }
+s32 NetSessionState::getMoveState() { return moveState; }
 
-void NetSessionAreaView::updateMove() {
+void NetSessionState::updateMove() {
     CommManager *o = gCommManager;
     s32 r7 = o->myAid;
     u8 b0, b1, b2, b3, b4, b5;
@@ -970,25 +919,25 @@ void NetSessionAreaView::updateMove() {
     }
 }
 
-void NetSessionAreaView::setHandoffSlot(s32 v) { handoffSlot = v; }
+void NetSessionState::setHandoffSlot(s32 v) { handoffSlot = v; }
 
-s32 NetSessionAreaView::getHandoffSlot() { return handoffSlot; }
+s32 NetSessionState::getHandoffSlot() { return handoffSlot; }
 
-void NetSessionAreaView::setMemberAck(s32 i, u32 v) { memberAck[i] = v; }
+void NetSessionState::setMemberAck(s32 i, u32 v) { memberAck[i] = v; }
 
-u32 NetSessionAreaView::getMemberAck(s32 i) { return memberAck[i]; }
+u32 NetSessionState::getMemberAck(s32 i) { return memberAck[i]; }
 
-void NetSessionAreaView::clearMemberAcks() {
+void NetSessionState::clearMemberAcks() {
     u8 *p = memberAck;
     s32 i;
     for (i = 3; i >= 0; i--) *p++ = 0;
 }
 
-void NetSessionAreaView::setNotifiedOwnerMover(s32 v) { notifiedOwnerMover = v; }
+void NetSessionState::setNotifiedOwnerMover(s32 v) { notifiedOwnerMover = v; }
 
-s32 NetSessionAreaView::getNotifiedOwnerMover() { return notifiedOwnerMover; }
+s32 NetSessionState::getNotifiedOwnerMover() { return notifiedOwnerMover; }
 
-void NetSessionAreaView::notifyMovingOwner() {
+void NetSessionState::notifyMovingOwner() {
     s32 r5 = 4;
     s32 i = 3;
     CommManager *o = gCommManager;
@@ -1013,19 +962,19 @@ void NetSessionAreaView::notifyMovingOwner() {
     }
 }
 
-void NetSessionAreaView::setStateSourceSlot(s32 v) { stateSourceSlot = v; }
+void NetSessionState::setStateSourceSlot(s32 v) { stateSourceSlot = v; }
 
-s32 NetSessionAreaView::getStateSourceSlot() { return stateSourceSlot; }
+s32 NetSessionState::getStateSourceSlot() { return stateSourceSlot; }
 
-void NetSessionAreaView::setStateRequester(s32 v) { stateRequester = v; }
+void NetSessionState::setStateRequester(s32 v) { stateRequester = v; }
 
-s32 NetSessionAreaView::getStateRequester() { return stateRequester; }
+s32 NetSessionState::getStateRequester() { return stateRequester; }
 
-void NetSessionAreaView::setArrivingSlot(s32 v) { arrivingSlot = v; }
+void NetSessionState::setArrivingSlot(s32 v) { arrivingSlot = v; }
 
-s32 NetSessionAreaView::getArrivingSlot() { return arrivingSlot; }
+s32 NetSessionState::getArrivingSlot() { return arrivingSlot; }
 
-void NetSessionAreaView::updateArrivingSlot() {
+void NetSessionState::updateArrivingSlot() {
     s32 c = getArrivingSlot();
     if (c < 4) {
         u32 t = NetArea_GetSlotScene(c);
@@ -1035,15 +984,15 @@ void NetSessionAreaView::updateArrivingSlot() {
     }
 }
 
-void NetSessionAreaView::setOwnerAck(u32 v) { ownerAck = v; }
+void NetSessionState::setOwnerAck(u32 v) { ownerAck = v; }
 
-u32 NetSessionAreaView::getOwnerAck() { return ownerAck; }
+u32 NetSessionState::getOwnerAck() { return ownerAck; }
 
-void NetSessionAreaView::setNotifiedMemberMover(s32 v) { notifiedMemberMover = v; }
+void NetSessionState::setNotifiedMemberMover(s32 v) { notifiedMemberMover = v; }
 
-s32 NetSessionAreaView::getNotifiedMemberMover() { return notifiedMemberMover; }
+s32 NetSessionState::getNotifiedMemberMover() { return notifiedMemberMover; }
 
-void NetSessionAreaView::notifyMovingMember() {
+void NetSessionState::notifyMovingMember() {
     s32 r5 = 4;
     CommManager *o = gCommManager;
     s32 saved = o->myAid;
@@ -1069,17 +1018,17 @@ void NetSessionAreaView::notifyMovingMember() {
     }
 }
 
-void NetSessionAreaView::setSyncState(s32 i, u32 v) { syncState[i] = v; }
+void NetSessionState::setSyncState(s32 i, u32 v) { syncState[i] = v; }
 
-u32 NetSessionAreaView::getSyncState(s32 i) { return syncState[i]; }
+u32 NetSessionState::getSyncState(s32 i) { return syncState[i]; }
 
-void NetSessionAreaView::resetSyncStates() {
+void NetSessionState::resetSyncStates() {
     u32 *p = syncState;
     s32 i;
     for (i = 3; i >= 0; i--) *p++ = 7;
 }
 
-void NetSessionAreaView::rejectSyncRequest(u32 a, u32 b) {
+void NetSessionState::rejectSyncRequest(u32 a, u32 b) {
     if (b != 0) {
         setSyncState(a, 6);
     } else if (a == 0) {
@@ -1109,11 +1058,11 @@ void NetSessionState::updateSyncHost() {
     BOOL all2;
     i = 0;
     do {
-        slot = ((NetSessionAreaView *)this)->getSyncState(i);
+        slot = getSyncState(i);
         if (slot <= 3) {
             ok = TRUE;
             for (j = 3; j >= 0; j--) {
-                switch (((NetSessionAreaView *)this)->getSyncState(j)) {
+                switch (getSyncState(j)) {
                 case 0:
                 case 1:
                 case 2:
@@ -1156,9 +1105,9 @@ void NetSessionState::updateSyncHost() {
                 } else {
                     setSyncKind(3);
                 }
-                ((NetSessionAreaView *)this)->setSyncState(i, 4);
+                setSyncState(i, 4);
             } else {
-                ((NetSessionAreaView *)this)->rejectSyncRequest(i, slot == 0 ? 1 : z2c);
+                rejectSyncRequest(i, slot == 0 ? 1 : z2c);
             }
         }
         i++;
@@ -1173,14 +1122,14 @@ void NetSessionState::updateSyncHost() {
                 if (k == 0) {
                     setMemberSyncReply(0, 0);
                 } else {
-                    NetSyncMsg_Init(&m[0]);
+                    NetSyncMsg_Init();
                     mode = getSyncKind();
                     NetSyncMsg_Pack(&m[0], 0, mode, getSyncRequester());
                     g->beginRecord();
                     g->writeRecord(&m[0], 1);
                     g->endRecord(0xc, k);
                     setMemberSyncReply(k, 1);
-                    NetSyncMsg_Fini(&m[0]);
+                    NetSyncMsg_Fini();
                 }
             }
         }
@@ -1214,25 +1163,25 @@ void NetSessionState::updateSyncHost() {
                         if (k == 0) {
                             setMemberSyncReply(0, 5);
                         } else {
-                            NetSyncMsg_Init(&m[1]);
+                            NetSyncMsg_Init();
                             NetSyncMsg_Pack(&m[1], 5, 4, getSyncRequester());
                             g->beginRecord();
                             g->writeRecord(&m[1], 1);
                             g->endRecord(0xc, k);
                             setMemberSyncReply(k, 5);
-                            NetSyncMsg_Fini(&m[1]);
+                            NetSyncMsg_Fini();
                         }
                     }
                 }
                 if (getSyncKind() == 0 || g->isMyAid(c18) != 0) {
-                    ((NetSessionAreaView *)this)->setSyncState(c18, 5);
+                    setSyncState(c18, 5);
                 } else {
                     m[2] = 5;
                     CommManager *g5 = gCommManager;
                     g5->beginRecord();
                     g5->writeRecord(&m[2], 1);
                     g5->endRecord(1, c18);
-                    ((NetSessionAreaView *)this)->setSyncState(c18, 7);
+                    setSyncState(c18, 7);
                 }
                 if (getSyncKind() == 0) {
                     NetSession_SetCtrl07Received(0);
@@ -1246,13 +1195,13 @@ void NetSessionState::updateSyncHost() {
                             if (k == 0) {
                                 setMemberSyncReply(0, 4);
                             } else {
-                                NetSyncMsg_Init(&m[3]);
+                                NetSyncMsg_Init();
                                 NetSyncMsg_Pack(&m[3], 4, 4, getSyncRequester());
                                 g->beginRecord();
                                 g->writeRecord(&m[3], 1);
                                 g->endRecord(0xc, k);
                                 setMemberSyncReply(k, 4);
-                                NetSyncMsg_Fini(&m[3]);
+                                NetSyncMsg_Fini();
                             }
                         } else {
                             setMemberSyncReply(k, 6);
@@ -1291,14 +1240,14 @@ void NetSessionState::updateSyncHost() {
         }
         if (all4) {
             if (getSyncKind() == 0 || g7->isMyAid(c18c) != 0) {
-                ((NetSessionAreaView *)this)->setSyncState(c18c, 6);
+                setSyncState(c18c, 6);
             } else {
                 m[4] = 6;
                 CommManager *g8 = gCommManager;
                 g8->beginRecord();
                 g8->writeRecord(&m[4], 1);
                 g8->endRecord(1, c18c);
-                ((NetSessionAreaView *)this)->setSyncState(c18c, 7);
+                setSyncState(c18c, 7);
             }
             if (getSyncKind() == 0) {
                 Net_WifiHostKeepAlive();
@@ -1378,13 +1327,13 @@ void NetSessionState::updateSyncClient() {
             setGoDelay(0x28);
             setReplyTimer(0);
             if (st != 0) {
-                NetSyncMsg_Init(&m[0]);
+                NetSyncMsg_Init();
                 NetSyncMsg_Pack(&m[0], 2, 4, getSyncRequester());
                 CommManager *g2 = gCommManager;
                 g2->beginRecord();
                 g2->writeRecord(&m[0], 1);
                 g2->endRecord(0xc, 0);
-                NetSyncMsg_Fini(&m[0]);
+                NetSyncMsg_Fini();
             }
             FieldInfoBalloon_ShowSyncKindMsg(mode);
             setMemberSyncReply(st, 2);
@@ -1395,14 +1344,14 @@ void NetSessionState::updateSyncClient() {
                 if (st == 0) {
                     setMemberSyncReply(0, 3);
                 } else {
-                    NetSyncMsg_Init(&m[1]);
+                    NetSyncMsg_Init();
                     NetSyncMsg_Pack(&m[1], 3, 4, getSyncRequester());
                     CommManager *g2 = gCommManager;
                     g2->beginRecord();
                     g2->writeRecord(&m[1], 1);
                     g2->endRecord(0xc, 0);
                     setMemberSyncReply(st, 6);
-                    NetSyncMsg_Fini(&m[1]);
+                    NetSyncMsg_Fini();
                 }
                 MenuCtrl_ResetForceClose();
                 setReplyTimer(0);
@@ -1422,13 +1371,13 @@ void NetSessionState::updateSyncClient() {
         FieldInfoBalloon_ShowCancelled();
         setGoDelay(0);
         if (st2 != 0) {
-            NetSyncMsg_Init(&m[2]);
+            NetSyncMsg_Init();
             NetSyncMsg_Pack(&m[2], 6, 4, getSyncRequester());
             CommManager *g3 = gCommManager;
             g3->beginRecord();
             g3->writeRecord(&m[2], 1);
             g3->endRecord(0xc, 0);
-            NetSyncMsg_Fini(&m[2]);
+            NetSyncMsg_Fini();
         }
         setMemberSyncReply(st2, 6);
     } else if (v == 5) {
@@ -1473,9 +1422,9 @@ void NetSessionState::updateSyncClient() {
         if (getSyncKind() == 0) {
             PlayerData *x = PlayerData_Get(getSyncRequester() + 3);
             u16 *p;
-            u8 *idb = (u8 *)&gSaveTownId;
-            if (x != 0 && _ZN10PlayerData18getLostChildRecordEv(x)->isEscorting() && (p = _ZN10PlayerData18getLostChildRecordEv(x)->getTownId(), p[0] == *(u16 *)idb) &&
-                memcmp(p + 1, idb + 2, 8) == 0) {
+            if (x != 0 && ((LostChildRecord *)x->getLostChildRecord())->isEscorting() &&
+                (p = ((LostChildRecord *)x->getLostChildRecord())->getTownId(), p[0] == gSaveTownId.townId) &&
+                memcmp(p + 1, gSaveTownId.townName, 8) == 0) {
                 SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2f, 2, 2);
             } else {
                 static FxVec3 s(0x10000, 0, 0x5000);
@@ -1504,13 +1453,13 @@ void NetSessionState::updateSyncClient() {
             }
         }
         if (st2 != 0) {
-            NetSyncMsg_Init(&m[3]);
+            NetSyncMsg_Init();
             NetSyncMsg_Pack(&m[3], 6, 4, getSyncRequester());
             CommManager *g3 = gCommManager;
             g3->beginRecord();
             g3->writeRecord(&m[3], 1);
             g3->endRecord(0xc, 0);
-            NetSyncMsg_Fini(&m[3]);
+            NetSyncMsg_Fini();
         }
         setMemberSyncReply(st2, 6);
     }
@@ -1625,7 +1574,7 @@ BOOL SceneBase::preExecute() {
         return FALSE;
     }
     if (gSoftResetRequested != 0) {
-        if (Unk_020a42c4_IsTwo(gScreenTransition) != 0) {
+        if (Unk_020a42c4_IsTwo(gScreenTransition.state) != 0) {
             sSceneFadeOutType = 2;
             sSceneFadeInType = 0;
             ScreenTransition_StartFadeOut(2, 0x10);
@@ -1633,7 +1582,7 @@ BOOL SceneBase::preExecute() {
         return FALSE;
     }
     if (gNextSceneProfile != 0xd8) {
-        if (Unk_020a42c4_IsTwo(gScreenTransition) != 0 || data_021c3cb8 != 0) {
+        if (Unk_020a42c4_IsTwo(gScreenTransition.state) != 0 || data_021c3cb8 != 0) {
             ScreenTransition_StartFadeOut(sSceneFadeOutType, 0xf);
         }
         return FALSE;
@@ -1647,7 +1596,7 @@ BOOL SceneBase::preExecute() {
         }
     }
     if (sSceneFadeInDelay != 0) {
-        if (Unk_020a42c4_IsZero(gScreenTransition) != 0) {
+        if (Unk_020a42c4_IsZero(gScreenTransition.state) != 0) {
             sSceneFadeInDelay = sSceneFadeInDelay - 1;
             if (sSceneFadeInDelay == 0) {
                 if (ScreenTransition_StartFadeIn(sSceneFadeInType, 0xf, 0) == 0) {
@@ -1690,18 +1639,18 @@ extern "C" BOOL Scene_CreateRequested(void) {
     if (gNextSceneProfile == 2) {
         OS_ResetSystem(1);
     }
-    s32 r = GameProc_CreateChild(gNextSceneProfile, gGameRoot, 0, 2);
-    if (r != 0) {
+    ProcBase *r = GameProc_CreateChild(gNextSceneProfile, gGameRoot, 0, 2);
+    if (r != NULL) {
         gNextSceneProfile = 0xd8;
         sSceneExists = 1;
-        return r;
+        return TRUE;  // (the DS returned the process pointer; the one caller ignores the result)
     }
     return FALSE;
 }
 
-extern "C" void Scene_CheckExit(void *p) {
+extern "C" void Scene_CheckExit(ProcBase *p) {
     if (gSoftResetRequested != 0) {
-        u8 m = gScreenTransition;
+        u8 m = gScreenTransition.state;
         if (Unk_020a42c4_IsTwo(m) == 0) {
             if (Unk_020a42c4_IsZero(m) != 0) {
                 Scene_Request(0xd4, 0, 0, 0);
@@ -1711,7 +1660,7 @@ extern "C" void Scene_CheckExit(void *p) {
             }
         }
     } else if (gNextSceneProfile != 0xd8) {
-        u8 m = gScreenTransition;
+        u8 m = gScreenTransition.state;
         if (Unk_020a42c4_IsTwo(m) == 0) {
             if (data_021c3cb8 == 0) {
                 if (Unk_020a42c4_IsZero(m) != 0) {
@@ -1737,7 +1686,7 @@ extern "C" void Scene_CheckExit(void *p) {
 
 // ======== FUNCTIONS ========
 
-void *gActorDefaultParent;
+ProcBase *gActorDefaultParent;  // the current scene: the default parent of the actors created
 u8 sSceneFadeOutType;
 volatile u8 sSceneFadeInDelay;
 u8 gSceneCreating;

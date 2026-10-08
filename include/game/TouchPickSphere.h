@@ -11,8 +11,8 @@
 struct TouchPickSphere : HitSphere {
     TouchPickSphere();
     ~TouchPickSphere();
-    BOOL setupCurved(VecFx32 *a, VecFx32 *b, s32 c, u8 d);
-    BOOL setup(VecFx32 *a, VecFx32 *b, s32 c, u8 d);
+    BOOL setupCurved(VecFx32 *pos, s32 radius, s32 kind, u8 index);
+    BOOL setup(VecFx32 *pos, s32 radius, s32 kind, u8 index);
     /* 0x10 */ u8 index;
     /* 0x14 */ s32 kind;
     /* 0x18 */ TouchPickSphere *next;

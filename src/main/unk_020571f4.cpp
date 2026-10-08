@@ -27,22 +27,10 @@ struct HandOverItemAct {
     Unk_020dc034_Fn b;
 };
 
-// HandOverItem::seEmitter: a 0x40-byte, destructor-only view of SndSeEmitter (snd/SndSeEmitter.h); HandOverItem() runs
-// its constructor by hand (declaring the member as SndSeEmitter changes the code)
-class SndSeEmitterView {
-public:
-    ~SndSeEmitterView();
-    u8 unk_00[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // (the emitter's real size on 64-bit hosts)
-};
-
-extern "C" {
-#define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
-void SndSeEmitter_ctor(void *p);
-}
 
 class HandOverItem : public GameProc {
 public:
-    HandOverItem() { item = 0xfff1; new (&seEmitter) SndSeEmitter(); }
+    HandOverItem() { item = 0xfff1; }
 
     /* 0x50 */ u16 item;
     /* 0x54 */ s32 kind;
@@ -70,7 +58,7 @@ public:
     /* 0xd9 */ u8 busy;
     /* 0xda */ u8 modeRequest;
     u8 pad_db;
-    /* 0xdc */ SndSeEmitterView seEmitter;
+    /* 0xdc */ SndSeEmitter seEmitter;
 
     virtual BOOL onCreate();
     virtual BOOL onDelete();
@@ -244,7 +232,7 @@ extern "C" u32 HandOverItem_GetFishHoldOffsetSet(ProcBase *o)
     s32 t = (s32)(b & 0xf000) >> 12;
     if (t != 0xd) {
       if (t == 0xe) {
-        switch (Villager_GetAnimalKind((u32)SaveVillagers_Get(gSaveVillagers, b & 0xfff))) {
+        switch (Villager_GetAnimalKind((u32)(uptr)SaveVillagers_Get(gSaveVillagers, b & 0xfff))) {  // (it takes the VillagerData as an integer)
         case 0: case 5: case 6: case 10: case 12: case 15: case 16: case 21: case 25: case 31: case 32:
             r = 4; break;
         case 1: case 2: case 4: case 7: case 9: case 13: case 14: case 17: case 19: case 20: case 22: case 23: case 26: case 27: case 29:
@@ -286,14 +274,14 @@ extern "C" HandOverItem *HandOverItem_Create()
 BOOL HandOverItem::onCreate()
 {
     resetState();
-    ((SndSeEmitter *)(&seEmitter))->callInit();
+    seEmitter.callInit();
     sHandOverItem = this;
     return TRUE;
 }
 
 BOOL HandOverItem::onDelete()
 {
-    ((SndSeEmitter *)(&sHandOverItem->seEmitter))->callStop();
+    sHandOverItem->seEmitter.callStop();
     sHandOverItem = NULL;
     return TRUE;
 }
@@ -317,7 +305,7 @@ BOOL HandOverItem::onExecute()
                 v.x = itemPos.x;
                 v.y = itemPos.y;
                 v.z = itemPos.z;
-                ((SndSeEmitter *)(&seEmitter))->callUpdateRelative(&v);
+                seEmitter.callUpdateRelative(&v);
             }
         }
         if (isAwaitingTake()) {
@@ -574,7 +562,7 @@ void HandOverItem::startAct01()
     if (Unk_020586bc_Range(&item, 0x12e8, 0x131f)) {
         VEC_Add(&pos, HandOverItem_GetFishHoldOffset((ProcBase *)chars[0], Fish_GetSizeClass(item - 0x12e8)), &pos);
     }
-    ((HandOverItem *)(void *)(&off))->getHoldOffset((u32)(this));
+    off = getHoldOffset(0);  // (the DS passes the result buffer, this and 0)
     VEC_Add(&pos, &off, &pos);
     localToWorld(&basePos, &pos, 0);
     scale.x = 0;
@@ -664,7 +652,7 @@ void HandOverItem::startAct03()
     if (Unk_020586bc_Range(&item, 0x12e8, 0x131f)) {
         VEC_Add(&pos, HandOverItem_GetFishHoldOffset2((ProcBase *)chars[0], Fish_GetSizeClass(item - 0x12e8)), &pos);
     }
-    ((HandOverItem *)(void *)(&off))->getHoldOffset((u32)(this));
+    off = getHoldOffset(0);  // (the DS passes the result buffer, this and 0)
     VEC_Add(&pos, &off, &pos);
     localToWorld(&basePos, &pos, 0);
     target.x = basePos.x;
@@ -708,7 +696,7 @@ void HandOverItem::startAct04()
     if (Unk_020586bc_Range(&item, 0x12e8, 0x131f)) {
         VEC_Add(&pos, HandOverItem_GetFishHoldOffset((ProcBase *)chars[0], Fish_GetSizeClass(item - 0x12e8)), &pos);
     }
-    ((HandOverItem *)(void *)(&off))->getHoldOffset((u32)(this));
+    off = getHoldOffset(0);  // (the DS passes the result buffer, this and 0)
     VEC_Add(&pos, &off, &pos);
     localToWorld(&basePos, &pos, 0);
     target.x = basePos.x;
@@ -1051,7 +1039,7 @@ void HandOverItem::act01V1Phase2()
             BOOL r = FALSE;
             if (item >= 0x1492 && item <= 0x14fd) r = TRUE;
             if (r) {
-                Snd_SeEmitterPlayOneShot((SndSeEmitter *)seEmitter.unk_00, 0x70, 0x7f, 0);
+                Snd_SeEmitterPlayOneShot(&seEmitter, 0x70, 0x7f, 0);
             }
             phase = 3;
             setBusy(0);

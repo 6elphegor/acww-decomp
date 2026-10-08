@@ -6,24 +6,16 @@
 #include "room/HouseRoom.h"
 #include "room/HouseData.h"
 #include "save/SaveData.h"
-#define PROTO_LOCAL_OS_GetOwnerInfo  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02115468.h"
 #include "proto/main/unk_020514a4.h"
 #include "proto/main/unk_02060034.h"
 #include "proto/main/unk_02060b9c.h"
 
-
-
-
-
-
-
-
-
+extern SaveData gSaveData;
 extern "C" {
 extern HouseData gSaveHouse;
-extern u8 gSaveSongSet[];
-extern u8 gSaveData[];
-extern u8 gSaveData[];
+
+// defined with file-local types (include/proto/.excluded)
 s32 SceneId_GetHouseRoom(u32 x);
 s32 SceneId_IsHouseRoom(u32 x);
 void HouseRoomMaps_UpdateAll();
@@ -34,17 +26,7 @@ MapBlockEntry *MapBlockEntry_NewArray(s32 n, void *heap);
 BOOL BlockMap_FindItemAnyAttr(void *g, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 filter, s32 h);
 void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
 void *BlockMap_SetItemAtUnit(void *g, u16 *a, s32 x, s32 z, u8 d);
-void OS_GetOwnerInfo(u8 *buf);
-}
-
-extern "C" {
 s32 Scene_GetCurrent();
-void *__cxa_vec_cleanup(void *arr, u32 n, u32 sz, void (*dtor)(void *));
-void *__cxa_vec_ctor(void *arr, u32 n, u32 sz, void (*ctor)(void *), void (*dtor)(void *));
-void _ZN6ItemIdD1Ev(void *p);
-void _ZN6ItemIdC1Ev(void *p);
-void *Clock_GetTimeSeed();
-s32 Random_SetSeed(void *a, void *b);
 }
 
 
@@ -72,7 +54,6 @@ const u16 sHouseRoomAcreIds[7][5] = {
 };
 
 
-
 static inline s32 Unk_02060044_Idx(u32 id)
 {
     if (id >= 0x1323 && id <= 0x1368) {
@@ -81,15 +62,14 @@ static inline s32 Unk_02060044_Idx(u32 id)
     return -1;
 }
 
-extern "C" void *_ZN12RoomItemGridC1Ev(void *p) {
-    __cxa_vec_ctor(p, 0x100, 2, _ZN6ItemIdC1Ev, _ZN6ItemIdD1Ev);
-    return p;
+// The items are ItemIds (their default constructor stores 0xfff1 = no item; the destructor does nothing).
+RoomItemGrid::RoomItemGrid() {
+    for (s32 i = 0; i < 0x100; i++) {
+        items[i] = 0xfff1;
+    }
 }
 
-extern "C" void *_ZN12RoomItemGridD1Ev(void *p) {
-    __cxa_vec_cleanup(p, 0x100, 2, _ZN6ItemIdD1Ev);
-    return p;
-}
+RoomItemGrid::~RoomItemGrid() {}
 
 void RoomItemGrid::clear() {
     u16 *p = items;
@@ -180,14 +160,14 @@ HouseData::~HouseData() {}
 void HouseData::reset() {
     HouseRoom *p = &rooms[0];
     s32 i = 0;
-    u8 buf[0x50];
+    OSOwnerInfo owner;
     for (; i < 5; p++, i++) {
         p->reset(i);
     }
     status.a = 0;
     songs.clear();
-    OS_GetOwnerInfo(buf);
-    status.d = buf[1];
+    OS_GetOwnerInfo(&owner);
+    status.d = owner.favoriteColor;
     status.c = status.d;
     status.e = 0;
 }
@@ -219,7 +199,7 @@ void HouseData::applyPendingWork() {
             status.c = status.d;
             HouseRoomMaps_UpdateAll();
             HouseRoomMaps_BindBg();
-            ((SaveData *)(gSaveData))->setFlag(13);
+            gSaveData.setFlag(13);
         }
     }
 }
@@ -334,7 +314,7 @@ void HouseData::startLoan() {
 s32 HouseData::isUpgradePaidOff() {
     if (status.b == getLevel()) {
         if (getDebt() == 0) {
-            return ((SaveData *)(gSaveData))->testFlag(13);
+            return gSaveData.testFlag(13);
         }
     }
     return 0;
@@ -430,7 +410,7 @@ extern "C" BOOL SongSet_TestBit(u8 *bits, u32 i)
 extern "C" BOOL SongSet_HasSong(u32 id)
 {
     if (id >= 0x1323 && id <= 0x1368) {
-        return SongSet_TestBit(gSaveSongSet, Unk_02060044_Idx(id));
+        return SongSet_TestBit(gSaveData.songSet, Unk_02060044_Idx(id));
     }
     return FALSE;
 }
@@ -445,7 +425,7 @@ extern "C" void SongSet_SetBit(u8 *bits, u32 i)
 extern "C" void SongSet_AddSong(u32 id)
 {
     if (id >= 0x1323 && id <= 0x1368) {
-        SongSet_SetBit(gSaveSongSet, Unk_02060044_Idx(id));
+        SongSet_SetBit(gSaveData.songSet, Unk_02060044_Idx(id));
     }
 }
 
@@ -459,7 +439,7 @@ extern "C" void SongSet_ClearBit(u8 *bits, u32 i)
 extern "C" void SongSet_RemoveSong(u32 id)
 {
     if (id >= 0x1323 && id <= 0x1368) {
-        SongSet_ClearBit(gSaveSongSet, Unk_02060044_Idx(id));
+        SongSet_ClearBit(gSaveData.songSet, Unk_02060044_Idx(id));
     }
 }
 

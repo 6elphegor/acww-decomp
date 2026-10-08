@@ -3,6 +3,8 @@
 #include "net/CommManager.h"
 #include "room/Unk_0209c41c_Actor.h"
 #include "actor/Actor.h"
+#include "game/FxVec3.h"
+#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_0209c4a8.h"
 
@@ -43,7 +45,7 @@ extern "C" CommManager *gCommManager;
 extern "C" {
 extern u8 gFieldSceneKind;
 extern const u8 sExclusiveRoomScenes[4];
-extern u8 gVec3Zero[];
+
 
 void SceneExit_GetDoor(void *o, u32 id, u32 *p24, s16 *f);
 void SceneExit_SnapPos(void *o, u32 id, VecFx32 *v34, VecFx32 *v40);
@@ -156,9 +158,9 @@ extern "C" void RoomEntryRequest_Init(RoomEntryRequest *t) {
     RoomEntryRequest_SetExitId(t, -1);
     RoomEntryRequest_SetDoorKind(t, 0);
     RoomEntryRequest_SetScene(t, 0);
-    RoomEntryRequest_SetPos(t, (VecFx32 *)gVec3Zero);
+    RoomEntryRequest_SetPos(t, &gVec3Zero);
     RoomEntryRequest_SetAngle(t, 0);
-    RoomEntryRequest_SetRetreatPos(t, (VecFx32 *)gVec3Zero);
+    RoomEntryRequest_SetRetreatPos(t, &gVec3Zero);
 }
 
 extern "C" u32 RoomEntryRequest_GetResult(RoomEntryRequest *t) {
@@ -235,7 +237,7 @@ extern "C" s32 RoomEntry_IsExclusiveExit(u32 exitId) {
 }
 
 extern "C" BOOL RoomEntry_Request(u32 id) {
-    Actor *p = PlayerActor_GetActor(4);
+    Actor *p = (Actor *)PlayerActor_GetActor(4);
     void *o = Scene_GetWarpRequest();
     SceneExitResult s;
     u32 a20, a24;

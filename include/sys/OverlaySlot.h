@@ -4,6 +4,10 @@
 #include "types.h"
 
 // 0xc-byte loaded-overlay slot (overlay id, reference count, RAM range) of the overlay manager (main, unk_0204eeb4.cpp).
+#ifndef __cplusplus
+typedef struct OverlaySlot OverlaySlot;
+#endif
+
 struct OverlaySlot {
     /* 0x0 */ u8 overlayId;
     /* 0x1 */ u8 refCount;

@@ -104,7 +104,7 @@ BOOL VillagerBoard::onCreate() {
 
 BOOL VillagerBoard::onExecute() {
     runAct();
-    (Scene_GetTouchPicker())->addSphere((TouchPickSphere *)touchSphere, (VecFx32 *)(void *)(&position.x), (VecFx32 *)(0xc00), 9, *(s32 *)((u8 *)this + 8));
+    (Scene_GetTouchPicker())->addSphere((TouchPickSphere *)touchSphere, (VecFx32 *)(void *)(&position.x), 0xc00, 9, *(s32 *)((u8 *)this + 8));
     return TRUE;
 }
 

@@ -1,6 +1,5 @@
 #include "types.h"
-#define PROTO_LOCAL_sSpotReservations  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sSpotReserveResult  // declared below: the shared prototype conflicts with the calls here
+#include "room/FtrActorGrid.h"
 #include "proto/main/unk_02051218.h"
 #include "proto/main/unk_020514a4.h"
 #include "proto/main/unk_02052b50.h"
@@ -14,30 +13,13 @@ void MI_CpuFill8(void *dst, u32 value, u32 size);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 extern u8 gFieldSceneKind;
 extern void *gSceneBlockMap;
-extern u32 sSpotReserveResult;
-extern void *gCommManager;
-extern u8 sSpotReservations[];
-extern u8 gSaveHouse[];
 
 u32 Msg_DecodeGameChar(u8 *buf, u32 c);
 u8 Msg_MeasureWidth(u8 *buf);
-u8 *_ZN12FtrActorGrid8getActorEiii(void *p, s32 x, s32 y, s32 z);
 s32 FtrActor_GetFtrIndex(void *p);
 void *BlockMap_GetItemPtr(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 Item_IsFurniture(void *p);
 u32 Item_GetFurnitureIndex(void *p);
-s32 func_02072e44(void *p);
-s32 func_020729cc(void *p, s32 v);
-void func_02052a70(void *p, s32 v);
-void func_020728d4(void *p);
-void func_02072824(void *p, s32 a, s32 b);
-void func_020728a4(void *p, void *data, s32 size);
-s32 Scene_GetCurrent();
-s32 func_020529e4(void *p, s32 a, s32 b, void *c);
-void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
-void func_02060244(void *p, s32 a, s32 b);
-void *BlockMap_GetForArea(s32 a);
-s32 BlockMap_SetItemAtUnit(void *p, void *b, s32 c, s32 d, s32 e);
 
 
 }
@@ -60,7 +42,7 @@ extern "C" BOOL Room_CanDropOnFurnitureAt(s32 x, s32 y) {
     BOOL r;
     if (gFieldSceneKind == 1 ? TRUE : FALSE) {
         void *p = gSceneBlockMap;
-        u8 *q = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), x, y, 0);
+        FtrActor *q = FtrActorGrid_GetInstance()->getActor(x, y, 0);
         if (p != NULL && q != NULL) {
             s32 hx = x >> 4;
             s32 hy = y >> 4;

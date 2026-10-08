@@ -203,7 +203,7 @@ void SaveData::reset() {
     ((LetterOutbox *)(&letterOutbox))->clear();
     LostAndFound_Clear((u16 *)lostAndFound);
     RecycleBin_Clear((u16 *)recycleBin);
-    ConstellationStore_Clear(constellations);
+    ConstellationStore_Clear((ConstellationStore *)constellations);  // (the save record keeps its bytes)
     ((BottleLetterRecord *)(&bottleLetter))->clearRecord();
     ReceivedLetter_Clear(&receivedLetters);
     HappyRoomDate_SetToday(happyRoomDate);

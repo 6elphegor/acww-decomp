@@ -13,9 +13,10 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "talk/SpNpcKatieTalk.h"
 #include "npc/SpNpcKatie.h"
-#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02002b1c.h"
+#include "gfx/ScreenTransition.h"
 #include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_020411dc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_020815f8.h"
 #include "proto/main/unk_020850e0.h"
@@ -33,64 +34,7 @@ static inline void Unk_020bfe30_Set(VecFx32 *v, s32 x, s32 y, s32 z) {
 }
 
 
-
-
-
-
 class SpNpcKatie;
-
-extern "C" {
-void SkySprite_Release(void *p);
-}
-
-extern "C" {
-void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *c);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-Mtx43 *Camera_GetViewMatrix(void);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void MTX_MultVec43(void *a, void *b, void *c);
-}
-
-extern "C" {
-s32 func_0203bc3c(s32 a);
-}
-
-extern "C" {
-s32 FX_Div(s32 a, s32 b);
-}
-
-extern "C" {
-void Vec_Scale(void *a, s32 b);
-}
-
-extern "C" {
-s32 func_021355f0(void *p, u32 n, u32 sz, void (*dtor)(void *));
-}
-
-extern "C" {
-void func_02000c8c(void *p);
-}
-
-extern "C" {
-void func_020bd054(void *p);
-}
-
-extern "C" {
-void func_020bd058(void *p);
-}
 
 extern "C" {
 s32 DateTime_GetWeatherPeriod(void *p);
@@ -117,12 +61,6 @@ s32 Scene_GetCurrent(void);
 }
 
 extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 u16 *Event_GetTodayList(void);
 }
 
@@ -135,235 +73,11 @@ void Clock_GetDate(void *p);
 }
 
 extern "C" {
-void func_0202e5a8(void *p);
-}
-
-extern "C" {
-s32 func_02019d8c(void *p);
-}
-
-extern "C" {
-s32 func_020679b4(void *p);
-}
-
-extern "C" {
-s32 func_020aa514(void);
-}
-
-extern "C" {
-void func_02067a84(void *a, void *b, u32 c);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void func_02086fa0(void);
-}
-
-extern "C" {
-void func_02086f98(void);
-}
-
-extern "C" {
-s32 func_020986a4(s32 a);
-}
-
-extern "C" {
-s32 func_02087364(s32 a);
-}
-
-extern "C" {
-s32 func_02015818(void *p, s32 a, s32 b);
-}
-
-extern "C" {
-s32 func_0209801c(s32 a, s32 b);
-}
-
-extern "C" {
-void Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-}
-
-extern "C" {
-s32 func_0201ad34(void *p, s32 a);
-}
-
-extern "C" {
-s32 func_0201ad30(void *p, s32 a);
-}
-
-extern "C" {
-s32 func_020159bc(void *p, void *q);
-}
-
-extern "C" {
-void func_0202e26c(void *p);
-}
-
-extern "C" {
-void func_0202e2bc(void *p);
-}
-
-extern "C" {
-void func_020c11b8(void *p, s32 n);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void func_020196b4(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-}
-
-extern "C" {
-}
-
-extern "C" {
-BOOL func_02019790(void *p);
-}
-
-extern "C" {
-void func_0201a6c0(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
-}
-
-extern "C" {
-void func_02014198(void *p, s32 a, s32 b);
-}
-
-extern "C" {
-void func_02067a78(void *p);
-}
-
-extern "C" {
-void SpNpcKaitlin_ChangeAct04(void);
-}
-
-extern "C" {
-void Camera_SetMode19(void);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void func_02015a80(void *p, s32 a);
-}
-
-extern "C" {
-void func_02067a6c(void *p);
-}
-
-extern "C" {
-s32 func_02014220(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void SpNpcKaitlin_ChangeAct06(void);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-BOOL func_020729cc(CommManager *p, s32 a);
-}
-
-extern "C" {
-s32 func_0208733c(void);
-}
-
-extern "C" {
-void func_02087368(s32 a);
-}
-
-extern "C" {
-void func_02087210(void);
-}
-
-extern "C" {
-s32 Scene_GetWarpRequest(void);
-}
-
-extern "C" {
-void SceneWarp_RequestExit(s32 a, s32 b);
-}
-
-extern "C" {
-extern u8 gScreenTransition;
-}
-
-extern "C" {
-extern VecFx32 sSpNpcKatieReunionWalkPos;
-}
-
-extern "C" {
-extern u16 data_020c6cc8;
-}
-
-extern "C" {
-extern u32 data_020c6d1c;
-}
-
-extern "C" {
-extern u8 gVec3Zero[];
-}
-
-extern "C" {
-extern s32 sRainParallax[];
-}
-
-extern "C" {
-extern s32 sRainSideToggle;
-}
-
-extern "C" {
-extern s16 data_021f1448[];
-}
-
-extern "C" {
-extern s16 data_02135f44[];
-}
-
-extern "C" {
-extern Mtx43 data_021f47e0;
-}
-
-extern "C" {
-extern s32 gCamera;
-}
-
-extern "C" {
 u8 sWeatherPrevDayRain;
 }
 
 extern "C" {
 s32 sWeatherRolledAtLoad;
-}
-
-extern "C" {
-extern SpNpcKatie *sSpNpcKatieInstance;
 }
 
 // 0x020d1a28: first .rodata object of this file; read by the previous unit (0x020be9e4, src/main/unk_020b8d9c.cpp)
@@ -417,10 +131,6 @@ extern "C" {
 extern CommManager *gCommManager;
 }
 
-extern "C" {
-extern u32 sSpNpcKatieMsgKey;
-}
-
 // ---------------------------------------------------------------------------------------------------------------------
 static inline void Unk_020bfe38_Add(s32 *dst, s32 v) {
     *dst += v;
@@ -428,8 +138,6 @@ static inline void Unk_020bfe38_Add(s32 *dst, s32 v) {
 
 
 // ---------------------------------------------------------------------------------------------------------------------
-
-
 
 
 // prototypes
@@ -581,10 +289,6 @@ extern "C" u8 Weather_GetPrevDayRain() {
 // ---------------------------------------------------------------------------------------------------------------------
 
 
-
-
-
-
 static inline BOOL Unk_020c06a0_IsMode2() {
-    return gScreenTransition == 2;
+    return gScreenTransition.state == 2;
 }

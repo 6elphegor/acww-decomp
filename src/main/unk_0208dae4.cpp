@@ -18,11 +18,6 @@ extern u8 data_020d468c[];
 
 struct SpriteAnimSeq;
 
-
-
-
-
-
 void HudUnkIcon::updateHidden() {
     if (HudUnkIcon_CanShow() != 0) {
         state = 1;
@@ -83,8 +78,8 @@ ScrollKnob::~ScrollKnob() {
 
 void ScrollKnob::draw() {
     if (state != 0) {
-        void *h0 = layerAnim1.getCell();
-        void *h1 = priority.getCell();
+        GXOamAttr *h0 = static_cast<GXOamAttr *>(layerAnim1.getCell()); // (the frame cell: its OAM entries)
+        GXOamAttr *h1 = static_cast<GXOamAttr *>(priority.getCell()); // (the frame cell: its OAM entries)
         s32 a = layerAnim1.getFrameX(-1);
         s32 b = layerAnim1.getFrameY(-1);
         s32 c = priority.getFrameX(-1);

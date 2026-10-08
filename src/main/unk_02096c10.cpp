@@ -8,16 +8,11 @@
 #include "item/LetterOutbox.h"
 #include "item/FutureLetter.h"
 #include "item/BottleLetterRecord.h"
-#define PROTO_LOCAL_LetterDelivery_Update  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_Clear  // declared below: the shared prototype conflicts with the calls here
+#include "item/LetterView.h"
 #include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_02095cdc.h"
 #include "proto/main/unk_02096c10.h"
-
-
-
-
-
-
 
 
 // Vtable at 0x020e1db0.
@@ -38,9 +33,7 @@ public:
 };
 
 extern "C" {
-void LetterDelivery_Update(void *);
-s32 Scene_AllowsLetterDelivery(void);
-void Letter_Clear(void *);
+BOOL Scene_AllowsLetterDelivery(void);
 }
 
 PlayerMailbox::PlayerMailbox() {}
@@ -57,7 +50,7 @@ Letter *PlayerMailbox::getLetter(s32 i) {
 void PlayerMailbox::clear() {
     s32 i;
     for (i = 0; i < 10; i++) {
-        Letter_Clear(&letters[i]);
+        Letter_Clear((LetterView *)&letters[i]);
     }
     lastWifiMailId = 0;
 }
@@ -84,7 +77,7 @@ Letter *LetterOutbox::getLetter(s32 i) {
 void LetterOutbox::clear() {
     s32 i;
     for (i = 0; i < 10; i++) {
-        Letter_Clear(&letters[i]);
+        Letter_Clear((LetterView *)&letters[i]);
     }
     flags = 0;
     lastDeliveryDay = 1;
@@ -118,7 +111,7 @@ Letter *LetterStorage::getPage(s32 i) {
 void LetterStorage::clear() {
     s32 i;
     for (i = 0; i < 75; i++) {
-        Letter_Clear(&letters[i]);
+        Letter_Clear((LetterView *)&letters[i]);
     }
 }
 
@@ -135,7 +128,7 @@ extern "C" Letter *BottleLetterRecord_Destruct(Letter *p) {
 extern "C" void *BottleLetterRecord_GetLetter(void *p) { return p; }
 
 void BottleLetterRecord::clearRecord() {
-    Letter_Clear(this);
+    Letter_Clear((LetterView *)this);
     clearUsedMessages();
 }
 
@@ -203,7 +196,7 @@ u8 *FutureLetter::getDeliveryDate() {
 }
 
 void FutureLetter::clearFutureLetter() {
-    Letter_Clear(this);
+    Letter_Clear((LetterView *)this);
     deliveryDay = 1;
     deliveryMonth = 1;
     deliveryYear = 0;
@@ -315,7 +308,7 @@ BOOL LetterDeliveryProc::onDelete() {
 }
 
 void LetterDeliveryProc::deliverLetters() {
-    LetterDelivery_Update(this);
+    LetterDelivery_Update();
 }
 
 BOOL LetterDeliveryProc::testProcFlag(u32 mask) {

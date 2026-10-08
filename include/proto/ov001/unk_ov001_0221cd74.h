@@ -4,9 +4,6 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0221cd74.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,17 +17,11 @@ void WfcBgMap_Destroy();
 #ifndef PROTO_LOCAL_WfcBgMap_RequestTransfer
 void WfcBgMap_RequestTransfer();
 #endif
-#ifndef PROTO_LOCAL_WfcBgMap_TransferTask
-void WfcBgMap_TransferTask();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_WfcBgMap_Blit
 void WfcBgMap_Blit(u8 *a, s32 b, s32 c, s32 d);
+#endif
+#ifndef PROTO_LOCAL_WfcBgMap_TransferTask
+void WfcBgMap_TransferTask();
 #endif
 #ifndef PROTO_LOCAL_WfcUtil_RequestPaletteLine
 void WfcUtil_RequestPaletteLine(void *a, s32 b, s32 c);
@@ -44,6 +35,7 @@ void WfcUtil_RequestBgPalette(void *a);
 #ifndef PROTO_LOCAL_WfcUtil_BgPaletteTask
 void WfcUtil_BgPaletteTask(void *task);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

@@ -268,15 +268,11 @@ extern VecFx32 gCameraEye;
 extern VecFx32 gCameraLookAt;
 }
 
-// classes of main without a header yet (their definitions are local to src/main/unk_0209c08c.cpp and
-// src/main/unk_0202fa70.cpp): called by their symbols
+// a class of main without a header yet (its definition is local to
+// src/main/unk_0202fa70.cpp): called by its symbol
 extern "C" {
-void *_ZN9ModelSlot7getHeapEv(ModelSlot *p);
-TexVramSlot *_ZN9ModelSlot11getVramSlotEv(ModelSlot *p);
 BOOL _ZN16BoxColliderShape15updateTransformEP7VecFx32iS1_(BoxCollider *c, VecFx32 *pos, s32 angle, VecFx32 *scale);
 }
-static inline void *ModelSlot_getHeap(ModelSlot *p) { return _ZN9ModelSlot7getHeapEv(p); }
-static inline TexVramSlot *ModelSlot_getVramSlot(ModelSlot *p) { return _ZN9ModelSlot11getVramSlotEv(p); }
 // (the box shape of a BoxCollider: BoxColliderShape is main's view of BoxColliderX)
 static inline BOOL BoxCollider_UpdateShape(BoxCollider *c, VecFx32 *pos, s32 angle, VecFx32 *scale) {
     return _ZN16BoxColliderShape15updateTransformEP7VecFx32iS1_(c, pos, angle, scale);
@@ -980,32 +976,32 @@ void FtrActor::initAnims(s32 a, s32 b, s32 c, s32 d) {
     ModelSlot *m = FtrActor_GetHeap(this);
     u32 i = a & 1;
     if (modelRes.getAnimSet()->getBva(i)) {
-        if (anims[3].allocJointAnm(model.resMdl, ModelSlot_getHeap(m))) {
+        if (anims[3].allocJointAnm(model.resMdl, m->getHeap())) {
             anims[3].init(modelRes.getAnimSet()->getBva(i), b, c, d);
             anims[3].addToRenderObj(model.getRenderObj());
         }
     }
     if (modelRes.getAnimSet()->getBma(i)) {
-        if (anims[0].allocMatAnm(model.resMdl, ModelSlot_getHeap(m))) {
+        if (anims[0].allocMatAnm(model.resMdl, m->getHeap())) {
             anims[0].init(modelRes.getAnimSet()->getBma(i), b, c, d);
             anims[0].addToRenderObj(model.getRenderObj());
         }
     }
     if (modelRes.getAnimSet()->getBta(i)) {
-        if (anims[1].allocMatAnm(model.resMdl, ModelSlot_getHeap(m))) {
+        if (anims[1].allocMatAnm(model.resMdl, m->getHeap())) {
             anims[1].init(modelRes.getAnimSet()->getBta(i), b, c, d);
             anims[1].addToRenderObj(model.getRenderObj());
         }
     }
     if (modelRes.getAnimSet()->getBtp(i)) {
-        if (anims[2].allocMatAnm(model.resMdl, ModelSlot_getHeap(m))) {
+        if (anims[2].allocMatAnm(model.resMdl, m->getHeap())) {
             NNSG3dResAnmCommon *rec = modelRes.getAnimSet()->getBtp(i);
             anims[2].initWithTex(rec, modelRes.getTexture(), b, c, d);
             anims[2].addToRenderObj(model.getRenderObj());
         }
     }
     if (modelRes.getAnimSet()->getBca(i)) {
-        if (model.allocAnmObj(ModelSlot_getHeap(m))) {
+        if (model.allocAnmObj(m->getHeap())) {
             model.initAnim(modelRes.getAnimSet()->getBca(i), b, c, d, 0);
             model.attachAnim();
         }
@@ -1443,9 +1439,7 @@ extern "C" void FtrActor_UpdateTopItemBoxes(FtrActor *self) {
                 if (Item_IsNormalItem(c)) {
                     FieldPos_FromUnitCenter(&v, x, y);
                     v.y = FtrMgr_GetSurfaceHeight(x, y);
-                    // (radius 0xccd and height 0x100: TouchPicker::addCylinder declares them as pointers)
-                    Scene_GetTouchPicker()->addCylinder(&self->topItemCylinders[i], &v, (VecFx32 *)(0xccd),
-                                                        (VecFx32 *)(0x100), 10, 0xff);
+                    Scene_GetTouchPicker()->addCylinder(&self->topItemCylinders[i], &v, 0xccd, 0x100, 10, 0xff);
                 }
             }
         }
@@ -2206,14 +2200,14 @@ BOOL FtrModelRes::loadFiles(ModelSlot *obj, s32 id) {
     if (texFile == 0) {
         texFile = File_LoadAlloc(makeTexPath(id), gCurrentHeap, -4, &size0);
         if (keepTexCopy != 0) {
-            void *r7 = Heap_Alloc((Heap *)ModelSlot_getHeap(obj), size0);
+            void *r7 = Heap_Alloc((Heap *)obj->getHeap(), size0);
             MI_CpuCopy8(texFile, r7, size0);
             animSet.setTexCopy(r7);
         }
     }
     if (arcFile == 0) {
         char *p = makeArcPath(id);
-        arcFile = File_LoadAlloc(p, ModelSlot_getHeap(obj), 4, &size1);
+        arcFile = File_LoadAlloc(p, obj->getHeap(), 4, &size1);
     }
     if (model == 0 && arcFile != 0) {
         if (NNS_FndMountArchive(&blk, "FTR", arcFile)) {
@@ -2282,8 +2276,8 @@ BOOL FtrModelRes::loadSync(ModelSlot *obj, s32 a, s32 flag) {
     item = Item_MakeFurniture(a, 0);
     loadFiles(obj, a);
     h = NNS_G3dGetTex(texFile);
-    Gfx3d_LoadTexAndPltt(h, ModelSlot_getVramSlot(obj));
-    texture = Gfx3d_CopyTex(h, ModelSlot_getHeap(obj));
+    Gfx3d_LoadTexAndPltt(h, obj->getVramSlot());
+    texture = Gfx3d_CopyTex(h, obj->getHeap());
     release();
     return TRUE;
 }
@@ -2306,8 +2300,8 @@ BOOL FtrModelRes::loadAsync(ModelSlot *obj, s32 a, s32 flag) {
     loadFiles(obj, a);
     if (texture == 0) {
         void *p = NNS_G3dGetTex(texFile);
-        TexVramSlot *x = ModelSlot_getVramSlot(obj);
-        void *y = ModelSlot_getHeap(obj);
+        TexVramSlot *x = obj->getVramSlot();
+        void *y = obj->getHeap();
         if (texLoader.loadTexture(p, x, y) == 3) {
             texture = texLoader.getTexture();
             release();

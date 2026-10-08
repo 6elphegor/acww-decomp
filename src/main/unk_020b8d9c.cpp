@@ -3692,7 +3692,7 @@ void SkySprites::onDayChange(BOOL a) {
 void SkySprites::onSlingshotFired(s32 i) {
     s32 j = 0;
     if (i < 4) j = i;
-    u8 *v = PlayerActor_GetBodyPos(i);
+    VecFx32 *v = PlayerActor_GetBodyPos(i);
     if (v != NULL) {
         u16 buf[4];
         PlayerActor_GetSlotHeldItem(buf, i);
@@ -6450,7 +6450,7 @@ BOOL SkyProc::onCreate() {
 BOOL SkyProc::onExecute() {
     if (sSkyOutdoors != 0) {
         if (!MenuCtrl_IsMenuOnTop()) {
-            StarTwinkle_Update((u8 *)&data_021efc18);
+            StarTwinkle_Update(&data_021efc18);
         }
         SkySprites_Update(&gSkySprites);
     } else {
@@ -6607,7 +6607,7 @@ extern "C" BOOL Sky_LoadStarBg(u32 idx) {
         return FALSE;
     }
     Heap_Free(heap, buf);
-    StarTwinkle_Init((u8 *)&data_021efc18, v6);
+    StarTwinkle_Init(&data_021efc18, v6);
     return TRUE;
 }
 

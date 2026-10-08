@@ -6,7 +6,7 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "actor/ActorCollider.h"
-#include "types.h"
+class BugNetTarget;
 #endif
 
 #ifdef __cplusplus
@@ -27,7 +27,7 @@ void ActorCollider_ResolveAll();
 
 #ifdef __cplusplus
 #ifndef PROTO_LOCAL_data_021ce63c
-extern u32 data_021ce63c;
+extern BugNetTarget *data_021ce63c;
 #endif
 #ifndef PROTO_LOCAL_gActorColliderList
 extern ActorCollider *gActorColliderList;

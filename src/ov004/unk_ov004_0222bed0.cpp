@@ -71,8 +71,8 @@ extern FxVec3 gCameraLookAt;
 
 void ModelSet_Release(void *p);
 s32 ModelSet_Load(void *p, void *a, s32 b);
-void *ModelSet_Find(void *p, u32 a);
-u32 Item_GetIconModelName(s32 a, s32 b);
+void *ModelSet_Find(void *p, void *name);
+const char *Item_GetIconModelName(s32 a, s32 b);
 void Town_GetEnvironmentRank();
 void FieldPos_FromUnitCenter(VecFx32Copy *out, s32 a, s32 b);
 void VEC_Add(void *a, void *b, void *c);
@@ -111,7 +111,7 @@ BOOL RoomItemIcons::loadIconModels() {
     if (ModelSet_Load(&modelSet, d ? d : d, r)) {
         s32 i;
         for (i = 0; i < 0x49; i++) {
-            iconModels[i] = ModelSet_Find(&modelSet, Item_GetIconModelName(i, r));
+            iconModels[i] = ModelSet_Find(&modelSet, (void *)Item_GetIconModelName(i, r));
         }
         r = TRUE;
     }

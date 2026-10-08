@@ -8,16 +8,6 @@
 #include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_0208d33c.h"
 
-extern "C" {
-}
-
-extern "C" {
-void GX_LoadOBJPltt(void *a, u32 b, u32 c);
-}
-
-extern "C" {
-}
-
 extern u8 sNameLabelBalloonKind4Color[];
 extern s32 kNameLabelBalloonKindAnims[];
 extern s32 sHandCursorAnimSeqIds[];
@@ -28,14 +18,7 @@ extern s32 sScrollKnobPlayOnce[];
 extern u8 data_020d5b0c[];
 extern u8 data_020d467c[];
 
-
-
-
-
-
-
 // ---------------------------------------------------------------------------------------------------------------------
-
 
 s32 HandCursor::getAnim() {
     return anim;
@@ -71,7 +54,7 @@ NameLabelBalloon::~NameLabelBalloon() {
 
 void NameLabelBalloon::draw() {
     if (isVisible != 0) {
-        void *h = anim.getCell();
+        GXOamAttr *h = static_cast<GXOamAttr *>(anim.getCell()); // (the frame cell: its OAM entries)
         s32 a = getOriginX();
         s32 b = anim.getFrameX(-1);
         s32 x = alignX + (offsetX + a);

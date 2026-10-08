@@ -4,15 +4,18 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02211b2c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_sWfcApList
-extern void *sWfcApList;
+#ifndef PROTO_LOCAL_data_ov001_0222aea8
+extern u8 data_ov001_0222aea8;
+#endif
+#ifndef PROTO_LOCAL_sWfcApListCursor
+extern u8 sWfcApListCursor;
+#endif
+#ifndef PROTO_LOCAL_sWfcApListScroll
+extern u16 sWfcApListScroll;
 #endif
 #ifndef PROTO_LOCAL_WfcApList_Enter
 void WfcApList_Enter();
@@ -59,14 +62,29 @@ void WfcApList_Exit();
 #ifndef PROTO_LOCAL_WfcApList_Redraw
 void WfcApList_Redraw();
 #endif
+#ifndef PROTO_LOCAL_WfcApList_DrawSsid
+void WfcApList_DrawSsid(s32 a, s32 b);
+#endif
+#ifndef PROTO_LOCAL_WfcApList_SetRowIcons
+void WfcApList_SetRowIcons(s32 a, s32 b);
+#endif
 #ifndef PROTO_LOCAL_WfcApList_LayoutRows
 void WfcApList_LayoutRows();
+#endif
+#ifndef PROTO_LOCAL_WfcApList_ScrollUpTask
+void WfcApList_ScrollUpTask(void *task);
+#endif
+#ifndef PROTO_LOCAL_WfcApList_ScrollDownTask
+void WfcApList_ScrollDownTask(void *task);
 #endif
 #ifndef PROTO_LOCAL_WfcApList_ApplyBgScrollTask
 void WfcApList_ApplyBgScrollTask();
 #endif
 #ifndef PROTO_LOCAL_WfcApList_UpdateCursor
 void WfcApList_UpdateCursor();
+#endif
+#ifndef PROTO_LOCAL_WfcApList_MoveCursor
+void WfcApList_MoveCursor(s32 a);
 #endif
 #ifndef PROTO_LOCAL_WfcApList_ScrollUp
 void WfcApList_ScrollUp();
@@ -84,35 +102,6 @@ void WfcApList_WaitErrorDialog();
 void WfcApList_WaitDialogClosed();
 #endif
 #ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_data_ov001_0222aea8
-extern u8 data_ov001_0222aea8;
-#endif
-#ifndef PROTO_LOCAL_sWfcApListCursor
-extern u8 sWfcApListCursor;
-#endif
-#ifndef PROTO_LOCAL_sWfcApListScroll
-extern u16 sWfcApListScroll;
-#endif
-#ifndef PROTO_LOCAL_WfcApList_DrawSsid
-void WfcApList_DrawSsid(s32 a, s32 b);
-#endif
-#ifndef PROTO_LOCAL_WfcApList_SetRowIcons
-void WfcApList_SetRowIcons(s32 a, s32 b);
-#endif
-#ifndef PROTO_LOCAL_WfcApList_ScrollUpTask
-void WfcApList_ScrollUpTask(u32 a);
-#endif
-#ifndef PROTO_LOCAL_WfcApList_ScrollDownTask
-void WfcApList_ScrollDownTask(u32 a);
-#endif
-#ifndef PROTO_LOCAL_WfcApList_MoveCursor
-void WfcApList_MoveCursor(s32 a);
-#endif
 }
 #endif
 

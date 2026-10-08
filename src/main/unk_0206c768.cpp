@@ -1,4 +1,3 @@
-#include "uptr.h"
 #include "types.h"
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
@@ -16,59 +15,17 @@
 #include "ui/LetterTextLine.h"
 #include "talk/EncodedString40.h"
 #include "talk/EncodedString512.h"
+#include "item/LetterView.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020027b4.h"
 #include "proto/main/unk_02051218.h"
 #include "proto/main/unk_0206c768.h"
 #include "proto/main/unk_020b2c50.h"
 
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
-}
-
-extern "C" {
-void MsgTextLabel_Destroy(TextLabel *obj);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
 extern const u8 sMailCheckSeparators[8];
 
 
-
-
-class MsgString;
-
-
-
-
-
 // ---------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
 
 
 MsgString513::MsgString513() { clear(); }
@@ -78,7 +35,7 @@ MsgString513::~MsgString513() {}
 
 u32 MsgString513::capacity() { return 0x201; }
 
-u8 *MsgString513::data() { return HOST_AT(this, 0x12, text[0], 0); }
+u8 *MsgString513::data() { return text; }
 
 extern "C" BOOL String_LoadByIndexB(MsgString *buf, const char *name, u32 key) {
     u8 k = key;
@@ -92,7 +49,7 @@ EncodedString512::~EncodedString512() {}
 
 u32 EncodedString512::capacity() { return 0x200; }
 
-u8 *EncodedString512::data() { return HOST_AT(this, 0xe, text[0], 0); }
+u8 *EncodedString512::data() { return text; }
 
 extern "C" void MailCheck_LoadWordList() {
     MsgString513 src;
@@ -126,11 +83,11 @@ extern "C" void MailCheck_LoadWordList() {
     }
 }
 
-extern "C" s32 MailCheck_GradeLetter(u8 *self) {
+extern "C" s32 MailCheck_GradeLetter(LetterView *self) {
     u8 buf[0x80];
     s32 cnt, matched, n, i, prev, isSep;
     u8 *p;
-    Mem_Copy(self + 0x4c, buf, 0x80);
+    Mem_Copy(self->body, buf, 0x80);
     cnt = 0;
     matched = 0;
     n = Text_GetLength(buf, 0x80);
@@ -155,8 +112,8 @@ extern "C" s32 MailCheck_GradeLetter(u8 *self) {
     return 0;
 }
 
-extern "C" s32 Letter_GetBodyLength(u8 *self) {
-    return Text_GetLength(self + 0x4c, 0x80);
+extern "C" s32 Letter_GetBodyLength(LetterView *self) {
+    return Text_GetLength(self->body, 0x80);
 }
 
 extern "C" BOOL MailCheck_IsSeparator(u32 c) {

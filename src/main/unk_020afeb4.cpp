@@ -162,7 +162,7 @@ s32 Constellation_FindFreeSlot(void) {
     Base *base = Constellation_GetData();
     s32 i;
     for (i = 0; i < 16; i++) {
-        if (!ConstellationStore_IsUsed((u8 *)base, i)) {
+        if (!ConstellationStore_IsUsed(base, i)) {
             return i;
         }
     }
@@ -174,7 +174,7 @@ s32 Constellation_CountFreeSlots(void) {
     s32 i, n;
     i = n = 0;
     for (; i < 16; i++) {
-        if (!ConstellationStore_IsUsed((u8 *)base, i)) {
+        if (!ConstellationStore_IsUsed(base, i)) {
             n++;
         }
     }
@@ -183,7 +183,7 @@ s32 Constellation_CountFreeSlots(void) {
 
 Entry *Constellation_GetRecord(s32 idx) {
     Base *base = Constellation_GetData();
-    if (ConstellationStore_IsUsed((u8 *)base, idx) == 0) {
+    if (ConstellationStore_IsUsed(base, idx) == 0) {
         return NULL;
     }
     return base->records + idx;
@@ -191,7 +191,7 @@ Entry *Constellation_GetRecord(s32 idx) {
 
 void Constellation_Store(Entry *e, s32 idx, s32 flag) {
     Base *base = Constellation_GetData();
-    ConstellationStore_SetUsed((u8 *)base, idx);
+    ConstellationStore_SetUsed(base, idx);
     ConstellationRecord_Copy(&base->records[idx], e);
     if (flag) {
         base->newMask |= 1 << idx;
@@ -200,13 +200,13 @@ void Constellation_Store(Entry *e, s32 idx, s32 flag) {
 
 void Constellation_Erase(s32 idx) {
     Base *base = Constellation_GetData();
-    ConstellationStore_ClearUsed((u8 *)base, idx);
+    ConstellationStore_ClearUsed(base, idx);
     base->newMask &= ~(1 << idx);
 }
 
 Entry *Constellation_GetRecordAlt(s32 idx) {
     Base *base = Constellation_GetData();
-    if (ConstellationStore_IsUsed((u8 *)base, idx) == 0) {
+    if (ConstellationStore_IsUsed(base, idx) == 0) {
         return NULL;
     }
     return base->records + idx;
@@ -231,14 +231,14 @@ void Constellation_SetName(u8 *src, s32 idx) {
 void Constellation_CopyName(u8 *dst, s32 idx) {
     Base *base = Constellation_GetData();
     Mem_Clear(dst, 16);
-    if (ConstellationStore_IsUsed((u8 *)base, idx)) {
+    if (ConstellationStore_IsUsed(base, idx)) {
         Mem_Copy(base->records[idx].name, dst, 16);
     }
 }
 
 BOOL Constellation_GetName(void *self, s32 idx) {
     Entry *e;
-    if (!ConstellationStore_IsUsed((u8 *)Constellation_GetData(), idx)) {
+    if (!ConstellationStore_IsUsed(Constellation_GetData(), idx)) {
         return FALSE;
     }
     e = Constellation_GetRecord(idx);
@@ -256,7 +256,7 @@ s32 Constellation_GetNewStatus(s32 *out) {
     for (i = 0; i < 16; i++) {
         u32 bit = 1 << i;
         if (base->newMask & bit) {
-            if (ConstellationStore_IsUsed((u8 *)base, i)) {
+            if (ConstellationStore_IsUsed(base, i)) {
                 if (*out == -1) {
                     *out = i;
                 } else {
@@ -360,18 +360,18 @@ void Constellation_PrepareExchange(void) {
     Base *base;
     s32 n, i;
     e = (Entry *)data_021e7f8c.getConstellation();
-    ConstellationRecord_Clear((u8 *)e);
+    ConstellationRecord_Clear(e);
     n = 0;
     base = Constellation_GetData();
     for (i = 0; i < 16; i++) {
-        if (ConstellationStore_IsUsed((u8 *)base, i)) {
+        if (ConstellationStore_IsUsed(base, i)) {
             n++;
         }
     }
     if (n != 0) {
         n = Random_GlobalBelow(n);
         for (i = 0; i < 16; i++) {
-            if (ConstellationStore_IsUsed((u8 *)base, i)) {
+            if (ConstellationStore_IsUsed(base, i)) {
                 if (n > 0) {
                     n--;
                 } else {
@@ -396,7 +396,7 @@ void Constellation_ImportExchanged(void) {
                 count++;
                 for (j = 0; j < i; j++) {
                     if (e->lines[i] == e->lines[j]) {
-                        ConstellationRecord_Clear((u8 *)e);
+                        ConstellationRecord_Clear(e);
                         return;
                     }
                 }
@@ -404,7 +404,7 @@ void Constellation_ImportExchanged(void) {
         }
         if (count != 0) {
             if (Constellation_AddReceived(e)) {
-                ConstellationRecord_Clear((u8 *)e);
+                ConstellationRecord_Clear(e);
             }
         }
     }

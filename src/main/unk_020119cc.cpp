@@ -2879,7 +2879,7 @@ void NpcFaceAnim::setFaceAnimsFrom(u32 a, s32 b, s32 c) {
 BOOL NpcFaceAnim::setMaterialTex(MatTexPatAnim *m, const char *q, const char *r) {
     using namespace nO;
     if (isLoaded()) {
-        _ZN13MatTexPatAnim13pauseMaterialEv(m, q);
+        m->pauseMaterial(q);
         if (m->setMaterialTex(q, r)) {
             return TRUE;
         }

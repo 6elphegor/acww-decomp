@@ -2,7 +2,7 @@
 #include "gfx/VecFx32.h"
 #include "game/Unk_02037674_V3.h"
 #include "gfx/BgModelCache.h"
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "town/MapBlock.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_02037260.h"
 #include "proto/main/unk_02037358.h"
@@ -13,7 +13,6 @@
 extern "C" {
 void MI_CpuFill8(void *, s32, s32);
 s32 CollisionMap_SetBlock(s32, s32, s32, s32);
-extern void *gCurrentHeap;
 }
 
 u8 *sAcreAttrData;
@@ -32,30 +31,6 @@ static inline BOOL Unk_020374f4_Range(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-class MapBlockAcre {
-public:
-    s32 hasPond();
-    u32 getAcreId();
-    void setAcreId(u32 v);
-    u8 *getUnk04();
-    u32 acreId;
-};
-
-
-class MapBlock {
-public:
-    void clear();
-    void bindBg(BgAcreModel *s, u32 t, u32 u);
-    void init(s32 a, VecFx32 *v, s32 b, s32 k0, s32 k1, BgAcreModel *k2, u32 k3, s32 k4, s32 k5, u32 k6);
-
-    s32 acreId;
-    s32 blockX;
-    s32 blockZ;
-    VecFx32 pos;
-    s32 layers[2];
-    BgAcreModel *bgModel;
-    uptr buried;  // the buried-item mask (u16 *: TownBlockCell::buriedFlags)
-};
 
 extern "C" u32 AcreAttr_GetType(u32 i);
 extern "C" BOOL Bits16_Clear(void *, u16 *p, s32 bit);
@@ -96,7 +71,7 @@ extern "C" void MapBlock_Init(MapBlock *self, s32 a, VecFx32 *v, s32 b, s32 k0, 
 void MapBlock::bindBg(BgAcreModel *s, u32 t, u32 u) {
     bgModel = s;
     if (bgModel != 0) {
-        t = (u32)bgModel->bcl;
+        t = (u32)(uptr)bgModel->bcl;  // (CollisionMap_SetBlock takes the collision data's address as an integer)
     }
     if (t != 0) {
         CollisionMap_SetBlock(blockX, blockZ, t, u);
@@ -104,7 +79,7 @@ void MapBlock::bindBg(BgAcreModel *s, u32 t, u32 u) {
 }
 
 extern "C" MapBlock *MapBlock_NewArray(s32 n, void *heap, s32 x) {
-    MapBlock *p = (MapBlock *)Heap_AllocAligned(heap, n * HOST_SIZED(0x28, MapBlock), x);
+    MapBlock *p = (MapBlock *)Heap_AllocAligned(static_cast<Heap *>(heap), n * sizeof(MapBlock), x);
     if (p != 0) {
         s32 i;
         for (i = 0; i < n; i++) {
@@ -117,7 +92,7 @@ extern "C" MapBlock *MapBlock_NewArray(s32 n, void *heap, s32 x) {
     return p;
 }
 
-u8 *MapBlockAcre::getUnk04() { return (u8 *)this + 4; }
+u8 *MapBlockAcre::getUnk04() { return (u8 *)&reinterpret_cast<MapBlock *>(this)->blockX; }
 
 void MapBlockAcre::setAcreId(u32 v) { acreId = v; }
 

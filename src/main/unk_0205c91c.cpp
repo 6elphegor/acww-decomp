@@ -19,10 +19,6 @@ extern CommManager *gCommManager;
 
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-#define Heap_freeAll _ZN4Heap7freeAllEv
-void Heap_freeAll(void *p);
-#define Heap_adjust _ZN4Heap6adjustEv
-void Heap_adjust(void *p);
 u32 Scene_GetCurrent();
 u32 Scene_GetMaxPlayers(u32 a);
 u32 Scene_GetMaxCharacters(u32 a);
@@ -44,13 +40,10 @@ struct CharaClothTexPool {
     void allocBuffers();
 };
 
-extern "C" {
-}
-
 extern "C" void CharaClothTexPool_Create(void *parent) {
     CharaClothTexHeap_Create(parent);
     sCharaClothTexPool.allocBuffers();
-    if (gCharaClothTexHeap) ((Heap *)(gCharaClothTexHeap))->adjust();
+    if (gCharaClothTexHeap) static_cast<Heap *>(gCharaClothTexHeap)->adjust();
 }
 
 extern "C" void CharaClothTexPool_Destroy() {
@@ -67,7 +60,7 @@ CharaClothTexPool::CharaClothTexPool() {
 CharaClothTexPool::~CharaClothTexPool() {}
 
 void CharaClothTexPool::allocBuffers() {
-    Heap *heap = (Heap *)gCharaClothTexHeap;
+    Heap *heap = static_cast<Heap *>(gCharaClothTexHeap);
     u32 n = gCommManager->memberCount;
     u32 m = Scene_GetMaxPlayers(Scene_GetCurrent());
     u32 i;
@@ -89,10 +82,10 @@ void CharaClothTexPool::freeBuffers() {
     StackPad8 pad;
     sub.release();
     for (s32 i = 0; i < 10; i++) {
-        ptr[i] = 0;
+        ptr[i] = NULL;
         id[i].id = 0xfff1;
     }
-    if (gCharaClothTexHeap) ((Heap *)(gCharaClothTexHeap))->freeAll();
+    if (gCharaClothTexHeap) static_cast<Heap *>(gCharaClothTexHeap)->freeAll();
 }
 
 void *CharaClothTexPool::getBuffer(u32 idx) { return ptr[idx]; }

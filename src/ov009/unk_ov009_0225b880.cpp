@@ -777,7 +777,7 @@ void BuildingActor::createShadows(Mtx43 *m) {
                 VecFx32Ctor v(it->offsetX, zero, it->offsetZ);
                 VecFx32 out;
                 Building_LocalToWorld(&out, &v, m);
-                p->build(&out, it->size, it->shift, it->texIndex, it->texLeft, it->texRight, (s32)heap);
+                p->build(&out, it->size, it->shift, it->texIndex, it->texLeft, it->texRight, (Heap *)heap);
             }
         }
     }
@@ -1001,8 +1001,8 @@ void BuildingActor::execDoorIdle() {
             }
         }
         if ((colliderFlags & 2) != 0 && f == 0) {
-            s32 a = TouchPick_GetTappedObject(Scene_GetTouchPicker(), 0, 0);
-            s32 b = (s32)PlayerActor_GetActor(4);
+            void *a = TouchPick_GetTappedObject(Scene_GetTouchPicker(), 0, 0);
+            void *b = PlayerActor_GetActor(4);
             if (b != 0 && b == a) {
                 if (isOpen() == 0) {
                     clearTalkStartMode();

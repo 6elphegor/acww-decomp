@@ -2825,7 +2825,7 @@ void PlayerActor::submitSceneCollider() {
         v.z = p->z;
         v.y += 0xb33;
         TouchPicker *r = (TouchPicker *)Scene_GetTouchPicker();
-        r->addCylinder((TouchPickCylinder *)((u8 *)&touchCylinder), (VecFx32 *)(&v), (VecFx32 *)(0xa00), (VecFx32 *)(0x15cf), 1, (u8)sessionSlot);
+        r->addCylinder((TouchPickCylinder *)((u8 *)&touchCylinder), (VecFx32 *)(&v), 0xa00, 0x15cf, 1, (u8)sessionSlot);
     }
 }
 
@@ -2868,8 +2868,8 @@ void PlayerActor::setMouthAnimForBody(s32 *a, u8 *b) {
 void PlayerActor::setEyeAnim(s32 *a, u8 *b) {
     using namespace nS;
     ((CharaFaceAnimRef *)((u8 *)&faceAnimRef))->loadAnim(*a, 1, 0);
-    s32 r = ((CharaFaceAnimRef *)(void *)((u8 *)&faceAnimRef))->getEyeAnimBuffer();
-    ((MatTexPatAnim *)((u8 *)&eyeTexAnim))->setAnim((void *)(r), (void *)(0), 0, *b, (void *)(0x1000));
+    void *r = ((CharaFaceAnimRef *)(void *)((u8 *)&faceAnimRef))->getEyeAnimBuffer();
+    ((MatTexPatAnim *)((u8 *)&eyeTexAnim))->setAnim(r, (void *)(0), 0, *b, (void *)(0x1000));
     ((MatTexPatAnim *)((u8 *)&eyeTexAnim))->update();
     eyeAnimId = *a;
 }
@@ -2877,8 +2877,8 @@ void PlayerActor::setEyeAnim(s32 *a, u8 *b) {
 void PlayerActor::setMouthAnim(s32 *a, u8 *b) {
     using namespace nS;
     ((CharaFaceAnimRef *)((u8 *)&faceAnimRef))->loadAnim(*a, 1, 0);
-    s32 r = ((CharaFaceAnimRef *)(void *)((u8 *)&faceAnimRef))->getMouthAnimBuffer();
-    ((MatTexPatAnim *)((u8 *)&mouthTexAnim))->setAnim((void *)(r), (void *)(0), 0, *b, (void *)(0x1000));
+    void *r = ((CharaFaceAnimRef *)(void *)((u8 *)&faceAnimRef))->getMouthAnimBuffer();
+    ((MatTexPatAnim *)((u8 *)&mouthTexAnim))->setAnim(r, (void *)(0), 0, *b, (void *)(0x1000));
     ((MatTexPatAnim *)((u8 *)&mouthTexAnim))->update();
     mouthAnimId = *a;
 }

@@ -4,7 +4,11 @@
 #include "save/SaveRecord4.h"
 #include "town/VisitorPos.h"
 #include "ui/HudController.h"
-#define PROTO_LOCAL_Melody_SetPacked  // declared below: the shared prototype conflicts with the calls here
+#include "item/LetterStorage.h"
+#include "save/SaveData.h"
+#include "town/KatieVisitState.h"
+#include "town/PeteFallState.h"
+#include "proto/main/unk_0206d988.h"
 #include "proto/autoload_2/unk_0211d20c.h"
 #include "proto/main/unk_0202e840.h"
 #include "proto/main/unk_02034048.h"
@@ -19,9 +23,10 @@
 #include "proto/main/unk_0209cb74.h"
 #include "proto/main/unk_020b0e60.h"
 
+// the player's clock setting relative to the RTC (SaveData::clockOffset)
 struct ClockOffset {
-    u32 minutes;
-    u16 seconds;
+    s32 minutes;
+    s16 seconds;
 };
 
 struct Unk_0209cf28_T {
@@ -52,7 +57,6 @@ union MinuteHour {
 };
 
 
-
 // rodata
 extern const u8 sDaysInMonthLeap[12];
 extern const u8 sDaysInMonth[12];
@@ -60,7 +64,7 @@ extern const u16 sWeatherPeriodEnds[20];
 extern const u16 sSeasonPeriodEnds[24];
 extern const u16 sDaysBeforeMonth[26];
 
-extern u8 data_021ed2d0[];
+extern SaveData gSaveData;
 extern s32 gClock[7];
 
 extern "C" {
@@ -98,9 +102,6 @@ void SaveVillagers_ResetMoods(void *);
 void Weather_Apply(void *);
 void Town_OnLoad(void);
 void NookShop_UpdateDaily(void *, s32);
-void Melody_SetPacked(void *);
-void _ZN15KatieVisitState12pickKatiePosEv(void *self);
-void _ZN13PeteFallState5clearEv(void *self);
 void SaveVillagers_PickGreeter(void *);
 void SaveVillagers_InitTalkUrges(void *, void *);
 void VillagerStates_ResetIdleFrames(void);
@@ -136,38 +137,39 @@ static inline s16 Unk_0209d4c0_Abs16(s16 v) {
     return v;
 }
 
+// the four players' letter storages (SaveManager_GetLetterStorage) and the marker of a completed write
 class LetterStorageBlock {
 public:
-    u32 pad[0x11df0 / 4];
+    LetterStorage storages[4];
     u8 validMarker;
 };
 
-extern "C" void SaveData_Apply(u8 *p) {
-    ((SaveRecord4 *)(p + 0x15fc5))->expireDate();
+extern "C" void SaveData_Apply(SaveData *p) {
+    ((SaveRecord4 *)p->unk_15fc5)->expireDate();
     NpcSpawn_ResetAll();
     NpcNetRecords_InitVillagers();
-    SaveVillagers_ResetMoods(p + 0x8a3c);
+    SaveVillagers_ResetMoods(p->villagers);
     TownSessionState_Reset(TownSessionState_Get());
     RoomFtrState_ResetAll();
     RoomObjSync_Reset();
     BuildingStates_Reset();
     BuildingOccupancy_Reset();
     RoomWallFloor_ClearScenes();
-    EventWeekSlots_OnLoad(p + 0x15e18);
-    Weather_Apply(p + 0x15f66);
+    EventWeekSlots_OnLoad(p->eventWeekSlots);
+    Weather_Apply(&p->weather);
     Town_OnLoad();
-    NookShop_UpdateDaily(p + 0x15db4, 0);
-    Melody_SetPacked(p + 0x15fa8);
-    _ZN15KatieVisitState12pickKatiePosEv(TownSessionState_GetKatieState(TownSessionState_Get()));
-    _ZN13PeteFallState5clearEv(TownSessionState_GetPeteFall(TownSessionState_Get()));
+    NookShop_UpdateDaily(p->nookShop, 0);
+    Melody_SetPacked((u32 *)&p->townTune);
+    TownSessionState_GetKatieState(TownSessionState_Get())->pickKatiePos();
+    TownSessionState_GetPeteFall(TownSessionState_Get())->clear();
     TownSessionState_CheckTortimerReward(TownSessionState_Get());
     ((VisitorPos *)(TownSessionState_GetVisitorPos(TownSessionState_Get())))->pickRandomPos();
     ((HudCountdown *)(Hud_GetCountdown()))->start(0, 1);
     LowBattery_Reset();
-    SaveVillagers_PickGreeter(p + 0x8a3c);
+    SaveVillagers_PickGreeter(p->villagers);
     MenuCtrl_InitKeyboardState();
     HouseVisitor_ClearPresent();
-    SaveVillagers_InitTalkUrges(p + 0x8a3c, PlayerData_GetCurrent());
+    SaveVillagers_InitTalkUrges(p->villagers, PlayerData_GetCurrent());
     VillagerStates_ResetIdleFrames();
     VillagerStates_ClearUnk1dBit2();
     VillagerStates_ResetTalkRepeats();
@@ -204,8 +206,9 @@ extern "C" void Clock_ReadAdjusted(s32 *out) {
     out[0] = d2.year; out[1] = d2.month; out[2] = d2.day; out[3] = d2.week;
     RTCTime t2 = t;
     out[4] = t2.hour; out[5] = t2.minute; out[6] = t2.second;
-    s32 a = *(s32 *)(data_021ed2d0 + 0x34);
-    s16 b = *(s16 *)(data_021ed2d0 + 0x38);
+    ClockOffset *off = (ClockOffset *)gSaveData.clockOffset;
+    s32 a = off->minutes;
+    s16 b = off->seconds;
     ZeroedClockDateTime2 dtl;
     dtl.year = d.year;
     dtl.month = d.month;

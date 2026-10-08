@@ -3,8 +3,7 @@
 #include "nitro/gxoam.h"
 #include "ui/WfcTextEdit.h"
 #include "nitro/io_access.h"
-#define PROTO_LOCAL_WfcOam_FreeEntry  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcTextEdit_Exit  // declared below: the shared prototype conflicts with the calls here
+#include "net/WfcLoadFunc.h"
 #include "proto/ov001/unk_ov001_02208244.h"
 #include "proto/ov001/unk_ov001_02208388.h"
 #include "proto/ov001/unk_ov001_02208890.h"
@@ -14,48 +13,28 @@
 #include "proto/ov001/unk_ov001_02213424.h"
 #include "proto/ov001/unk_ov001_022156e0.h"
 #include "proto/ov001/unk_ov001_0221bc10.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_02224b14.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02225924.h"
+#include "proto/ov001/unk_ov001_022266b0.h"
 #include "proto/ov001/unk_ov001_02226c24.h"
 
-
-
-static inline void Unk_ov001_0221381c_Clr(volatile u16 *p) {
-    p[0] = 0;
-    p[1] = 0;
-    p[2] = 0;
-    p[3] = 0;
-}
+// stores the edited text (WfcConfig_*, src/ov001/unk_ov001_0221dcec.cpp)
+typedef void (*WfcTextEditStoreFunc)(u8 *text);
 
 #pragma thumb off
 extern "C" {
-extern u8 GX_LoadOBJPltt[];
-extern u8 GX_LoadBG2Char[];
-extern u8 GX_LoadBGPltt[];
-extern u8 GX_LoadBG2Scr[];
-
-s32 WfcOam_FreeEntry(void *a);
-void WfcUtil_LoadFileTo(const char *a, void *b);
-s32 WfcGx_HidePlanes(u32 a, u32 b);
-s32 WfcHeap_FreeAndClear(void *a);
-s32 WfcGx_ShowPlanes(u32 a, u32 b);
-void *WfcHeap_AllocClear(u32 a, u32 b);
-s32 WfcConfig_GetEditSsid(void *a);
-void *WfcObj_CreateSingle(u32 a, u32 b);
-
-void WfcConfig_FormatEditDns2();
-void WfcConfig_SetEditWepKey();
-void WfcConfig_SetEditSsid();
-void WfcTextEdit_Exit();
 
 const u8 data_ov001_0222a058[4] = {0x20, 0x31, 0, 0};
 const u16 data_ov001_0222a05c[2] = {0x0e, 0x10};
 const u8 data_ov001_0222a060[0x10] = {0x08, 0x17, 0x26, 0x35, 0x44, 0x53, 0x62, 0x71, 0x80, 0x8f, 0x9e, 0xad, 0xbc, 0xcb, 0xda, 0xe9};
 u8 sWfcTextEditTitleMsgs[4] = {0x90, 0x8f, 0, 0};
 u32 sWfcTextEditConfirmMsgs[2] = {0x9b, 0x9c};
-void *sWfcTextEditStoreFuncs[2] = {(void *)WfcConfig_SetEditSsid, (void *)WfcConfig_SetEditWepKey};
+WfcTextEditStoreFunc sWfcTextEditStoreFuncs[2] = {WfcConfig_SetEditSsid, WfcConfig_SetEditWepKey};
 WfcTextEdit *sWfcTextEdit;
 
 void WfcTextEdit_Enter() {
@@ -63,7 +42,7 @@ void WfcTextEdit_Enter() {
     u32 idx[2];
     b[0] = sWfcTextEditTitleMsgs[0];
     b[1] = sWfcTextEditTitleMsgs[1];
-    sWfcTextEdit = (WfcTextEdit *)WfcHeap_AllocClear(HOST_SIZED(0x2c, WfcTextEdit), 4);
+    sWfcTextEdit = (WfcTextEdit *)WfcHeap_AllocClear(sizeof(WfcTextEdit), 4);
     WfcUtil_GetEditParams(&idx[0], &idx[1]);
     if (idx[0] == 0) {
         WfcConfig_GetEditSsid(sWfcTextEdit->text);
@@ -78,18 +57,18 @@ void WfcTextEdit_Enter() {
     }
     WfcUtil_ShowStepIndicator(2);
     sWfcTextEdit->textCanvas = WfcText_CreateBgCanvas(0, 0);
-    sWfcTextEdit->caretOam = (GXOamAttr *)WfcObj_CreateSingle(0, 0x3e);
+    sWfcTextEdit->caretOam = WfcObj_CreateSingle(0, 0x3e);
     sWfcTextEdit->caretOam->attr2 = (sWfcTextEdit->caretOam->attr2 & ~0xc00) | 0xc00;
     WfcTextEdit_UpdateCaret();
     WfcTextEdit_DrawText();
-    WfcUtil_SetScene((void *)WfcTextEdit_FadeIn);
+    WfcUtil_SetScene(WfcTextEdit_FadeIn);
 }
 
 void WfcTextEdit_LoadBg() {
-    WfcUtil_LoadFileTo("char/ybObjKb.ncl.l", GX_LoadOBJPltt);
-    WfcUtil_LoadFileTo("char/jbBgStep3.ncg.l", GX_LoadBG2Char);
-    WfcUtil_LoadFileTo("char/ybBgStep3.ncl.l", GX_LoadBGPltt);
-    WfcUtil_LoadFileTo("char/xb4Edit.nsc.l", GX_LoadBG2Scr);
+    WfcUtil_LoadFileTo((void *)"char/ybObjKb.ncl.l", GX_LoadOBJPltt);
+    WfcUtil_LoadFileTo((void *)"char/jbBgStep3.ncg.l", GX_LoadBG2Char);
+    WfcUtil_LoadFileTo((void *)"char/ybBgStep3.ncl.l", GX_LoadBGPltt);
+    WfcUtil_LoadFileTo((void *)"char/xb4Edit.nsc.l", GX_LoadBG2Scr);
     IO_W((volatile u16 *)0x4001008, (IO_R((volatile u16 *)0x4001008) & ~3) | 3);
     IO_W((volatile u16 *)0x400100a, (IO_R((volatile u16 *)0x400100a) & ~3) | 3);
     IO_W((volatile u16 *)0x4000008, (IO_R((volatile u16 *)0x4000008) & ~3) | 2);
@@ -102,7 +81,7 @@ void WfcTextEdit_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(1, 1);
     WfcGx_ShowPlanes(0, 0x15);
-    WfcUtil_SetScene((void *)WfcTextEdit_OpenKeyboard);
+    WfcUtil_SetScene(WfcTextEdit_OpenKeyboard);
 }
 
 void WfcTextEdit_OpenKeyboard() {
@@ -112,12 +91,12 @@ void WfcTextEdit_OpenKeyboard() {
     WfcSound_Play(0x14);
     if (sWfcTextEdit->textLen == 0) WfcTextKb_SetDeleteEnabled(0);
     if (sWfcTextEdit->textLen == 0x20) WfcTextKb_SetInsertEnabled(0);
-    WfcUtil_SetScene((void *)WfcTextEdit_WaitKeyboard);
+    WfcUtil_SetScene(WfcTextEdit_WaitKeyboard);
 }
 
 void WfcTextEdit_WaitKeyboard() {
     if (WfcTextKb_GetKey() == 0xff) return;
-    WfcUtil_SetScene((void *)WfcTextEdit_Update);
+    WfcUtil_SetScene(WfcTextEdit_Update);
 }
 
 void WfcTextEdit_Update() {
@@ -140,7 +119,7 @@ void WfcTextEdit_HandleKey() {
     case 0x82:
         WfcSound_Play(7);
         sWfcTextEdit->result = 0;
-        WfcUtil_SetScene((void *)WfcTextEdit_StartExit);
+        WfcUtil_SetScene(WfcTextEdit_StartExit);
         return;
     case 0x83:
         if (WfcTextEdit_ValidateInput() != 0) {
@@ -151,7 +130,7 @@ void WfcTextEdit_HandleKey() {
             WfcSound_Play(9);
         }
         sWfcTextEdit->caretOam->attr01 = (sWfcTextEdit->caretOam->attr01 & 0xc1fffcff) | 0x200;
-        WfcUtil_SetScene((void *)WfcTextEdit_StartExit);
+        WfcUtil_SetScene(WfcTextEdit_StartExit);
         return;
     case 0:
         break;
@@ -174,14 +153,14 @@ void WfcTextEdit_Idle() {}
 
 void WfcTextEdit_StartExit() {
     WfcFade_StartWait(8);
-    WfcUtil_SetScene((void *)WfcTextEdit_CloseKeyboard);
+    WfcUtil_SetScene(WfcTextEdit_CloseKeyboard);
 }
 
 void WfcTextEdit_CloseKeyboard() {
     if (WfcFade_IsBusy(1) != 0) return;
     WfcTextKb_Close();
     WfcSound_Play(0x15);
-    WfcUtil_SetScene((void *)WfcTextEdit_WaitKeyboardClosed);
+    WfcUtil_SetScene(WfcTextEdit_WaitKeyboardClosed);
 }
 
 void WfcTextEdit_WaitKeyboardClosed() {
@@ -192,14 +171,14 @@ void WfcTextEdit_WaitKeyboardClosed() {
     if (WfcTextKb_Exists() != 0) return;
     u32 t = sWfcTextEdit->result;
     if (t == 0) {
-        WfcUtil_SetScene((void *)WfcTextEdit_Exit);
+        WfcUtil_SetScene(WfcTextEdit_Exit);
     } else if (t == 2) {
         WfcDialog_Open(0x2f, 3, 1, -1, 0);
-        WfcUtil_SetScene((void *)WfcTextEdit_WaitErrorDialog);
+        WfcUtil_SetScene(WfcTextEdit_WaitErrorDialog);
     } else {
         WfcUtil_GetEditParams(0, &idx);
         WfcDialog_Open(v[idx], 2, 1, -1, 0);
-        WfcUtil_SetScene((void *)WfcTextEdit_WaitConfirmDialog);
+        WfcUtil_SetScene(WfcTextEdit_WaitConfirmDialog);
     }
 }
 
@@ -208,24 +187,24 @@ void WfcTextEdit_Exit() {
     WfcUtil_HideTopMessage();
     WfcOam_FreeEntry(sWfcTextEdit->caretOam);
     WfcText_DestroyBgCanvas(0);
-    WfcUtil_LoadFileTo("char/ybObjMain.ncl.l", GX_LoadOBJPltt);
+    WfcUtil_LoadFileTo((void *)"char/ybObjMain.ncl.l", GX_LoadOBJPltt);
     WfcGx_HidePlanes(1, 1);
     WfcGx_HidePlanes(0, 0x15);
     WfcUtil_GetEditParams(&a, &b);
     if (b == 0) {
         WfcUtil_SetScreenFlags(2, 1);
         WfcUtil_SetEditParams(0, a);
-        WfcUtil_SetScene((void *)WfcManualSetup_Enter);
+        WfcUtil_SetScene(WfcManualSetup_Enter);
     } else if (sWfcTextEdit->result == 0) {
         WfcUtil_SetScreenFlags(0, 1);
         WfcUtil_SetEditParams(1, 0);
-        WfcUtil_SetScene((void *)WfcApList_Enter);
+        WfcUtil_SetScene(WfcApList_Enter);
     } else {
         WfcUtil_SetScreenFlags(0, 0);
         WfcUtil_SetEditParams(0, 1);
-        WfcUtil_SetScene((void *)WfcTestConfirm_Enter);
+        WfcUtil_SetScene(WfcTestConfirm_Enter);
     }
-    WfcHeap_FreeAndClear(&sWfcTextEdit);
+    WfcHeap_FreeAndClear((void **)&sWfcTextEdit);
 }
 
 void WfcTextEdit_DrawText() {
@@ -279,27 +258,25 @@ void WfcTextEdit_WaitConfirmDialog() {
         return;
     }
     WfcDialog_Close();
-    WfcUtil_SetScene((void *)WfcTextEdit_ApplyAndExit);
+    WfcUtil_SetScene(WfcTextEdit_ApplyAndExit);
 }
 
 void WfcTextEdit_ApplyAndExit() {
-    void *tbl[2];
-    s32 idx;
-    tbl[0] = sWfcTextEditStoreFuncs[0];
-    tbl[1] = sWfcTextEditStoreFuncs[1];
+    u32 idx;
     if (WfcDialog_IsOpen() != 0) return;
     if (sWfcTextEdit->result == 0) {
         sWfcTextEdit->caretOam->attr01 &= 0xc1fffcff;
-        WfcUtil_SetScene((void *)WfcTextEdit_OpenKeyboard);
+        WfcUtil_SetScene(WfcTextEdit_OpenKeyboard);
         return;
     }
     WfcUtil_GetEditParams(&idx, 0);
-    ((void (*)(void *))tbl[idx])(sWfcTextEdit->text);
-    WfcUtil_SetScene((void *)WfcTextEdit_Exit);
+    sWfcTextEditStoreFuncs[idx](sWfcTextEdit->text);
+    WfcUtil_SetScene(WfcTextEdit_Exit);
 }
 
 BOOL WfcTextEdit_ValidateInput() {
-    s32 a, b, r, i;
+    u32 a, b;
+    s32 r, i;
     u32 c;
     WfcUtil_GetEditParams(&a, &b);
     if (b == 1) {
@@ -324,9 +301,9 @@ BOOL WfcTextEdit_ValidateInput() {
     case 32: {
         i = 0;
         if (r > 0) {
-            u8 *p = (u8 *)sWfcTextEdit;
+            u8 *p = sWfcTextEdit->text;
             do {
-                c = p[8];
+                c = *p;
                 if (c >= 0x30 && c <= 0x39) goto next;
                 if (c >= 0x41 && c <= 0x46) goto next;
                 if (c >= 0x61 && c <= 0x66) goto next;
@@ -346,13 +323,13 @@ void WfcTextEdit_WaitErrorDialog() {
     if (WfcDialog_GetResult() != 0) return;
     WfcSound_Play(6);
     WfcDialog_Close();
-    WfcUtil_SetScene((void *)WfcTextEdit_ReturnToInput);
+    WfcUtil_SetScene(WfcTextEdit_ReturnToInput);
 }
 
 void WfcTextEdit_ReturnToInput() {
     if (WfcDialog_IsOpen() != 0) return;
     sWfcTextEdit->caretOam->attr01 &= 0xc1fffcff;
-    WfcUtil_SetScene((void *)WfcTextEdit_OpenKeyboard);
+    WfcUtil_SetScene(WfcTextEdit_OpenKeyboard);
 }
 }
 #pragma thumb reset

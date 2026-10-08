@@ -13,9 +13,6 @@
 #include "nitro/io_access.h"
 #include "gfx/Model.h"
 #include "net/CommManager.h"
-#define PROTO_LOCAL_Gfx2d_TilesToLinear4bpp  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gActorDefaultParent  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gFontA  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020e9a08.h"
@@ -23,17 +20,14 @@
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02037734.h"
+#include "proto/main/unk_020501d4.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_020720f8.h"
+#include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020af258.h"
 #include "proto/main/unk_020b2c50.h"
 
 // ---- Classes defined in other files (declarations only) ----
-
-
-
-
-
 
 
 // ---- Classes of this file ----
@@ -72,12 +66,10 @@ public:
 
 extern "C" {
 char *Msg_SkipLines(char *p, u32 n);
+void OS_ResetSystem(u32 parameter);  // src/autoload_2/unk_02115468.c
 u32 TextLabel_MeasureMsgWidth(MsgString *obj);
-void func_020b4154(void *);
-void func_020b413c(void *);
 MsgTextLabel *MsgTextLabel_CreateBuffer(void *a, s32 b, s32 c);
 void MsgTextLabel_Destroy(MsgTextLabel *obj);
-void Gfx2d_TilesToLinear4bpp(void *src, void *dst, s32 w, s32 h);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 u32 _ZN10G3dMatData10getTexAddrEv(void *p);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
@@ -88,9 +80,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 
 extern Mtx43 data_021f47e0;
 extern u8 gFieldSceneKind;
-extern u8 gFontA[];
 
-extern ProcBase *gActorDefaultParent;
 
 struct Unk_02037ea0_G {
     u8 pad[0x40];
@@ -170,11 +160,10 @@ public:
 
 
 extern "C" {
-s32 Scene_GetCurrent(void);
-void OS_ResetSystem(s32);
 void Backup_CancelAndWait(void);
 s32 _s32_div_f(s32, s32);
 }
+
 extern void *gCommManager;
 extern u16 gPad[];
 
@@ -207,7 +196,7 @@ CautionMsgString256::~CautionMsgString256() {}
 
 u32 CautionMsgString256::capacity() { return 0x100; }
 
-u8 *CautionMsgString256::data() { return HOST_AT(this, 0x12, text[0], 0); }
+u8 *CautionMsgString256::data() { return text; }
 
 CautionMsgString64::CautionMsgString64() { clear(); }
 
@@ -219,7 +208,7 @@ u32 CautionMsgString64::capacity() {
 }
 
 u8 *CautionMsgString64::data() {
-    return HOST_AT(this, 0x12, text[0], 0);
+    return text;
 }
 
 CautionMsgString128::CautionMsgString128() {
@@ -234,7 +223,7 @@ u32 CautionMsgString128::capacity() {
 }
 
 u8 *CautionMsgString128::data() {
-    return HOST_AT(this, 0x12, text[0], 0);
+    return text;
 }
 
 extern "C" void CommCaution_SaveErrorCode() {
@@ -253,12 +242,12 @@ extern "C" void CommCaution_SaveErrorCode() {
 }
 
 extern "C" void CommCaution_CopyString(void *a, void *b) {
-    strcpy(a, b);
+    strcpy((char *)a, (const char *)b);
 }
 
 u8 *CommCaution_FormatErrorCode() {
     u8 buf[0x14];
-    Str_SPrintf(buf, (void *)" <%d>", sCommCautionErrorCode);
+    Str_SPrintf((char *)buf, " <%d>", sCommCautionErrorCode);
     CommCaution_CopyString(sCommCautionErrorCodeText, buf);
     return sCommCautionErrorCodeText;
 }
@@ -426,7 +415,7 @@ void CommCautionWindow::renderLine() {
             o->textStart = (u32)lineText.data();
             o->group = 2;
             o->copyMode = 0;
-            o->font = (GameFontDesc *)gFontA;
+            o->font = (GameFontDesc *)&gFontA;  // (a GameFont: a GameFontDesc)
             o->rowStride1K = 0;
             o->alignCenter();
             o->bgColor = 1;
@@ -437,7 +426,7 @@ void CommCautionWindow::renderLine() {
             if (seconds >= 0 && countdownX != 0) {
                 renderCountdown(buf, w);
             }
-            Gfx2d_TilesToLinear4bpp(buf, lineTiles, 0x20, 2);
+            Gfx2d_TilesToLinear4bpp((u32 *)buf, (u32 *)lineTiles, 0x20, 2);
         }
         Mem_Free(buf);
     }
@@ -460,7 +449,7 @@ void CommCautionWindow::renderCountdown(void *buf, s32 x) {
         o->textStart = (u32)((MsgString *)&t)->data();
         o->group = 2;
         o->copyMode = 0;
-        o->font = (GameFontDesc *)gFontA;
+        o->font = (GameFontDesc *)&gFontA;  // (a GameFont: a GameFontDesc)
         o->rowStride1K = 0;
         o->xOffset = px;
         o->bgColor = 1;
@@ -590,8 +579,8 @@ void CommCautionWindow::enterPrepare() {
 }
 
 void CommCautionWindow::execPrepare() {
-    ((MsgString *)(&message))->copy((MsgString *)(&sCommCautionLagMsg));
-    ((MsgString *)(HOST_AT(this, 0x1fc, secondsText, 0)))->copy((MsgString *)(&sCommCautionSecondsMsg));
+    message.copy(&sCommCautionLagMsg);
+    secondsText.copy(&sCommCautionSecondsMsg);
     enterCountdown();
 }
 
@@ -644,7 +633,7 @@ void CommCautionWindow::enterShutdown() {
 }
 
 void CommCautionWindow::execShutdown() {
-    ((MsgString *)(&message))->copy((MsgString *)(&sCommCautionEndedMsg));
+    message.copy(&sCommCautionEndedMsg);
     enterEnded();
 }
 
@@ -676,6 +665,20 @@ void CommCautionWindow::execEnded() {
         if (a != 0 || b != 0) {
             enterReset();
         }
+    }
+}
+
+// The reset state (the DS has these two in unk_020376c0, there for a DS-offset view of this class)
+void CommCautionWindow::enterReset() {
+    state = 7;
+    timer = 1;
+    modelVisible = 1;
+}
+
+void CommCautionWindow::execReset() {
+    timer = timer - 1;
+    if (timer <= 0) {
+        OS_ResetSystem(0);
     }
 }
 

@@ -5,7 +5,9 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "game/ConstellationRecord.h"
+#include "game/ConstellationStore.h"
+#include "gfx/StarTwinkle.h"
 #endif
 
 #ifdef __cplusplus
@@ -15,7 +17,10 @@ extern "C" {
 void *ConstellationRecord_Copy(void *p, const void *src);
 #endif
 #ifndef PROTO_LOCAL_StarTwinkle_Stop
-void *StarTwinkle_Stop(void *p);
+void StarTwinkle_Stop(void *p);
+#endif
+#ifndef PROTO_LOCAL_Constellation_GetLineCells
+u8 *Constellation_GetLineCells(s32 n);
 #endif
 #ifdef __cplusplus
 }
@@ -24,28 +29,25 @@ void *StarTwinkle_Stop(void *p);
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_ConstellationRecord_Clear
-u32 ConstellationRecord_Clear(u8 *p);
+void ConstellationRecord_Clear(ConstellationRecord *p);
 #endif
 #ifndef PROTO_LOCAL_ConstellationStore_Clear
-void ConstellationStore_Clear(u8 *p);
+void ConstellationStore_Clear(ConstellationStore *p);
 #endif
 #ifndef PROTO_LOCAL_ConstellationStore_SetUsed
-void ConstellationStore_SetUsed(u8 *p, u32 bit);
+void ConstellationStore_SetUsed(ConstellationStore *p, u32 bit);
 #endif
 #ifndef PROTO_LOCAL_ConstellationStore_ClearUsed
-void ConstellationStore_ClearUsed(u8 *p, u32 bit);
+void ConstellationStore_ClearUsed(ConstellationStore *p, u32 bit);
 #endif
 #ifndef PROTO_LOCAL_ConstellationStore_IsUsed
-BOOL ConstellationStore_IsUsed(u8 *p, u32 bit);
+BOOL ConstellationStore_IsUsed(ConstellationStore *p, u32 bit);
 #endif
 #ifndef PROTO_LOCAL_StarTwinkle_Update
-void StarTwinkle_Update(u8 *p);
+void StarTwinkle_Update(StarTwinkle *p);
 #endif
 #ifndef PROTO_LOCAL_StarTwinkle_Init
-void StarTwinkle_Init(u8 *self, s32 arg);
-#endif
-#ifndef PROTO_LOCAL_Constellation_GetLineCells
-u8 *Constellation_GetLineCells(s32 n);
+void StarTwinkle_Init(StarTwinkle *self, s32 arg);
 #endif
 }
 #ifndef PROTO_LOCAL_sConstellationLineCells

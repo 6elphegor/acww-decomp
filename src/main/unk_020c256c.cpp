@@ -26,7 +26,6 @@ extern u16 data_020c6cc8;
 // ---- SpNpcTestTalk and its bases (vtable 0x020ddcf0 chain) ----
 
 
-
 class SpNpcTestTalk;
 typedef void (SpNpcTestTalk::*SpNpcTestTalkEndFn)(void *);
 typedef void (SpNpcTestTalk::*SpNpcTestTalkStartFn)(void *);
@@ -42,17 +41,13 @@ public:
     void dispatchStart(TalkStartMsg *out);
     void startPhase00(TalkStartMsg *out);
     void setPhase(s32 v);
-    void attachOwner(u32 v);
+    void attachOwner(void *v);
 
     s32 phase;
-    u32 owner;
+    void *owner;  // the SpNpcTest
 };
 
 // ---- SpNpcTest and its bases (scene object derived from NpcActor) ----
-
-
-
-
 
 
 class SpNpcTest;
@@ -304,7 +299,7 @@ BOOL SpNpcTest::preCreate() {
     v = 0xd000;
     ((NpcActor *)(this))->setNpcHandle(&v);
     ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&talk));
-    talk.attachOwner((u32)this);
+    talk.attachOwner(this);
     return TRUE;
 }
 
@@ -401,7 +396,7 @@ SpNpcTestTalk::SpNpcTestTalk() {}
 
 SpNpcTestTalk::~SpNpcTestTalk() {}
 
-void SpNpcTestTalk::attachOwner(u32 v) {
+void SpNpcTestTalk::attachOwner(void *v) {
     resetMsg();
     owner = v;
     phase = 1;

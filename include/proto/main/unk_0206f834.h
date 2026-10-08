@@ -6,11 +6,11 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "talk/MsgString.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 #ifndef PROTO_LOCAL_String_Load2dMenuByRef
 void String_Load2dMenuByRef(void *a, u8 *p);
 #endif
@@ -23,6 +23,12 @@ void String_LoadByIndex(void *a, void *c, u8 v);
 #ifndef PROTO_LOCAL_String_FormatNumberWrapper
 void String_FormatNumberWrapper(void *o, s32 a, s32 b, s32 c, s32 d, u8 e);
 #endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #ifndef PROTO_LOCAL_String_FromEncodedBytes
 void String_FromEncodedBytes(MsgString *dst, const void *s, s32 len);
 #endif

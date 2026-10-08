@@ -4,16 +4,12 @@
 #include "game/TouchPickSphere.h"
 #include "game/BugNetTarget.h"
 #include "nitro/gxoam.h"
-#define PROTO_LOCAL_BugNet_HitTest  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_AllocAffine  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObjRotated  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistSq  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_021ce63c  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_02085940.h"
 #include "proto/main/unk_02087e0c.h"
+#include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_02088b98.h"
 
 
 
@@ -22,13 +18,10 @@ extern "C" {
 extern s32 sOamObjHeights[];
 extern s32 sOamObjWidths[];
 extern s16 data_02135f44[];
-extern BugNetTarget *data_021ce63c;
 
-s32 Oam_AllocAffine(void *base, s32 *cnt, s32 *m);
 s32 FX_Div(s32 v, s32 s);
 s32 func_01ffcb0c(s32 a, s32 b);
 void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
-s64 Vec_DistSq(void *v, void *p);
 void MIi_CpuCopy32(void *a, void *b, u32 c);
 void MIi_CpuCopyFast(void *a, void *b, u32 c);
 void DC_FlushRange(void *a, u32 b);
@@ -77,7 +70,7 @@ void BugNetTarget::submit(VecFx32 *a, s32 b, VecFx32 *c, u8 d) {
     }
     isHit = 0;
     hitRadius = b;
-    Scene_GetTouchPicker()->addSphere(this, a, c, 4, d);
+    Scene_GetTouchPicker()->addSphere(this, a, (s32)(sptr)c, 4, d);  // (c: the radius)
 }
 
 extern "C" BOOL BugNet_HitTest(void *a, void *b, s32 rad, u8 *out) {
@@ -86,8 +79,8 @@ extern "C" BOOL BugNet_HitTest(void *a, void *b, s32 rad, u8 *out) {
     VecFx32 v1, v2, v3;
     VecFx32 pts[6];
     u32 i;
-    WorldCurve_Apply(&v1, a);
-    WorldCurve_Apply(&v2, b);
+    WorldCurve_Apply(&v1, (const VecFx32 *)a);  // (a, b: the net's two points)
+    WorldCurve_Apply(&v2, (const VecFx32 *)b);
     Vec_Sub(&v3, &v2, &v1);
     v3.x = FX_Div(v3.x, 0x6000);
     v3.y = FX_Div(v3.y, 0x6000);
@@ -101,11 +94,11 @@ extern "C" BOOL BugNet_HitTest(void *a, void *b, s32 rad, u8 *out) {
         p->isHit = 0;
         s32 len = func_01ffcb0c(rad + p->hitRadius, rad + p->hitRadius);
         for (i = 0; i < 6; i++) {
-            if ((s64)len >= Vec_DistSq(&pts[i], p)) {
+            if ((s64)len >= Vec_DistSq(&pts[i], &p->center)) {
                 p->isHit = 1;
                 result = TRUE;
                 if (out) {
-                    *out = ((u8 *)p)[0x10];
+                    *out = p->index;
                 }
                 break;
             }
@@ -191,7 +184,7 @@ extern "C" s32 Oam_DrawObj(s32 mode, const void *obj, s32 x, s32 y, s32 pal, s32
         pri = (info[1] << 20) >> 30;
     }
     if (rect) {
-        idx = Oam_AllocAffine(ent - *cntp, othp, rect);
+        idx = Oam_AllocAffine((u8 *)(ent - *cntp), othp, rect);  // (the buffer start)
         if (idx == -1) {
             return -4;
         }
@@ -328,7 +321,7 @@ extern "C" GXOamAttr *Oam_DrawObjRotated(u32 mode, GXOamAttr *e, s32 dx, s32 dy,
             m[2] = -m[2];
             m[3] = -m[3];
         }
-        idx = Oam_AllocAffine(oam - *cnt, aux, m);
+        idx = Oam_AllocAffine((u8 *)(oam - *cnt), aux, m);
         if (idx == -1) {
             return 0;
         }
@@ -519,7 +512,7 @@ top:
                 m[2] = -m[2];
                 m[3] = -m[3];
             }
-            idx = Oam_AllocAffine(oam - *cnt, aux, m);
+            idx = Oam_AllocAffine((u8 *)(oam - *cnt), aux, m);
             if (idx == -1) {
                 if (e->_3 == 0xffff) {
                     goto end;

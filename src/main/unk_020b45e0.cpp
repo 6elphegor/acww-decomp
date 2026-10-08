@@ -3,9 +3,9 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "sys/SceneBase.h"
-#define PROTO_LOCAL_gGfxFrameHooks  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020029e8.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020536dc.h"
 #include "proto/main/unk_0208e6d8.h"
 #include "proto/main/unk_0209c08c.h"
 #include "proto/main/unk_020a427c.h"
@@ -14,12 +14,9 @@
 extern "C" {
 void Scene_ShutdownGraphics(void);
 void Scene_SetupGraphics(void);
-extern u32 gGfxFrameHooks;
 }
 
-
-extern CommManager *gCommManager;
-
+extern CommManager *gCommManager;  // (gap data: the constant pointer to gCommManagerInstance)
 
 class FieldEntryScene : public SceneBase {
 public:
@@ -69,7 +66,7 @@ BOOL FieldEntryScene::onCreate() {
 }
 
 BOOL FieldEntryScene::onDelete() {
-    gGfxFrameHooks = 0;
+    gGfxFrameHooks = NULL;
     Scene_ShutdownGraphics();
     return TRUE;
 }

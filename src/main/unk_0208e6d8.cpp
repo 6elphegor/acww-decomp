@@ -5,21 +5,20 @@ extern void *const gSpriteSeqTable5b0c[71];  // (src/main/unk_020d5d34.cpp)
 #include "net/CommManager.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "ui/TalkBusyIcon.h"
 #include "ui/InputModeIcon.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_data_020d5d0c  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020d5d34  // declared below: the shared prototype conflicts with the calls here
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_0208e6d8.h"
+#include "proto/main/unk_020d5d0c.h"
+#include "proto/main/unk_020d5d34.h"
 
 extern "C" {
 s32 TalkRequestFlags_IsSceneHold();
 extern u32 data_020d5b0c[][2];
-extern u8 data_020d5d34[];
-extern u32 *data_020d5d0c[];
 }
 
 extern const u8 sCommIconShowDelays[4];
@@ -35,35 +34,6 @@ struct SpriteAnimSeq;
 
 
 
-class TalkBusyIcon : public UiWidget {
-public:
-    TalkBusyIcon();
-    virtual ~TalkBusyIcon();
-    virtual void draw();
-    virtual void update();
-    void stopSe();
-    void startSe();
-    void updateShown();
-    void enterShown();
-    void updateHidden();
-    void enterHidden();
-    void setPos(s32 a, s32 b);
-    void callDraw();
-    void callUpdate();
-    void exit();
-    void init();
-    void requestHide();
-    void requestShow(u32 v);
-
-    /* 0x0c */ s32 state;
-    /* 0x10 */ u16 rotation;
-    /* 0x12 */ u8 objWindow;
-    /* 0x13 */ u8 showRequested;
-    /* 0x14 */ s32 posX;
-    /* 0x18 */ s32 posY;
-    /* 0x1c */ s32 seIndex;
-    /* 0x20 */ u8 sePlaying;
-};
 
 class TransitionCommIcon : public UiWidget {
 public:
@@ -169,8 +139,9 @@ void TalkBusyIcon::draw() {
     if (state != 0) {
         s32 x = posX + getOriginX();
         s32 y = posY + getOriginY();
-        u32 h0 = *data_020d5d0c[0];
-        u32 h1 = *data_020d5d0c[4];
+        // the first cells of the spinner and of its frame (the DS read them as words 0 and 4 from data_020d5d0c)
+        GXOamAttr *h0 = (GXOamAttr *)data_020d5d0c[0].frames[0].cell;
+        GXOamAttr *h1 = (GXOamAttr *)data_020d5d14[1].frames[0].cell;
         Oam_DrawCell(0, h0, x, y, -1, -1, 0x1000, 0x1000, rotation, -1, 0, 0);
         Oam_DrawCell(0, h1, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         if (objWindow != 0) {
@@ -250,7 +221,7 @@ void TransitionCommIcon::draw() {
         if (suspended == 0) {
             s32 x = getOriginX();
             s32 y = getOriginY();
-            u32 h = (u32)anim.getCell();
+            GXOamAttr *h = (GXOamAttr *)anim.getCell();
             Oam_DrawCell(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
             Oam_DrawCell(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, 2, 0, 0);
         }

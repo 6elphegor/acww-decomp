@@ -794,7 +794,7 @@ void PlayerActor::readInput() {
     s32 flag = 0;
     s32 mode = this->inputMode;
     s32 v4 = 0;
-    s32 v8 = 0;
+    void *v8 = NULL;
     s32 vc = 0;
     s32 v10 = this->actionHeld;
     s32 v14 = 0;
@@ -842,7 +842,7 @@ void PlayerActor::readInput() {
     } else {
     if (gGfxMainOnTop == 0) {
         vc = TouchPick_GetGroundPos(Scene_GetTouchPicker(), &p50);
-        if (TouchPickResult_GetTarget(Scene_GetTouchPicker(), &p68, &sp34, &sp30)) {
+        if (TouchPickResult_GetTarget((TouchPickResult *)Scene_GetTouchPicker(), &p68, &sp34, &sp30)) {
             got = TRUE;
             {
                 switch (sp34) {
@@ -857,7 +857,7 @@ void PlayerActor::readInput() {
                 case 2: case 3: case 6: case 7: case 9: case 11: case 12: case 13: case 14: case 15: case 16: case 17:
                     if (Unk_0200d64c_Both()) {
                         v4 = 1;
-                        v8 = TouchPick_GetTargetObject(Scene_GetTouchPicker(), 0, 0);
+                        v8 = TouchPick_GetTargetObject((TouchPickResult *)Scene_GetTouchPicker(), 0, 0);
                         r5c = p50;
                     }
                     break;

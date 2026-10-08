@@ -8,8 +8,9 @@
 class BgAcreModel;
 
 // A block (acre) of the scene's block map (0x28 bytes on the DS): its acre, grid position, BG model and buried-item
-// mask. Methods in src/main/unk_02037358.cpp (which still has its own copy of these definitions: it should include
-// this header instead). TownBlockCell (town/TownBlockCell.h) is an older view of the same object.
+// mask. Methods in src/main/unk_02037358.cpp. TownBlockCell (town/TownBlockCell.h) is an older view of the same
+// object. layers[] are the two item layers' addresses (u16 [16 * 16]) still kept as integers, as the callers of
+// MapBlock_Init (src/main/unk_0204cc1c.cpp) pass them.
 class MapBlock {
 public:
     void clear();

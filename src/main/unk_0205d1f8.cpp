@@ -22,10 +22,6 @@ struct CharaFaceAnimWorkPool {
 extern "C" {
 extern CommManager *gCommManager;
 
-#define Heap_freeAll _ZN4Heap7freeAllEv
-void Heap_freeAll(void *p);
-#define Heap_adjust _ZN4Heap6adjustEv
-void Heap_adjust(void *p);
 u32 Scene_GetCurrent();
 u32 Scene_GetMaxPlayers(u32 a);
 u32 Scene_GetMaxCharacters(u32 a);
@@ -35,7 +31,7 @@ u32 Scene_GetMaxCharacters(u32 a);
 extern "C" void CharaFaceAnimWorkPool_Create(void *parent) {
     CharaFaceAnimWorkHeap_Create(parent);
     sCharaFaceAnimWorkPool.createHeaps();
-    if (gCharaFaceAnimWorkHeap) ((Heap *)(gCharaFaceAnimWorkHeap))->adjust();
+    if (gCharaFaceAnimWorkHeap) static_cast<Heap *>(gCharaFaceAnimWorkHeap)->adjust();
 }
 
 extern "C" void CharaFaceAnimWorkPool_Destroy() {
@@ -50,7 +46,7 @@ CharaFaceAnimWorkPool::CharaFaceAnimWorkPool() {}
 CharaFaceAnimWorkPool::~CharaFaceAnimWorkPool() {}
 
 void CharaFaceAnimWorkPool::createHeaps() {
-    void *heap = gCharaFaceAnimWorkHeap;
+    Heap *heap = static_cast<Heap *>(gCharaFaceAnimWorkHeap);
     u32 n, i, m;
     n = gCommManager->memberCount;
     m = Scene_GetMaxPlayers(Scene_GetCurrent());
@@ -70,11 +66,11 @@ void CharaFaceAnimWorkPool::destroyHeaps() {
     for (s32 i = 0; i < 9; i++) {
         void **p = &ptr[i];
         if (ptr[i]) {
-            ((Heap *)(ptr[i]))->freeAll();
+            static_cast<Heap *>(ptr[i])->freeAll();
             *p = NULL;
         }
     }
-    if (gCharaFaceAnimWorkHeap) ((Heap *)(gCharaFaceAnimWorkHeap))->freeAll();
+    if (gCharaFaceAnimWorkHeap) static_cast<Heap *>(gCharaFaceAnimWorkHeap)->freeAll();
 }
 
 void *CharaFaceAnimWorkPool::getHeap(u32 idx) { return ptr[idx]; }
@@ -84,7 +80,7 @@ CharaFaceAnimWorkRef::CharaFaceAnimWorkRef() { v = 9; }
 CharaFaceAnimWorkRef::~CharaFaceAnimWorkRef() {}
 
 void CharaFaceAnimWorkRef::assign(u32 x) {
-    ((Heap *)(sCharaFaceAnimWorkPool.getHeap(x)))->freeAll();
+    static_cast<Heap *>(sCharaFaceAnimWorkPool.getHeap(x))->freeAll();
     v = x;
 }
 

@@ -306,8 +306,6 @@ s32 FX_Div(s32, s32);
 s32 Math_ApproachVec(void *a, void *b, s32 c, s32 d, s32 e);
 void Vec_RotateY(void *v, s32 a);
 void Clock_GetMinuteHour(MinuteHour *out);
-// ModelSlot (main, unk_0209c08c.cpp) has no shared declaration yet
-void *_ZN9ModelSlot7getHeapEv(ModelSlot *self);
 }
 
 
@@ -4018,7 +4016,7 @@ extern "C" void MuseumInsectRoom_LoadInsect(MuseumInsectRoom *m, MuseumInsect *s
                 Str_SPrintf(pth + 1, "%s.nsbca", nm);
             }
             if (File_Exists(pth + 1)) {
-                sp10 = _ZN9ModelSlot7getHeapEv(res);
+                sp10 = res->getHeap();
                 if (t == 0x38) {
                     tmp = m->dungBallAnimFile = File_LoadAlloc(pth + 1, gCurrentHeap, 4, 0);
                 } else if (t == 0x23) {

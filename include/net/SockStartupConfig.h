@@ -11,6 +11,7 @@
 typedef void *(*SockAllocFunc)(s32, u32);
 typedef void (*SockFreeFunc)(s32, void *, u32);
 
+typedef struct SockStartupConfig SockStartupConfig;
 struct SockStartupConfig {
     /* 0x00 */ u32 unk_00; // 0x01000000 in the template
     /* 0x04 */ SockAllocFunc allocFunc;

@@ -60,7 +60,7 @@ s32 WfcSimpleStart_GetState();
 void WfcSimpleStart_ApplyResult();
 #endif
 #ifndef PROTO_LOCAL_WfcSimpleStart_Alloc
-void *WfcSimpleStart_Alloc(s32 a);
+void *WfcSimpleStart_Alloc(u32 a);
 #endif
 #ifndef PROTO_LOCAL_WfcSimpleStart_Free
 void WfcSimpleStart_Free(void *p);

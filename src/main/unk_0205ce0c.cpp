@@ -10,8 +10,10 @@
 #include "proto/main/unk_02082d74.h"
 
 
+// The face-animation buffers of the characters on screen: per slot (players 0-3, others from 4) one buffer holding
+// the eye animation and, after it, the mouth animation; the animation loaded in each half and its size.
 struct CharaFaceAnimPool {
-    u32 ptr[9];
+    u8 *ptr[9];
     u16 a[2][9];
     u16 b[2][9];
     CharaFaceAnimPool();
@@ -21,7 +23,7 @@ struct CharaFaceAnimPool {
     u32 findAnim(u32 x);
     void setAnimId(u32 i, u32 j, u32 val);
     u32 getAnimId(u32 i, u32 j);
-    u32 getAnimBuffer(u32 i, u32 j);
+    u8 *getAnimBuffer(u32 i, u32 j);
     void freeBuffers();
     void allocBuffers();
 };
@@ -30,19 +32,15 @@ extern "C" {
 extern CommManager *gCommManager;
 extern const u8 sCharaFaceAnimKinds[];
 
-#define Heap_freeAll _ZN4Heap7freeAllEv
-void Heap_freeAll(void *p);
-#define Heap_adjust _ZN4Heap6adjustEv
-void Heap_adjust(void *p);
 u32 Scene_GetCurrent();
 u32 Scene_GetMaxPlayers(u32 a);
 u32 Scene_GetMaxCharacters(u32 a);
-void MI_CpuCopy8(void *dst, void *src, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 
 }
 
-extern "C" void CharaFaceAnimPool_Create(u32 parent) {
-    CharaFaceAnimHeap_Create((void *)parent);
+extern "C" void CharaFaceAnimPool_Create(Heap *parent) {
+    CharaFaceAnimHeap_Create(parent);
     sCharaFaceAnimPool.allocBuffers();
     if (gCharaFaceAnimHeap) ((Heap *)(gCharaFaceAnimHeap))->adjust();
 }
@@ -52,7 +50,7 @@ extern "C" void CharaFaceAnimPool_Destroy() {
     CharaFaceAnimHeap_Destroy();
 }
 
-extern "C" u8 *CharaFaceAnim_GetPath(u32 x) {
+extern "C" char *CharaFaceAnim_GetPath(u32 x) {
     Str_SPrintf(sCharaFaceAnimPathBuf, "/FcAnm/%d/%d.nsbtp", x >> 5, x);
     return sCharaFaceAnimPathBuf;
 }
@@ -70,26 +68,26 @@ CharaFaceAnimPool::CharaFaceAnimPool() {
 CharaFaceAnimPool::~CharaFaceAnimPool() {}
 
 void CharaFaceAnimPool::allocBuffers() {
-    void *heap = gCharaFaceAnimHeap;
+    Heap *heap = (Heap *)gCharaFaceAnimHeap;
     u32 n, i, m;
     n = gCommManager->memberCount;
     m = Scene_GetMaxPlayers(Scene_GetCurrent());
     if (n < m) m = n;
     for (i = 0; i < m; i++) {
-        ptr[i] = (u32)Heap_AllocAligned(heap, CharaFaceAnim_GetSlotSize(), 4);
+        ptr[i] = (u8 *)Heap_AllocAligned(heap, CharaFaceAnim_GetSlotSize(), 4);
     }
     if (m == 0) m = 1;
     u32 q = Scene_GetMaxCharacters(Scene_GetCurrent());
     m = (q + NpcSpawn_GetSpNpcSlotCount()) - m;
     u32 al = 4;
     for (i = al; i < m + 4; i++) {
-        ptr[i] = (u32)Heap_AllocAligned(heap, CharaFaceAnim_GetSlotSize(), al);
+        ptr[i] = (u8 *)Heap_AllocAligned(heap, CharaFaceAnim_GetSlotSize(), al);
     }
 }
 
 void CharaFaceAnimPool::freeBuffers() {
     for (s32 i = 0; i < 9; i++) {
-        ptr[i] = 0;
+        ptr[i] = NULL;
         for (s32 j = 0; j < 2; j++) {
             b[j][i] = 0x16f;
             a[j][i] = 0;
@@ -98,9 +96,9 @@ void CharaFaceAnimPool::freeBuffers() {
     if (gCharaFaceAnimHeap) ((Heap *)(gCharaFaceAnimHeap))->freeAll();
 }
 
-u32 CharaFaceAnimPool::getAnimBuffer(u32 i, u32 j) {
+u8 *CharaFaceAnimPool::getAnimBuffer(u32 i, u32 j) {
     if (j == 1) {
-        u32 t = ptr[i];
+        u8 *t = ptr[i];
         return t + CharaFaceAnim_GetAnimSize();
     }
     return ptr[i];
@@ -131,9 +129,9 @@ void CharaFaceAnimRef::assign(u32 x) {
 }
 
 void CharaFaceAnimRef::setSlot(u32 x) { v = x; }
-u32 CharaFaceAnimRef::getAnimBuffer(u32 j) { return sCharaFaceAnimPool.getAnimBuffer(v, j); }
-u32 CharaFaceAnimRef::getEyeAnimBuffer() { return getAnimBuffer(0); }
-u32 CharaFaceAnimRef::getMouthAnimBuffer() { return getAnimBuffer(1); }
+void *CharaFaceAnimRef::getAnimBuffer(u32 j) { return sCharaFaceAnimPool.getAnimBuffer(v, j); }
+void *CharaFaceAnimRef::getEyeAnimBuffer() { return getAnimBuffer(0); }
+void *CharaFaceAnimRef::getMouthAnimBuffer() { return getAnimBuffer(1); }
 
 void CharaFaceAnimRef::loadAnim(s32 a, s32 b, s32 c) {
     u32 st = v;
@@ -141,7 +139,7 @@ void CharaFaceAnimRef::loadAnim(s32 a, s32 b, s32 c) {
     if (c == 0) {
         if (a == sCharaFaceAnimPool.getAnimId(st, j)) return;
     }
-    u32 buf = sCharaFaceAnimPool.getAnimBuffer(st, j);
+    u8 *buf = sCharaFaceAnimPool.getAnimBuffer(st, j);
     s32 size;
     if (j == 0) {
         size = CharaFaceAnim_GetAnimSize();
@@ -151,16 +149,16 @@ void CharaFaceAnimRef::loadAnim(s32 a, s32 b, s32 c) {
     if (b != 0) {
         u32 k = sCharaFaceAnimPool.findAnim(a);
         if (k != 9) {
-            u32 src = sCharaFaceAnimPool.getAnimBuffer(k, j);
+            u8 *src = sCharaFaceAnimPool.getAnimBuffer(k, j);
             u32 n = sCharaFaceAnimPool.getLoadedSize(k, j);
-            if (src != 0 && n != 0) {
-                MI_CpuCopy8((void *)src, (void *)buf, n);
+            if (src != NULL && n != 0) {
+                MI_CpuCopy8(src, buf, n);
                 sCharaFaceAnimPool.setAnimId(st, j, a);
                 sCharaFaceAnimPool.setLoadedSize(st, j, n);
             }
         }
     }
-    s32 got = File_LoadToBuffer(CharaFaceAnim_GetPath(a), (void *)buf, size);
+    s32 got = File_LoadToBuffer(CharaFaceAnim_GetPath(a), buf, size);
     if (got != 0) {
         sCharaFaceAnimPool.setAnimId(st, j, a);
         sCharaFaceAnimPool.setLoadedSize(st, j, got);
@@ -199,5 +197,5 @@ const u8 sCharaFaceAnimKinds[0x170] = {
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
 };
 
-u8 sCharaFaceAnimPathBuf[0x14];
+char sCharaFaceAnimPathBuf[0x14];
 CharaFaceAnimPool sCharaFaceAnimPool;

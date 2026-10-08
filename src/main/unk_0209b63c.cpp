@@ -7,11 +7,6 @@
 #include "proto/main/unk_0209b63c.h"
 
 
-
-extern "C" {
-}
-
-
 static inline BOOL Unk_0209b830_Bit(s32 t, s32 m)
 {
     return (t & m) != 0 ? TRUE : FALSE;
@@ -30,10 +25,9 @@ struct Unk_0209ba90_Dir {
 };
 
 
-
 TownAcreCell *TownAcreGrid::getCell(s32 x, s32 y)
 {
-    s32 idx = (s32)((TownAcreIndex *)x)->calcIndex(y);
+    s32 idx = x + y * 6;  // (the DS calls TownAcreIndex::calcIndex with x as this)
     if ((u32)idx < 0x24) return &cells[idx];
     static TownAcreCell dflt;
     return &dflt;

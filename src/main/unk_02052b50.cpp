@@ -269,10 +269,10 @@ s32 FtrInfo_GetSeries(s32 n)
     return 0;
 }
 
-s32 Ftr_GetSeries(u16 *n)
+s32 Ftr_GetSeries(u16 *item)
 {
-    if (Item_IsFurniture(n)) {
-        return FtrInfo_GetSeries(Item_GetFurnitureIndex(n));
+    if (Item_IsFurniture(item)) {
+        return FtrInfo_GetSeries(Item_GetFurnitureIndex(item));
     }
     return 0;
 }
@@ -287,10 +287,10 @@ s32 FtrInfo_GetClass(s32 n)
     return 0;
 }
 
-s32 Ftr_GetClass(s32 n)
+s32 Ftr_GetClass(u16 *item)
 {
-    if (Item_IsFurniture((void *)n)) {
-        return FtrInfo_GetClass(Item_GetFurnitureIndex((void *)n));
+    if (Item_IsFurniture(item)) {
+        return FtrInfo_GetClass(Item_GetFurnitureIndex(item));
     }
     return 0;
 }
@@ -305,10 +305,10 @@ s32 FtrInfo_GetUnk05(s32 n)
     return 0;
 }
 
-s32 Ftr_GetUnk05(u16 *n)
+s32 Ftr_GetUnk05(u16 *item)
 {
-    if (Item_IsFurniture(n)) {
-        return FtrInfo_GetUnk05(Item_GetFurnitureIndex(n));
+    if (Item_IsFurniture(item)) {
+        return FtrInfo_GetUnk05(Item_GetFurnitureIndex(item));
     }
     return 0;
 }
@@ -323,10 +323,10 @@ s32 FtrInfo_GetCollectionGroup(s32 n)
     return 0;
 }
 
-s32 Ftr_GetCollectionGroup(u16 *n)
+s32 Ftr_GetCollectionGroup(u16 *item)
 {
-    if (Item_IsFurniture(n)) {
-        return FtrInfo_GetCollectionGroup(Item_GetFurnitureIndex(n));
+    if (Item_IsFurniture(item)) {
+        return FtrInfo_GetCollectionGroup(Item_GetFurnitureIndex(item));
     }
     return 0;
 }
@@ -369,10 +369,10 @@ s32 FtrInfo_GetFlagPairA(s32 n)
     return 0;
 }
 
-s32 Ftr_GetFlagPairA(u16 *n)
+s32 Ftr_GetFlagPairA(u16 *item)
 {
-    if (Item_IsFurniture(n)) {
-        return FtrInfo_GetFlagPairA(Item_GetFurnitureIndex(n));
+    if (Item_IsFurniture(item)) {
+        return FtrInfo_GetFlagPairA(Item_GetFurnitureIndex(item));
     }
     return 0;
 }
@@ -405,10 +405,10 @@ s32 FtrInfo_GetFlagPairB(s32 n)
     return 0;
 }
 
-s32 Ftr_GetFlagPairB(u16 *n)
+s32 Ftr_GetFlagPairB(u16 *item)
 {
-    if (Item_IsFurniture(n)) {
-        return FtrInfo_GetFlagPairB(Item_GetFurnitureIndex(n));
+    if (Item_IsFurniture(item)) {
+        return FtrInfo_GetFlagPairB(Item_GetFurnitureIndex(item));
     }
     return 0;
 }
@@ -423,10 +423,10 @@ s32 FtrInfo_GetUnk06(s32 n)
     return 0;
 }
 
-s32 Ftr_GetUnk06(s32 n)
+s32 Ftr_GetUnk06(u16 *item)
 {
-    if (Item_IsFurniture((void *)n)) {
-        return FtrInfo_GetUnk06(Item_GetFurnitureIndex((void *)n));
+    if (Item_IsFurniture(item)) {
+        return FtrInfo_GetUnk06(Item_GetFurnitureIndex(item));
     }
     return 0;
 }

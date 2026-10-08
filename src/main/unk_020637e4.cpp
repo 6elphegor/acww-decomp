@@ -1,4 +1,3 @@
-#include "uptr.h"
 #include "types.h"
 #include "talk/MsgStringBase.h"
 #include "talk/EncodedString.h"
@@ -11,14 +10,8 @@ extern "C" const u16 data_020cb6f4;
 
 extern "C" {
 void MI_CpuCopy8(void *, void *, u32);
-BOOL EncodedString_SetRaw(void *, const void *, s32);
+BOOL EncodedString_SetRaw(void *, const void *, s32); // (include/proto/.excluded)
 }
-
-class MsgString;
-
-
-
-
 
 class EncodedString8B : public EncodedString {
 public:
@@ -49,7 +42,7 @@ MsgString9C::~MsgString9C() {}
 
 u32 MsgString9C::capacity() { return 9; }
 
-u8 *MsgString9C::data() { return HOST_AT(this, 0x12, text[0], 0); }
+u8 *MsgString9C::data() { return text; }
 
 EncodedString8B::EncodedString8B() {}
 

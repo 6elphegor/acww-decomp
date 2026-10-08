@@ -5,6 +5,8 @@
 #include "gfx/VecFx32.h"
 #include "sys/OSThread.h"
 
+class Heap;
+
 // Town update thread context (0x10ec bytes, allocated by TownUpdateThread_Create): the OS thread (0..0xc0), the caller's
 // thread / heap, the Town_AdvanceDays arguments, the 0x1000-byte thread stack between the two guard words and the
 // done / started flags; and the gTownUpdater global (TownUpdater) that points to it (src/main/unk_02041868.cpp,
@@ -18,8 +20,8 @@ struct TownUpdateThread {
             /* 0x0064 */ s32 threadState;  // thread.state
         };
     };
-    /* 0x00c0 */ uptr callerThread;  // OSThread *
-    /* 0x00c4 */ uptr heap;          // Heap *
+    /* 0x00c0 */ OSThread *callerThread;
+    /* 0x00c4 */ Heap *heap;
     /* 0x00c8 */ u8 lastDate[8];
     /* 0x00d0 */ u8 curDate[8];
     /* 0x00d8 */ u32 elapsedDays;

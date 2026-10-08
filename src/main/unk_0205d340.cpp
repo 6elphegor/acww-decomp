@@ -10,15 +10,10 @@
 
 extern "C" {
 extern CommManager *gCommManager;
-
-#define Heap_freeAll _ZN4Heap7freeAllEv
-void Heap_freeAll(void *p);
-#define Heap_adjust _ZN4Heap6adjustEv
-void Heap_adjust(void *p);
 }
 
 struct PlayerFaceTexPool {
-    u32 ptr[4];
+    void *ptr[4];
     PlayerFaceTexPool();
     ~PlayerFaceTexPool();
     void *getBuffer(u32 idx);
@@ -33,7 +28,7 @@ extern "C" void PlayerFaceTexPool_Create(void *parent) {
     PlayerFaceTexHeap_Create(parent);
     PlayerFaceTexPool_AllocBuffers(sPlayerFaceTexPool.ptr);
     if (gPlayerFaceTexHeap) {
-        ((Heap *)(gPlayerFaceTexHeap))->adjust();
+        static_cast<Heap *>(gPlayerFaceTexHeap)->adjust();
     }
 }
 
@@ -42,7 +37,7 @@ extern "C" void PlayerFaceTexPool_Destroy() {
     PlayerFaceTexHeap_Destroy();
 }
 
-extern "C" void *PlayerFaceTex_GetPath(u32 x) {
+extern "C" char *PlayerFaceTex_GetPath(u32 x) {
     Str_SPrintf(sPlayerFaceTexPathBuf, "/PFcTx/%d/%d.nsbtx", x >> 5, x);
     return sPlayerFaceTexPathBuf;
 }
@@ -53,21 +48,21 @@ PlayerFaceTexPool::PlayerFaceTexPool() {}
 
 PlayerFaceTexPool::~PlayerFaceTexPool() {}
 
-extern "C" void PlayerFaceTexPool_AllocBuffers(u32 *arr) {
-    void *heap = gPlayerFaceTexHeap;
+extern "C" void PlayerFaceTexPool_AllocBuffers(void **arr) {
+    Heap *heap = static_cast<Heap *>(gPlayerFaceTexHeap);
     u32 n = gCommManager->memberCount;
     u32 i;
     for (i = 0; i < n; i++) {
-        arr[i] = (u32)Heap_AllocAligned(heap, PlayerFaceTex_GetBufferSize(), 4);
+        arr[i] = Heap_AllocAligned(heap, PlayerFaceTex_GetBufferSize(), 4);
     }
 }
 
 void PlayerFaceTexPool::freeBuffers() {
-    for (s32 i = 0; i < 4; i++) ptr[i] = 0;
-    if (gPlayerFaceTexHeap) ((Heap *)(gPlayerFaceTexHeap))->freeAll();
+    for (s32 i = 0; i < 4; i++) ptr[i] = NULL;
+    if (gPlayerFaceTexHeap) static_cast<Heap *>(gPlayerFaceTexHeap)->freeAll();
 }
 
-void *PlayerFaceTexPool::getBuffer(u32 idx) { return (void *)ptr[idx]; }
+void *PlayerFaceTexPool::getBuffer(u32 idx) { return ptr[idx]; }
 
 PlayerFaceTexRef::PlayerFaceTexRef() { v = 4; }
 
@@ -79,7 +74,7 @@ void PlayerFaceTexRef::setSlot(u32 x) { v = x; }
 
 s32 PlayerFaceTexRef::load(u32 idx) {
     void *p = sPlayerFaceTexPool.getBuffer(v);
-    void *name = PlayerFaceTex_GetPath(idx);
+    char *name = PlayerFaceTex_GetPath(idx);
     return File_LoadToBuffer(name, p, PlayerFaceTex_GetBufferSize());
 }
 

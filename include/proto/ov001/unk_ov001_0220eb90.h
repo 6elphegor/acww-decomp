@@ -5,15 +5,18 @@
 
 #include "types.h"
 #include "nitro/gxoam.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sWfcOptionsChosen
+extern u8 sWfcOptionsChosen;
+#endif
 #ifndef PROTO_LOCAL_sWfcOptionsPalette
 extern void *sWfcOptionsPalette;
+#endif
+#ifndef PROTO_LOCAL_sWfcOptionsSel
+extern u8 sWfcOptionsSel;
 #endif
 #ifndef PROTO_LOCAL_sWfcOptionsSprite
 extern GXOamAttr *sWfcOptionsSprite;
@@ -54,24 +57,13 @@ void WfcOptions_FadeOut();
 #ifndef PROTO_LOCAL_WfcOptions_Exit
 void WfcOptions_Exit();
 #endif
+#ifndef PROTO_LOCAL_WfcOptions_MoveCursor
+void WfcOptions_MoveCursor(s32 a);
+#endif
 #ifndef PROTO_LOCAL_WfcOptions_HighlightSelection
 void WfcOptions_HighlightSelection();
 #endif
 #ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcOptionsChosen
-extern u8 sWfcOptionsChosen;
-#endif
-#ifndef PROTO_LOCAL_sWfcOptionsSel
-extern u8 sWfcOptionsSel;
-#endif
-#ifndef PROTO_LOCAL_WfcOptions_MoveCursor
-void WfcOptions_MoveCursor(s32 a);
-#endif
 }
 #endif
 

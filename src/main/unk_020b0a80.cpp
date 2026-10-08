@@ -3,12 +3,6 @@
 #include "nitro/io_access.h"
 #include "sys/OSThread.h"
 #include "game/GroundInfo.h"
-#define PROTO_LOCAL_Main_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OverlayHandle_Load  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gHeapCreateOption  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gOverlayHandle  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sBuildingOccupancy  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sProfileTableMain  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/autoload_2/unk_020fe5c0.h"
@@ -19,6 +13,8 @@
 #include "proto/itcm/unk_01ffcb2c.h"
 #include "proto/itcm/unk_01ffcc60.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_020e1e2c.h"
 #include "proto/main/unk_020376c0.h"
 #include "proto/main/unk_02037734.h"
 #include "proto/main/unk_0204eeb4.h"
@@ -41,419 +37,61 @@ extern "C" {
 // Other files
 }
 
-extern "C" {
-}
-
-extern "C" {
-}
 
 extern "C" {
 u32 Scene_GetCurrent(void);
-}
-
-extern "C" {
 BOOL SceneId_IsNookShop(u32 a);
-}
-
-extern "C" {
 BOOL SceneId_IsHouseRoom(u32 a);
-}
-
-extern "C" {
 BOOL SceneId_IsUnk6To8(u32 a);
-}
-
-extern "C" {
 BOOL SceneId_IsMuseumRoom(u32 a);
-}
-
-extern "C" {
 BOOL GroundSeason_IsSnow(void);
-}
-
-extern "C" {
-BOOL SceneId_IsVillagerHouse(u32 a);
-}
-
-extern "C" {
 u32 Ground_GetExitAtPos(void *p);
-}
-
-extern "C" {
 u32 GroundAttr_GetFootstepSe(u32 a);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void GroundInfo_Destruct(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
 u32 ItemInfo_GetIndoorUnk1(u16 *p);
-}
-
-extern "C" {
-void BuildingInfo_Copy(void *p, const void *q);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void func_02135558(void *obj, void *dtor, void *reg);
-}
-
-extern "C" {
-BOOL func_02072e44(void *p);
-}
-
-extern "C" {
-BOOL func_020729cc(void *p, u32 a);
-}
-
-extern "C" {
-void func_020728d4(void *p);
-}
-
-extern "C" {
-void func_020728a4(void *p, void *q, u32 n);
-}
-
-extern "C" {
-void func_02072824(void *p, u32 a, u32 b);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void BuildingInfo_Destroy(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void func_02000c8c(void);
-}
-
-extern "C" {
-extern void *gCommManager;
-}
-
-extern "C" {
 extern u8 gFieldSceneKind;
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-extern u32 data_021ee2a8;
-}
-
-extern "C" {
-extern u32 data_021ee2e8[3];
-}
-
-extern "C" {
-extern u32 data_021ee2f4;
-}
-
-extern "C" {
-extern u16 sSceneBuildingTable[];
-}
-
-extern "C" {
-extern u8 data_020d0a7c[];
-}
-
-extern "C" {
-extern u8 sBuildingOccupancy[];
-}
-
-extern "C" {
-void MI_CpuCopy8(const void *src, void *dst, u32 size);
-}
-
-extern "C" {
-void MI_CpuFill8(void *dst, u32 value, u32 size);
-}
-
-extern "C" {
 void MIi_CpuClearFast(u32 value, u32 dst, u32 size);
-}
-
-extern "C" {
-void func_020b87d0(void *p);
-}
-
-extern "C" {
-void func_020b8618(void *p, void *q, u32 a, u32 b, u32 c);
-}
-
-extern "C" {
-void func_020b8800(void *p);
-}
-
-extern "C" {
-void func_020a78ac(void *p);
-}
-
-extern "C" {
-void func_020a7c58(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void func_020942c8(void *p);
-}
-
-extern "C" {
-void func_020942f8(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 void GX_SetBankForLCDC(u32 a);
-}
-
-extern "C" {
 void GX_DisableBankForLCDC(void);
-}
-
-extern "C" {
 u32 OS_EnableInterrupts(void);
-}
-
-extern "C" {
 void OS_RestoreInterrupts(u32 a);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 void FS_Init(u32 a);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 void DC_FlushRange(u32 a, u32 b);
-}
-
-extern "C" {
 void OS_SetProtectionRegion2(u32 a);
-}
-
-extern "C" {
 void OS_SetArenaHi(u32 a, u32 b);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 void Math_InitSqrt64(void);
-}
-
-extern "C" {
 void HBlank_Init(void);
-}
-
-extern "C" {
 void OS_SetIrqFunction(u32 a, void (*cb)(void));
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 void OS_EnableIrqMask(u32 a);
-}
-
-extern "C" {
 void GX_VBlankIntr(u32 a);
-}
-
-extern "C" {
 void GX_HBlankIntr(u32 a);
-}
-
-extern "C" {
 void Backup_InitDefault(void);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void OverlayHandle_Load(void *p, void *a);
-}
-
-extern "C" {
 void OverlayHandle_Unload(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 void Main_ResetFrameCounter(void);
-}
-
-extern "C" {
 void Clock_Init(void);
-}
-
-extern "C" {
 void Field_ResetActions(void);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 }
 
 extern "C" {
 // This file
 }
 
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
 
 extern "C" {
 extern u32 OVERLAY_0_ID[];
-}
-
-extern "C" {
 extern u32 OVERLAY_68_ID[];
-}
-
-extern "C" {
 extern u32 OVERLAY_69_ID[];
 }
 
 volatile u8 sWvrStartUpDone;
 
-extern "C" {
-extern u8 gHeapCreateOption[];
-}
 
 extern "C" {
-extern u8 gOverlayHandle[];
-}
-
-extern "C" {
-extern u8 sProfileTableMain[];
-}
-
-extern "C" {
-extern u32 gProfileTable;
+extern ProcProfile **gProfileTable;  // (gap data)
 }
 
 extern "C" {
 extern OSThreadQueue gVBlankQueue;
-}
-
-extern "C" {
 extern OSThreadQueue gFrameWaitQueue;
-}
-
-extern "C" {
 extern u8 sVBlankReady;
 }
 
@@ -507,12 +145,9 @@ extern "C" u32 GroundAttr_ResolveCarpet(u32 a) {
 }
 
 extern "C" u32 GroundAttr_GetAtPos(VecFx32 *a) {
-    u8 buf[0x40];
-    u32 r;
-    ((GroundInfo *)(buf))->initAtPos(a, 0, 0);
-    r = GroundAttr_ResolveCarpet(*(u32 *)(buf + 0x34));
-    GroundInfo_Destruct(buf);
-    return r;
+    GroundInfo g;
+    g.initAtPos(a, 0, 0);
+    return GroundAttr_ResolveCarpet(g.attr);
 }
 
 extern "C" u32 Footstep_GetSeForAttr(u32 a) {
@@ -561,8 +196,8 @@ extern "C" void Main_Init(void) {
     GX_HBlankIntr(1);
     Backup_InitDefault();
     Main_LoadBuildTime();
-    OverlayHandle_Load(gOverlayHandle, OVERLAY_69_ID);
-    OverlayHandle_Unload(gOverlayHandle);
+    OverlayHandle_Load((OverlayHandleView *)&gOverlayHandle, (s32)(uptr)OVERLAY_69_ID);  // (the ids: symbol values)
+    OverlayHandle_Unload(&gOverlayHandle);
     Touch_Init();
     Main_InitTick();
 #ifdef HOST64
@@ -576,7 +211,7 @@ extern "C" void Main_Init(void) {
     Clock_Init();
     Field_ResetActions();
     CommCaution_LoadMessages();
-    gProfileTable = (u32)sProfileTableMain;
+    gProfileTable = sProfileTableMain;
     Main_EmptyInitStub();
     Random_SeedGlobal();
     IO_W((vu32 *)0x40004c8, 0x296a5800);
@@ -585,7 +220,7 @@ extern "C" void Main_Init(void) {
     IO_W((vu32 *)0x40004c4, 0);
     Main_InitNop();
     GameRoot_Boot();
-    OverlayHandle_Load(gOverlayHandle, OVERLAY_68_ID);
+    OverlayHandle_Load((OverlayHandleView *)&gOverlayHandle, (s32)(uptr)OVERLAY_68_ID);
 }
 
 extern "C" void Startup_OnWvrStartUp(u32 a, u32 b) {
@@ -600,19 +235,9 @@ extern "C" void Startup_SetupMainArena(void) {
     OS_SetArenaHi(0, 0x23ff000);
 }
 
-extern "C" void Startup_FillOverlayArea(void) {
-    // the host build links the overlays in: its variables can lie where the DS loads overlays (docs/host.md)
-    return;
-    volatile u32 fill;
-    u32 info[12];
-    u32 start, size;
-    OverlayMgr_GetInfo(info, OVERLAY_0_ID);
-    start = info[1];
-    fill = 0xe7fee7fe;
-    size = 0x229bdc0 - start;
-    MIi_CpuClearFast(fill, start, size);
-    DC_FlushRange(start, size);
-}
+// (the DS filled the overlay area with a trap pattern: the host build links the overlays in, its variables can
+// lie there - docs/host.md)
+extern "C" void Startup_FillOverlayArea(void) {}
 
 extern "C" void NitroStartUp(void) {
     vu16 *ime = (vu16 *)0x4000208;
@@ -641,7 +266,7 @@ extern "C" void NitroStartUp(void) {
     FS_Init(2);
     Startup_FillOverlayArea();
     OverlayMgr_Init();
-    *(u16 *)gHeapCreateOption = 1;
+    gHeapCreateOption = 1;
     Heap_InitSystem();
 }
 

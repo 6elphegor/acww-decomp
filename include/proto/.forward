@@ -3,5 +3,8 @@
 # define their own copies of (ItemId: src/main/unk_0204a780.cpp, src/main/unk_02070560.cpp).
 PlayerData
 BgAcreModel
+TouchPickResult  # game/TouchPicker.h is C++ the generator does not recognise (constructors in structs)
+FtrActor  # room/FtrActor.h brings the whole actor hierarchy
+BugNetTarget  # game/BugNetTarget.h brings the touch-pick classes
 FieldStructureMgr
 PlayerHouseTex

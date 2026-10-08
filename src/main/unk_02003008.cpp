@@ -1,30 +1,28 @@
 #include "types.h"
 #include "npc/VillagerId.h"
-#define PROTO_LOCAL_TownId_IsValid  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerId_IsValidSpecies  // declared below: the shared prototype conflicts with the calls here
+#include "save/SaveData.h"
+#include "proto/main/unk_02002b1c.h"
 #include "proto/main/unk_02003008.h"
 #include "proto/main/unk_02063904.h"
 
 extern "C" {
-extern u32 gSaveTownId;
-u32 TownId_IsValid(void *p);
 void MI_CpuFill8(void *p, u32 v, u32 n);
-u32 VillagerId_IsValidSpecies(u32 id);
 }
+extern SaveData gSaveData;
 
 
 
 extern const u32 sPersonalityVoiceTypes[];
 
 u32 VillagerId::isValid() {
-    if (TownId_IsValid(this) == 1 && VillagerId_IsValidSpecies(species) == 1) return TRUE;
+    if (TownId_IsValid(&townId) == 1 && VillagerId_IsValidSpecies(species) == 1) return TRUE;
     return FALSE;
 }
 
 void VillagerId::set(u32 id, u32 type, void *s) {
     species = id;
     personality = type;
-    if (s == 0) s = &gSaveTownId;
+    if (s == 0) s = gSaveData.townId;
     TownId_Assign(this, s);
 }
 

@@ -3,10 +3,6 @@
 #include "sys/OSThread.h"
 #include "sys/QNode.h"
 #include "nitro/io_access.h"
-#define PROTO_LOCAL_gBuildTime  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gProcHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gRootHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_0210f154.h"
 #include "proto/autoload_2/unk_0210fa84.h"
@@ -25,218 +21,14 @@ typedef volatile u16 vu16;
 typedef volatile u32 vu32;
 
 
-
-
-
-
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-extern const char *sPanicMessage;
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-extern u32 gTaskPhase;
-}
-
-extern "C" {
-extern u32 gRootHeap;
-}
-
-extern "C" {
-extern u32 gCurrentHeap;
-}
-
-extern "C" {
-extern u32 gProcHeap;
-}
-
-extern "C" {
-extern QNode *gTaskCurrentNode;
-}
-
-extern "C" {
-extern u16 gProcCreateProfile;
-}
-
-extern "C" {
-extern u8 gProcCreateStep;
-}
-
-extern "C" {
-extern OSThread *data_021fcc2c[3];
-}
-
-extern "C" {
-extern u32 data_021fce88;
-}
-
-extern "C" {
-extern char data_02135f44[];
-}
-
-extern "C" {
-extern char sCrashFmtTimeMs[], sCrashFmtLoopProc[], sCrashFmtProfStep[], sCrashFmtRegister[], sCrashFmtSpsr[], sCrashFmtCp15[],
-    sCrashFmtSp[], sCrashFmtPc4[], sCrashFmtPanicPos[], sCrashFmtThread[], sCrashFmtStackRange[], sCrashFmtIrqStackErr[],
-    sCrashFmtStackErr[], sCrashFmtStackPtr[], sCrashFmtWord[], sCrashEmptyStr[], gBuildTime[], sCrashRegNames[];
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-u32 OS_GetProcMode(void);
-}
-
-extern "C" {
-void OS_DisableInterrupts(void);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void GX_SetBankForSubBG(u32 a);
-}
-
 extern "C" {
 void GX_LoadBG1Char(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GXS_LoadBG1Char(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GX_LoadBGPltt(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GXS_LoadBGPltt(void *a, u32 b, u32 c);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void MIi_CpuClearFast(u32 a);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-u32 Task_GetPhaseName(u32 a);
-}
-
-extern "C" {
-u32 OS_GetIrqStackStatus(void);
-}
-
-extern "C" {
-u32 OS_GetStackStatus(OSThread *a);
-}
-
-extern "C" {
-#define Heap_dump _ZN4Heap4dumpEv
-void Heap_dump(u32 a);
-}
-
-extern "C" {
-void BlockMap_DebugStub(void);
-}
-
-extern "C" {
-u8 *OS_GetDTCMAddress(void);
-}
-
-extern "C" {
 void G2x_SetBlendBrightnessExt_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
 }
 
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-u32 func_02132ef8(u64 a, u64 b);
-}
 
 struct Gfx2dDispCtrl {
     s32 subBg3CenterX, subBg3CenterY, subBg3OffsetX, subBg3OffsetY;
@@ -278,115 +70,31 @@ struct Gfx2dOffset {
 
 extern "C" {
 u32 GXS_SetGraphicsMode(u32 a);
-}
-
-extern "C" {
 u32 GX_SetGraphicsMode(u32 a, u32 b, u32 c);
-}
-
-extern "C" {
 void G3X_SetHOffset(u32 a);
-}
-
-extern "C" {
 void G2x_SetBGyAffine_(u32 reg, void* mtx, s32 a, s32 b, s32 c, s32 d);
-}
-
-extern "C" {
 void G2x_SetBlendBrightnessExt_(u32 reg, u32 a, u32 b, u32 c, u32 d, u32 e);
-}
-
-extern "C" {
 void G2x_SetBlendAlpha_(u32 reg, u32 a, s32 b, u32 c, u32 d);
-}
-
-extern "C" {
 void G2x_SetBlendBrightness_(u32 reg, u32 a, s32 b);
-}
-
-extern "C" {
 void GX_LoadBGPltt(void *p, u32 a, u32 b);
-}
-
-extern "C" {
 void GXS_LoadBGPltt(void *p, u32 a, u32 b);
-}
-
-extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 void DC_FlushRange(void *p, u32 size);
-}
-
-extern "C" {
 void GX_LoadBG2Char(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GX_LoadBG3Char(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GXS_LoadBG0Char(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GXS_LoadBG2Char(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GXS_LoadBG3Char(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GX_LoadOBJ(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GXS_LoadOBJ(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GX_LoadBG1Scr(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GX_LoadBG2Scr(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GX_LoadBG3Scr(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GXS_LoadBG0Scr(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GXS_LoadBG1Scr(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GXS_LoadBG2Scr(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GXS_LoadBG3Scr(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GX_LoadOBJPltt(void *a, u32 b, u32 c);
-}
-
-extern "C" {
 void GXS_LoadOBJPltt(void *a, u32 b, u32 c);
 }
 

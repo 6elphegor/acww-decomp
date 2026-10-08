@@ -32,7 +32,7 @@ void WfcMove_Update();
 void WfcMove_GetState(u8 *a, u8 *b);
 #endif
 #ifndef PROTO_LOCAL_WfcMove_GetChildUser
-s32 WfcMove_GetChildUser();
+u8 *WfcMove_GetChildUser();
 #endif
 #ifndef PROTO_LOCAL_WfcMove_StepMeasureChannel
 void WfcMove_StepMeasureChannel();
