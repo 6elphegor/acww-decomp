@@ -194,7 +194,7 @@ void gpiCallErrorCallback(GPConnection *, s32, s32);
 void strzcpy(char *, const char *, s32);
 void _strlwr(char *);
 char *goastrdup(const char *);
-s32 gpiAddOperation(GPConnection *, s32, void *, GPIOperation **, s32, s32, s32);
+s32 gpiAddOperation(GPConnection *, s32, void *, GPIOperation **, s32, GPCallback, void *);
 void gpiFailedOpCallback(GPConnection *, GPIOperation *);
 void gpiDisconnect(GPConnection *, s32);
 s32 gpiProcess(GPConnection *, s32);
@@ -341,7 +341,7 @@ s32 gpiConnect(GPConnection *h, const char *a1, const char *a2, const char *a3, 
     strzcpy(ctx->email, a3, 0x33);
     strzcpy(ctx->password, a4, 0x1f);
     _strlwr(ctx->email);
-    obj = (GPIConnectData *)GsUtil_Alloc(HOST_SIZED(0x308, GPIConnectData));
+    obj = (GPIConnectData *)GsUtil_Alloc(sizeof(GPIConnectData));
     if (obj == 0) {
         gpiSetErrorString(h, "Out of memory.");
         return 1;
@@ -806,7 +806,7 @@ void gpiCallErrorCallback(GPConnection *h, s32 a, s32 b) {
     }
     p = *(GPICallbackCopy *)&ctx->callbacks[0];
     if (p.p.callback != 0) {
-        m = (GPErrorArg *)GsUtil_Alloc(HOST_SIZED(0x10, GPErrorArg));
+        m = (GPErrorArg *)GsUtil_Alloc(sizeof(GPErrorArg));
         if (m != NULL) {
             m->result = a;
             m->fatal = b;

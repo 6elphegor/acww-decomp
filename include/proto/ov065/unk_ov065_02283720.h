@@ -38,9 +38,6 @@ void ClosePendingCallbacks(void);
 #ifndef PROTO_LOCAL_gpiDebug
 void gpiDebug(void *h, const char *fmt, ...);
 #endif
-#ifndef PROTO_LOCAL_serverreqs
-extern void *serverreqs;
-#endif
 #ifdef __cplusplus
 }
 #endif

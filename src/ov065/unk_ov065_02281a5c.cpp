@@ -32,7 +32,7 @@ namespace Nb {
 
 extern "C" {
 void _strlwr(char *);
-s32 gpiAddOperation(void *, s32, void *, void *, s32, s32, s32);
+s32 gpiAddOperation(void *, s32, void *, void *, s32, GPCallback, void *);
 s32 gpiProcess(void *, s32);
 s32 socket(s32, s32, s32);
 s32 SetSockBlocking(s32, s32);
@@ -107,7 +107,7 @@ void gpiAppendIntToBuffer(GPConnection *, char **, s32);
 s32 gpiSendFromBuffer(GPConnection *, s32, char **, s32 *, s32, const char *);
 s32 gpiRecvToBuffer(GPConnection *, s32, char **, s32 *, s32 *, const char *);
 void msleep(s32);
-s32 gpiProfileSearch(GPConnection *, char *, char *, char *, char *, char *, s32, s32, s32, s32, s32);
+s32 gpiProfileSearch(GPConnection *, char *, char *, char *, char *, char *, s32, s32, s32, GPCallback, void *);
 
 
 
@@ -185,7 +185,7 @@ s32 gpiStartProfileSearch(void *h0, void *o0) {
 s32 gpiInitSearchData(void *h0, void *out, s32 p2) {
     GPISearchData *cn;
     GPConnection *h = (GPConnection *)h0;
-    cn = (GPISearchData *)GsUtil_Alloc(HOST_SIZED(0x144, GPISearchData));
+    cn = (GPISearchData *)GsUtil_Alloc(sizeof(GPISearchData));
     if (cn == NULL) {
         gpiSetErrorString(h, "Out of memory.");
         return 1;
@@ -233,7 +233,7 @@ s32 gpiStartSearch(void *h0, void *cn, s32 p2, s32 p3, s32 p4) {
     return 0;
 }
 
-s32 gpiProfileSearch(GPConnection *h, char *a, char *b, char *c, char *d, char *e, s32 f, s32 g, s32 p8, s32 p9, s32 p10) {
+s32 gpiProfileSearch(GPConnection *h, char *a, char *b, char *c, char *d, char *e, s32 f, s32 g, s32 p8, GPCallback p9, void *p10) {
     GPISearchData *cn;
     s32 r;
     if ((a == NULL || *a == 0) && (c == NULL || *c == 0) && (d == NULL || *d == 0) && (e == NULL || *e == 0) && f == 0 && (b == NULL || *b == 0)) {
@@ -528,7 +528,7 @@ again:
         }
         GETTOK(tok)
         if (strcmp(tok, "vr") != 0) ERR3()
-        p = (GPIsValidEmailResponseArg *)GsUtil_Alloc(HOST_SIZED(0x3c, GPIsValidEmailResponseArg));
+        p = (GPIsValidEmailResponseArg *)GsUtil_Alloc(sizeof(GPIsValidEmailResponseArg));
         if (p == 0) ERRMEM("Out of memory.")
         p->result = 0;
         strzcpy(p->email, c->email, 0x33);
@@ -548,7 +548,7 @@ again:
         if (pr3.p.callback == 0) {
             goto done;
         }
-        p = (GPGetUserNicksResponseArg *)GsUtil_Alloc(HOST_SIZED(0x44, GPGetUserNicksResponseArg));
+        p = (GPGetUserNicksResponseArg *)GsUtil_Alloc(sizeof(GPGetUserNicksResponseArg));
         if (p == 0) ERRMEM("Out of memory.")
         p->result = 0;
         STD_CopyString(p->email, c->email);
@@ -595,7 +595,7 @@ again:
         if (pr4.p.callback == 0) {
             goto done;
         }
-        p4 = (GPFindPlayersResponseArg *)GsUtil_Alloc(HOST_SIZED(0x10, GPFindPlayersResponseArg));
+        p4 = (GPFindPlayersResponseArg *)GsUtil_Alloc(sizeof(GPFindPlayersResponseArg));
         if (p4 == 0) ERRMEM("Out of memory.")
         p4->productID = c->productID;
         done = 0;
@@ -662,7 +662,7 @@ again:
             if (gpiValueForKey(c->inputBuffer, "\\pid\\", buf, 0x200) == 0) ERR3()
             a6 = atol(buf);
         }
-        p = (GPCheckResponseArg *)GsUtil_Alloc(HOST_SIZED(8, GPCheckResponseArg));
+        p = (GPCheckResponseArg *)GsUtil_Alloc(sizeof(GPCheckResponseArg));
         if (p == 0) ERRMEM("Out of memory.")
         p->result = a4;
         p->profile = a6;
@@ -691,7 +691,7 @@ again:
         } else {
             a6 = atol(buf);
         }
-        p = (GPCheckResponseArg *)GsUtil_Alloc(HOST_SIZED(8, GPCheckResponseArg));
+        p = (GPCheckResponseArg *)GsUtil_Alloc(sizeof(GPCheckResponseArg));
         if (p == 0) ERRMEM("Out of memory.")
         p->result = a4;
         p->profile = a6;
@@ -705,7 +705,7 @@ again:
         if (pr7.p.callback == 0) {
             goto done;
         }
-        p7 = (GPGetReverseBuddiesResponseArg *)GsUtil_Alloc(HOST_SIZED(0xc, GPGetReverseBuddiesResponseArg));
+        p7 = (GPGetReverseBuddiesResponseArg *)GsUtil_Alloc(sizeof(GPGetReverseBuddiesResponseArg));
         if (p7 == 0) ERRMEM("Out of memory.")
         p7->result = 0;
         p7->numProfiles = 0;
@@ -765,7 +765,7 @@ again:
             goto done;
         }
         cnt = 0;
-        p = (GPSuggestUniqueNickResponseArg *)GsUtil_Alloc(HOST_SIZED(0xc, GPSuggestUniqueNickResponseArg));
+        p = (GPSuggestUniqueNickResponseArg *)GsUtil_Alloc(sizeof(GPSuggestUniqueNickResponseArg));
         if (p == 0) ERRMEM("Out of memory.")
         p->result = 0;
         p->numSuggestedNicks = 0;

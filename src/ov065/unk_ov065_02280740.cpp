@@ -103,7 +103,7 @@ s32 gpiOperationsAreBlocking(GPConnection *h);
 s32 gpiFindOperationByID(GPConnection *h, GPIOperation **out, s32 id);
 void gpiRemoveOperation(GPConnection *h, GPIOperation *n);
 void gpiDestroyOperation(GPConnection *h, GPIOperation *n);
-s32 gpiAddOperation(GPConnection *h, s32 a, void *b, GPIOperation **out, s32 e, s32 f, s32 g);
+s32 gpiAddOperation(GPConnection *h, s32 a, void *b, GPIOperation **out, s32 e, GPCallback f, void *g);
 s32 gpiFailedOpCallback(void *h, GPIOperation *n);
 }
 }
@@ -119,7 +119,7 @@ s32 gpiFailedOpCallback(void *h, GPIOperation *n) {
         {
             switch (n->type) {
             case 0: {
-                GPConnectResponseArg *m = (GPConnectResponseArg *)GsUtil_Alloc(HOST_SIZED(0x20, GPConnectResponseArg));
+                GPConnectResponseArg *m = (GPConnectResponseArg *)GsUtil_Alloc(sizeof(GPConnectResponseArg));
                 if (m == 0) {
                     gpiSetErrorString(h, "Out of memory.");
                     return 1;
@@ -222,9 +222,9 @@ s32 gpiFailedOpCallback(void *h, GPIOperation *n) {
 
 namespace Na {
 extern "C" {
-s32 gpiAddOperation(GPConnection *h, s32 a, void *b, GPIOperation **out, s32 e, s32 f, s32 g) {
+s32 gpiAddOperation(GPConnection *h, s32 a, void *b, GPIOperation **out, s32 e, GPCallback f, void *g) {
     GPIConnection *c = *h;
-    GPIOperation *n = (GPIOperation *)GsUtil_Alloc(HOST_SIZED(0x24, GPIOperation));
+    GPIOperation *n = (GPIOperation *)GsUtil_Alloc(sizeof(GPIOperation));
     if (n == 0) {
         gpiSetErrorString(h, "Out of memory.");
         return 1;

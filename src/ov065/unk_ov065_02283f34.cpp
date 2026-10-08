@@ -9,7 +9,6 @@
 #include "net/SockAddrIn.h"
 #define PROTO_LOCAL_gti2GetResponse  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gti2MessageCheck  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_serverreqs  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/autoload_2/unk_02128c60.h"

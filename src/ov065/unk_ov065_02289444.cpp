@@ -2000,7 +2000,7 @@ _ServerBrowser *ServerBrowserNewA(s32 a, s32 b, s32 c, s32 d, s32 s5, s32 s6, s3
     if (s7 == 0 && __GSIACResult != 1) {
         return NULL;
     }
-    o = (_ServerBrowser *)GsUtil_Alloc(HOST_SIZED(0x638, _ServerBrowser));
+    o = (_ServerBrowser *)GsUtil_Alloc(sizeof(_ServerBrowser));
     if (o == NULL) {
         return NULL;
     }

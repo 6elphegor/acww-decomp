@@ -2,6 +2,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/NetCheck.h"
+#include "net/gpiCallback.h"
 #include "net/NasAuthParams.h"
 #include "net/NasAuthResult.h"
 #include "net/DwcControl.h"
@@ -125,7 +126,7 @@ void DwcMatch_StartClient(u32 a, void (*b)(), s32 c, s32 d, s32 e);
 void DwcMatch_StartGameServer(u32 a, void (*b)(), s32 c, s32 d, s32 e);
 void DwcFriend_StartUpdate(void *a, void *b, void (*c)(s32, s32), s32 d, s32 e, s32 f, s32 g, s32 h);
 u32 gpInitialize(void *a, u32 b, s32 c);
-s32 gpSetCallback(void *a, s32 b, void (*c)(), s32 d);
+s32 gpSetCallback(void *a, s32 b, GPCallback c, void *d);
 void DwcLogin_Begin();
 void DwcLogin_Process();
 void DwcFriend_Process();
@@ -203,7 +204,7 @@ extern DwcNasLoginCallback sDwcLoginDoneCallback;
 extern u8 data_ov065_0228c818[];
 void qr2_shutdown(void *);
 void ServerBrowserFree(void *);
-void gpSetCallback(void *, s32, s32, s32);
+s32 gpSetCallback(void *, s32, GPCallback, void *);
 void gpProcess(void *);
 void gpDestroy(void *);
 void DwcFriend_ClearControl(void);
@@ -221,7 +222,7 @@ void DwcMatch_InitControl(void *, void *, void *, void *, void *, void *, void *
 void MI_CpuCopy8(const void *, void *, u32);
 void DWCi_Acc_LoginIdToUserName(void *, u32, void *);
 s32 gpSetInfosA(void *, s32, void *);
-s32 gpGetInfo(void *, u32, s32, s32, void *, s32);
+s32 gpGetInfo(void *, u32, s32, s32, GPCallback, void *);
 s32 gpDisconnect(void *);
 s32 gpConnectPreAuthenticatedA(void *, void *, void *, s32, s32, void *, s32);
 void DWCi_Acc_SetLoginIdToUserData(void *, void *, u32);
@@ -229,7 +230,7 @@ s32 NasAuth_GetState(void);
 void NasAuth_GetResult(s32 *);
 void NasAuth_Destroy(void);
 void NasAuth_Abort(void);
-s32 NasAuth_Start(void *, void *);
+s32 NasAuth_Start(NasAuthParams *, DwcHttp *);
 void MI_CpuFill8(void *, s32, u32);
 u64 func_02132ef8(u64, u32);
 u64 func_02133100(u64, u32, u32);
@@ -415,16 +416,16 @@ void DwcCore_Process() {
             if (DwcCore_HandleGpResult(gpInitialize(&G->gpConnection, G->loginControl.productId, 0)) != 0) {
                 return;
             }
-            if (DwcCore_HandleGpResult(gpSetCallback(&G->gpConnection, 0, DwcCore_OnGpError, 0)) != 0) {
+            if (DwcCore_HandleGpResult(gpSetCallback(&G->gpConnection, 0, (GPCallback)DwcCore_OnGpError, NULL)) != 0) {
                 return;
             }
-            if (DwcCore_HandleGpResult(gpSetCallback(&G->gpConnection, 3, DwcMatch_OnGpBuddyMessage, 0)) != 0) {
+            if (DwcCore_HandleGpResult(gpSetCallback(&G->gpConnection, 3, (GPCallback)DwcMatch_OnGpBuddyMessage, NULL)) != 0) {
                 return;
             }
-            if (DwcCore_HandleGpResult(gpSetCallback(&G->gpConnection, 1, DwcFriend_OnBuddyRequest, 0)) != 0) {
+            if (DwcCore_HandleGpResult(gpSetCallback(&G->gpConnection, 1, (GPCallback)DwcFriend_OnBuddyRequest, NULL)) != 0) {
                 return;
             }
-            if (DwcCore_HandleGpResult(gpSetCallback(&G->gpConnection, 2, DwcFriend_OnBuddyStatus, 0)) != 0) {
+            if (DwcCore_HandleGpResult(gpSetCallback(&G->gpConnection, 2, (GPCallback)DwcFriend_OnBuddyStatus, NULL)) != 0) {
                 return;
             }
             DwcCore_SetState(2);

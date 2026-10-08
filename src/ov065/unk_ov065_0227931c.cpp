@@ -63,7 +63,7 @@ u64 func_02132ef8(u64 a, u32 b, u32 c);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
 s32 CheckRcode(s32 a, s32 b);
-s32 setsockopt(s32 a, s32 b, s32 c, s32 d, s32 e);
+s32 setsockopt(s32 a, s32 b, s32 c, const void *d, s32 e);
 s32 getsockopt(s32 a, s32 b, s32 c, void *val, s32 *len);
 s32 GSISocketSelect(s32 sock, s32 *rd, s32 *wr, s32 *ex);
 s32 ghiAppendDataToBuffer(GHIBuffer *o, char *s, s32 len);
@@ -450,7 +450,7 @@ s32 ghiFindFreeSlot() {
     ghiConnections = (GHIConnection **)p;
     i = base;
     for (; i < end; i++) {
-        ghiConnections[i] = (GHIConnection *)GsUtil_Alloc(HOST_SIZED(0x184, GHIConnection));
+        ghiConnections[i] = (GHIConnection *)GsUtil_Alloc(sizeof(GHIConnection));
         if (ghiConnections[i] == 0) {
             for (i--; i >= base; i--) {
                 GsUtil_Free(ghiConnections[i]);

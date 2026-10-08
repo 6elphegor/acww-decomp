@@ -5,9 +5,6 @@
 #include "nitro/os_rtc.h"
 
 #include "types64.h"
-#define PROTO_LOCAL_OS_InitMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_LockMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_UnlockMutex  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02115468.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/autoload_2/unk_0212a120.h"
@@ -84,10 +81,10 @@ extern s32 DwcHttp_AddFormParam(void *a, const char *k, const char *v, u32 n);
 extern char *DwcHttp_FindField(void *buf, s32 n, const char *key);
 extern s32 DwcHttp_GetFieldDecoded(void *buf, s32 n, const char *key, char *out, u32 max);
 extern s32 DwcHttp_GetFieldString(void *buf, s32 n, const char *key, char *out, s32 max);
-extern s32 DwcHttp_ParseResponse(void *buf, s32 n, s32 a, void *b);
-extern s32 DwcHttp_Init(u32 a, void *b);
-extern s32 DwcHttp_FinishHeaders(u32 a);
-extern s32 DwcHttp_StartThread(u32 a);
+extern s32 DwcHttp_ParseResponse(DwcHttpField *tbl, s32 n, s32 flag, char *text);
+extern s32 DwcHttp_Init(DwcHttp *c, DwcHttpParams *cfg);
+extern s32 DwcHttp_FinishHeaders(DwcHttp *c);
+extern void DwcHttp_StartThread(DwcHttp *c);
 extern s32 DwcHttp_Abort(void *c);
 
 void NasAuth_SetState(s32 v);
@@ -102,7 +99,7 @@ void NasAuth_JoinThread(void);
 void NasAuth_Destroy(void);
 void NasAuth_Abort(void);
 void NasAuth_StartThread(void);
-s32 NasAuth_Start(NasAuthParams *cfg, u32 a);
+s32 NasAuth_Start(NasAuthParams *cfg, DwcHttp *http);
 void NasAuth_SetServerUrl(char *s);
 }
 
@@ -129,17 +126,17 @@ void NasAuth_SetServerUrl(char *s) {
     sNasHttpParams.url = s;
 }
 
-s32 NasAuth_Start(NasAuthParams *cfg, u32 a) {
+s32 NasAuth_Start(NasAuthParams *cfg, DwcHttp *http) {
     if (sNasAuth != NULL) {
         return 2;
     }
-    void *p = cfg->allocFunc("DWCAuth", 0x13e0);
+    void *p = cfg->allocFunc("DWCAuth", sizeof(NasAuthWork));
     if (p == NULL) {
         return 2;
     }
     sNasAuth = (S *)p;
-    MI_CpuFill8(p, 0, 0x13e0);
-    sNasAuth->http = (DwcHttp *)a;
+    MI_CpuFill8(p, 0, sizeof(NasAuthWork));
+    sNasAuth->http = http;
     MI_CpuFill8(&sNasAuth->resultCode, 0, 0x1c4);
     sNasAuth->resultCode = -1;
     sNasAuth->config = *(NasAuthParams *)cfg;  // (allocFunc / freeFunc: pointers, wider on 64-bit hosts)
@@ -157,25 +154,25 @@ s32 NasAuth_Start(NasAuthParams *cfg, u32 a) {
 }
 
 void NasAuth_StartThread(void) {
-    OS_InitMutex(sNasAuth->mutex);
+    OS_InitMutex(&sNasAuth->mutex);
     sNasAuth->isAborting = 0;
-    if (sNasAuth->threadId == 0 || OS_IsThreadTerminated(sNasAuth->thread) != 0) {
-        OS_CreateThread(sNasAuth->thread, (s32 (*)(void *))NasAuth_ThreadMain, &sNasAuth,
-                      (u8 *)sNasAuth + 0x13e0, 0x1000, 0x10);
-        OS_WakeupThreadDirect(sNasAuth->thread);
+    if (sNasAuth->thread.id == 0 || OS_IsThreadTerminated(&sNasAuth->thread) != 0) {
+        OS_CreateThread(&sNasAuth->thread, (s32 (*)(void *))NasAuth_ThreadMain, &sNasAuth,
+                      sNasAuth->stack + sizeof(sNasAuth->stack), sizeof(sNasAuth->stack), 0x10);
+        OS_WakeupThreadDirect(&sNasAuth->thread);
     }
 }
 
 void NasAuth_Abort(void) {
     if (sNasAuth != NULL) {
-        OS_LockMutex(sNasAuth->mutex);
+        OS_LockMutex(&sNasAuth->mutex);
         sNasAuth->isAborting = 1;
-        OS_UnlockMutex(sNasAuth->mutex);
+        OS_UnlockMutex(&sNasAuth->mutex);
         if (sNasAuth->http) {
             DwcHttp_Abort(sNasAuth->http);
         }
-        if (sNasAuth->threadId) {
-            OS_JoinThread(sNasAuth->thread);
+        if (sNasAuth->thread.id) {
+            OS_JoinThread(&sNasAuth->thread);
         }
     }
 }
@@ -191,8 +188,8 @@ void NasAuth_Destroy(void) {
 }
 
 void NasAuth_JoinThread(void) {
-    if (sNasAuth->threadId) {
-        OS_JoinThread(sNasAuth->thread);
+    if (sNasAuth->thread.id) {
+        OS_JoinThread(&sNasAuth->thread);
     }
 }
 
@@ -201,9 +198,9 @@ s32 NasAuth_GetState(void) {
     if (sNasAuth == NULL) {
         return 0x15;
     }
-    OS_LockMutex(sNasAuth->mutex);
+    OS_LockMutex(&sNasAuth->mutex);
     r = sNasAuth->state;
-    OS_UnlockMutex(sNasAuth->mutex);
+    OS_UnlockMutex(&sNasAuth->mutex);
     return r;
 }
 
@@ -226,7 +223,7 @@ s32 NasAuth_SendRequest(s32 a) {
     if (strcmp(sNasHttpParams.url, sNasDefaultUrl)) {
         sNasHttpParams.useTestServer = 1;
     }
-    if (DwcHttp_Init((u32)sNasAuth->http, &sNasHttpParams)) {
+    if (DwcHttp_Init(sNasAuth->http, &sNasHttpParams)) {
         return 4;
     }
     if (a == 1) {
@@ -238,10 +235,10 @@ s32 NasAuth_SendRequest(s32 a) {
     if (sNasAuth->state != 0) {
         return 4;
     }
-    if (DwcHttp_FinishHeaders((u32)sNasAuth->http)) {
+    if (DwcHttp_FinishHeaders(sNasAuth->http)) {
         return 4;
     }
-    DwcHttp_StartThread((u32)sNasAuth->http);
+    DwcHttp_StartThread(sNasAuth->http);
     return 0;
 }
 
@@ -259,8 +256,8 @@ void NasAuth_ThreadMain(void) {
 
     for (;;) {
         o = sNasAuth->http;
-        if (o->threadId != 0) {
-            OS_JoinThread(o->thread);
+        if (o->thread.id != 0) {
+            OS_JoinThread(&o->thread);
         }
         g = sNasAuth;
         if (g->http->result != 8) {
@@ -312,25 +309,25 @@ void NasAuth_ThreadMain(void) {
         }
         t0 = OS_GetTick();
         while ((u64)((OS_GetTick() - t0) * 64) / 0x82ea < 0x1388) {
-            OS_LockMutex(sNasAuth->mutex);
+            OS_LockMutex(&sNasAuth->mutex);
             if (sNasAuth->isAborting == 1) {
                 sNasAuth->resultCode = -0x4e84;
-                OS_UnlockMutex(sNasAuth->mutex);
+                OS_UnlockMutex(&sNasAuth->mutex);
                 NasAuth_SetState(0x13);
                 return;
             }
-            OS_UnlockMutex(sNasAuth->mutex);
+            OS_UnlockMutex(&sNasAuth->mutex);
             OS_Sleep(0x1388);
         }
         DwcHttp_Destroy(sNasAuth->http);
-        OS_LockMutex(sNasAuth->mutex);
+        OS_LockMutex(&sNasAuth->mutex);
         sNasAuth->state = NasAuth_SendRequest(flag);
         if (sNasAuth->state != 0) {
             sNasAuth->resultCode = -0x4e84;
-            OS_UnlockMutex(sNasAuth->mutex);
+            OS_UnlockMutex(&sNasAuth->mutex);
             return;
         }
-        OS_UnlockMutex(sNasAuth->mutex);
+        OS_UnlockMutex(&sNasAuth->mutex);
     }
 }
 
@@ -340,7 +337,7 @@ s32 NasAuth_HandleResponse(void) {
     void *r;
 
     g = sNasAuth;
-    if (DwcHttp_ParseResponse(g->httpFields, 0x20, 0, g->http->responseBuffer.base) != 1) {
+    if (DwcHttp_ParseResponse(g->httpFields, 0x20, 0, (char *)g->http->responseBuffer.base) != 1) {
         sNasAuth->resultCode = 0x4e84;
         return 0xd;
     }
@@ -357,7 +354,7 @@ s32 NasAuth_HandleResponse(void) {
                 sNasAuth->resultCode = 0x4e84;
                 return 2;
             }
-            if (DWCi_AUTH_UpDateWiFiID(&sNasUserId, ((u32)r + 0x1f) & ~0x1f) != 1) {
+            if (DWCi_AUTH_UpDateWiFiID(&sNasUserId, (u32)(((uptr)r + 0x1f) & ~(uptr)0x1f)) != 1) {
                 sNasAuth->config.freeFunc(m, r, 0);
                 sNasAuth->resultCode = 0x4e84;
                 return 0xe;
@@ -378,7 +375,7 @@ s32 NasAuth_HandleResponse(void) {
             sNasAuth->resultCode = 0x4e8c;
             return 0x10;
         }
-        DWCi_AUTH_MakeWiFiID(((u32)r + 0x1f) & ~0x1f);
+        DWCi_AUTH_MakeWiFiID((u32)(((uptr)r + 0x1f) & ~(uptr)0x1f));
         sNasAuth->config.freeFunc(m, r, 0);
         sNasAuth->resultCode = 0x4e8c;
         return 0x10;
@@ -555,9 +552,9 @@ s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, DwcHttpField *
 }
 
 void NasAuth_SetState(s32 v) {
-    OS_LockMutex(sNasAuth->mutex);
+    OS_LockMutex(&sNasAuth->mutex);
     sNasAuth->state = v;
-    OS_UnlockMutex(sNasAuth->mutex);
+    OS_UnlockMutex(&sNasAuth->mutex);
 }
 
 }

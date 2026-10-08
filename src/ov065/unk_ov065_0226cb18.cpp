@@ -4,6 +4,15 @@
 #include "net/DwcHttp.h"
 #include "net/WifiApContext.h"
 #include "net/NasAuthWork.h"
+#include "types64.h"
+#include "proto/autoload_2/unk_02114410.h"
+#include "proto/autoload_2/unk_02115468.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov065/unk_ov065_0226ad84.h"
+#include "proto/ov065/unk_ov065_0226cb18.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/ov065/unk_ov065_0225f1a0.h"
 #pragma opt_strength_reduction off
 
 extern "C" {
@@ -27,20 +36,6 @@ s8 *sWifiApUsbKey2Ptr = sWifiApUsbKey2;
 namespace N_d080 {
 extern "C" {
 
-#include "types64.h"
-#define PROTO_LOCAL_OS_GetTick  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WifiAp_FoldApIndex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WifiAp_GetBlock  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WifiAp_GetState  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WifiAp_SetConnectedApType  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WifiAp_SetError  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sSockYieldMode  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_02114410.h"
-#include "proto/autoload_2/unk_02115468.h"
-#include "proto/autoload_2/unk_02128030.h"
-#include "proto/autoload_2/unk_0212b770.h"
-#include "proto/ov065/unk_ov065_0226ad84.h"
-#include "proto/ov065/unk_ov065_0226cb18.h"
 
 
 
@@ -115,7 +110,6 @@ extern s32 DWCi_AUTH_UpDateWiFiID(void *p, u32 v);
 extern void DWCi_AUTH_RemakeWiFiID(void *p);
 extern void DWCi_AUTH_MakeWiFiID(u32 v);
 extern void OS_JoinThread(void *p);
-extern u64 OS_GetTick(void);
 extern void OS_Sleep(u32 ms);
 
 extern void WifiAp_DeriveUsbApWepKey(void *p, void *out);
@@ -197,7 +191,6 @@ extern "C" {
 extern u8 gWifiLinkAnyBssid[];
 extern u8 gWifiLinkAnySsid[];
 extern u8 sWifiApSocketConfigTemplate[];
-extern u32 sSockYieldMode;
 extern s8 *sWifiApUsbKey1Ptr;
 extern s8 *sWifiApUsbKey2Ptr;
 extern s8 *sWifiApNdwcshapKey1Ptr;
@@ -207,12 +200,7 @@ extern u8 sWifiApUsbKeySBox[];
 extern u8 sWifiApNdwcshapPermTable[];
 
 extern "C" {
-u8 *WifiAp_GetBlock(u32 id);
-s32 WifiAp_GetState(void);
 s32 WifiLink_GetPhase(void);
-s32 WifiAp_FoldApIndex(u32 v);
-void WifiAp_SetConnectedApType(u32 v);
-s32 WifiAp_SetError(s32 v);
 s32 WifiLink_StartupAsync(void *a, void *b);
 s32 WifiAp_OnLinkNotify(void *a);
 void WifiAp_BuildSearchList(void);
@@ -232,7 +220,6 @@ u32 NetCheck_GetErrorCode(void);
 s32 NetCheck_Abort(void);
 s32 NetCheck_Destroy(void);
 s32 NetCheck_Start(void *cfg);
-s64 OS_GetTick(void);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void DGT_Hash1Reset(void *ctx);
 void DGT_Hash1SetSource(void *ctx, void *p, u32 n);
@@ -483,7 +470,7 @@ s32 WifiAp_ProcessNetSetup(void) {
             NetCheck_Abort();
             NetCheck_Destroy();
         default:
-            *((u8 *)c + c->selectedAp * 4 + 0x444) = 2;
+            c->foundApInfo[c->selectedAp * 4] = 2;
             a = 0xb;
             break;
         }
@@ -492,8 +479,8 @@ s32 WifiAp_ProcessNetSetup(void) {
 }
 
 s32 WifiAp_StepStartSockets(WifiApContext *c) {
-    u8 *p = WifiAp_GetBlock(1);
-    u8 *q = WifiAp_GetBlock(4);
+    u8 *p = (u8 *)WifiAp_GetBlock(1);
+    u8 *q = (u8 *)WifiAp_GetBlock(4);
     WifiAp_BuildSocketConfig(p, c, q);
     sSockYieldMode = 4;
     if (Sock_Startup(q) != 0) {
@@ -515,7 +502,7 @@ s32 WifiAp_StepWaitAddress(WifiApContext *c) {
     s64 d = now - *(s64 *)&c->stepStartTick;
     u64 r = ((u64)d << 6) / 0x1ff6210LL;
     if (r >= 10) {
-        *((u8 *)c + c->selectedAp * 4 + 0x444) = 1;
+        c->foundApInfo[c->selectedAp * 4] = 1;
         return 0xb;
     }
     return 0xc;
@@ -530,7 +517,7 @@ s32 WifiAp_StepStartNetCheck(void) {
 }
 
 s32 WifiAp_StepWaitNetCheck(WifiApContext *c) {
-    u8 *p = WifiAp_GetBlock(1);
+    u8 *p = (u8 *)WifiAp_GetBlock(1);
     s32 r = NetCheck_GetState();
     if (r != 0) {
         s32 x = WifiAp_FoldApIndex(c->apType);
@@ -539,7 +526,7 @@ s32 WifiAp_StepWaitNetCheck(WifiApContext *c) {
         }
         NetCheck_Destroy();
         if (r != 0xb) {
-            *((u8 *)c + c->selectedAp * 4 + 0x444) = 1;
+            c->foundApInfo[c->selectedAp * 4] = 1;
             return 0xb;
         }
         return 0xf;

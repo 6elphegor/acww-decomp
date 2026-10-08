@@ -32,7 +32,7 @@ s32 gt2GetOutgoingBufferFreeSpace(s32);
 s32 gt2GetConnectionState(s32);
 s32 gt2Ping(s32);
 void gt2Send(s32, void *, s32, s32);
-void DwcMatch_OnSyncPacket(s32, s32, s32);
+void DwcMatch_OnSyncPacket(u32 a, s32 b, u8 *c);
 void MI_CpuCopy8(void *, void *, s32);
 void MI_CpuFill8(void *, s32, s32);
 void strncpy(void *, const void *, s32);
@@ -408,7 +408,7 @@ void DwcNet_RecvControlBody(s32 a, void *b, s32 c) {
     case 2:
     case 3:
     case 4:
-        DwcMatch_OnSyncPacket(a, t, (s32)b);
+        DwcMatch_OnSyncPacket(a, t, (u8 *)b);
         break;
     }
 }

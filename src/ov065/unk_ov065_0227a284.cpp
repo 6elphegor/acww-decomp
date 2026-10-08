@@ -256,8 +256,8 @@ s32 gpiSendBuddyMessage(void *, s32, s32, s32);
 s32 gpiDeleteBuddy(void *, s32);
 s32 gpiAuthBuddyRequest(void *, s32);
 s32 gpiSetInfos(void *, s32, s32);
-s32 gpiGetInfo(void *, s32, s32, s32, s32, s32);
-s32 gpiProfileSearch(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+s32 gpiGetInfo(void *, s32, s32, s32, GPCallback, void *);
+s32 gpiProfileSearch(void *, char *, char *, char *, char *, char *, s32, s32, s32, GPCallback, void *);
 s32 gpiAppendStringToBuffer(void *, char *, const char *);
 s32 gpiAppendIntToBuffer(void *, char *, s32);
 s32 gpiGetProfile(void *, s32, void *);
@@ -1019,7 +1019,7 @@ void ghiPostDataFree(GHIPostData *r) {
 namespace Na {
 extern "C" {
 GHIPost *ghiNewPost(void) {
-    GHIPost *t = (GHIPost *)GsUtil_Alloc(HOST_SIZED(0x14, GHIPost));
+    GHIPost *t = (GHIPost *)GsUtil_Alloc(sizeof(GHIPost));
     u8 *p;
     u32 i;
     u8 *q;

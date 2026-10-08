@@ -5,9 +5,6 @@
 #include "net/SockHostEnt.h"
 #include "net/gpersist.h"
 #include "net/gpiOperation.h"
-#define PROTO_LOCAL_data_ov065_0228df7c  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_enc1  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_enc3  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/autoload_2/unk_02128c60.h"
@@ -39,13 +36,10 @@ extern char data_ov065_0228ddc0[];
 extern char data_ov065_0228dadc[];
 extern char data_ov065_0228ddf4[];
 extern char data_ov065_0228de24[];
-extern char data_ov065_0228df7c[];
-extern char enc1[];
-extern char enc3[];
 
 extern "C" {
 void _strlwr(char *);
-s32 gpiAddOperation(void *, s32, void *, void *, s32, s32, s32);
+s32 gpiAddOperation(void *, s32, void *, void *, s32, GPCallback, void *);
 s32 gpiProcess(void *, s32);
 s32 socket(s32, s32, s32);
 s32 SetSockBlocking(s32, s32);

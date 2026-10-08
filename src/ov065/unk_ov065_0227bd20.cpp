@@ -31,8 +31,8 @@ s32 gpiSendBuddyMessage(void *, s32, s32, s32);
 s32 gpiDeleteBuddy(void *, s32);
 s32 gpiAuthBuddyRequest(void *, s32);
 s32 gpiSetInfos(void *, s32, s32);
-s32 gpiGetInfo(void *, s32, s32, s32, s32, s32);
-s32 gpiProfileSearch(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+s32 gpiGetInfo(void *, s32, s32, s32, GPCallback, void *);
+s32 gpiProfileSearch(GPConnection *, char *, char *, char *, char *, char *, s32, s32, s32, GPCallback, void *);
 s32 gpiAppendStringToBuffer(void *, GPIBuffer *, const char *);
 s32 gpiAppendIntToBuffer(void *, GPIBuffer *, s32);
 s32 gpiGetProfile(void *, s32, void *);
@@ -133,7 +133,7 @@ s32 gpProcess(GPConnection *h) {
 
 namespace Nc {
 extern "C" {
-s32 gpSetCallback(GPConnection *h, s32 i, s32 x, s32 y) {
+s32 gpSetCallback(GPConnection *h, s32 i, GPCallback x, void *y) {
     GPIConnection *c;
     if (h == NULL || (c = *h) == NULL) {
         return 2;
@@ -196,7 +196,7 @@ void gpDisconnect(GPConnection *h) {
 
 namespace Nb {
 extern "C" {
-s32 gpProfileSearchA(GPConnection *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, GPCallback cb, void *arg) {
+s32 gpProfileSearchA(GPConnection *h, char *a1, char *a2, char *a3, char *a4, char *a5, s32 a6, s32 a7, GPCallback cb, void *arg) {
     GPIConnection *c;
     if (h == NULL || (c = *h) == NULL) {
         return 2;
@@ -211,7 +211,7 @@ s32 gpProfileSearchA(GPConnection *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s3
         cb(h, &l, arg);
         return 0;
     }
-    return gpiProfileSearch(h, a1, a2, a3, a4, a5, a6, 0, a7, (s32)cb, (s32)arg);
+    return gpiProfileSearch(h, a1, a2, a3, a4, a5, a6, 0, a7, cb, arg);
 }
 }
 }
@@ -236,7 +236,7 @@ s32 gpGetInfo(GPConnection *h, s32 a1, s32 a2, s32 a3, GPCallback cb, void *arg)
         gpiSetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
-    return gpiGetInfo(h, a1, a2, a3, (s32)cb, (s32)arg);
+    return gpiGetInfo(h, a1, a2, a3, cb, arg);
 }
 }
 }

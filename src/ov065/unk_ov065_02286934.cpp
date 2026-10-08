@@ -9,7 +9,6 @@
 #include "net/qr2.h"
 #include "net/GsBytes.h"
 #include "net/gsPlatformUtil.h"
-#define PROTO_LOCAL_negotiateList  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/ov065/unk_ov065_02277974.h"
@@ -47,7 +46,7 @@ extern "C" {
 
 
 
-extern void *negotiateList;
+extern DArrayImplementation *negotiateList;
 
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 s32 OS_SNPrintf(char *buf, s32 n, const char *fmt, ...);
@@ -127,7 +126,6 @@ extern char data_ov065_0228e32c[];
 extern char data_ov065_0228e340[];
 extern char data_ov065_0228e348[];
 extern char data_ov065_0228e34c[];
-extern Vec *negotiateList;
 extern s32 num_local_ips;
 extern u32 local_ip_list[];
 
@@ -179,7 +177,7 @@ void qr_process_query(Qr *q, Buf *buf, u8 *p, s32 n);
 }
 
 extern "C" { u32 Matchup1Hostname; } //@
-extern "C" { void *negotiateList; } //@
+extern "C" { DArrayImplementation *negotiateList; } //@
 namespace N02287200 { extern "C" {
 Ent *FindNegotiatorForCookie(s32 x) {
     s32 i;

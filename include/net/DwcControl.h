@@ -7,6 +7,8 @@
 #include "net/DwcUserData.h"
 #include "net/DwcMatchControl.h"
 
+struct DwcHttp;
+
 // DWC friend-match core state sDwcControl (DwcCore_Init: GT2 socket and callbacks, GP connection, state, aid, own
 // profile id, user callbacks, login / friend / match controls) and the DWC login control.
 // src/ov065/unk_ov065_0226fc18.cpp and src/ov065/unk_ov065_02270e34.cpp.
@@ -29,7 +31,7 @@ struct DwcLoginControl {
     /* 0x01c */ u32 resultCallbackArg;
     /* 0x020 */ DwcUserData *userData;
     /* 0x024 */ u8 unk_24[4];
-    /* 0x028 */ void *nasAuthWork;
+    /* 0x028 */ DwcHttp *nasAuthWork; // the HTTP work NasAuth runs on
     /* 0x02c */ u64 nasAuthStartTick;
     /* 0x034 */ s32 gpConnectPending;
     /* 0x038 */ u64 gpConnectStartTick;

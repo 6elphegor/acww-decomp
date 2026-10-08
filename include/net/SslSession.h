@@ -8,6 +8,7 @@
 // The handshake writes the pre-master secret (version major/minor + 46 random bytes) into masterSecret and the
 // key derivation replaces it with the master secret (src/ov065/unk_ov065_02264d0c.cpp).
 
+typedef struct SslSession SslSession;
 struct SslSession {
     /* 0x00 */ u8 sessionId[0x20];
     /* 0x20 */ u8 masterSecret[0x30];

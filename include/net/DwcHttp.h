@@ -4,6 +4,7 @@
 #include "types.h"
 #include "net/IpSocket.h"
 #include "net/SslConnection.h"
+#include "sys/OSThread.h"
 
 // DWC HTTP client (DwcHttp_*, src/ov065/unk_ov065_0226de0c.cpp): request parameters, the 0x1a60-byte work it runs on
 // (its own thread, stack at the end) and the key/value field lists of parsed responses / NAS forms.
@@ -13,6 +14,7 @@
 typedef void *(*DwcAllocFunc)(const char *, u32);
 typedef void (*DwcFreeFunc)(const char *, void *, u32);
 
+typedef struct DwcHttpBuffer DwcHttpBuffer;
 struct DwcHttpBuffer {
     /* 0x0 */ u8 *base;
     /* 0x4 */ u8 *cur;
@@ -21,6 +23,7 @@ struct DwcHttpBuffer {
 };
 
 // DwcHttp_Init parameters (copied to DwcHttp+0x04); sNasHttpParams, sNetCheckHttpParams.
+typedef struct DwcHttpParams DwcHttpParams;
 struct DwcHttpParams {
     /* 0x00 */ char *url;
     /* 0x04 */ s32 method; // 0 = POST (form), 1 = GET
@@ -32,6 +35,7 @@ struct DwcHttpParams {
     /* 0x1c */ s32 timeoutMs;
 };
 
+typedef struct DwcHttp DwcHttp;
 struct DwcHttp {
     /* 0x000 */ u8 initFlag;
     /* 0x001 */ u8 unk_01[3];
@@ -55,22 +59,23 @@ struct DwcHttp {
     /* 0x924 */ s32 numFormParams;
     /* 0x928 */ DwcHttpBuffer requestBuffer;
     /* 0x938 */ DwcHttpBuffer responseBuffer;
-    /* 0x948 */ u8 responseMutex[0x960 - 0x948];
+    /* 0x948 */ OSMutex responseMutex;
     /* 0x960 */ s32 contentLength;
     /* 0x964 */ char *bodyStart;
-    /* 0x968 */ u8 thread[0x9d4 - 0x968];
-    /* 0x9d4 */ s32 threadId;
-    /* 0x9d8 */ u8 unk_9d8[0xa28 - 0x9d8];
-    /* 0xa28 */ u8 abortMutex[0xa40 - 0xa28];
+    /* 0x968 */ OSThread thread;
+    /* 0xa28 */ OSMutex abortMutex;
     /* 0xa40 */ s32 isAbortRequested;
-    /* 0xa44 */ u8 unk_a44[0x1a60 - 0xa44];
+    /* 0xa44 */ u8 unk_a44[0x1c];
+    /* 0xa60 */ u8 stack[0x1000]; // the thread's
 };
 
+typedef struct DwcHttpField DwcHttpField;
 struct DwcHttpField {
     /* 0x0 */ const char *key;
     /* 0x4 */ char *value;
 };
 
+typedef struct DwcHttpFieldList DwcHttpFieldList;
 struct DwcHttpFieldList {
     /* 0x0 */ DwcHttpField *entries;
     /* 0x4 */ s32 capacity;

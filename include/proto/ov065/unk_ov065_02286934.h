@@ -13,9 +13,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_negotiateList
-extern void *negotiateList;
-#endif
 #ifndef PROTO_LOCAL_AddNegotiator
 void *AddNegotiator(void);
 #endif

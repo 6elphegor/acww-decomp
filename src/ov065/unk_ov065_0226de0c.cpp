@@ -3,9 +3,6 @@
 #include "net/DwcHttp.h"
 
 #include "types64.h"
-#define PROTO_LOCAL_OS_InitMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_LockMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_UnlockMutex  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/autoload_2/unk_02128c60.h"
 #include "proto/autoload_2/unk_0212a120.h"
@@ -23,17 +20,17 @@ struct DwcHttpParamsWords {
 
 extern "C" {
 
-extern char sRootCaGlobalSign[];
-extern char sRootCaBaltimore[];
-extern char sRootCaGteGlobal[];
-extern char sRootCaGte[];
-extern char sRootCaNintendo[];
-extern char sRootCaThawtePremium[];
-extern char sRootCaThawteServer[];
-extern char sRootCaVeriSignG2[];
-extern char sRootCaVeriSignG3[];
-extern char sRootCaVeriSignClass3[];
-extern char sRootCaRsaSecureServer[];
+extern SslRootCa sRootCaGlobalSign;
+extern SslRootCa sRootCaBaltimore;
+extern SslRootCa sRootCaGteGlobal;
+extern SslRootCa sRootCaGte;
+extern SslRootCa sRootCaNintendo;
+extern SslRootCa sRootCaThawtePremium;
+extern SslRootCa sRootCaThawteServer;
+extern SslRootCa sRootCaVeriSignG2;
+extern SslRootCa sRootCaVeriSignG3;
+extern SslRootCa sRootCaVeriSignClass3;
+extern SslRootCa sRootCaRsaSecureServer;
 extern u32 gOwnIp;
 extern OSThreadInfo data_021fcc2c;
 
@@ -55,7 +52,7 @@ char *strncpy(char *dst, const char *src, u32 n);
 s32 strncmp(const char *a, const char *b, u32 n);
 
 // other TUs
-s32 Dns_Resolve(void *);
+s32 Dns_Resolve(const char *);
 void IpSoc_Use(void *);
 void IpSoc_Init();
 void IpSoc_Bind(u32, u32, u32);
@@ -66,7 +63,7 @@ void IpSoc_Release();
 void IpSoc_Unuse();
 void IpSoc_FlushPending();
 s32 IpSoc_GetReadLength();
-u32 IpSoc_Write(u32, u32);
+u32 IpSoc_Write(const u8 *, u32);
 u8 *IpSoc_Read(u32 *);
 void IpSoc_Consume(u32);
 void IpSoc_TcpWaitClosed();
@@ -96,13 +93,13 @@ s32 DwcHttp_FinishHeaders(DwcHttp *c);
 s32 DwcHttp_Init(DwcHttp *c, DwcHttpParams *cfg);
 
 // data
-void *sDwcHttpRootCaList[11] = {sRootCaVeriSignG3, sRootCaVeriSignG2, sRootCaVeriSignClass3, sRootCaRsaSecureServer,
-                                 sRootCaGlobalSign, sRootCaGteGlobal, sRootCaGte, sRootCaBaltimore,
-                                 sRootCaThawteServer, sRootCaThawtePremium, sRootCaNintendo};
+SslRootCa *sDwcHttpRootCaList[11] = {&sRootCaVeriSignG3, &sRootCaVeriSignG2, &sRootCaVeriSignClass3, &sRootCaRsaSecureServer,
+                                     &sRootCaGlobalSign, &sRootCaGteGlobal, &sRootCaGte, &sRootCaBaltimore,
+                                     &sRootCaThawteServer, &sRootCaThawtePremium, &sRootCaNintendo};
 s32 sDwcHttpTestServer;
 
 s32 DwcHttp_Init(DwcHttp *c, DwcHttpParams *cfg) {
-    MI_CpuFill8(c, 0, 0x1a60);
+    MI_CpuFill8(c, 0, sizeof(DwcHttp));
     c->contentLength = -1;
     *(DwcHttpParamsWords *)&c->url = *(DwcHttpParamsWords *)cfg;
     c->lowRecvBuf = c->allocFunc("http->lowrecvbuf", 0xb68);
@@ -149,8 +146,8 @@ void DwcHttp_StartThread(DwcHttp *c) {
     } else {
         sDwcHttpTestServer = 0;
     }
-    if (c->threadId == 0 || OS_IsThreadTerminated(&c->thread) != 0) {
-        OS_CreateThread(&c->thread, (s32 (*)(void *))DwcHttp_ThreadMain, c, (u8 *)c + 0x1a60, 0x1000, prio - 1);
+    if (c->thread.id == 0 || OS_IsThreadTerminated(&c->thread) != 0) {
+        OS_CreateThread(&c->thread, (s32 (*)(void *))DwcHttp_ThreadMain, c, c->stack + sizeof(c->stack), sizeof(c->stack), prio - 1);
         OS_WakeupThreadDirect(&c->thread);
     }
 }
@@ -160,7 +157,7 @@ void DwcHttp_Abort(DwcHttp *c) {
         OS_LockMutex(&c->abortMutex);
         c->isAbortRequested = 1;
         OS_UnlockMutex(&c->abortMutex);
-        if (c->threadId != 0) {
+        if (c->thread.id != 0) {
             OS_JoinThread(&c->thread);
         }
     }
@@ -267,7 +264,7 @@ void DwcHttp_ThreadMain(DwcHttp *c) {
             if (len > 0x2bc) {
                 len = 0x2bc;
             }
-            len = IpSoc_Write((u32)c->requestBuffer.cur, len);
+            len = IpSoc_Write(c->requestBuffer.cur, len);
             if (len <= 0) {
                 c->result = 5;
                 goto fail;
@@ -419,7 +416,7 @@ void DwcHttp_Destroy(DwcHttp *c) {
             c->freeFunc("http->lowsendbuf", c->lowSendBuf, 0);
             c->lowSendBuf = NULL;
         }
-        MI_CpuFill8(c, 0, 0x1a60);
+        MI_CpuFill8(c, 0, sizeof(DwcHttp));
     }
 }
 
@@ -465,7 +462,7 @@ s32 DwcHttp_AddFormParam(DwcHttp *c, const char *a1, void *a2, s32 a3) {
     const char *fmt = c->numFormParams == 0 ? "%s=" : "&%s=";
     s32 r7, len, tot, avail, r;
     c->numFormParams++;
-    r7 = NasBase64_Encode(a2, a3, NULL, 0);
+    r7 = NasBase64_Encode((u8 *)a2, a3, NULL, 0);
     len = strlen(fmt);
     tot = r7 + (len - 2 + strlen(a1));
     avail = b->limit - b->cur;
@@ -477,7 +474,7 @@ s32 DwcHttp_AddFormParam(DwcHttp *c, const char *a1, void *a2, s32 a3) {
     }
     r = OS_SNPrintf((char *)b->cur, avail, fmt, a1);
     b->cur = b->cur + r;
-    if (NasBase64_Encode(a2, a3, b->cur, b->limit - b->cur - 1) < 0) {
+    if (NasBase64_Encode((u8 *)a2, a3, b->cur, b->limit - b->cur - 1) < 0) {
         return 1;
     }
     b->cur = b->cur + r7;
@@ -652,7 +649,7 @@ s32 DwcHttp_ParseResponse(DwcHttpField *tbl, s32 n, s32 flag, char *text) {
         tx = t + strlen(t) + 2;
     }
     t = p + 4;
-    while ((u32)t < (u32)end) {
+    while ((uptr)t < (uptr)end) {
         q = strstr(t, "=");
         if (q == NULL) {
             break;
@@ -698,7 +695,7 @@ s32 DwcHttp_GetFieldDecoded(DwcHttpField *tbl, s32 n, const char *key, char *dst
     if (s == NULL) {
         return 0;
     }
-    s32 r = NasBase64_Decode(s, strlen(s), dst, size);
+    s32 r = NasBase64_Decode((s8 *)s, strlen(s), (u8 *)dst, size);
     if (r != -1 && (u32)r < size) {
         dst[r] = 0;
     }

@@ -69,7 +69,7 @@ s32 gpiAppendIntToBuffer(GPConnection *, char **, s32);
 s32 gpiAppendStringToBuffer(GPConnection *, char **, const char *);
 s32 gpiAddCallback(GPConnection *, GPICallback, void *, s32, s32);
 s32 gpiSendGetInfo(GPConnection *, s32, s32);
-s32 gpiAddOperation(GPConnection *, s32, s32, GPIOperation **, s32, s32, s32);
+s32 gpiAddOperation(GPConnection *, s32, void *, GPIOperation **, s32, GPCallback, void *);
 s32 gpiPeerStartConnect(GPConnection *, GPIPeer *);
 void gpiRemoveProfile(GPConnection *, GPIProfile *);
 s32 gpiGetProfile(GPConnection *, s32, GPIProfile **);
@@ -250,7 +250,7 @@ void gpiAppendIntToBuffer(GPConnection *, char **, s32);
 s32 gpiSendFromBuffer(GPConnection *, s32, char **, s32 *, s32, const char *);
 s32 gpiRecvToBuffer(GPConnection *, s32, char **, s32 *, s32 *, const char *);
 void msleep(s32);
-s32 gpiProfileSearch(GPConnection *, char *, char *, char *, char *, char *, s32, s32, s32, s32, s32);
+s32 gpiProfileSearch(GPConnection *, char *, char *, char *, char *, char *, s32, s32, s32, GPCallback, void *);
 
 
 
@@ -277,7 +277,7 @@ s32 gpiCheckProfileForUser(GPConnection *, GPIProfile *n, void *arg);
 s32 gpiRemoveProfile(GPConnection *h, void *n);
 void gpiRemoveProfileByID(GPConnection *h, s32 a);
 s32 gpiGetProfile(GPConnection *h, s32 a, void *out);
-s32 gpiProfileListAdd(GPConnection *h, s32 a);
+GPIProfile *gpiProfileListAdd(GPConnection *h, s32 a);
 s32 gpiProcessNewProfile(GPConnection *h, GPIOperation *n, char *s);
 }
 }
@@ -325,28 +325,28 @@ s32 gpiProcessNewProfile(GPConnection *h, GPIOperation *n, char *s) {
 
 namespace Nb {
 extern "C" {
-s32 gpiProfileListAdd(GPConnection *h, s32 a) {
-    void *out;
+GPIProfile *gpiProfileListAdd(GPConnection *h, s32 a) {
+    GPIProfile *out;
     void **t = &(*h)->profileTable;
     if (a <= 0) {
         return 0;
     }
     if (gpiGetProfile(h, a, &out) != 0) {
-        return (s32)out;
+        return out;
     }
     GPIProfile tmp;
-    u32 ad = (u32)&tmp;
-    Unk_ov065_022818f4_Zero((GPIProfile *)ad);
+    GPIProfile *ad = &tmp;
+    Unk_ov065_022818f4_Zero(ad);
     tmp.profileId = a;
     tmp.userId = 0;
     tmp.cache = 0;
     tmp.authSig = 0;
     tmp.peerSig = 0;
     tmp.requestCount = 0;
-    TableEnter(*t, (GPIProfile *)ad);
+    TableEnter(*t, ad);
     ((s32 *)t)[1]++;
     if (gpiGetProfile(h, a, &out) != 0) {
-        return (s32)out;
+        return out;
     }
     return 0;
 }

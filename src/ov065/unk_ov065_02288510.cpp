@@ -5,11 +5,11 @@
 #include "net/SockAddrIn.h"
 #include "net/sb_internal.h"
 #include "net/gsPlatformUtil.h"
-#define PROTO_LOCAL_qr2_registered_key_list  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128c60.h"
 #include "proto/autoload_2/unk_0212fa54.h"
 #include "proto/ov065/unk_ov065_02277974.h"
 #include "proto/ov065/unk_ov065_02288510.h"
+#include "proto/ov065/unk_ov065_022884fc.h"
 
 // ov065_066: GameSpy transport (RC4-like cipher, connection manager) 0x022884fc..0x02288df0
 
@@ -23,7 +23,6 @@ struct SBQueryEngine;
 
 
 extern "C" {
-extern uptr qr2_registered_key_list[];
 extern u8 data_0213a410[];
 
 u32 func_0213335c(u32 a, u32 b);
@@ -36,7 +35,7 @@ s32 socket(s32 a, s32 b, s32 c);
 void *TableNew2(s32 a, s32 b, s32 c, void *cmp, void *hash, void *free);
 s32 NTSLengthSB(u8 *buf, s32 n);
 void SBReleaseStr(s32 a, void *p);
-void SBServerAddKeyValue(void *e, u32 v, u8 *buf);
+void SBServerAddKeyValue(void *e, char *k, char *v);
 void SBServerParseQR2FullKeysSingle(void *e, u8 *buf, s32 n);
 void SBServerParseKeyVals(void *e, u8 *buf);
 }
@@ -203,7 +202,7 @@ void ParseSingleQR2Reply(Mgr *m, Ent *e, u8 *buf, s32 n) {
                     if (r < 0) {
                         break;
                     }
-                    SBServerAddKeyValue(e, qr2_registered_key_list[m->serverkeys[i]], buf);
+                    SBServerAddKeyValue(e, qr2_registered_key_list[m->serverkeys[i]], (char *)buf);
                     buf += r;
                     n -= r;
                     i++;
@@ -223,7 +222,7 @@ void ParseSingleQR2Reply(Mgr *m, Ent *e, u8 *buf, s32 n) {
 
 void ParseSingleGOAReply(Mgr *m, Ent *e, u8 *buf, s32 n) {
     BOOL found;
-    if (strstr(buf, (void *)"\\final\\") != 0) {
+    if (strstr((char *)buf, "\\final\\") != 0) {
         found = TRUE;
     } else {
         found = FALSE;

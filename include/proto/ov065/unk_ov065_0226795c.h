@@ -7,6 +7,23 @@
 #include "net/SslSha1Context.h"
 #ifdef __cplusplus
 #include "types.h"
+#include "uptr.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_SslSha1_Init
+void SslSha1_Init(SslSha1Context *ctx);
+#endif
+#ifndef PROTO_LOCAL_SslSha1_Final
+void SslSha1_Final(SslSha1Context *ctx, void *out);
+#endif
+#ifndef PROTO_LOCAL_SslSha1_FinalRaw
+void SslSha1_FinalRaw(SslSha1Context *ctx, void *out);
+#endif
+#ifdef __cplusplus
+}
 #endif
 
 #ifdef __cplusplus
@@ -57,7 +74,7 @@ void SslBigNum_ModExp(u16 *out, u16 *base, u16 *exp, s32 n, u16 *mod);
 void SslBigNum_ModInverse(u16 *res, u16 *a, u16 *b, s32 n, u16 *tmp);
 #endif
 #ifndef PROTO_LOCAL_SslBigNum_MontgomeryStep
-void SslBigNum_MontgomeryStep(u16 *a, u16 *b, u32 mode, u32 n, u32 k, u16 *m, u16 *t1, u16 *t2, u16 *t3);
+void SslBigNum_MontgomeryStep(u16 *a, u16 *b, uptr mode, u32 n, u32 k, u16 *m, u16 *t1, u16 *t2, u16 *t3);
 #endif
 #ifndef PROTO_LOCAL_SslBigNum_ModExpMontgomery
 void SslBigNum_ModExpMontgomery(u16 *x, u16 *y, u16 *z, u32 n, u16 *m);
@@ -78,13 +95,13 @@ void SslRc4_Crypt(u8 *st, u8 *buf, s32 n);
 u32 SslSha1_ExpandWord(s32 i, u32 *w);
 #endif
 #ifndef PROTO_LOCAL_SslSha1_StoreBe32
-void SslSha1_StoreBe32(u8 *dst, u32 *src, u32 n);
+void SslSha1_StoreBe32(u8 *dst, const u32 *src, u32 n);
 #endif
 #ifndef PROTO_LOCAL_SslSha1_LoadBe32
-void SslSha1_LoadBe32(u32 *dst, u8 *src, u32 n);
+void SslSha1_LoadBe32(u32 *dst, const u8 *src, u32 n);
 #endif
 #ifndef PROTO_LOCAL_SslSha1_Transform
-void SslSha1_Transform(u32 *ctx, u8 *data);
+void SslSha1_Transform(u32 *ctx, const u8 *data);
 #endif
 #ifndef PROTO_LOCAL_sSslSha1Padding
 extern u8 sSslSha1Padding[0x40];

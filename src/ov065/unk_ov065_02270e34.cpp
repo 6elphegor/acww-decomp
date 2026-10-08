@@ -2,6 +2,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/NasAuthParams.h"
+#include "net/DwcHttp.h"
 #include "net/NasAuthResult.h"
 #include "net/gpi.h"
 #include "net/DwcMatchCommandHeader.h"
@@ -55,7 +56,7 @@ extern DwcLoginControl *sDwcLoginControl;
 extern DwcNasLoginCallback sDwcLoginDoneCallback;
 void qr2_shutdown(void *);
 void ServerBrowserFree(void *);
-void gpSetCallback(void *, s32, s32, s32);
+s32 gpSetCallback(void *, s32, GPCallback, void *);
 void gpProcess(void *);
 void gpDestroy(void *);
 void DwcFriend_ClearControl(void);
@@ -73,7 +74,7 @@ void DwcMatch_InitControl(void *, void *, void *, void *, void *, void *, void *
 void MI_CpuCopy8(const void *, void *, u32);
 void DWCi_Acc_LoginIdToUserName(void *, u32, void *);
 s32 gpSetInfosA(void *, s32, void *);
-s32 gpGetInfo(void *, u32, s32, s32, void *, s32);
+s32 gpGetInfo(void *, u32, s32, s32, GPCallback, void *);
 s32 gpDisconnect(void *);
 s32 gpConnectPreAuthenticatedA(void *, void *, void *, s32, s32, void *, s32);
 void DWCi_Acc_SetLoginIdToUserData(void *, void *, u32);
@@ -81,7 +82,7 @@ s32 NasAuth_GetState(void);
 void NasAuth_GetResult(s32 *);
 void NasAuth_Destroy(void);
 void NasAuth_Abort(void);
-s32 NasAuth_Start(void *, void *);
+s32 NasAuth_Start(NasAuthParams *, DwcHttp *);
 void MI_CpuFill8(void *, s32, u32);
 u64 func_02132ef8(u64, u32);
 u64 func_02133100(u64, u32, u32);
@@ -151,7 +152,7 @@ s32 gpGetBuddyIndex(void *, s32, s32 *);
 s32 gpGetBuddyStatus(void *, s32, void *);
 s32 gpGetNumBuddies(void *, s32 *);
 s32 gpDeleteBuddy(void *, s32);
-s32 gpProfileSearchA(void *, s32, s32, s32, s32, void *, s32, s32, void *, s32);
+s32 gpProfileSearchA(void *, char *, char *, char *, char *, char *, s32, s32, GPCallback, void *);
 s32 DwcFriend_NotifyAdded(s32);
 s32 DwcFriend_GetProfileId(s32);
 s32 DwcFriend_Fail(s32, s32);
@@ -222,7 +223,7 @@ s32 gpSetStatusA(GPConnection *, s32, char *, char *);
 s32 gpDeleteBuddy(void *, s32);
 s32 gpIsBuddy(void *, s32);
 s32 gpGetBuddyStatus(void *, s32, GPBuddyStatus *);
-s32 gpGetInfo(void *, s32, s32, s32, void (*)(), s32);
+s32 gpGetInfo(void *, s32, s32, s32, GPCallback, void *);
 s32 DwcFriend_GetStatus(void *, u8 *, u8 *, char *);
 s32 DwcFriend_GetStatusString(void *, char *);
 s32 DwcFriend_GetProfileId(s32);
@@ -490,7 +491,7 @@ namespace F02271da0 {
 extern "C" {
 void DwcFriend_OnBuddyRequest(void *a, u32 *b) {
     if (sDwcFriendControl->friendList != NULL) {
-        gpGetInfo(a, b[0], 0, 0, DwcFriend_OnBuddyRequestInfo, 0);
+        gpGetInfo(a, b[0], 0, 0, (GPCallback)DwcFriend_OnBuddyRequestInfo, NULL);
     }
 }
 }
@@ -500,7 +501,7 @@ namespace F02271da0 {
 extern "C" {
 s32 DwcFriend_HandleAuthorizedMessage(void *a, u32 *b) {
     if (strcmp((const char *)b[2], "I have authorized your request to add me to your list") == 0) {
-        gpGetInfo(a, b[0], 0, 0, DwcFriend_OnAuthorizedInfo, 0);
+        gpGetInfo(a, b[0], 0, 0, (GPCallback)DwcFriend_OnAuthorizedInfo, NULL);
         return 1;
     }
     return 0;
@@ -691,7 +692,7 @@ void DwcFriend_SyncList(DwcFriendData *arr, s32 n)
         } else {
             if (DWC_GetGsProfileId((void *)DwcLogin_GetUserData(), &arr[sDwcFriendControl->syncIndex]) == -1) {
                 DWC_LoginIdToUserName((void *)DwcLogin_GetUserData(), &arr[sDwcFriendControl->syncIndex], buf);
-                gpProfileSearchA(sDwcFriendControl->gpConnection, 0, 0, 0, 0, buf, 0, 0, (void *)DwcFriend_OnProfileSearch, sDwcFriendControl->syncIndex);
+                gpProfileSearchA(sDwcFriendControl->gpConnection, 0, 0, 0, 0, buf, 0, 0, (GPCallback)DwcFriend_OnProfileSearch, (void *)(sptr)sDwcFriendControl->syncIndex);
                 sDwcFriendControl->syncPhase = 2;
                 return;
             }
@@ -1176,7 +1177,7 @@ void DwcLogin_OnGpConnected(void *a0, GPConnectResponseArg *x) {
                 }
             }
         } else if (sDwcLoginControl->state == 3) {
-            s32 r = Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(gpGetInfo(a0, x->profile, 0, 0, (void *)DwcLogin_OnGpProfileInfo, 0));
+            s32 r = Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(gpGetInfo(a0, x->profile, 0, 0, (GPCallback)DwcLogin_OnGpProfileInfo, NULL));
             if (r == 0) {
             } else if (r != 0) {
                 r = r;
@@ -1239,7 +1240,7 @@ void DwcLogin_StartNasAuth(DwcNasLoginCallback cb, u32 arg) {
     STD_CopyString(cfg.gsbrcd, sDwcLoginControl->gsbrcd);
     cfg.allocFunc = (DwcAllocFunc)DwcNet_Alloc;
     cfg.freeFunc = (DwcFreeFunc)DwcNet_Free;
-    void *p = DwcNet_AllocAligned(0, 0x1a60, 4);
+    DwcHttp *p = (DwcHttp *)DwcNet_AllocAligned(0, sizeof(DwcHttp), 4);
     sDwcLoginControl->nasAuthWork = p;
     u64 t2 = OS_GetTick();
     sDwcLoginControl->nasAuthStartTick = t2;
@@ -1301,7 +1302,7 @@ void DwcLogin_OnGpProfileInfo(void *a0, GPGetInfoResponseArg *x) {
                 DWCi_Acc_LoginIdToUserName((u8 *)sDwcLoginControl->userData + 4, sDwcLoginControl->gameCode, a);
                 if (Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(gpSetInfosA(a0, 0x705, a)) == 0) {
                     sDwcLoginControl->state = 4;
-                    s32 r = Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(gpGetInfo(a0, x->profile, 0, 0, (void *)DwcLogin_OnGpProfileInfo, 0));
+                    s32 r = Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(gpGetInfo(a0, x->profile, 0, 0, (GPCallback)DwcLogin_OnGpProfileInfo, NULL));
                     if (r == 0) {
                     } else if (r != 0) {
                         r = r;
@@ -1320,7 +1321,7 @@ void DwcLogin_OnGpProfileInfo(void *a0, GPGetInfoResponseArg *x) {
                 gpDisconnect(a0);
                 sDwcLoginDoneCallback(sDwcLoginControl->authToken, sDwcLoginControl->authChallenge, sDwcLoginDoneArg);
             } else {
-                s32 r = Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(gpGetInfo(a0, x->profile, 0, 0, (void *)DwcLogin_OnGpProfileInfo, 0));
+                s32 r = Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(gpGetInfo(a0, x->profile, 0, 0, (GPCallback)DwcLogin_OnGpProfileInfo, NULL));
                 if (r == 0) { return; }
             }
         }
