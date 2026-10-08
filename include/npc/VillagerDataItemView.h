@@ -49,7 +49,7 @@ public:
     void setHousePos(u8 *p);
     u8 *getHousePos();
     s32 hasHousePos();
-    s32 clearHousePos();
+    void clearHousePos();
     u8 *getMovedFromTownId();
     void setGreetingFor(void *a, s32 n, void *c);
     BOOL getGreetingFor(void *a, void *c);

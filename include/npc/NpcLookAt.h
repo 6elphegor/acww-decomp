@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "gfx/VecFx32.h"
+#include "gfx/Mtx43.h"
 
 // NPC head/look-at controller, NpcActor::lookAt (methods 0x0201a334..0x0201a7e8, unk_0201a334.cpp part of
 // src/main/unk_020119cc.cpp; ctor 0x0201a794, dtor label 0x0201a78c).
@@ -31,8 +32,9 @@ public:
     s16 manualYaw;
     s16 yawLimit;
     u8 onTarget;
-    u8 pad_2b[0x50 - 0x2b];
-    VecFx32 headPos;  // world head position (NpcLookAt_GetHeadPos; zero = unknown)
+    u8 pad_2b;
+    Mtx43 headMtx;  // world matrix of the head joint (0xf, storeHeadMtx); its translation m[9..11] is the head
+                    // position (NpcLookAt_GetHeadPos; zero = unknown)
     s32 maxDistance;
     u8 useYawLimit;
     u8 pad_61[3];
@@ -64,6 +66,7 @@ public:
     void update(NpcActor *base);
     void approachManualAngles();
     void lookAtPoint(NpcActor *o);
+    void storeHeadMtx(NpcActor *npc);
 };
 
 // size 0x68

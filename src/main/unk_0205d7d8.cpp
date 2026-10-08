@@ -281,7 +281,7 @@ extern "C" void PlayerHead_CancelTexUpload(u8 *p) {
     }
 }
 
-extern "C" s32 PlayerHead_Load(u8 *p, s32 a, s32 b, u16 *c, s32 d) {
+extern "C" s32 PlayerHead_Load(u8 *p, s32 a, s32 b, u16 *c, void *d) {
     void *buf = PlayerHead_GetBuffer(p);
     s32 sz = PlayerHead_GetBufferSize();
     s32 r4 = File_LoadToBuffer(PlayerHead_GetModelPath(a), buf, sz);

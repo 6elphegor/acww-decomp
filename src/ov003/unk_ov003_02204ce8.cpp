@@ -109,7 +109,7 @@
 #define Unk_02006d14_isPosInReach _ZN11PlayerActor12isPosInReachEPij
 #define Unk_02006d14_tryInteract _ZN11PlayerActor11tryInteractEv
 #define Unk_02006d14_getTargetWalkSpeed _ZN11PlayerActor18getTargetWalkSpeedEv
-#define Unk_02006d14_applyHeldItemPose _ZN11PlayerActor17applyHeldItemPoseEiPv
+#define Unk_02006d14_applyHeldItemPose _ZN11PlayerActor17applyHeldItemPoseEij
 #define Unk_020102ec_startAnimOnce _ZN11PlayerActor13startAnimOnceEijt
 #define Unk_020102ec_startAnim _ZN11PlayerActor9startAnimEijt
 #define Unk_020102ec_submitSceneCollider _ZN11PlayerActor19submitSceneColliderEv
@@ -4749,7 +4749,7 @@ extern "C" void PlayerActor_StowItemUpdate(Obj *o) {
         target = 0x1000;
         if (((Unk_ov003_0220fc88_Bits *)&o->bodyModel.curFrame)->mid < 8) {
             if (((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->hasPassedFrame(7)) {
-                (o)->applyHeldItemPose(0, (void *)(7));
+                (o)->applyHeldItemPose(0, 7);
             }
             if (*t != 0x1000) {
                 *t += 0x249;

@@ -133,7 +133,7 @@ void CharaClothTexRef::assign(u32 x) {
 void CharaClothTexRef::release() { v = 10; }
 void CharaClothTexRef::setSlot(u32 x) { v = x; }
 
-void CharaClothTexRef::loadItem(u16 *s, s32 a, s32 b, s32 c) {
+void CharaClothTexRef::loadItem(u16 *s, void *a, s32 b, s32 c) {
     u32 st = v;
     BOOL r4, r2, r1;
     if (*s == 0xfff1) {

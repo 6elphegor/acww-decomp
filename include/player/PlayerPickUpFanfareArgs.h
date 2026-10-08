@@ -39,7 +39,7 @@ struct PlayerPickUpFanfareArgs {
     /* 0x2 */ u8 unitX;
     /* 0x3 */ u8 unitZ;
     /* 0x4 */ u8 commitUnit;
-    /* 0x5 */ u8 pad_5[15];
-};
+    /* 0x5 */ u8 pad_5[11];
+};  // the payload of a PlayerActionRequest (0x10 bytes)
 
 #endif

@@ -105,7 +105,7 @@ BOOL SpNpcActor::onCreate() {
         v.y = 0;
         v.z = 0;
         s = 0;
-        if (((NpcActor *)(this))->netReadPosition((s32 *)(&v), (u8 *)(&s)) && Vec_NotEqual(&v, &gVec3Zero)) {
+        if (((NpcActor *)(this))->netReadPosition(&v, &s) && Vec_NotEqual(&v, &gVec3Zero)) {
             VecFx32 *p = (VecFx32 *)&position;
             p->x = v.x;
             p->y = v.y;
@@ -128,7 +128,7 @@ BOOL SpNpcActor::onCreate() {
     if (!((NpcAnimCtrl *)(&animCtrl))->initForActor((NpcActor *)(this), getWalkAnimSpeedScale())) {
         return FALSE;
     }
-    ((NpcActionCtrl *)(&actionCtrl))->startAction((u8 *)(this), 0, 1, 0, 0, 0, 0, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->startAction(this, 0, 1, 0, 0, 0, 0, 0);
     ((ActorFollowCollider *)(&collider))->setupForActor(this, colliderRadius, colliderHeight, 8, 0x2fc, 3, (u8)getNpcIndex(), 0x1000);
     if (!NpcRegistry_AddSpNpc(this, &npcHandle)) {
         return FALSE;

@@ -78,7 +78,7 @@ void PlayerHead_Release(u8 *p);
 void PlayerHead_CancelTexUpload(u8 *p);
 #endif
 #ifndef PROTO_LOCAL_PlayerHead_Load
-s32 PlayerHead_Load(u8 *p, s32 a, s32 b, u16 *c, s32 d);
+s32 PlayerHead_Load(u8 *p, s32 a, s32 b, u16 *c, void *d);
 #endif
 #ifndef PROTO_LOCAL_PlayerHead_RelocateTextures
 void PlayerHead_RelocateTextures(u8 *p);

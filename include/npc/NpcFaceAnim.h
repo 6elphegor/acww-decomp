@@ -43,7 +43,7 @@ struct NpcFaceAnim : BlinkTimer {
     BOOL load(NpcActor *o);
     s32 getMouthAnim();
     BOOL isLoaded();
-    void update(u8 *o);
+    void update(NpcActor *o);
 };
 
 #endif

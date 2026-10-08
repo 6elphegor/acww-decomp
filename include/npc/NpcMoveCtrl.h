@@ -5,7 +5,6 @@
 #include "gfx/VecFx32.h"
 #include "npc/NpcLookAt.h"
 
-class Unk_02006d14;
 
 // 0x58-byte NPC movement controller, NpcActor::moveCtrl (speed presets, move mode, turning, waypoint/destination).
 // Defined in main, src/main/unk_020119cc.cpp (unk_0201a334.cpp / unk_0201ac80.cpp parts; ctor 0x0201accc, dtor label
@@ -26,7 +25,6 @@ public:
     /* 0x54 */ u8 keepAnimFrame;
     /* 0x55 */ u8 turnMode;
 
-    void storeHeadMtx(Unk_02006d14 *p);
     void setTurnMode(u8 v);
     void getCurSpeedPreset();
     void setSpeedPreset(s32 idx, s32 x, s32 y, s32 z);

@@ -62,7 +62,7 @@ public:
 
     u8 isUpdating();
     BOOL netReadAction(s32 *a, s32 *b, u8 *c);
-    BOOL netReadPosition(s32 *a, u8 *b);
+    BOOL netReadPosition(VecFx32 *pos, s16 *angle);
     void netSendState(u32 a, ...);
     void setNetUserBytes(void *dst, s32 n);
     BOOL getNetUserBytes(u8 *src, u32 n);
@@ -72,7 +72,7 @@ public:
     void netSetSlots(s32 a, s32 b, s32 c);
     BOOL isNetOwner();
     s32 findAvoidPos(VecFx32 *out);
-    BOOL getFreeOffsetPos(VecFx32 *out, void *p);
+    BOOL getFreeOffsetPos(VecFx32 *out, VecFx32 *p);
     s32 getSpeakerGender();
     ActorTalkRequest *getTalkRequest();
     void setTalkRequest(ActorTalkRequest *p);

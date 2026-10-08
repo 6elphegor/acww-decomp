@@ -4,14 +4,13 @@
 // Prototypes of the functions defined in src/main/unk_020119cc.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-struct BlockMap;
 struct NpcEmotionEntry;
 struct RouteGridPos;
 #ifdef __cplusplus
 #include "actor/NpcActor.h"
 #include "gfx/VecFx32.h"
-#include "npc/NpcActionCtrl.h"
 #include "npc/NpcLookAt.h"
+#include "town/BlockMap.h"
 #include "types.h"
 #endif
 
@@ -726,71 +725,8 @@ void NpcAction_UnpackItem(u16 *out, void *in);
 #ifndef PROTO_LOCAL_Emotion_GetEntry
 NpcEmotionEntry *Emotion_GetEntry(u32 i);
 #endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep01EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep01EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep02EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep02EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep03EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep03EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep04EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep04EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep05EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep05EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl15waitItemAnimEndEP12Unk_02006d14Ptjj
-BOOL _ZN13NpcActionCtrl15waitItemAnimEndEP12Unk_02006d14Ptjj(NpcActionCtrl *s, NpcActor *c, void *p, u32 a, u8 b);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep06EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep06EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep07EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep07EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep08EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep08EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep09EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep09EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep10EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep10EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep11EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep11EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep12EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep12EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep13EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep13EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep14EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep14EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep15EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep15EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep16EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep16EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep17EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep17EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep18EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep18EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
-#ifndef PROTO_LOCAL__ZN13NpcActionCtrl11act0EStep19EP12Unk_02006d14
-void _ZN13NpcActionCtrl11act0EStep19EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-#endif
 #ifndef PROTO_LOCAL_TalkRequest_GetPlayerId
 s32 TalkRequest_GetPlayerId(void);
-#endif
-#ifndef PROTO_LOCAL__ZN13VillagerRoute11scanForPathEP7VecFx32P12RouteGridPosP5VecXZiS3_iP8BlockMap
-BOOL _ZN13VillagerRoute11scanForPathEP7VecFx32P12RouteGridPosP5VecXZiS3_iP8BlockMap(void* unused, void* p1, u32* pos, u32* step, s32 n, u32* bound, s32 flag, void* q);
 #endif
 #ifndef PROTO_LOCAL_VillagerRoute_PickPathUnitInBlock
 void VillagerRoute_PickPathUnitInBlock(RouteGridPos *out, s32 unused, RouteGridPos *p, BlockMap *obj);
