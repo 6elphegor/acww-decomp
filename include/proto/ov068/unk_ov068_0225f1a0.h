@@ -25,9 +25,6 @@ extern "C" {
 #ifndef PROTO_LOCAL_sReactionStepsGuard
 extern u32 sReactionStepsGuard;
 #endif
-#ifndef PROTO_LOCAL_data_ov068_0226f878
-extern void *data_ov068_0226f878[2];
-#endif
 #ifndef PROTO_LOCAL_sHitTalkStepsGuard
 extern u32 sHitTalkStepsGuard;
 #endif
@@ -134,13 +131,7 @@ void FieldVillager_StepToward(s32 *p, s32 target, s32 a, s32 spd, s32 min);
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_sFieldVillagerAiTable
-extern FieldVillagerAiState sFieldVillagerAiTable[8];
-#endif
-#ifndef PROTO_LOCAL_sFieldVillagerAiTable2
-extern FieldVillagerAiState sFieldVillagerAiTable2[8];
-#endif
-#ifndef PROTO_LOCAL_sFieldVillagerAiTable3
-extern FieldVillagerAiState sFieldVillagerAiTable3[8];
+extern FieldVillagerAiState sFieldVillagerAiTable[0x18];
 #endif
 #ifndef PROTO_LOCAL_sFieldVillagerProfile
 extern ActorProfile sFieldVillagerProfile;

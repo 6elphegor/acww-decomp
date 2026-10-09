@@ -224,7 +224,12 @@ Differences from the DS that the sources handle under `HOST` (or MODERN):
   --guards [--arch x86_64] && ninja -f build_host[64]_guards.ninja` puts 64 poisoned bytes after every game variable
   (`tools/host_guards.py`); `ACWW_GUARDS=1` reports every guard that changed, once per frame (the variable, the frame
   and an address for `watch *(int *)<addr>` in gdb), `ACWW_GUARDS_FILL=<byte>` changes the poison (a run that
-  changes with it reads past an end), `host_guards.py --only LO-HI` (by hand on the map) bisects such a read.
+  changes with it reads past an end), `host_guards.py --only LO-HI` (by hand on the map) bisects such a read. The guards don't see reads: one table split
+  into variables that the code indexes as one (ov068's field villager state table, three 8-entry pieces indexed
+  0..0x17) showed up only as a date-dependent crash (both builds). The in-game date and time change what the game does
+  (villagers' plans and items, events, the random seed `Clock_GetTimeSeed`): a sweep of headless runs with many
+  pinned `ACWW_RTC` values (`ACWW_EXIT_FRAME=3000`; every hour of a day, the 1st and 15th of each month, holidays,
+  random minutes and seconds) reaches what the default clock doesn't.
 - Integer division by zero: the DS's division routine (`_s32_div_f`) gives the dividend as the quotient and 0 as
   the remainder; x86 traps (hw.c gives the DS's result and reports the site), arm64 gives 0. The game does it (e.g.
   `spl_scl_in_out` at the end of a particle animation).
