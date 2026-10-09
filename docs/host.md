@@ -9,15 +9,18 @@ types and member access instead of DS-offset views, padding arrays and per-site 
 `HOST64` (`__SIZEOF_POINTER__ == 8`) remains while the 32-bit build serves as the reference. The helpers left from
 the dual build (`HOST_AT`, `HOST_AT_A`, `HOST_SIZED`: `include/uptr.h`) go away as their users are rewritten.
 
-Checking changes without the matching ROM: the behaviour must not change. The 32-bit build is deterministic, and
-`~/acww/ref/oracle/oracle.sh <binary> quick|play` compares a build's screenshots and sound with captures of the
-reference build (`~/acww/ref/oracle`, not in the repository: commit a7a796d3 plus the fix of a read of stack garbage
-that made the earlier captures depend on stack contents; `oracle.sh <binary> record` re-records): `quick` - the attract demo and title, 60 s; `play` -
-scripted play through the intro (A every second), screenshots to frame 25000. Since `Snd_CalcListenerDistance` is
-implemented (2026-10-08) the `quick` sound differs from the captures from ~25 s on: the attract demo's positional
-sounds (villagers, the town scene) had full volume with the stub, now they fade with distance; the screenshots and
-the `play` captures are unchanged, and a build with the stub put back matches the captures exactly. The 64-bit build is compared with
-the same captures (its virtual timing drifts by a frame or two after the first scene changes).
+Checking changes without the matching ROM: the behaviour must not change. Both builds are deterministic and, since
+docs/portability.md 3.4, give the same output (screenshots, sound, save files, register traffic frame for frame); the
+x86-64 build is the reference. `tools/host_oracle.sh <binary> quick|play` compares a build's screenshots and sound
+with the captures in `~/acww/ref/oracle/captures_v2` (not in the repository; recorded from the x86-64 build of
+step 3.4 with `tools/host_oracle.sh build/host64_usa/acww record`, which writes only that directory - `CAPDIR=`
+another): `quick` - the attract demo and title, screenshots at frames 2500 and 8000 and the sound; `play` - scripted
+play through the intro (`tools/host_play_script.py play`: A every second), screenshots to frame 25000. The earlier
+captures (`~/acww/ref/oracle/captures`, the i386 build with the access-counting virtual time) stay as they were;
+`~/acww/ref/oracle/oracle.sh <binary> quick|play` still compares with them when the run uses that time:
+`ACWW_TIMING=legacy ~/acww/ref/oracle/oracle.sh <binary> play` (or `CAPDIR=~/acww/ref/oracle/captures
+ACWW_TIMING=legacy tools/host_oracle.sh <binary> play`). Under the legacy time the i386 and x86-64 builds are
+identical too (the 64-bit drift was 64-bit bugs: docs/portability.md 3.4).
 
 `ACWW_EXIT_FRAME=<n>` ends a run after frame n (the sound file closed as on an interrupt): oracle.sh uses it, so a
 check takes as long as the frames it compares (quick ~40 s, play ~3 min).
@@ -277,7 +280,7 @@ slow frames), the VRAM queues upload everything queued in one VBlank, the 40 ms 
 scene is created in one go) and loading is instant: the title screen is up at frame 250 (the legacy model: 1550, after
 1000 black frames; the DS about 900). `OS_GetTick` advances one tick per call within a frame and 8752 ticks a frame.
 Both builds give the same register traffic frame for frame: `ACWW_IOTRACE=<file>` writes a line per frame (reads,
-writes, a hash of every access's address and every value read, the clock, the clock reads, polls and waits;
+writes, a hash of every access's address and value - but for the DMA address registers and the PXI send FIFO, which can hold host addresses -, the clock, the clock reads, polls and waits;
 `ACWW_IOTRACE_FRAMES=<from>-<to>` lists every access in those frames, with the calling code), and the i386 and
 x86-64 traces of the play script are byte-identical (25002 lines), as are those of the town, save and continue
 scripts. The traces are how the 64-bit bugs that made the builds part were found (docs/portability.md 3.4): the first
@@ -292,8 +295,8 @@ play, town, save and continue scripts); the watchdog (`ACWW_WATCHDOG`) reports a
 
 `python3 tools/configure_host.py --arch x86_64 && ninja -f build_host64.ninja` builds `build/host64_usa/acww`, a
 native x86-64 program (status: plays like the i386 build through the attract demo, the title (logo, clouds, talk
-text) into the town scene with villagers, insects, fish and particle effects; the pictures match the i386 build
-frame for frame until the town scene's first transitions, then drift by a frame or two of virtual time). It is a
+text) into the town scene with villagers, insects, fish and particle effects; screenshots, sound, save files and register traffic identical to the i386 build's in the quick, play, town, save
+and continue scripts: docs/portability.md 3.4). It is a
 PIE (loaded anywhere, ASLR) with nothing at a DS address: the game's variables are ordinary data and bss, the rest
 of the DS memory host objects (docs/portability.md 3.2, 3.3); the root heap and the threads' stacks are anonymous
 mappings anywhere. Everything is above 4 GB. The crash report gives each code address also less the load bias, the
@@ -349,7 +352,7 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
   `sBuildingResources` still held the title demo's freed resources); with overlays reset on load it arrives in town
   and goes through the town hall's tutorial. It then stalled in `PMi_WaitBusy`: the game polls the battery every 20
   frames once the player can move (`LowBattery_Poll` -> `PM_GetBattery`, a PMIC register read through the PXI's PM
-  tag 8), and the host didn't answer the PM tag at all; `pxi7.c` now does. With the script below extended (it
+  tag 8), and the host didn't answer the PM tag at all; `pxi7.c` now does. With the script below extended (legacy time: it
   stops at frame 21050, then Down from 21100 to 21500) the player leaves the town hall (town at ~frame 22000) and
   walks around town (checked to frame 34000: villagers, beach, no stop). With A and Start kept going after the
   tutorial the player only talks to Pelly again and again (Start opens the save menu, "I can't save right now" in a
@@ -358,24 +361,25 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
   `Visitor_CheckTomNook` wants the previous scene to be a house room), tells about the loan, walks off and clears the
   new-town state (`SpNpcNookIntro::mainAct04` -> `GameStart_Clear`); from then on Start opens "Do you want to quit
   playing for now?" with "Save and end" first: the save (both copies of the town data, 0x0-0x2bfc0 in 256-byte
-  writes, each verified) and the title screen. The script that gets there (i386, the oracle's firmware image): the
-  town script above (A every 60 frames from 2400 to 21050, a touch at (128,96) at 2200, a touch at (218,180) every
-  600 frames from 7630 to 21050, Start every 60 frames from 7650 to 21050, Down 21100-21500), then (frame:frames:keys,
-  hex) 23200:60:80 23300:200:10 23520:220:80 23750:620:10 24380:120:80 24510:400:10 24970:175:40 25150:64:10
-  25220:100:40 25330:14:20 25350:150:40 (south, east, south over the lower bridge, east, north, to the house door at
-  (151, 109)), A at 25700-25940 every 60 (opens the door), 26600:150:80 (back out), A every 60 frames 27000-33540
-  (Tom Nook's talk), Start at 34000, A at 34200, 34400, ..., 35200 (Save and end). The save is written at frames
-  34786-34907 and the title screen is back at ~36500. A second run with that save file (`ACWW_SAVE`, the touch at
-  2200 and A every 60 frames from 2400) takes the title's continue path: a greeting ("Hello! You came"), the player wakes up in
-  the house ("Please wake up your player"), the game saves its start-of-session state (`card 7` at 0x2200 and
-  0x15e00) and the player stands in front of the house in town at ~frame 6000. With `ACWW_RTC="2026-10-08 18:30:00"` the same
-  continue shows 10/8 (Thursday) 6:30 PM, the evening sky and the weeds of the days that passed. `ACWW_POSLOG` and the town map
-  (X, the pocket's map tab) were how the walk was found. The
-  x86-64 build plays the same way: the name entries, the town (frame ~12430), Kapp'n's warp to the town hall, the
-  tutorial, then out of the town hall and around town (checked to frame 44000, no stop). Its virtual timing drifts
-  from the i386 build's by more than a few frames in the town hall (a Start press lands in the save menu: "I can't
-  save right now"), so its script keeps A going to 26500, then B every 60 frames to 27000, Down 27100-27500 (town
-  at ~28000), then Right / Down / Left / Up for a walk. The bugs on the way (the `spl_calc` crash reported earlier
+  writes, each verified) and the title screen. The scripts that get there are `tools/host_play_script.py town|save|continue` (one script for
+  every build since docs/portability.md 3.4; `eval "$(python3 tools/host_play_script.py save)"` sets `ACWW_KEYS` and
+  `ACWW_TOUCH`; the oracle's firmware image, the default pinned clock, a fresh `ACWW_SAVE`). With the frame-based time
+  the game reaches each point sooner and makes a different town (its random seeds come from the clock): `town` - the
+  touch at (128,96) at 2200, A every 60 frames from 2400 and Start every 60 from 7650 to 21050, a touch at (218,180)
+  every 600 frames from 7630 (the name entries; the town at ~12000, Kapp'n's warp to the town hall), then B every 60
+  frames to 21700 (closes Pelly's last talk) and Down 21800-22200: out of the town hall in front of it at (145, 56),
+  frame ~22150. `save` adds the walk to the house (Down 100 frames, past a tree with Right 30, Down 380 over the
+  bridge, Left 400 along the river's south bank, Down 200, Left 165, Up 150: the door at (81, 109), frame ~23900), A
+  at 24000-24240 every 60 (into the house), Down at 24900 (back out: Tom Nook), A every 60 frames 25300-31840 (his
+  talk), Start at 32300 and A at 32500, 32700, ..., 33500 (Save and end; "Come back and see us again" at ~32750), the
+  title at ~34500. `continue` (A every 60 frames from 2400 with that save file): the greeting, the player waking up in
+  the house, in front of the house in town from ~4500. Under `ACWW_TIMING=legacy` the earlier i386 script still
+  applies (A and Start to 21050, Down 21100-21500, the walk 23200:60:80 23300:200:10 23520:220:80 23750:620:10
+  24380:120:80 24510:400:10 24970:175:40 25150:64:10 25220:100:40 25330:14:20 25350:150:40 to the door at (151, 109), A
+  at 25700-25940, 26600:150:80, A 27000-33540, Start 34000, A 34200-35200: the save at 34786-34907). With
+  `ACWW_RTC="2026-10-08 18:30:00"` the continue shows 10/8 (Thursday) 6:30 PM, the evening sky and the weeds of the
+  days that passed. `ACWW_POSLOG`, the town map (X) and `Town_FindPlayerHouse` / `Town_FindTownHall` called from gdb
+  were how the walk was found. The bugs on the way (the `spl_calc` crash reported earlier
   no longer occurs): the PMIC register-read table (`PMRegInfo`, its destination read through a DS label at the DS
   stride, the table larger than its gap object), and three views of objects at DS offsets: `Unk_02005e7c` and
   `Unk_02007694`, the PlayerActor's net-event and action handlers, declared the actor's members at their DS

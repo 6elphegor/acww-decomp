@@ -668,7 +668,10 @@ static void io_trace(u32 a, int write, void *caller) {
     sTrCaller = (uintptr_t)caller;
 }
 static void io_trace_value(u32 a, int write, unsigned long long v) {
-    if (!write) io_trace_mix(v);  // (the values read: written ones include host addresses - DMA, PXI)
+    // (every value read and written, but the written DMA source / destination addresses and PXI FIFO words: they
+    // can be host addresses)
+    int addrReg = (a >= 0x040000b0 && a < 0x040000e0 && (a - 0x040000b0) % 12 < 8) || (a & ~3u) == 0x04000188;
+    if (!write || !addrReg) io_trace_mix(v);
     long f = (long)host_frame();
     if (f >= sTrFrom && f <= sTrTo)
         fprintf(sIoTraceFile, "%c %08x %llx %llu %lx\n", write ? 'w' : 'r', a, v, (unsigned long long)sCycles,

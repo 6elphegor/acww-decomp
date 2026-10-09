@@ -29,8 +29,7 @@ def play():
     return keys, touch
 
 
-# the walk from in front of the town hall to the player's house door (frame, frames, keys)
-TOWN_END = 21050
+TOWN_END = 21050  # the last A / Start of the intro and the tutorial
 
 
 def town():
@@ -61,17 +60,7 @@ def cont():
     return keys, touch
 
 
-def probe():  # (scratch: opening the map)
-    keys, touch = town()
-    import os
-    for e in os.environ.get('PROBE', '').split(';'):
-        if e:
-            f, n, m = e.split(':')
-            keys.append((int(f), int(n), int(m, 16)))
-    return keys, touch
-
-
-SCRIPTS = {'probe': probe, 'play': play, 'town': town, 'save': save, 'continue': cont}
+SCRIPTS = {'play': play, 'town': town, 'save': save, 'continue': cont}
 
 
 def fmt(entries, hexval):
