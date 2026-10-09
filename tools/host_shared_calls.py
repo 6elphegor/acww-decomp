@@ -69,6 +69,23 @@ def source_of(obj, build):
     return None
 
 
+def base_variant(name):
+    """the base-object constructor or destructor (C2/D2) for a complete-object one (C1/D1) of a plain nested name
+    (_ZN<n><name>...C1E...), else the name. Without virtual bases (the game has none) they are the same code; GCC
+    defines both (D1 an alias of D2), clang only the ones a unit uses (D1 of an inline destructor rarely is)."""
+    if not name.startswith("_ZN"):
+        return name
+    i = 3
+    while i < len(name) and name[i].isdigit():
+        j = i
+        while name[j].isdigit():
+            j += 1
+        i = j + int(name[i:j])
+    if name[i:i + 3] in ("C1E", "D1E"):
+        return name[:i + 1] + "2" + name[i + 2:]
+    return name
+
+
 def analyse(config):
     by_addr = collections.defaultdict(list)
     owner = {}
@@ -116,7 +133,7 @@ def analyse(config):
             for s in callers:
                 data[name].add(s)
             continue
-        cands = [(int(o[2:]), n) for o, n, k in others if k == "function" and n in defined]
+        cands = [(int(o[2:]), base_variant(n)) for o, n, k in others if k == "function" and base_variant(n) in defined]
         if not cands:
             continue  # nothing else is defined at that address: the named function is the only one
         rec = (int(ov[2:]), cands, callers, defined_in.get(name),

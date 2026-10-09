@@ -38,11 +38,16 @@ TARGETS = {
 }
 DEFAULT_TARGETS = ["macos-arm64", "win64-gnu-nomsbf"]
 # the game flags of tools/configure_host.py that clang knows (-malign-data / -fpcc-struct-return are GCC/i386-only),
-# and the pointer/integer conversion warnings (a pointer cut to 32 bits shows up as an extra one on LLP64)
+# and the pointer/integer conversion warnings (a pointer cut to 32 bits shows up as an extra one on LLP64).
+# -Wno-everything also silences the warnings clang makes errors by default, which a clang build still rejects
+# (with -w too): they are turned back into errors (C++ narrowing in braced initialisers; C's int/pointer and
+# function pointer conversions, implicit declarations and int)
 COMMON = ["-ffreestanding", "-nostdinc", "-fsigned-char", "-fshort-wchar", "-fno-short-enums", "-fno-builtin",
           "-fno-strict-aliasing", "-DMODERN", "-DHOST", "-DGAME_VERSION_USA", "-Iinclude", "-ferror-limit=0",
           "-Wno-everything", "-Wpointer-to-int-cast", "-Wint-to-pointer-cast", "-Wvoid-pointer-to-int-cast",
-          "-Wpointer-to-enum-cast"]
+          "-Wpointer-to-enum-cast", "-Werror=c++11-narrowing", "-Werror=int-conversion",
+          "-Werror=incompatible-function-pointer-types", "-Werror=implicit-function-declaration",
+          "-Werror=implicit-int"]
 C_ARGS = ["-x", "c", "-std=gnu11"]
 CXX_ARGS = ["-x", "c++", "-std=gnu++14", "-fno-exceptions", "-fno-rtti"]
 
