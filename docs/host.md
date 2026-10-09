@@ -111,7 +111,9 @@ in the play and save/continue scripts).
 Threads switch stacks with `coro_switch.S` (i386, x86-64 System V, x86-64 Windows, arm64; `coro.h`), not
 `ucontext`. The Windows variant (rdi, rsi and xmm6-15 saved too, the TIB's stack bounds switched with the stack) has
 not run on Windows yet; `ninja -f build_host64.ninja coro-win64-test` runs the same code on Linux, called with
-GCC's `ms_abi` and a stand-in TIB (`modern/host/tests/coro_win64_test.c`). The arm64 variant has never run. Interrupts are
+GCC's `ms_abi` and a stand-in TIB (`modern/host/tests/coro_win64_test.c`). The arm64 variant runs the aarch64 build
+under qemu (below), and `ninja -f build_host_a64.ninja coro-a64-test` checks it alone (`modern/host/tests/coro_a64_test.c`:
+x19-x29 and d8-d15 survive a switch, arguments, stack alignment). Interrupts are
 delivered only at safe points: register accesses, and when the game enables interrupts, halts or waits. No signal
 is involved in running the game (docs/portability.md phase 1): the integer divisions with a variable divisor go
 through `DS_DIV` / `DS_MOD` (`include/ds_div.h`, the DS's results for a zero divisor; `tools/host_div_rewrite.py`),
@@ -318,6 +320,32 @@ PIE (loaded anywhere, ASLR) with nothing at a DS address: the game's variables a
 of the DS memory host objects (docs/portability.md 3.2, 3.3); the root heap and the threads' stacks are anonymous
 mappings anywhere. Everything is above 4 GB. The crash report gives each code address also less the load bias, the
 address `addr2line` and gdb take for the program file.
+
+**aarch64 Linux** (docs/portability.md 4.4): `python3 tools/configure_host.py --arch aarch64 && ninja -f
+build_host_a64.ninja` cross-compiles `build/hosta64_usa/acww` with ARM's GCC 14.3 toolchain (`--cross`, default
+`~/acww/toolchains/arm-gnu-toolchain-14.3.rel1-x86_64-aarch64-none-linux-gnu`, its glibc sysroot built in). The
+game keeps `-fsigned-char` (Linux arm64's char is unsigned) and gets `-ffp-contract=off` (GCC fuses a * b + c on
+arm64 by default; x86-64 has no FMA without -mfma), as do the runtime and melonDS. No SDL2 for arm64 here: the
+frontend is `frontend_none.c` (`HOST_FRONTEND_NONE`, always headless; any 64-bit build without SDL2 headers gets it).
+melonDS's core is cross-built once, outside the repository, with the CMake toolchain file in tools/host:
+
+    cd ~/acww/ref/melonDS && cmake -S . -B build-core-a64 -G Ninja \
+      -DCMAKE_TOOLCHAIN_FILE=<repo>/tools/host/aarch64-linux.toolchain.cmake -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_C_FLAGS=-ffp-contract=off -DCMAKE_CXX_FLAGS=-ffp-contract=off -DBUILD_QT_SDL=OFF -DENABLE_JIT=OFF \
+      -DENABLE_GDBSTUB=OFF -DENABLE_OGLRENDERER=OFF -DENABLE_LTO=OFF -DENABLE_LTO_RELEASE=OFF -DUSE_VCPKG=OFF \
+      -DMELONDS_EMBED_BUILD_INFO=OFF -DTEAKRA_BUILD_TOOLS=OFF -DTEAKRA_BUILD_UNIT_TESTS=OFF
+    ninja -C build-core-a64 src/libcore.a src/teakra/src/libteakra.a
+
+(no JIT and no GDB stub: the runtime's melon.cpp is then compiled without `JIT_ENABLED` / `GDBSTUB_ENABLED`, which
+change melonDS's class layouts). It runs under qemu user mode (`~/acww/toolchains/qemu/usr/bin/qemu-aarch64 -L
+<toolchain>/aarch64-none-linux-gnu/libc build/hosta64_usa/acww <rom>`), at 15-35 frames a second;
+`tools/host_oracle.sh` runs the binary through `$ACWW_RUNNER` (that qemu command line) with `QUICK_TIMEOUT` /
+`PLAY_TIMEOUT` raised (quick takes about 9 minutes, play about 33). Status: quick (both screenshots and the whole
+WAV) and play identical to captures_v2; the save and continue scripts give the x86-64 build's screenshots (70 and
+16, every 500 frames), save files and `ACWW_IOTRACE` files byte for byte. No source change was needed for that
+beyond the build: the runtime's x86-only bits were already guarded (debug_posix.c now also reads the arm64
+registers for its crash report; `ACWW_WATCH` stays x86), and `host_panic` prints only the format on Linux arm64
+(its `void *` argument list can't be a `va_list` there).
 
 `ACWW_HIGHMEM=1` (x86-64 Linux) is the low-4 GB poisoning harness (docs/portability.md 3.0, 3.3): the whole low 4 GB
 (from 64 KB up) reserved without access (`PROT_NONE`, as macOS's `__PAGEZERO`); the PIE program, the C library's
