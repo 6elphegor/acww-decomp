@@ -288,6 +288,7 @@ public:
     BOOL enterGoInHouse(FieldVillager *o);
     BOOL execOffscreen(FieldVillager *o);
     BOOL enterOffscreen(FieldVillager *o);
+    BOOL enterWander(FieldVillager *o);
     BOOL execWander(FieldVillager *o);
     BOOL checkWanderEvents(FieldVillager *o);
 };
@@ -798,7 +799,6 @@ s32 Villager_HasFlea(void *);
 extern Camera *gCamera;
 extern VecFx32 gCameraLookAt;
 extern u16 data_020c6cc8;
-extern FieldVillagerAiState sFieldVillagerAiTable[];
 extern u8 sSimCatchClassWeights[];
 extern u8 sSimCatchClassWeightsPlanned[];
 #define gContestRecord HOST_LABEL(ContestRecord *, gContestRecord)
@@ -908,7 +908,6 @@ extern "C" {
 }
 namespace ns_02265324 {
 extern "C" {
-void *data_ov068_0226f878[2] = {(void *)FieldVillagerAi_EnterWander, 0};
 }
 }
 namespace nsD {
@@ -974,7 +973,8 @@ extern "C" {
 }
 namespace nsD {
 extern "C" {
-FieldVillagerAiState sFieldVillagerAiTable[8];  // initialised by StaticInit_unk_ov068_0225f1a0
+// The state table, indexed by FieldVillagerAi::state (0..0x17). On the DS three 8-entry pieces of one array.
+FieldVillagerAiState sFieldVillagerAiTable[0x18];  // initialised by StaticInit_unk_ov068_0225f1a0
 }
 }
 namespace nsD {
@@ -1014,11 +1014,6 @@ u8 sChatCatchphraseMoods[4] = {0x01, 0x03, 0x02, 0x00};
 }
 namespace nsD {
 extern "C" {
-}
-}
-namespace nsD {
-extern "C" {
-FieldVillagerAiState sFieldVillagerAiTable2[8];  // initialised by StaticInit_unk_ov068_0225f1a0
 }
 }
 namespace nsD {
@@ -1064,21 +1059,19 @@ u32 sTalkStepsGuard;
 }
 namespace nsD {
 extern "C" {
-FieldVillagerAiState sFieldVillagerAiTable3[8];  // initialised by StaticInit_unk_ov068_0225f1a0
 
 // Run when the overlay is loaded (modern/host/overlay.c), as the DS's __sinit: the initialisers the compiler
 // doesn't make constant data.
 extern "C" void StaticInit_unk_ov068_0225f1a0(void) {
     HOST_STATIC_INIT_ARRAY(sFieldVillagerAiTable, {
-        {*(FieldVillagerAiStateFn *)data_ov068_0226f878, reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::execWander)},
+        {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::enterWander), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::execWander)},
         {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::enterOffscreen), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::execOffscreen)},
         {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::enterGoInHouse), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::execGoInHouse)},
         {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::enterInHouse), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiInHouse::execInHouse)},
         {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiLeaveHouse::enterLeaveHouse), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiLeaveHouse::execLeaveHouse)},
         {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiTalk::enterTalk), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiTalk::execTalk)},
         {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiReaction::enterReaction), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiReaction::execReaction)},
-        {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPlayerStates::enterApproach), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPlayerStates::execApproach)}});
-    HOST_STATIC_INIT_ARRAY(sFieldVillagerAiTable2, {
+        {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPlayerStates::enterApproach), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPlayerStates::execApproach)},
         {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPlayerStates::enterFaceTalker), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPlayerStates::execFaceTalker)},
         {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiChat::enterChat), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiChat::execChat)},
         {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPlayerStates::enterJoinTalk), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPlayerStates::execJoinTalk)},
@@ -1086,8 +1079,7 @@ extern "C" void StaticInit_unk_ov068_0225f1a0(void) {
         {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiAbsent::enterAbsent), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiAbsent::execAbsent)},
         {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiBirthdayWait::enterBirthdayWait), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiBirthdayWait::execBirthdayWait)},
         {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiBirthdayInvite::enterBirthdayInvite), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiBirthdayInvite::execBirthdayInvite)},
-        {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiTakeOut::enterTakeOutItem), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiTakeOut::execTakeOutItem)}});
-    HOST_STATIC_INIT_ARRAY(sFieldVillagerAiTable3, {
+        {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiTakeOut::enterTakeOutItem), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiTakeOut::execTakeOutItem)},
         {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPutAway::enterPutAwayItem), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiPutAway::execPutAwayItem)},
         {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::enterPitfall), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::execPitfall)},
         {reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::enterPitfallClimbOut), reinterpret_cast<FieldVillagerAiStateFn>(&FieldVillagerAiStates::execPitfallClimbOut)},
@@ -2034,14 +2026,13 @@ extern "C" {
 s32 FieldVillager_CanSimulateCatch(FieldVillager *o) {
     s32 t = ((VillagerTalk *)(o))->getEventKind();
     if ((u8)(t + 0xfd) <= 1) {
-        u8 *p = (u8 *)PlayerActor_GetCharacter(4);
+        Character *p = (Character *)PlayerActor_GetCharacter(4);
         BlockMap *g = gSceneBlockMap;
         if (p != 0 && g != 0) {
             VecFx32CtorDtor v;
-            VecFx32 *pv = (VecFx32 *)(p + 0x5c);
-            v.x = *(s32 *)(p + 0x5c);
-            v.y = pv->y;
-            v.z = pv->z;
+            v.x = p->position.x;
+            v.y = p->position.y;
+            v.z = p->position.z;
             if (BlockMap_BlockHasAllAttr(g, v.x >> 17, v.z >> 17, 0x200) == 0) {
                 return TRUE;
             }
@@ -2451,6 +2442,11 @@ s32 FieldVillagerAi_EnterWander(FieldVillagerAi *self, FieldVillager *o) {
 }
 }
 
+// State 0's enter function in the state table (on the DS the table held FieldVillagerAi_EnterWander's address).
+BOOL FieldVillagerAiStates::enterWander(FieldVillager *o) {
+    return ns_02265324::FieldVillagerAi_EnterWander(this, o);
+}
+
 namespace ns_02265324 {
 extern "C" {
 s32 FieldVillager_IsInRect(FieldVillagerFocusRange *r, VecFx32 *a, VecFx32 *b) {
@@ -2523,7 +2519,7 @@ void FieldVillagerAi_StartRoute(FieldVillagerAi *self, s32 a, FieldVillager *o) 
     void *x = o->getVillagerData();
     s32 r4 = 7;
     if (x != 0) {
-        VillagerStateFlags *f = (VillagerStateFlags *)((u8 *)Villager_GetState(x) + 0x1d);
+        VillagerStateFlags *f = (VillagerStateFlags *)&Villager_GetState(x)->flags;
         if (f->f1 != 0) {
             r4 = 3;
         } else {
@@ -2577,7 +2573,7 @@ BOOL FieldVillagerAi_ShouldGoHome(void *self, FieldVillager *o) {
     BOOL f = Unk_ov068_022652d0_B(t);
     void *p = o->getVillagerData();
     BOOL r = TRUE;
-    VillagerStateFlags *fl = (VillagerStateFlags *)((u8 *)Villager_GetState(p) + 0x1d);
+    VillagerStateFlags *fl = (VillagerStateFlags *)&Villager_GetState(p)->flags;
     if (fl->f1 == 0 && (f != 0 || Villager_IsAsleep(p, 0) == 0)) {
         r = FALSE;
     }
@@ -2690,7 +2686,7 @@ namespace ns_022649f4 {
 extern "C" {
 BOOL FieldVillagerAi_GetRouteTarget(FieldVillagerAiStates *self, VecFx32 *out, FieldVillager *o) {
     if (o->getVillagerData() != 0) {
-        VillagerStateFlags *fl = (VillagerStateFlags *)((u8 *)Villager_GetState(o->getVillagerData()) + 0x1d);
+        VillagerStateFlags *fl = (VillagerStateFlags *)&Villager_GetState(o->getVillagerData())->flags;
         if (fl->f1 != 0) {
             if (self->route.getStage() != 3) {
                 self->routeTimeout = 0;
@@ -4994,10 +4990,11 @@ BOOL FieldVillagerAiPutAway::enterPutAwayItem(FieldVillager *o) {
         o->actionCtrl.requestPlayAnim(1, 0xcd, 3, w, 0);
         o->heldTool.attach((NpcActor *)o, (u16 *)(pos), 0xcd, w);
         o->heldTool.playAnim(0x26, 1, 3);
-        void *p = o->heldTool.getModel();
+        BlendAnimModel *p = o->heldTool.getModel();
         if (p != 0) {
-            u32 bits = (*(u32 *)((u8 *)p + 0xa0) << 4) >> 16;
-            ((AnimFrameCtrl *)((u8 *)p + 0x9c))->setup(bits, 3, 0x1000, (u16)(bits - 1));
+            AnimFrameCtrl *f = static_cast<AnimFrameCtrl *>(p);
+            u32 bits = (f->numFrames << 4) >> 16;
+            f->setup(bits, 3, 0x1000, (u16)(bits - 1));
         }
         o->heldTool.setAnimSpeed(0x1000);
         Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x858, 0x7f, 0);
@@ -6199,7 +6196,6 @@ void FieldVillagerLook::update(FieldVillager *o) {
 HOST_OVERLAY_VARS(unk_ov068_0225f1a0) {
     HOST_OVERLAY_VAR(nsD::sReactionStepsGuard),
     HOST_OVERLAY_VAR(nsD::sChatNoPlayerMoods),
-    HOST_OVERLAY_VAR(ns_02265324::data_ov068_0226f878),
     HOST_OVERLAY_VAR(nsD::data_ov068_0226f910),
     HOST_OVERLAY_VAR(nsD::sFieldVillagerPushLimit),
     HOST_OVERLAY_VAR(nsD::sBirthdayInviteSteps),
@@ -6211,13 +6207,11 @@ HOST_OVERLAY_VARS(unk_ov068_0225f1a0) {
     HOST_OVERLAY_VAR(nsD::sFieldVillagerAiTable),
     HOST_OVERLAY_VAR(nsD::sChatStepsGuard),
     HOST_OVERLAY_VAR(nsD::sChatCatchphraseMoods),
-    HOST_OVERLAY_VAR(nsD::sFieldVillagerAiTable2),
     HOST_OVERLAY_VAR(nsD::sPitfallClimbOutSteps),
     HOST_OVERLAY_VAR(nsD::sFieldVillagerAiCooldown),
     HOST_OVERLAY_VAR(nsD::sPutAwayItemSteps),
     HOST_OVERLAY_VAR(nsD::data_ov068_0226fa68),
     HOST_OVERLAY_VAR(nsD::sTalkStepsGuard),
-    HOST_OVERLAY_VAR(nsD::sFieldVillagerAiTable3),
     HOST_OVERLAY_VAR(nsD::sReactionSteps),
     HOST_OVERLAY_VAR(nsD::sApproachStepsGuard),
     HOST_OVERLAY_VAR(nsD::sChatEmotions),

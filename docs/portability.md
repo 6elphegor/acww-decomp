@@ -320,6 +320,30 @@ After phase 1 the runtime has no ucontext, no x86 decoding and no `-mno-red-zone
         the continue run read exit 2 from whatever followed: a fade type of 39, an index past
         sTransitionTypeTable, a jump into the middle of `TownEval_EvaluateAcre` at frame 4290. Now
         `SceneWarp sRoomSceneEntries[3]`; the 32 other scene warp lists were checked: arrays of their counts.
+      - (found later, 2026-10-08) **The field villagers' state table** (ov068, `FieldVillagerAi_ChangeState` /
+        `_Update`): states 0..0x17 index `sFieldVillagerAiTable`, but the 24 `{enter, exec}` entries were three
+        8-entry variables (`sFieldVillagerAiTable`, `...Table2`, `...Table3`, symbols.txt's names). Once the DS order
+        was gone the linker put Table2 and Table3 *before* Table, so states 8..0x17 (face the talker, chat, take out
+        / put away an item, pitfall, hit by the net, pushed, ...) read whatever followed: sTalkSteps, sChatSteps,
+        sPushTalkSteps ... as member function pointers (wrong step functions, null entries skipped or called). On
+        x86-64 a `{ptr, adj}` read from other data had an odd `ptr` and was called as a virtual function through a
+        null vtable: the attract demo's crash at frames ~1430-1560 in
+        `FieldVillagerAi_ChangeState` from `FieldVillagerAi_CheckHeldItemChange` (a villager taking out or putting
+        away an umbrella / item, which depends on the date). Now one `sFieldVillagerAiTable[0x18]`; state 0's enter
+        function, a free function's address in a `void *[2]` blob (`data_ov068_0226f878`), is a member
+        (`FieldVillagerAiStates::enterWander`). Sweep of 205 pinned dates/times to frame 3000 (every hour of
+        2026-10-08, -10-10, -12-24; the 1st and 15th of each month at 6, 12, 18, 23 h; 15 holidays / event days;
+        every weekday): x86-64 crashed on **13** before (12 this bug, all from frame 1433 on - the one host-clock
+        crash at 1434 was this; and 2026-03-01 in `Heap::lock` at frame 654, a null `gBgHeap`, gone with 3.3's
+        `NNS_FndResizeForMBlockExpHeap` fix), **0** after, also with `ACWW_HIGHMEM=1` (and 0 of 200 more x86-64 runs on 2026-10-07..09 at random minutes and
+        seconds: the time is the random seed). The i386 build crashed on 13 of the same dates too (the same 12 and
+        2026-12-24 21:30; in `FieldVillagerAi_Update`, the `exec` call through the wrong entry), 0 after: not
+        64-bit only, only the default clock (2026-04-01 12:00) never reaches it, so the captures are unchanged. The guard variant could not see it (a read, not a write). In the same unit, DS offsets that were wrong
+        on x86-64: `FieldVillager_CanSimulateCatch` (fishing tourney / bug-off days) read the player's position at
+        `(u8 *)character + 0x5c` (now `Character::position`), `FieldVillagerAiPutAway::enterPutAwayItem` the held
+        tool model's frame counter at `+ 0x9c` / `+ 0xa0` (now the model's `AnimFrameCtrl` base and `numFrames`);
+        the villager state flags at `+ 0x1d` are `VillagerState::flags`. ov068 has no other DS offsets, blobs or
+        pointers in integers left in its FieldVillager code.
 
     Checks (after merging modern 7291e665, steps 3.0-3.2). The guard variant over quick, play, the town script, the
     save script and the continue run (i386) and quick, play, town (x86-64) reports **0 overruns** (before the fixes:
@@ -675,8 +699,9 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
   Alt+Enter, a GL renderer.
   One window run (host clock, the first of 31) crashed at frame 1434 in `FieldVillagerAi_ChangeState` (ov068, a
   villager's state change in the attract demo, null address); 30 more host-clock runs (12 headless with the pre-change
-  build, 18 in a window) and every run with a pinned clock went through. It looks like a clock-dependent 64-bit
-  game bug, not the frontend's; not reproduced, so not explained.
+  build, 18 in a window) and every run with a pinned clock went through. **Explained and fixed (2026-10-08)**: a
+  read past the end of the field villagers' state table (split into three variables), date-dependent; see 2.8's
+  reads past an end.
 - **4.2** `plat.h` grew: `host_plat_localtime`, `host_plat_stack_alloc` / `_free` (guard page below the stack;
   `HOST_PLAT_LOW4G` = MAP_32BIT on x86-64 Linux, gone with 3.3), `host_plat_read_file` (plat_common.c, stdio: the ROM is read into
   memory instead of `mmap`), `host_plat_backtrace` / `host_plat_print_backtrace` (execinfo on glibc/macOS,
