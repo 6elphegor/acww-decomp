@@ -2362,7 +2362,7 @@ namespace ns_02211818 {
 extern "C" void PlayerActor_SetupReleaseCreature(Obj *o, u8 *m) {
     Rec *r4 = (Rec *)&o->actionWork;
     volatile u16 t;
-    u16 r7 = *(u16 *)(m + 0xc);
+    u16 r7 = *(u16 *)(((PlayerActionRequest *)(void *)m)->unk_0c_b);
     u32 id;
     u8 *r6;
     t = r7;
@@ -2599,7 +2599,7 @@ extern "C" s32 PlayerActor_RequestAct11(Obj *o, u32 p, s32 a, s16 b) {
 
 namespace ns_02211818 {
 extern "C" void PlayerActor_SetupAct11(Obj *o, u8 *m) {
-    (o)->startAnimOnce(0x9a, *(u16 *)(m + 0xc), 0);
+    (o)->startAnimOnce(0x9a, *(u16 *)(((PlayerActionRequest *)(void *)m)->unk_0c_b), 0);
 }
 }
 
@@ -2667,7 +2667,7 @@ extern "C" void PlayerActor_PluckReachGetNetData(u8 *p, Pair *o) {
 namespace ns_02211818 {
 extern "C" void PlayerActor_SetupPluckReach(Obj *o, u8 *m) {
     Pair s;
-    u8 *q = m + 0xc;
+    u8 *q = ((PlayerActionRequest *)(void *)m)->unk_0c_b;
     u32 a = q[0];
     u32 b = q[1];
     u8 *r = (u8 *)&o->actionWork;
@@ -5313,7 +5313,7 @@ extern "C" void PlayerActor_FishReelInGetNetData(u8 *p, u8 *out) {
 
 namespace ns_0220d6f4 {
 extern "C" void PlayerActor_SetupFishReelIn(Obj *o, u8 *p) {
-    u32 b = p[0xc];
+    u32 b = ((PlayerActionRequest *)(void *)p)->unk_0c_b[0];
     PlayerActor_FishReelInSetWork((u8 *)&o->actionWork, b);
     PlayerActor_FishReelInSetNetData(o->netData.bytes, b);
     (o)->startAnimOnce(0x56, 3, 0);
@@ -5475,7 +5475,7 @@ extern "C" void PlayerActor_FishShowCatchGetNetData(u8 *p, u8 *out) {
 
 namespace ns_0220d6f4 {
 extern "C" void PlayerActor_SetupFishShowCatch(Obj *o, u8 *p) {
-    u32 b = p[0xc];
+    u32 b = ((PlayerActionRequest *)(void *)p)->unk_0c_b[0];
     Rec *r = (Rec *)&o->actionWork;
     r->showMode = b;
     r->unk_00 = 0x39;
@@ -5729,7 +5729,7 @@ extern "C" u32 PlayerActor_FishStoreGetNetState(u8 *p) {
 
 namespace ns_0220cd4c {
 extern "C" void PlayerActor_SetupFishStore(Obj *o, u8 *b) {
-    u8 v = b[0xc];
+    u8 v = ((PlayerActionRequest *)(void *)b)->unk_0c_b[0];
     ((BugNetSwingWork *)&o->actionWork)->swingHit = v;
     PlayerActor_FishStoreSetNetState(o->netData.bytes, v);
     (o)->startAnimOnce(0x5a, 3, 3);
@@ -5939,7 +5939,7 @@ extern "C" void PlayerActor_SetupBugNetSwing(Obj *o, u8 *b) {
     BugNetSwingWork *r = (BugNetSwingWork *)&o->actionWork;
     u32 z = 0;
     r->swingHit = z;
-    r->targetAngle = *(s16 *)(b + 0xc);
+    r->targetAngle = *(s16 *)(((PlayerActionRequest *)(void *)b)->unk_0c_b);
     r->caughtInsect = 0xff;
     (o)->startAnimOnce(0x5b, 3, z);
     HeldItemModel_PlayAnim(&o->heldItemModel, 3, 3, 0);
@@ -9007,9 +9007,9 @@ extern "C" void PlayerActor_Act66GetNetData(u8 *p, Pair *out) {
 
 namespace ns_02208108 {
 extern "C" void PlayerActor_SetupAct66(Obj *o, u8 *m) {
-    u8 *q = m + 0xc;
+    u8 *q = ((PlayerActionRequest *)(void *)m)->unk_0c_b;
     RecC *r = (RecC *)o->actionWorkRaw;
-    s32 a = m[0xc];
+    s32 a = ((PlayerActionRequest *)(void *)m)->unk_0c_b[0];
     s32 b = q[1];
     s32 c = q[2];
     Pair p;
@@ -9154,8 +9154,8 @@ extern "C" void PlayerActor_Act67SetWork(Act67Work *r, s32 a, V3 v) {
 namespace ns_02208108 {
 extern "C" void PlayerActor_SetupAct67(Obj *o, u8 *m) {
     VD d;
-    u8 *q = m + 0xc;
-    V3D l(*(s32 *)(m + 0xc), *(s32 *)(q + 4), *(s32 *)(q + 8));
+    u8 *q = ((PlayerActionRequest *)(void *)m)->unk_0c_b;
+    V3D l(*(s32 *)(((PlayerActionRequest *)(void *)m)->unk_0c_b), *(s32 *)(q + 4), *(s32 *)(q + 8));
     d.x = l.x - o->position.x;
     d.z = l.z - o->position.z;
     s32 ang = Math_Atan2(d.x, d.z);
@@ -9279,11 +9279,11 @@ extern "C" void PlayerActor_TreeShakeGetNetData(u8 *p, s32 *a, s32 *b, u8 *c) {
 
 namespace ns_02208108 {
 extern "C" void PlayerActor_SetupTreeShake(Obj *o, u8 *m) {
-    u8 *q = m + 0xc;
+    u8 *q = ((PlayerActionRequest *)(void *)m)->unk_0c_b;
     u8 b0 = q[8];
     u8 b1 = q[9];
     VD d;
-    V3D v(*(s32 *)(m + 0xc), o->position.y, *(s32 *)(q + 4));
+    V3D v(*(s32 *)(((PlayerActionRequest *)(void *)m)->unk_0c_b), o->position.y, *(s32 *)(q + 4));
     d.x = v.x - o->position.x;
     d.z = v.z - o->position.z;
     s32 ang = Math_Atan2(d.x, d.z);
@@ -10117,7 +10117,7 @@ extern "C" void PlayerActor_PitfallFallGetNetData(u8 *s, u8 *a, u8 *b) {
 
 namespace ns_02206e94 {
 extern "C" void PlayerActor_SetupPitfallFall(Obj *o, u8 *a) {
-    Unk_ov003_022072b8_P *q = (Unk_ov003_022072b8_P *)(a + 0xc);
+    Unk_ov003_022072b8_P *q = (Unk_ov003_022072b8_P *)(((PlayerActionRequest *)(void *)a)->unk_0c_b);
     V3 v;
     Rec *r = (Rec *)&o->actionWork;
     s32 c0 = q->a;

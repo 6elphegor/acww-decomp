@@ -6505,7 +6505,7 @@ BOOL PlayerActor::requestErrorMessage(u8 v, u32 a, u32 b) {
 void PlayerActor::setupErrorMessage(u8 *msg) {
     using namespace nF;
     u8 *p = &actionWorkRaw[0];
-    p[0] = msg[0xc];
+    p[0] = ((PlayerActionRequest *)(void *)msg)->unk_0c_b[0];
     p[1] = 0;
     (this)->startAnim(0, 3, 3);
 }

@@ -113,6 +113,6 @@ typedef struct G3dRS {
 #define G3D_SBC_ENVMAP 12
 
 // an animation object's size for numMapData resources (NNS_G3dAnmObjCalcSizeRequired)
-#define G3D_ANMOBJ_SIZE(n) ((unsigned int)(((__UINTPTR_TYPE__)&((G3dAnmObj *)0)->mapData[0] + 2 * (n) + 3) & ~3u))
+#define G3D_ANMOBJ_SIZE(n) ((unsigned int)((__builtin_offsetof(G3dAnmObj, mapData) + 2 * (n) + 3) & ~3u))
 
 #endif

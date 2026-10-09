@@ -986,8 +986,7 @@ extern "C" void PlayerActor_GetOutOfBedGetNetData(u8 *p, u8 *out) {
 }
 
 extern "C" void PlayerActor_SetupGetOutOfBed(Obj *o, Msg *m) {
-    u8 *q0 = (u8 *)m;
-    u8 *q = q0 + 0xc;
+    u8 *q = m->unk_0c_b;
     u8 c = m->unk_0c_b[0];
     if (Unk_ov004_02224284_IsOne(gFieldSceneKind)) {
         FtrMgr_PlaySeatSound2At((V3 *)&o->position);

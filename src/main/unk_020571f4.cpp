@@ -208,11 +208,11 @@ HandOverItemAct sHandOverItemActs[12][2] = {
     { { &HandOverItem::startAct0B, &HandOverItem::updateAct0B }, { NULL, NULL } },
 };
 
-u8 data_021c5a30[4] = { data_020ca690[1] - data_020ca690[0], data_020ca690[2] - data_020ca690[1], data_020ca690[3] - data_020ca690[2] };
+u8 data_021c5a30[4] = { (u8)(data_020ca690[1] - data_020ca690[0]), (u8)(data_020ca690[2] - data_020ca690[1]), (u8)(data_020ca690[3] - data_020ca690[2]) };
 FxVec3 sPutDownOffset(-0x400, -0x300, 0x1100);
-u8 data_021c5a2c[4] = { data_020ca680[1] - data_020ca680[0], data_020ca680[2] - data_020ca680[1] };
-u8 data_021c5a28[4] = { data_020ca684[1] - data_020ca684[0], data_020ca684[2] - data_020ca684[1] };
-u8 data_021c5a24[4] = { data_020ca67c[1] - data_020ca67c[0] };
+u8 data_021c5a2c[4] = { (u8)(data_020ca680[1] - data_020ca680[0]), (u8)(data_020ca680[2] - data_020ca680[1]) };
+u8 data_021c5a28[4] = { (u8)(data_020ca684[1] - data_020ca684[0]), (u8)(data_020ca684[2] - data_020ca684[1]) };
+u8 data_021c5a24[4] = { (u8)(data_020ca67c[1] - data_020ca67c[0]) };
 FxVec3 data_021c5acc(0, 0, 0xd00);
 s32 data_021c5ae8[4] = { 0, Unk_020574cc_Abs(DS_DIV(data_020ca6c4[1], data_021c5a30[0])), Unk_020574cc_Abs(DS_DIV(data_020ca6c4[2], data_021c5a30[1])), Unk_020574cc_Abs(DS_DIV(data_020ca6c4[3], data_021c5a30[2])) };
 FxVec3 data_021c5a84(0, 0, 0x1300);

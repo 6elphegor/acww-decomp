@@ -145,7 +145,9 @@ void NNS_G3dGlbInit(void)
 void NNS_G3dGlbFlushP(void)
 {
     u32 *p = (u32 *)&data_027e00c8;
-    NNS_G3dGeBufferOP_N(*p++, p, 0x3e);
+    // (the command word, then its parameters: the original reads p[0] and passes p + 1; `*p++, p` was an unsequenced
+    // modification and use of p, undefined behaviour that GCC and clang both happened to compile so)
+    NNS_G3dGeBufferOP_N(p[0], p + 1, 0x3e);
     data_027e00c8.n.flag &= ~1;
     data_027e00c8.n.flag &= ~2;
 }

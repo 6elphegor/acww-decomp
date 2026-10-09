@@ -22,8 +22,9 @@ import ninja_syntax
 parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
 parser.add_argument("--sysroot", default=os.path.expanduser("~/acww/toolchains/i386-sysroot"))
 parser.add_argument("--cc", default="gcc",
-                    help="the C compiler: gcc, or clang (a separate build: suffix _clang; the LLVM release in "
-                         "~/acww/toolchains/LLVM-*/bin when no clang is on the PATH)")
+                    help="the C compiler: gcc, or clang or a path to one (a separate build: suffix _clang; when no "
+                         "clang is on the PATH, the newest of ~/acww/toolchains/LLVM-*/bin and "
+                         "~/acww/toolchains/llvm-mingw-*/bin, a full clang that also targets Linux)")
 parser.add_argument("--melonds", default=os.path.expanduser("~/acww/ref/melonDS"),
                     help="melonDS source tree patched with tools/host/melonds.patch and built for 32-bit x86 in build-core32 "
                          "(the display renderer)")
@@ -72,12 +73,16 @@ if CLANG:
     if not args.suffix:
         args.suffix = "_clang"
     if not shutil.which(args.cc):
-        found = sorted(glob.glob(os.path.expanduser(f"~/acww/toolchains/LLVM-*/bin/{args.cc}")))
-        if found:
-            args.cc = found[-1]
+        found = sorted(glob.glob(os.path.expanduser(f"~/acww/toolchains/LLVM-*/bin/{args.cc}"))
+                       + glob.glob(os.path.expanduser(f"~/acww/toolchains/llvm-mingw-*/bin/{args.cc}")))
+        if not found:
+            sys.exit(f"configure_host.py: no {args.cc} on the PATH or in ~/acww/toolchains")
+        args.cc = found[-1]
 if args.guards and not args.suffix:
     args.suffix = "_guards"
 A64 = args.arch == "aarch64"
+if A64 and CLANG:
+    sys.exit("configure_host.py: --arch aarch64 builds with the GCC cross toolchain (--cross) only so far")
 SANITIZE = [x for x in args.sanitize.split(",") if x]
 if SANITIZE:
     if args.arch != "x86_64":
@@ -103,6 +108,9 @@ else:
 R = args.sysroot
 G = f"{R}/usr/lib/gcc/x86_64-linux-gnu/15/32"
 M_FLAG = "-m64" if X64 else "" if A64 else "-m32"
+# the compiler command; clang is told its target (llvm-mingw's clang is a cross compiler for Windows too; on Linux it
+# finds the system's GCC installation for the host runtime's headers and libraries)
+CC = f"{args.cc} --target={'x86_64' if X64 else 'i386'}-linux-gnu" if CLANG else args.cc
 LD_EMU = "elf_x86_64" if X64 else "aarch64linux" if A64 else "elf_i386"
 
 # the 64-bit builds: position-independent executables (loaded anywhere, ASLR; docs/portability.md 3.3); i386, the
@@ -223,13 +231,13 @@ def main():
         cc_flags = f"{GAME_FLAGS} {C_FLAGS}"
         if args.strict_c:
             cc_flags = cc_flags.replace(" -w ", " ") + " -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast"
-        n.rule("cc", f"{args.cc} {cc_flags} $flags -MMD -MF $out.d -c $in -o $out",
+        n.rule("cc", f"{CC} {cc_flags} $flags -MMD -MF $out.d -c $in -o $out",
                depfile="$out.d", deps="gcc", description="CC $in")
-        n.rule("cxx", f"{args.cc} -x c++ {GAME_FLAGS} {CXX_FLAGS} $flags -MMD -MF $out.d -c $in -o $out",
+        n.rule("cxx", f"{CC} -x c++ {GAME_FLAGS} {CXX_FLAGS} $flags -MMD -MF $out.d -c $in -o $out",
                depfile="$out.d", deps="gcc", description="CXX $in")
-        n.rule("hostcc", f"{args.cc} {HOST_FLAGS} $flags -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
+        n.rule("hostcc", f"{CC} {HOST_FLAGS} $flags -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCC $in")
-        n.rule("hostas_S", f"{args.cc} {M_FLAG} {PIE} -c $in -o $out", description="AS $in")
+        n.rule("hostas_S", f"{CC} {M_FLAG} {PIE} -c $in -o $out", description="AS $in")
         n.rule("hostcxx", f"{CXX} {HOST_CXX_FLAGS} -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCXX $in")
         n.rule("link", f"{CXX} {LINK_FLAGS} -o $out @$objects {MELON_LIBS} {SDL_LIBS} -lstdc++ -lpthread -lm -lc -lgcc",

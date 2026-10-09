@@ -216,7 +216,7 @@ extern char WfcTransferFailed_LoadBg[];
 extern char WlxWm_NextAllowedChannel[];
 extern char Wlx_StartExchange[];
 extern char Wlx_Stop[];
-extern char _ZN10BarberPoleC1Ev[];
+extern char _ZN10BarberPoleC2Ev[];
 extern char _ZN10FtrStorage13enterFtrAct01Ev[];
 extern char _ZN10FtrStorage13execTalkAct06Ev[];
 extern char _ZN10FtrTopItem4drawEP8FtrActor[];
@@ -230,17 +230,17 @@ extern char _ZN10MelodyMenu14beginDialogDimEv[];
 extern char _ZN10MelodyMenu15resetTextLabelsEv[];
 extern char _ZN10MelodyMenu17startConfirmTouchEv[];
 extern char _ZN10MelodyMenu8onCreateEv[];
-extern char _ZN10MelodyMenuD1Ev[];
+extern char _ZN10MelodyMenuD2Ev[];
 extern char _ZN10PocketMenu17isHoldingMoneyBagEi[];
 extern char _ZN10PocketMenu9mainAct39Ev[];
 extern char _ZN11BbsReadMenu10showCursorEv[];
 extern char _ZN11BbsReadMenu17setupButtonLabelsEv[];
 extern char _ZN11BbsReadMenu8onDeleteEv[];
-extern char _ZN11BbsReadMenuD1Ev[];
+extern char _ZN11BbsReadMenuD2Ev[];
 extern char _ZN11CatalogMenu10selectItemEji[];
 extern char _ZN11CatalogMenu10stateCloseEv[];
 extern char _ZN11CatalogMenu16syncKnobToScrollEv[];
-extern char _ZN11CatalogMenuD1Ev[];
+extern char _ZN11CatalogMenuD2Ev[];
 extern char _ZN11FtrComputer10execFtrActEv[];
 extern char _ZN11FtrComputerD0Ev[];
 extern char _ZN11SpNpcBlanca8onDeleteEv[];
@@ -251,12 +251,12 @@ extern char _ZN11TitleScreen17updateBackToTitleEv[];
 extern char _ZN12DonationMenu10stateCloseEv[];
 extern char _ZN12DonationMenu18updateKnobPositionEv[];
 extern char _ZN12DonationMenu19updateBarTransitionEv[];
-extern char _ZN12DonationMenuD1Ev[];
-extern char _ZN12FtrStackLinkD1Ev[];
+extern char _ZN12DonationMenuD2Ev[];
+extern char _ZN12FtrStackLinkD2Ev[];
 extern char _ZN12SongPickMenu18moveCursorToTargetEv[];
 extern char _ZN12SpNpcCeleste21tryStartTelescopeTalkEv[];
 extern char _ZN12SpNpcHarriet13isSessionPaidEv[];
-extern char _ZN13FieldVillagerD1Ev[];
+extern char _ZN13FieldVillagerD2Ev[];
 extern char _ZN13FtrStackedSet5clearEv[];
 extern char _ZN13MapViewerMenu11updateTouchEv[];
 extern char _ZN13MapViewerMenu12requestCloseEv[];
@@ -279,7 +279,7 @@ extern char _ZN14LetterGiveMenu16showCursorAtSlotEv[];
 extern char _ZN14LetterGiveMenu17setupLetterPanelsEv[];
 extern char _ZN14LetterGiveMenu8getSlotYEj[];
 extern char _ZN14TitleBlinkText4showEv[];
-extern char _ZN14TownMapMarkersC1Ev[];
+extern char _ZN14TownMapMarkersC2Ev[];
 extern char _ZN15AmountEntryMenu10showCursorEv[];
 extern char _ZN15AmountEntryMenu12stateOpeningEv[];
 extern char _ZN15AmountEntryMenu13refreshCursorEv[];
@@ -314,7 +314,7 @@ extern char _ZN17PatternEditorMenu13stateWaitWearEv[];
 extern char _ZN17PatternEditorMenu15useToolAtCursorEv[];
 extern char _ZN17PatternEditorMenu17endShapeAndResumeEv[];
 extern char _ZN17PatternEditorMenu19saveToPlayerPatternEv[];
-extern char _ZN17PatternEditorMenuD1Ev[];
+extern char _ZN17PatternEditorMenuD2Ev[];
 extern char _ZN17PatternSelectMenu10execClosedEv[];
 extern char _ZN17PocketLettersMenu16cursorToPopupTopEv[];
 extern char _ZN17SpNpcPellyPhyllis8isOnlineEv[];
@@ -322,7 +322,7 @@ extern char _ZN17WfcFriendListMenu14loadBgGraphicsEv[];
 extern char _ZN17WfcFriendListMenu8onDeleteEv[];
 extern char _ZN17WfcFriendListMenu9allocTextEv[];
 extern char _ZN17WfcFriendListMenu9placeKnobEv[];
-extern char _ZN17WfcFriendListMenuD1Ev[];
+extern char _ZN17WfcFriendListMenuD2Ev[];
 extern char _ZN20LostFoundRecycleMenu9testFlagsEj[];
 extern char _ZN20PocketItemSelectMenu16cursorToPopupTopEv[];
 extern char _ZN20PocketItemSelectMenu16getSlotItemFlagsEj[];
@@ -347,10 +347,10 @@ extern char _ZN9DesignTab16refreshNameLabelEv[];
 extern char _ZN9DesignTab16startButtonInputEv[];
 extern char _ZN9DesignTab16updateCursorMoveEv[];
 extern char _ZN9DesignTab20moveCursorToPopupRowEv[];
-extern char _ZN9DesignTabD1Ev[];
+extern char _ZN9DesignTabD2Ev[];
 extern char _ZN9FtrGyroidD0Ev[];
 extern char _ZN9FtrKind0413enterFtrAct02Ev[];
-extern char _ZN9FtrKind05D1Ev[];
+extern char _ZN9FtrKind05D2Ev[];
 extern char _ZN9FtrKind0613enterFtrAct02Ev[];
 extern char _ZN9FtrStereo13execTalkAct02Ev[];
 extern char _ZN9MusicMenu12paintListRowEij[];
@@ -362,7 +362,7 @@ extern char _ZN9MusicMenu18moveCursorToTargetEv[];
 extern char _ZN9MusicMenu20targetButtonAtCursorEv[];
 extern char _ZN9MusicMenu8onCreateEv[];
 extern char _ZN9MusicMenu9testFlagsEj[];
-extern char _ZN9MusicMenuD1Ev[];
+extern char _ZN9MusicMenuD2Ev[];
 
 static const HostSharedCandidate sCands_BarberMachine_Start[] = {
     {4, BarberMachine_Start},
@@ -483,7 +483,7 @@ const HostSharedCall gSharedCall_DateTimePicker_UpdateHandAnim = {2, sCands_Date
 
 static const HostSharedCandidate sCands_DateTimePicker_UpdateListClose[] = {
     {134, DateTimePicker_UpdateListClose},
-    {117, _ZN14TownMapMarkersC1Ev},
+    {117, _ZN14TownMapMarkersC2Ev},
 };
 const HostSharedCall gSharedCall_DateTimePicker_UpdateListClose = {2, sCands_DateTimePicker_UpdateListClose};
 
@@ -508,7 +508,7 @@ const HostSharedCall gSharedCall_DwcFriend_IsIdle = {2, sCands_DwcFriend_IsIdle}
 
 static const HostSharedCandidate sCands_FieldInsect_GetPosAndKind[] = {
     {3, FieldInsect_GetPosAndKind},
-    {4, _ZN10BarberPoleC1Ev},
+    {4, _ZN10BarberPoleC2Ev},
 };
 const HostSharedCall gSharedCall_FieldInsect_GetPosAndKind = {2, sCands_FieldInsect_GetPosAndKind};
 
@@ -972,7 +972,7 @@ static const HostSharedCandidate sCands_LocalWl_SetEventCallback[] = {
     {66, LocalWl_SetEventCallback},
     {65, SockCore_IsLinkUp},
     {67, WlxWm_NextAllowedChannel},
-    {68, _ZN13FieldVillagerD1Ev},
+    {68, _ZN13FieldVillagerD2Ev},
     {69, VillagerTalkTopics_CopyTables},
 };
 const HostSharedCall gSharedCall_LocalWl_SetEventCallback = {5, sCands_LocalWl_SetEventCallback};
@@ -1071,7 +1071,7 @@ const HostSharedCall gSharedCall_PlayerActor_EndUmbrellaSpin = {2, sCands_Player
 
 static const HostSharedCandidate sCands_PlayerActor_GetTrackTarget[] = {
     {3, PlayerActor_GetTrackTarget},
-    {4, _ZN9FtrKind05D1Ev},
+    {4, _ZN9FtrKind05D2Ev},
 };
 const HostSharedCall gSharedCall_PlayerActor_GetTrackTarget = {2, sCands_PlayerActor_GetTrackTarget};
 
@@ -1113,7 +1113,7 @@ const HostSharedCall gSharedCall_PlayerActor_MainShovelStrike = {2, sCands_Playe
 
 static const HostSharedCandidate sCands_PlayerActor_MainThrowBottle[] = {
     {3, PlayerActor_MainThrowBottle},
-    {4, _ZN12FtrStackLinkD1Ev},
+    {4, _ZN12FtrStackLinkD2Ev},
 };
 const HostSharedCall gSharedCall_PlayerActor_MainThrowBottle = {2, sCands_PlayerActor_MainThrowBottle};
 
@@ -1295,15 +1295,15 @@ const HostSharedCall gSharedCall_StarSky_HitArrow = {2, sCands_StarSky_HitArrow}
 
 static const HostSharedCandidate sCands_StarSky_IsConstellationFree[] = {
     {127, StarSky_IsConstellationFree},
-    {113, _ZN11BbsReadMenuD1Ev},
-    {123, _ZN17PatternEditorMenuD1Ev},
+    {113, _ZN11BbsReadMenuD2Ev},
+    {123, _ZN17PatternEditorMenuD2Ev},
     {134, _ZN14DateTimePicker10clearFlagsEj},
     {139, _ZN17MenuTownListPanel10clearFlagsEj},
-    {142, _ZN11CatalogMenuD1Ev},
-    {143, _ZN10MelodyMenuD1Ev},
-    {144, _ZN9MusicMenuD1Ev},
-    {145, _ZN12DonationMenuD1Ev},
-    {146, _ZN17WfcFriendListMenuD1Ev},
+    {142, _ZN11CatalogMenuD2Ev},
+    {143, _ZN10MelodyMenuD2Ev},
+    {144, _ZN9MusicMenuD2Ev},
+    {145, _ZN12DonationMenuD2Ev},
+    {146, _ZN17WfcFriendListMenuD2Ev},
 };
 const HostSharedCall gSharedCall_StarSky_IsConstellationFree = {10, sCands_StarSky_IsConstellationFree};
 
@@ -1368,7 +1368,7 @@ static const HostSharedCandidate sCands_TownMapImage_FinishGlobal[] = {
     {117, TownMapImage_FinishGlobal},
     {94, InventoryBg_ClearDirty},
     {95, Keyboard_ClearFlags},
-    {121, _ZN9DesignTabD1Ev},
+    {121, _ZN9DesignTabD2Ev},
     {130, NumberPad_ClearFlags},
 };
 const HostSharedCall gSharedCall_TownMapImage_FinishGlobal = {5, sCands_TownMapImage_FinishGlobal};

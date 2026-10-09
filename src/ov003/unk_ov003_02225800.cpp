@@ -448,8 +448,6 @@ s32 Weather_GetFallingPrecip();
 BOOL Town_GetRafflesiaPos(void *buf);
 void Clock_GetMinuteHour(void *p);
 void Clock_GetDayMonth(void *p);
-void ModelSlotHandle_Destroy(void *p);
-void ModelSlotHandle_Init(void *p);
 void func_0209c128(void *p);
 void func_0209c140(void *p);
 void func_0209c0c8(void *p);
