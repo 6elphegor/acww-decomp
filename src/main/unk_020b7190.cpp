@@ -317,10 +317,8 @@ void FieldInfoBalloon::placeTimerMsg() { ((LabelBalloon *)(&balloon))->setPos(0,
 void FieldInfoBalloon::placeNetMsg() { ((LabelBalloon *)(&balloon))->setPos(0x12, -0x30); }
 
 void FieldInfoBalloon::setItemNameText() {
-    u32 obj[10];
-    new (obj) ItemName((u16 *)(facingItem));
-    ((LabelBalloon *)(&balloon))->setText((StrBuf *)(obj));
-    ((ItemName *)(obj))->ItemName::~ItemName();
+    ItemName obj((u16 *)(facingItem));
+    ((LabelBalloon *)(&balloon))->setText((StrBuf *)(&obj));
 }
 
 void FieldInfoBalloon::setTimerMsgText() {

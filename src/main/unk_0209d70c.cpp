@@ -61,6 +61,12 @@ static_assert(sizeof(ReddLastSale) <= sizeof(((SaveData *)0)->reddLastSale), "Re
 static_assert(sizeof(SnowmanRecords) <= sizeof(((SaveData *)0)->snowmen), "SnowmanRecords");
 static_assert(sizeof(ItemClassOrders) <= sizeof(((SaveData *)0)->itemClassOrders), "ItemClassOrders");
 static_assert(sizeof(ClockOffset) <= sizeof(((SaveData *)0)->clockOffset), "ClockOffset");
+// (the blocks that were declared shorter than their records, the rest declared as the next member: house + songSet,
+// bbsBoard + unk_12000, nookShop + unk_15e00, reddShop + unk_15f80)
+static_assert(sizeof(HouseData) <= sizeof(((SaveData *)0)->house), "HouseData");
+static_assert(sizeof(BbsBoard) <= sizeof(((SaveData *)0)->bbsBoard), "BbsBoard");
+static_assert(sizeof(NookShop) <= sizeof(((SaveData *)0)->nookShop), "NookShop");
+static_assert(sizeof(ReddShop) <= sizeof(((SaveData *)0)->reddShop), "ReddShop");
 
 // The members are still byte blocks (include/save/SaveData.h): each record is constructed in its block. Most of
 // the constructors are empty (some are plain functions that take no object).
@@ -153,7 +159,7 @@ HOST_LABEL_DEFINE(data_021eceac, (char *)&gSaveData.bottleLetter[0]);
 HOST_LABEL_DEFINE(data_021ecfa8, (char *)&gSaveData.receivedLetters[0]);
 HOST_LABEL_DEFINE(data_021ed0a0, (char *)&gSaveData.museum[0]);
 HOST_LABEL_DEFINE(data_021ed104, (char *)&gSaveData.nookShop[0]);
-HOST_LABEL_DEFINE(data_021ed150, (char *)&gSaveData.unk_15e00[0]);
+HOST_LABEL_DEFINE(data_021ed150, (char *)&gSaveData.nookShop[0x4c]);
 HOST_LABEL_DEFINE(data_021ed170, (char *)&gSaveData.unk_15e20[0]);
 HOST_LABEL_DEFINE(data_021ed174, (char *)&gSaveData.unk_15e24[0]);
 HOST_LABEL_DEFINE(data_021ed1b0, (char *)&gSaveData.townState.unk_0c[0]);

@@ -1081,6 +1081,9 @@ BOOL gti2HandleNack(Cn *c, u8 *p, s32 n)
 namespace N02285630 { extern "C" {
 s32 gti2HandlePing(Cn *c, u8 *p, s32 n)
 {
+    // (the DS code is a tail jump to gti2SendPong, which the empty body lost: a ping was never answered, and the
+    // caller read an undefined result)
+    return gti2SendPong(c, p, n);
 }
 } }
 

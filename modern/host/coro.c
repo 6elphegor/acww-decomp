@@ -1,8 +1,10 @@
 // Host build: host_coro_prepare (coro.h): the frame host_coro_switch pops (coro_switch.S), on a new stack.
 
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 
+#define HOST_CORO_IMPL
 #include "coro.h"
 
 void host_coro_boot(void);
@@ -31,6 +33,76 @@ void *host_coro_prepare_w64(void *stack, size_t size, void (*fn)(void *), void *
 }
 #endif
 
+#ifdef HOST_ASAN
+#include <sanitizer/common_interface_defs.h>
+
+// The stacks host_coro_prepare was given (newest first), and the stack the process started on (learnt at the first
+// switch away from it): ASan wants the bounds of the stack a switch goes to.
+typedef struct AsanStack {
+    struct AsanStack *next;
+    const char *lo;
+    size_t size;
+    void (*fn)(void *);
+    void *arg;
+} AsanStack;
+static AsanStack *sAsanStacks;
+static const void *sAsanOuterLo;
+static size_t sAsanOuterSize;
+
+static void asan_stack_of(const void *sp, const void **lo, size_t *size) {
+    for (AsanStack *s = sAsanStacks; s; s = s->next)
+        if ((const char *)sp >= s->lo && (const char *)sp < s->lo + s->size) {
+            *lo = s->lo;
+            *size = s->size;
+            return;
+        }
+    *lo = sAsanOuterLo;
+    *size = sAsanOuterSize;
+}
+
+static void asan_note_from(const void *lo, size_t size) {
+    if (!lo) return;
+    for (AsanStack *s = sAsanStacks; s; s = s->next)
+        if ((const char *)lo >= s->lo && (const char *)lo < s->lo + s->size) return;
+    sAsanOuterLo = lo;
+    sAsanOuterSize = size;
+}
+
+static void asan_boot(void *arg) {
+    AsanStack *s = arg;
+    const void *lo;
+    size_t size;
+    __sanitizer_finish_switch_fiber(0, &lo, &size);
+    asan_note_from(lo, size);
+    s->fn(s->arg);
+}
+
+void host_coro_switch_asan(void **save, void *to) {
+    const void *lo, *from_lo;
+    size_t size, from_size;
+    void *fake = 0;
+    asan_stack_of(to, &lo, &size);
+    __sanitizer_start_switch_fiber(&fake, lo, size);
+    host_coro_switch(save, to);
+    __sanitizer_finish_switch_fiber(fake, &from_lo, &from_size);
+    asan_note_from(from_lo, from_size);
+}
+
+static void *prepare_raw(void *stack, size_t size, void (*fn)(void *), void *arg);
+void *host_coro_prepare(void *stack, size_t size, void (*fn)(void *), void *arg) {
+    AsanStack *s = calloc(1, sizeof *s);
+    if (!s) abort();
+    s->lo = stack;
+    s->size = size;
+    s->fn = fn;
+    s->arg = arg;
+    s->next = sAsanStacks;
+    sAsanStacks = s;
+    return prepare_raw(stack, size, asan_boot, s);
+}
+#define host_coro_prepare prepare_raw
+static
+#endif
 void *host_coro_prepare(void *stack, size_t size, void (*fn)(void *), void *arg) {
 #if defined(__x86_64__) && defined(_WIN32)
     return prepare_win64(stack, size, fn, arg, host_coro_boot);

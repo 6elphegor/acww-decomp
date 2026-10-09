@@ -222,7 +222,6 @@ extern "C" {
 extern s16 data_02135f44[];
 extern CommManager *gCommManager;
 extern s16 data_02135f44[];
-enum Unk_020d6df4_State { Unk_020d6df4_State_0 = 0 };
 union PM_02005294 {
     PMRaw raw;
     void (PlayerActor::*fn)();
@@ -549,25 +548,23 @@ void PlayerActor::onMessageEnd(u32 attr) {
         data_021c1b3c->mixer.talkDuckHold = 0xb;
         break;
     case 13: {
-        u32 obj[9];
         buf[4] = 0x3f;
         window->setNextMessage(&buf[4], NULL);
         *(u16 *)&buf[6] = this->actionWorkRaw[8] + 0x12b0;
-        new (obj) ItemName((u16 *)&buf[6]);
-        window->setNamedSlot(0, obj, 7);
-        ((ItemName *)(obj))->ItemName::~ItemName();
+        {
+            ItemName obj((u16 *)&buf[6]);
+            window->setNamedSlot(0, &obj, 7);
+        }
         this->msgStep = 8;
         break;
     }
     case 14: {
-        u32 obj[9];
         buf[5] = 0x3f;
         window->setNextMessage(&buf[5], NULL);
         this->msgStep = 8;
         *(u16 *)&buf[8] = this->actionWorkRaw[3] + 0x12e8;
-        new (obj) ItemName((u16 *)&buf[8]);
-        window->setNamedSlot(0, obj, 7);
-        ((ItemName *)(obj))->ItemName::~ItemName();
+        ItemName obj((u16 *)&buf[8]);
+        window->setNamedSlot(0, &obj, 7);
         break;
     }
     }

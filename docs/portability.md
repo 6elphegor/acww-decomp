@@ -345,6 +345,76 @@ After phase 1 the runtime has no ucontext, no x86 decoding and no `-mno-red-zone
         the villager state flags at `+ 0x1d` are `VillagerState::flags`. ov068 has no other DS offsets, blobs or
         pointers in integers left in its FieldVillager code.
 
+    **Sanitizer sweep (2026-10-08)**, for the reads the guards can't see: the sanitizer variant
+    (`configure_host.py --arch x86_64 --sanitize address,bounds,undefined`, docs/host.md: ASan with the game's NNS
+    heaps poisoned where unallocated and the coroutine switches annotated, UBSan's bounds and the rest of UBSan but
+    alignment and shift-base, every check recovering) over the oracle's quick and play scripts, the town, save and
+    continue scripts (tools/host_play_script.py) and dates: 205 pinned `ACWW_RTC` values in the attract demo to frame
+    3000 (every hour of 2026-10-08, -10-10, -12-24, the 1st and 15th of each month at 6, 12, 18, 23 h, holidays,
+    every weekday) and 29 of them through the title and the intro to frame 8000 (the play script's input), before
+    (8) and after (29) the merge of step 3.4 (its virtual time changes what each date reaches; the demo sweep both
+    times). Static passes: GCC's `-O2 -Warray-bounds=2 -Wplacement-new -Wstringop-*` over
+    every unit of both builds (`placement new` into DS-sized storage, array subscripts outside an object), and the
+    data symbols of config/usa/*/symbols.txt against the host's declared sizes (156 variables whose DS spacing
+    exceeds their i386 size by more than alignment; the large ones checked by hand: types that changed size, strings
+    and padding in between, the DS's bytes from the extracted ROM) and against references (194 variables only their
+    definition names: none a continuation of an indexed table). Found and fixed (builds: both = i386 and x86-64):
+    - **Reads past an end / split tables** (both): `Bgm_GetSceneBgmId` looped over sSceneBgmTable until the address
+      of data_020c8b9c, the next variable on the DS (a scene without an entry read whatever followed); it uses the
+      table's own end now. `NameLabelBalloon::applyKindAnim` indexed `data_020d467c + seqIndex * 8` with seqIndex
+      10..13, 0x28 - the sprite sequence table that starts there on the DS is split into seven arrays (only two
+      records in data_020d467c): now `gSpriteSeqTable[seqIndex]`; on x86-64 (16-byte records) the stride was wrong as
+      well, and the continue script crashed in the resident select (a string's bytes taken as a cell pointer) once
+      the layout changed. `Date_GetDaysInMonth` is asked for month 13 in December (`EventRule_ResolveDay`, the month
+      after): the DS read past its 12 entries into the next table (sDaysInMonthLeap and sDaysInMonth are adjacent
+      there, leap year first, then sWeatherPeriodEnds): the two tables are one `sDaysInMonth[2][12]` now and months
+      0 and 13 give the DS's bytes (a common year's month 13: 4).
+    - **A read of the wrong stack slot** (both): `FieldVillagerAi_TryFallInPitfall` passed `&a` of two locals `a, b`
+      as a `Vec2` (adjacent only on mwcc's stack): the pitfall check read y from elsewhere; now one `Vec2`.
+    - **Result types** (both): the particle position callback (`PosCb`, unk_020fa488 / unk_020f92d4 / unk_020fa39c)
+      was declared returning s32 for a callback that returns u16 (`SplPosFn`): `spl_draw_pol` indexed the sine table
+      with the undefined upper bits (ASan: past `FX_SinCosTable_`, in 26 of the 205 dates). `gti2HandlePing` had an
+      empty body (no return value; the DS code is a tail jump to `gti2SendPong`).
+    - **ARM shift semantics** (both): `ObjShadowStrip::build` shifts by a depth (0x119a..0x2000; UBSan
+      shift-exponent): Thumb's ASR by register gives 0 for a count of 32 or more, x86 shifts by the count modulo 32,
+      so tree stage 3's shadow got cullExtent 0xb33 instead of 0x1666. `DS_ASR` / `DS_LSR` / `DS_LSL`
+      (include/ds_shift.h).
+    - **A 4x3 load of a 3x3 matrix** (both): `NNSi_G3dFuncSbc_NODEMIX` sent its 9-word normal matrix with
+      `G3_LoadMtx43` (12 words: 3 read past it on the stack); now 12 words, the translation 0.
+    - **64-bit storage and layouts**: objects built in DS-sized storage - `MsgString9BStorage` (0x1c, the object 0x28),
+      `TouchPickSphere` members of VillagerBoard and RoomBoardSign (0x1c of 0x20: RoomBoardSign's `index` after it
+      was overwritten), ItemName / MsgString9B in word buffers (7 sites), the collision wall edges (`WallEdgeListWriter`,
+      fixed the same way in 3.4's 1ce5cf3c, merged); the action requests' payload read at the DS offset 0xc by
+      `PlayerActor_SetupLieInBed` and `PlayerActor::setupAct77` (0x10 on 64-bit hosts: the padding before the
+      payload, stack contents: whether the player made the wake-up sound in the continue script depended on them).
+    - **Uninitialised data in the save file** (both): the Able Sisters' default patterns copy an author record whose
+      gender and padding byte are never set (`PatternPresetInfo_Apply`): stack contents went into the save (0 in the
+      plain builds, other bytes with ASan's stack); zeroed now.
+    - **Save-data blocks declared shorter than their records** (both; layout unchanged): `house` + `songSet` is the
+      HouseData, `bbsBoard` + `unk_12000` the BbsBoard, `nookShop` + `unk_15e00` the NookShop, `reddShop` +
+      `unk_15f80` the ReddShop (whose `sold[6]` made it 0x18 bytes, 4 into `ableShop`: 4 bytes, one used), and
+      TownExchangeRecord's `unk_0f4` + `unk_0f5` its ConstellationRecord: one block each, with size `static_assert`s.
+    - Smaller ones: `TownEval_EvaluateAndClean` formed `&acres[-1][-1]` (not read); a matching-era enum copy of
+      `prevAction` (UBSan: invalid enum load); the runtime's global `operator new` lacked the nothrow forms.
+
+    Before -> after: run-time findings 6 ASan places (sSceneBgmTable, the pitfall Vec2, the wall edge buffer, the
+    NODEMIX matrix, the sine table, sDaysInMonth), 3 UBSan places (shift count, `acres[-1]`, enum load), a crash
+    (the name label table, continue script, frame 3568) and 2 build-dependent results (save file bytes, continue
+    sound from 57 s) -> 0; date sweep, 205 runs: 48 with reports (36 sDaysInMonth, 26 the sine table) -> 0, after
+    the merge of 3.4 again 0 (crashes 0 throughout). The tooling's own false positives (the heap allocators' header
+    walks and fills, word-at-a-time string functions, an overlay reset over a heap's buffer, the ARM7's sequence
+    reads) are handled in the variant, not in the game. The sanitizer build's output equals the plain x86-64 build's in all five scripts (screenshots, WAV,
+    save files) once the uninitialised reads were fixed. Oracle (tools/host_oracle.sh, captures_v2): quick and play
+    identical on i386 and x86-64 with every fix; i386 and x86-64 save and continue identical to each other (and the
+    save file to the pre-fix x86-64 build's). Before the merge of 3.4 the WallEdge fix alone changed the x86-64
+    output (proved by reverting only it: identical to the pre-change build), and made its quick screenshots equal
+    the i386 captures.
+    `tools/host_overlay_vars.py --check` on a fresh build reported 332 files out of date and 231 function-local
+    statics "can't be reset" (ov147 TitleTalk's `tbl` ...): a tool problem since 3.3 - in the x86-64 PIE objects
+    constant data with relocations (member function pointer tables, the generated lists themselves) is in
+    `.data.rel.ro*`, which nm also calls data. It reads `objdump -t` and skips those sections now: 0 out of date,
+    0 problems (2956 variables).
+
     Checks (after merging modern 7291e665, steps 3.0-3.2). The guard variant over quick, play, the town script, the
     save script and the continue run (i386) and quick, play, town (x86-64) reports **0 overruns** (before the fixes:
     3 variables on i386, 4 on x86-64); with fills 0xa5 and 0x5a the long scripts give the same output as modern's

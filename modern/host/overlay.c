@@ -11,6 +11,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef HOST_ASAN
+#include <sanitizer/asan_interface.h>
+#endif
 
 #include "host.h"
 #include "overlay.h"
@@ -110,6 +113,10 @@ void HostOverlay_Load(unsigned id) {
         if (sLog) log_unit(u, sPristine[i], &data, &bss);
         const unsigned char *p = sPristine[i];
         for (const HostOverlayVar *v = u->vars; v->addr; v++) {
+#ifdef HOST_ASAN
+            // (the sanitizer variant: a variable that held a heap has its free space poisoned; the reset ends the heap)
+            __asan_unpoison_memory_region(v->addr, v->size);
+#endif
             memcpy(v->addr, p, v->size);
             p += v->size;
         }

@@ -55,6 +55,12 @@ parser.add_argument("--guards", action="store_true",
                     help="the guard variant (a separate build: suffix _guards): poisoned bytes after every game variable "
                          "(tools/host_guards.py), checked every frame with ACWW_GUARDS=1 (modern/host/guards.c; "
                          "docs/portability.md 2.8)")
+parser.add_argument("--sanitize", default="",
+                    help="the sanitizer variant (x86-64 only; a separate build: suffix _asan): a comma list of "
+                         "address (ASan: redzones around globals, stack and heap objects - catches reads too - and "
+                         "the game's own heaps poisoned where unallocated, include/host_asan.h), bounds (array indexes "
+                         "against the declared size, also arrays inside structs) and undefined (the rest of UBSan); "
+                         "every report recovers (the run goes on), docs/host.md")
 parser.add_argument("--regen-gen", action="store_true",
                     help="regenerate modern/gen/gaps.c from the DS build's delinking (build/usa/delinks)")
 parser.add_argument("version", nargs="?", default="usa")
@@ -72,6 +78,16 @@ if CLANG:
 if args.guards and not args.suffix:
     args.suffix = "_guards"
 A64 = args.arch == "aarch64"
+SANITIZE = [x for x in args.sanitize.split(",") if x]
+if SANITIZE:
+    if args.arch != "x86_64":
+        sys.exit("--sanitize: x86-64 only (the i386 sysroot has no sanitizer runtimes)")
+    if set(SANITIZE) - {"address", "bounds", "undefined"}:
+        sys.exit("--sanitize: address, bounds, undefined")
+    if args.guards:
+        sys.exit("--sanitize and --guards don't combine")
+    if not args.suffix:
+        args.suffix = "_asan"
 X64 = args.arch == "x86_64"
 HOST64 = X64 or A64  # a 64-bit build (the build directory's and the ninja file's names apart)
 CXX = "g++"
@@ -123,6 +139,26 @@ if CLANG:
     CXX_FLAGS = CXX_FLAGS.replace("-femit-class-debug-always", "-fstandalone-debug")
 if args.extra_cflags:
     GAME_FLAGS += " " + args.extra_cflags
+# the sanitizer variant: the game, the runtime and the link with the same -fsanitize options; HOST_ASAN tells the
+# runtime's stack switches (coro.c) and the game's heaps (include/host_asan.h) to annotate for ASan
+SAN_FLAGS = ""
+if SANITIZE:
+    SAN_FLAGS = " -fsanitize=" + ",".join(SANITIZE) + " -fsanitize-recover=all"
+    if "undefined" in SANITIZE:
+        # not memory errors, and everywhere: members of 8-byte aligned types in the DS heaps' 4-byte aligned blocks
+        # (x86 and arm64 don't mind), left shifts of negative values (the DS code's idiom). Shift counts past the width
+        # stay checked: ARM gives 0 for them, x86 shifts by the count modulo the width.
+        SAN_FLAGS += " -fno-sanitize=alignment,shift-base"
+    if "address" in SANITIZE:
+        SAN_FLAGS += " -DHOST_ASAN"
+    GAME_FLAGS += SAN_FLAGS
+# the NNS heap allocators (expanded and frame heap): they mark free memory as poisoned (include/host_asan.h) and walk
+# their block headers in it, so they are compiled without ASan's checks
+ASAN_UNCHECKED = {"unk_02100234", "unk_02100708", "unk_02100890", "unk_0210092c", "unk_02100a24", "unk_02100bb0",
+                  "unk_02100d44", "unk_02101008", "unk_02101048",
+                  # the C library's string functions (strlen, strcpy, strcmp...): they read aligned words, also past
+                  # the terminator within the word, by design
+                  "unk_0212a120"}
 M = args.melonds
 GUARD_FLAGS = " -DHOST_GUARDS" if args.guards else ""
 # the frontend: SDL2 in the game's process (modern/host/frontend_sdl.c) when its headers are there (x86-64: --sdl2,
@@ -142,10 +178,10 @@ if A64:
 elif X64:
     # the system's own 64-bit libraries; melonDS's 64-bit core (build-core, configured with the JIT and the GDB stub)
     HOST_FLAGS = ("-m64 -fPIE -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 -DHOST -Iinclude" + FRONTEND_FLAG
-                  + GUARD_FLAGS)
-    LINK_FLAGS = "-m64 -pie"
+                  + GUARD_FLAGS + SAN_FLAGS)
+    LINK_FLAGS = "-m64 -pie" + SAN_FLAGS.replace(" -DHOST_ASAN", "")
     HOST_CXX_FLAGS = (f"-m64 -fPIE -O1 -g -std=c++17 -I{M}/src -I{M}/build-core/src -DJIT_ENABLED -DGDBSTUB_ENABLED "
-                      "-DHOST")
+                      "-DHOST" + SAN_FLAGS)
     MELON_LIBS = f"{M}/build-core/src/libcore.a {M}/build-core/src/teakra/src/libteakra.a"
 else:
     HOST_FLAGS = (f"-m32 -fno-pie -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 --sysroot={R} -isystem {R}/usr/include "
@@ -202,6 +238,8 @@ def main():
         for s in sources(Path("src"), (".c", ".cpp")):
             o = str(build / s.with_suffix(".o"))
             fl = source_flags(s)
+            if "address" in SANITIZE and s.stem in ASAN_UNCHECKED:
+                fl.append("-fno-sanitize=address")
             n.build(o, "cxx" if s.suffix == ".cpp" else "cc", str(s), variables={"flags": " ".join(fl)} if fl else None)
             objs.append(o)
         for s in sources(Path("modern/host"), (".c", ".cpp", ".S")):

@@ -3065,8 +3065,6 @@ BOOL FtrStereo::enterTalkAct04() {
         ((MsgRequest *)(&sec))->setFileName((const char *)(data_ov004_0224bbb0));
     }
     struct { u32 pad; u16 v; } l;
-    u32 buf1[9];
-    u32 buf2[9];
     if (p18::Scene_InVillagerHouse()) {
         u32 t = 0;
         u32 r = Scene_GetVillagerHouse();
@@ -3075,19 +3073,17 @@ BOOL FtrStereo::enterTalkAct04() {
             t = p18::Villager_GetInfo4d(v);
         }
         l.v = Unk_ov004_0220ec30_Val(t);
-        new (buf1) ItemName(&l.v);
+        ItemName name(&l.v);
         msgIndex = 5;
-        ((TalkWindowState *)(window))->setNamedSlot(0, buf1, 7);
-        ((ItemName *)(buf1))->ItemName::~ItemName();
+        ((TalkWindowState *)(window))->setNamedSlot(0, &name, 7);
     } else {
         u16 *p = HouseRoom_GetCurrentSong();
         BOOL ok = FALSE;
         if (*p >= 0x1323 && *p <= 0x1368) ok = TRUE;
         if (ok) {
-            new (buf2) ItemName(p);
+            ItemName name(p);
             msgIndex = 5;
-            ((TalkWindowState *)(window))->setNamedSlot(0, buf2, 7);
-            ((ItemName *)(buf2))->ItemName::~ItemName();
+            ((TalkWindowState *)(window))->setNamedSlot(0, &name, 7);
         } else {
             msgIndex = 6;
         }

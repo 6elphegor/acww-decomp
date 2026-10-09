@@ -193,7 +193,6 @@ extern const u32 sChatBalloonNameSeqs[4];
 extern "C" {
 extern CommManager *gCommManager;
 extern u16 gPad[];
-extern u8 data_020d467c[];
 // The sequence table at data_020d467c spans several arrays (src/main/unk_020d467c.cpp)
 extern void *const gSpriteSeqTable[45];
 extern s32 gGfxMainOnTop;

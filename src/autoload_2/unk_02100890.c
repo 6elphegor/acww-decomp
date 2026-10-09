@@ -12,6 +12,7 @@ typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
 #include "uptr.h"
+#include "host_asan.h"
 
 typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
 typedef struct NNSFndList { void *head; void *tail; u16 num; u16 offset; } NNSFndList;
@@ -216,12 +217,28 @@ u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, BOOL opt);
 void NNS_GfdInitFrmTexVramManager(u32 mode, BOOL setFuncs);
 void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 
+
+// the sanitizer variant (include/host_asan.h): the free blocks' contents poisoned between the heap's operations, and
+// unpoisoned while one runs (the allocator fills and clears memory through the SDK's checked functions)
+static void HostAsan_FreeBlocks(HeapHead *heap, int poison) {
+#ifdef HOST_ASAN
+    MBlock *b;
+    for (b = heap->u.exp.freeHead; b != 0; b = b->next) {
+        if (poison) HOST_ASAN_POISON((u8 *)b + sizeof(MBlock), b->size);
+        else HOST_ASAN_UNPOISON((u8 *)b + sizeof(MBlock), b->size);
+    }
+#endif
+}
+
 // NNS_FndCreateExpHeapEx
 HeapHead *NNS_FndCreateExpHeapEx(void *start, u32 size, u16 opt) {
     uptr end = ((uptr)start + size) & ~(uptr)3;
     uptr st = ((uptr)start + 3) & ~(uptr)3;
+    HeapHead *heap;
     if (st > end || end - st < sizeof(HeapHead) + sizeof(MBlock) + 4) return 0;  // (0x4c on the DS)
-    return InitExpHeap((void *)st, (void *)end, opt);
+    heap = InitExpHeap((void *)st, (void *)end, opt);
+    HostAsan_FreeBlocks(heap, 1);
+    return heap;
 }
 
 // NNS_FndDestroyExpHeap
@@ -231,8 +248,25 @@ void NNS_FndDestroyExpHeap(HeapHead *heap) {
 
 // NNS_FndAllocFromExpHeapEx
 void *NNS_FndAllocFromExpHeapEx(HeapHead *heap, u32 size, s32 alignment) {
+#ifdef HOST_ASAN
+    // the sanitizer variant: the block's bytes past the size asked for stay poisoned
+    void *mem;
+    u32 asked = size;
+    if (size == 0) size = 1;
+    size = (size + 3) & ~3;
+    HostAsan_FreeBlocks(heap, 0);
+    mem = alignment >= 0 ? AllocFromHead__ExpHeap(heap, size, alignment) : AllocFromTail__ExpHeap(heap, size, -alignment);
+    HostAsan_FreeBlocks(heap, 1);
+    if (mem) {
+        MBlock *b = (MBlock *)((u8 *)mem - sizeof(MBlock));
+        HOST_ASAN_UNPOISON(mem, asked);
+        HOST_ASAN_POISON((u8 *)mem + asked, b->size - asked);
+    }
+    return mem;
+#else
     if (size == 0) size = 1;
     size = (size + 3) & ~3;
     if (alignment >= 0) return AllocFromHead__ExpHeap(heap, size, alignment);
     return AllocFromTail__ExpHeap(heap, size, -alignment);
+#endif
 }

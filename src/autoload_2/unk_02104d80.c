@@ -50,7 +50,8 @@ void NNSi_G3dFuncSbc_NODEMIX(G3dRS *rs)
     u8 *inv = mdl + *(u32 *)(mdl + 0x10);
     u32 n = c[2];
     s32 pos[12];
-    s32 nrm[9];
+    s32 nrm[12];  // the 3x3 sum; loaded as a 4x3 matrix (G3_LoadMtx43 sends 12 words: the DS read the 3 words after a
+                  // 9-word nrm on its stack), its translation 0
     volatile u32 zero = 0;
     e = c + 3;
     pw = 0;

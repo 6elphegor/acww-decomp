@@ -4,6 +4,7 @@
 #include "proto/autoload_2/unk_02119020.h"
 #include "proto/autoload_2/unk_02119434.h"
 #include "uptr.h"
+#include "host_asan.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) code, list.c, heap.c, expheap.c (first part): autoload_2 0x02100234-0x02100708. ARM code, mwcc 1.2/base, -O4,p.
 typedef unsigned char u8;
@@ -208,14 +209,30 @@ u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, BOOL opt);
 void NNS_GfdInitFrmTexVramManager(u32 mode, BOOL setFuncs);
 void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 
+
+// the sanitizer variant (include/host_asan.h): the free blocks' contents poisoned between the heap's operations, and
+// unpoisoned while one runs (the allocator fills and clears memory through the SDK's checked functions)
+static void HostAsan_FreeBlocks(HeapHead *heap, int poison) {
+#ifdef HOST_ASAN
+    MBlock *b;
+    for (b = heap->u.exp.freeHead; b != 0; b = b->next) {
+        if (poison) HOST_ASAN_POISON((u8 *)b + sizeof(MBlock), b->size);
+        else HOST_ASAN_UNPOISON((u8 *)b + sizeof(MBlock), b->size);
+    }
+#endif
+}
+
 // NNS_FndFreeToExpHeap
 void NNS_FndFreeToExpHeap(HeapHead *heap, void *mem) {
     ExpHead *e = EXP(heap);
     MBlock *b = (MBlock *)((u8 *)mem - sizeof(MBlock));
     Region region;
+    HOST_ASAN_UNPOISON(mem, b->size);
+    HostAsan_FreeBlocks(heap, 0);
     GetRegionOfMBlock(&region, b);
     RemoveMBlock(&e->usedHead, b);
     RecycleRegion(e, &region);
+    HostAsan_FreeBlocks(heap, 1);
 }
 
 // NNS_FndGetTotalFreeSizeForExpHeap

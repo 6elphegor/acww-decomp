@@ -12,7 +12,7 @@ void GX_LoadOBJPltt(void *a, u32 b, u32 c);
 
 extern const s32 kNameLabelBalloonKindAnims[];
 extern u8 sNameLabelBalloonKind4Color[];
-extern u8 data_020d467c[];
+extern void *const gSpriteSeqTable[45];  // (src/main/unk_020d467c.cpp)
 
 struct SpriteAnimSeq;
 
@@ -135,7 +135,9 @@ void NameLabelBalloon::updateHiding() {
 }
 
 void NameLabelBalloon::applyKindAnim() {
-    anim.setSeq((SpriteAnimSeq *)(data_020d467c + seqIndex * 8));
+    // the sequence table that starts at data_020d467c on the DS, indexed (seqIndex 10..13, 0x28: past the two
+    // records of data_020d467c itself, in the arrays that followed it there)
+    anim.setSeq((SpriteAnimSeq *)gSpriteSeqTable[seqIndex]);
     anim.setPlayOnce(1);
     anim.setSpeed(0);
 }
