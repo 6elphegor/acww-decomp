@@ -35,7 +35,13 @@ void host_bad_object(u32 profile, void *create, void *obj) {
 // Fatal_PanicV (HOST): the game's panic message; args points at the format's arguments on the stack
 void host_panic(const char *file, u32 line, const char *fmt, void *args) {
     char buf[512];
+#if defined(__aarch64__) && !defined(__APPLE__)
+    // (AAPCS64's va_list is a struct, not a pointer to the arguments: only the format can be shown)
+    (void)args;
+    snprintf(buf, sizeof buf, "%s", fmt);
+#else
     vsnprintf(buf, sizeof buf, fmt, *(va_list *)&args);
+#endif
     fprintf(stderr, "host: game panic: %s (%s:%u)\n", buf, file ? file : "", line);
     host_fatal("panic");
 }

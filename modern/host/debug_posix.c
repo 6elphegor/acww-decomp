@@ -37,8 +37,19 @@
 #define UC_PC(uc) ((uintptr_t)(uc)->uc_mcontext.gregs[REG_EIP])
 #define UC_SP(uc) ((uintptr_t)(uc)->uc_mcontext.gregs[REG_ESP])
 #define UC_BP(uc) ((uintptr_t)(uc)->uc_mcontext.gregs[REG_EBP])
+#elif defined(__linux__) && defined(__aarch64__)
+#define HAVE_UC_REGS 1
+#define UC_PC(uc) ((uintptr_t)(uc)->uc_mcontext.pc)
+#define UC_SP(uc) ((uintptr_t)(uc)->uc_mcontext.sp)
+#define UC_BP(uc) ((uintptr_t)(uc)->uc_mcontext.regs[29])
 #else
 #define HAVE_UC_REGS 0
+#endif
+// the x86 trap flag (EFLAGS bit 8) for ACWW_WATCH's single step
+#if HAVE_UC_REGS && (defined(__x86_64__) || defined(__i386__))
+#define HAVE_UC_TRAPFLAG 1
+#else
+#define HAVE_UC_TRAPFLAG 0
 #endif
 
 #define PAGE 0x1000u
@@ -88,7 +99,7 @@ static uintptr_t context_pc(void *ctx) {
 }
 
 // ---- ACWW_WATCH=addr:len (x86 Linux: the trap flag)
-#if HAVE_UC_REGS
+#if HAVE_UC_TRAPFLAG
 static uintptr_t sWatchLo, sWatchHi, sWatchPage, sWatchPc;
 static int sWatchStep;
 static u8 sWatchOld[64];
@@ -174,7 +185,7 @@ static void on_int(int sig, siginfo_t *si, void *ctx) {
 
 // ---- a crash: where
 static void on_fatal_signal(int sig, siginfo_t *si, void *ctx) {
-#if HAVE_UC_REGS
+#if HAVE_UC_TRAPFLAG
     if (sig == SIGSEGV && watch_fault(ctx, (uintptr_t)si->si_addr)) return;
 #endif
     fprintf(stderr, "host: signal %d (%s) at frame %llu, ", sig, strsignal(sig), (unsigned long long)host_frame());
@@ -207,7 +218,7 @@ void host_debug_init(void) {
     memset(&sa, 0, sizeof sa);
     sa.sa_flags = SA_SIGINFO | SA_NODEFER;
     host_debug_crash_handlers();
-#if HAVE_UC_REGS
+#if HAVE_UC_TRAPFLAG
     sa.sa_sigaction = on_trap;
     sigaction(SIGTRAP, &sa, 0);
 #endif

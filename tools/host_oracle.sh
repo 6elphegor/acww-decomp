@@ -10,6 +10,9 @@
 #   *-raw: only the run (the output in $ORACLE_OUT or a new temporary directory);
 #   record: new captures from this binary into $CAPDIR (an existing $CAPDIR is moved to $CAPDIR.<date> first; never
 #           into $ORACLE_DIR/captures).
+# ACWW_RUNNER: a command the binary is run through, e.g. for the aarch64 build on x86-64 (docs/host.md):
+#   ACWW_RUNNER="$HOME/acww/toolchains/qemu/usr/bin/qemu-aarch64 -L <the cross toolchain's sysroot>"
+# (QUICK_TIMEOUT / PLAY_TIMEOUT, seconds of real time, default 180 / 400: raise them for an emulated run.)
 B=$1; MODE=${2:-quick}
 OD=${ORACLE_DIR:-$HOME/acww/ref/oracle}; C=${CAPDIR:-$OD/captures_v2}
 T=${ORACLE_OUT:-$(mktemp -d)}; mkdir -p "$T"
@@ -28,7 +31,7 @@ case "$MODE" in quick-raw) MODE=quick; RAW=1;; play-raw) MODE=play; RAW=1;; esac
 export ACWW_HEADLESS=1 ACWW_FAST=1 ACWW_TOUCH="2200:10:128,96" ACWW_FIRMWARE=${ACWW_FIRMWARE:-$HOME/acww/ref/firmware_generated.bin}
 if [ "$MODE" = quick ]; then
   ACWW_EXIT_FRAME=8001 ACWW_SHOT="2500:$T/a-2500.ppm;8000:$T/a-8000.ppm" ACWW_WAV=$T/a.wav ACWW_SAVE=$T/s.sav \
-    timeout -s INT ${QUICK_TIMEOUT:-180} "$B" "$ROM" > $T/log.txt 2>&1 < /dev/null
+    timeout -s INT ${QUICK_TIMEOUT:-180} $ACWW_RUNNER "$B" "$ROM" > $T/log.txt 2>&1 < /dev/null
   if [ -z "$RAW" ]; then
     for f in 2500 8000; do cmp -s $C/deta-$f.ppm $T/a-$f.ppm && echo "frame $f identical" || echo "frame $f DIFFERS"; done
     python3 -c "
@@ -39,7 +42,7 @@ else
   K=$(python3 -c "print(';'.join(f'{f}:6:1' for f in range(2400,30000,60)))"); SH=""
   for f in 4000 6000 9000 12000 16000 20000 25000; do SH="$SH;$f:$T/p-$f.ppm"; done
   ACWW_EXIT_FRAME=25001 ACWW_KEYS="$K" ACWW_SHOT="${SH#;}" ACWW_SAVE=$T/s.sav \
-    timeout -s INT ${PLAY_TIMEOUT:-400} "$B" "$ROM" > $T/log.txt 2>&1 < /dev/null
+    timeout -s INT ${PLAY_TIMEOUT:-400} $ACWW_RUNNER "$B" "$ROM" > $T/log.txt 2>&1 < /dev/null
   if [ -z "$RAW" ]; then
     for f in 4000 6000 9000 12000 16000 20000 25000; do cmp -s $C/play-$f.ppm $T/p-$f.ppm && echo "frame $f identical" || echo "frame $f DIFFERS"; done
   fi

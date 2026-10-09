@@ -30,9 +30,18 @@ parser.add_argument("--melonds", default=os.path.expanduser("~/acww/ref/melonDS"
 parser.add_argument("--sdl2", default=os.path.expanduser("~/acww/toolchains/sdl2-dev"),
                     help="directory with SDL2 development headers (usr/include/SDL2): the 64-bit builds' frontend "
                          "(in the game's process, linked with the system's libSDL2) and the i386 build's viewer")
-parser.add_argument("--arch", choices=["i386", "x86_64"], default="i386",
+parser.add_argument("--arch", choices=["i386", "x86_64", "aarch64"], default="i386",
                     help="i386: build_host.ninja, build/host_<v> (the working build); x86_64: build_host64.ninja, "
-                         "build/host64_<v> (64-bit, in progress: docs/host.md)")
+                         "build/host64_<v> (64-bit, in progress: docs/host.md); aarch64: build_host_a64.ninja, "
+                         "build/hosta64_<v> (64-bit ARM Linux, cross-compiled with --cross; run under qemu-aarch64: "
+                         "docs/host.md)")
+parser.add_argument("--cross", default=os.path.expanduser(
+                        "~/acww/toolchains/arm-gnu-toolchain-14.3.rel1-x86_64-aarch64-none-linux-gnu"),
+                    help="--arch aarch64: the cross toolchain (bin/aarch64-none-linux-gnu-gcc, its glibc sysroot "
+                         "built in)")
+parser.add_argument("--qemu", default=os.path.expanduser("~/acww/toolchains/qemu/usr/bin/qemu-aarch64"),
+                    help="--arch aarch64: qemu-aarch64 (user mode) for running the tests (the game: ACWW_RUNNER, "
+                         "tools/host_oracle.sh)")
 parser.add_argument("--extra-cflags", default="",
                     help="more compiler flags for the game code (a debugging build, e.g. -fstack-protector-all; "
                          "use with --suffix)")
@@ -62,25 +71,35 @@ if CLANG:
             args.cc = found[-1]
 if args.guards and not args.suffix:
     args.suffix = "_guards"
+A64 = args.arch == "aarch64"
 X64 = args.arch == "x86_64"
-build = Path("build") / (f"host64{args.suffix}_{args.version}" if X64 else f"host{args.suffix}_{args.version}")
-NINJA_FILE = f"build_host64{args.suffix}.ninja" if X64 else f"build_host{args.suffix}.ninja"
+HOST64 = X64 or A64  # a 64-bit build (the build directory's and the ninja file's names apart)
+CXX = "g++"
+if A64:
+    # the cross compiler (C and C++; its sysroot built in)
+    args.cc = f"{args.cross}/bin/aarch64-none-linux-gnu-gcc"
+    CXX = f"{args.cross}/bin/aarch64-none-linux-gnu-g++"
+    build = Path("build") / f"hosta64{args.suffix}_{args.version}"
+    NINJA_FILE = f"build_host_a64{args.suffix}.ninja"
+else:
+    build = Path("build") / (f"host64{args.suffix}_{args.version}" if X64 else f"host{args.suffix}_{args.version}")
+    NINJA_FILE = f"build_host64{args.suffix}.ninja" if X64 else f"build_host{args.suffix}.ninja"
 R = args.sysroot
 G = f"{R}/usr/lib/gcc/x86_64-linux-gnu/15/32"
-M_FLAG = "-m64" if X64 else "-m32"
-LD_EMU = "elf_x86_64" if X64 else "elf_i386"
+M_FLAG = "-m64" if X64 else "" if A64 else "-m32"
+LD_EMU = "elf_x86_64" if X64 else "aarch64linux" if A64 else "elf_i386"
 
-# x86-64: a position-independent executable (loaded anywhere, ASLR; docs/portability.md 3.3); i386, the frozen
-# reference, stays a fixed-address executable (its captures were taken so)
-PIE = "-fPIE" if X64 else "-fno-pie"
+# the 64-bit builds: position-independent executables (loaded anywhere, ASLR; docs/portability.md 3.3); i386, the
+# frozen reference, stays a fixed-address executable (its captures were taken so)
+PIE = "-fPIE" if HOST64 else "-fno-pie"
 GAME_FLAGS = " ".join([
-    M_FLAG, PIE, "-fno-short-enums", "-fsigned-char", "-fshort-wchar", "-ffreestanding", "-nostdinc",
+    *([M_FLAG] if M_FLAG else []), PIE, "-fno-short-enums", "-fsigned-char", "-fshort-wchar", "-ffreestanding", "-nostdinc",
     "-fno-strict-aliasing", "-fno-builtin", "-O1", "-g", "-w", "-fno-omit-frame-pointer", "-falign-functions=4",
     "-DMODERN", "-DHOST", f"-DGAME_VERSION_{args.version.upper()}", "-Iinclude",
     # the game's C library names renamed to ds_* (its own libc, apart from the host's)
     "-include", "include/host_libc_rename.h",
 ])
-if not X64:
+if not HOST64:
     # small structs returned in memory, as mwcc does: kept while the 32-bit build is the reference (its captures were
     # taken with it); the 64-bit builds use the platform ABI (clang supports the flag only on i386)
     GAME_FLAGS += " -fpcc-struct-return"
@@ -93,27 +112,41 @@ CXX_FLAGS += " -femit-class-debug-always"
 if args.guards:
     # a section per variable: tools/host_guards.py puts a guard after each
     GAME_FLAGS += " -fdata-sections"
+if A64:
+    # no fused multiply-adds (GCC contracts a * b + c by default on arm64, x86-64 has no FMA without -mfma): the
+    # same floating-point results as the x86 builds
+    GAME_FLAGS += " -ffp-contract=off"
 if CLANG:
     # GCC-only game flag: -fpcc-struct-return (clang: i386 only); clang's name for the class debug information
-    if X64:
+    if HOST64:
         GAME_FLAGS = GAME_FLAGS.replace(" -fpcc-struct-return", "")
     CXX_FLAGS = CXX_FLAGS.replace("-femit-class-debug-always", "-fstandalone-debug")
 if args.extra_cflags:
     GAME_FLAGS += " " + args.extra_cflags
 M = args.melonds
 GUARD_FLAGS = " -DHOST_GUARDS" if args.guards else ""
-if X64:
+# the frontend: SDL2 in the game's process (modern/host/frontend_sdl.c) when its headers are there (x86-64: --sdl2,
+# linked with the system's libSDL2); otherwise none (modern/host/frontend_none.c: headless only)
+SDL2 = X64 and os.path.exists(f"{args.sdl2}/usr/include/SDL2/SDL.h")
+FRONTEND_FLAG = " -DHOST_FRONTEND_SDL=1" if SDL2 else " -DHOST_FRONTEND_NONE=1" if HOST64 else ""
+SDL_CFLAGS = f"-I{args.sdl2}/usr/include/SDL2 -I{args.sdl2}/usr/include/x86_64-linux-gnu" if SDL2 else ""
+SDL_LIBS = "-l:libSDL2-2.0.so.0" if SDL2 else ""
+if A64:
+    # the cross toolchain's glibc; melonDS's core cross-built for aarch64 (build-core-a64: without the JIT and the GDB
+    # stub, -ffp-contract=off; tools/host/aarch64-linux.toolchain.cmake, docs/host.md)
+    HOST_FLAGS = ("-fPIE -O1 -g -fno-omit-frame-pointer -ffp-contract=off -Wall -std=gnu11 -DHOST -Iinclude"
+                  + FRONTEND_FLAG + GUARD_FLAGS)
+    LINK_FLAGS = "-pie"
+    HOST_CXX_FLAGS = f"-fPIE -O1 -g -ffp-contract=off -std=c++17 -I{M}/src -I{M}/build-core-a64/src -DHOST"
+    MELON_LIBS = f"{M}/build-core-a64/src/libcore.a {M}/build-core-a64/src/teakra/src/libteakra.a"
+elif X64:
     # the system's own 64-bit libraries; melonDS's 64-bit core (build-core, configured with the JIT and the GDB stub)
-    HOST_FLAGS = ("-m64 -fPIE -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 -DHOST -Iinclude -DHOST_FRONTEND_SDL=1"
+    HOST_FLAGS = ("-m64 -fPIE -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 -DHOST -Iinclude" + FRONTEND_FLAG
                   + GUARD_FLAGS)
     LINK_FLAGS = "-m64 -pie"
     HOST_CXX_FLAGS = (f"-m64 -fPIE -O1 -g -std=c++17 -I{M}/src -I{M}/build-core/src -DJIT_ENABLED -DGDBSTUB_ENABLED "
                       "-DHOST")
     MELON_LIBS = f"{M}/build-core/src/libcore.a {M}/build-core/src/teakra/src/libteakra.a"
-    # the frontend: SDL2 in the game's process (modern/host/frontend_sdl.c), the system's library
-    SDL_CFLAGS = f"-I{args.sdl2}/usr/include/SDL2 -I{args.sdl2}/usr/include/x86_64-linux-gnu"
-    SDL_LIBS = "-l:libSDL2-2.0.so.0"
-    LIBDIR, LIBGCC = "/usr/lib/x86_64-linux-gnu", "/usr/lib/gcc/x86_64-linux-gnu/15/libgcc.a"
 else:
     HOST_FLAGS = (f"-m32 -fno-pie -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 --sysroot={R} -isystem {R}/usr/include "
                   f"-isystem /usr/include/x86_64-linux-gnu -isystem /usr/include -DHOST -Iinclude") + GUARD_FLAGS
@@ -124,8 +157,6 @@ else:
                       f"-I{M}/src -I{M}/build-core32/src -DHOST")
     MELON_LIBS = f"{M}/build-core32/src/libcore.a {M}/build-core32/src/teakra/src/libteakra.a"
     # the frontend: the 64-bit viewer process (modern/host/frontend_viewer.c, viewer/)
-    SDL_CFLAGS = SDL_LIBS = ""
-    LIBDIR, LIBGCC = f"{R}/usr/lib32", f"{G}/libgcc.a"
 
 MWCC_FLAG_MAP = {("-char", "unsigned"): "-funsigned-char"}
 
@@ -163,9 +194,9 @@ def main():
         n.rule("hostcc", f"{args.cc} {HOST_FLAGS} $flags -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCC $in")
         n.rule("hostas_S", f"{args.cc} {M_FLAG} {PIE} -c $in -o $out", description="AS $in")
-        n.rule("hostcxx", f"g++ {HOST_CXX_FLAGS} -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
+        n.rule("hostcxx", f"{CXX} {HOST_CXX_FLAGS} -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCXX $in")
-        n.rule("link", f"g++ {LINK_FLAGS} -o $out @$objects {MELON_LIBS} {SDL_LIBS} -lstdc++ -lpthread -lm -lc -lgcc",
+        n.rule("link", f"{CXX} {LINK_FLAGS} -o $out @$objects {MELON_LIBS} {SDL_LIBS} -lstdc++ -lpthread -lm -lc -lgcc",
                description="LINK $out")
         objs = []
         for s in sources(Path("src"), (".c", ".cpp")):
@@ -248,7 +279,18 @@ def main():
         # the viewer: a 64-bit SDL2 program (SDL2 headers from --sdl2, the system's libSDL2 at run time)
         n.rule("viewer", f"gcc -O2 -I{args.sdl2}/usr/include -I{args.sdl2}/usr/include/x86_64-linux-gnu $in -o $out "
                          "-l:libSDL2-2.0.so.0", description="VIEWER $out")
-        if X64:
+        if A64:
+            n.default([exe])
+            # the arm64 stack switch (coro_switch.S): `ninja -f build_host_a64.ninja coro-a64-test`, run under --qemu
+            # (modern/host/tests/coro_a64_test.c)
+            test = str(build / "coro_a64_test")
+            n.rule("coro_test", f"{args.cc} -O1 -g -fno-omit-frame-pointer -Wall -Imodern/host $in -o $out",
+                   description="CC $out")
+            n.build(test, "coro_test", ["modern/host/tests/coro_a64_test.c", "modern/host/coro.c",
+                                         "modern/host/coro_switch.S"], implicit=["modern/host/coro.h"])
+            n.rule("run", f"{args.qemu} -L {args.cross}/aarch64-none-linux-gnu/libc $in", description="RUN $in")
+            n.build("coro-a64-test", "run", test)
+        elif X64:
             n.default([exe])
             # the Windows x64 stack switch (coro_switch.S), tested here with GCC's ms_abi:
             # `ninja -f build_host64.ninja coro-win64-test` (modern/host/tests/coro_win64_test.c)

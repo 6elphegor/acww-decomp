@@ -2,7 +2,8 @@
 // block and reads the input back from it; the backend shows the frame and fills in the input:
 // - frontend_sdl.c (HOST_FRONTEND_SDL, the 64-bit builds): SDL2 in the game's process, the block plain memory;
 // - frontend_viewer.c (otherwise: the i386 build, which can't load the system's 64-bit SDL): the block is shared
-//   memory and the 64-bit viewer program (modern/host/viewer) shows it.
+//   memory and the 64-bit viewer program (modern/host/viewer) shows it;
+// - frontend_none.c (HOST_FRONTEND_NONE: a 64-bit build without SDL2, e.g. aarch64): none, always headless.
 // Plain fixed-size types: the viewer uses this header too.
 #ifndef HOST_FRONTEND_H
 #define HOST_FRONTEND_H
