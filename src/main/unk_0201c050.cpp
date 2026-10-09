@@ -1643,7 +1643,7 @@ u8 *VillagerActor::getTexturePath() {
     if (v == -1) {
         v = 0;
     }
-    ((void (*)(u8 *, u8 *, ...))Str_SPrintf)(sVillagerTexturePathBuf,  ((u8 *)"npc/model/%d/%d.nsbtx"),  v & 0xf8,  v);
+    Str_SPrintf((char *)sVillagerTexturePathBuf, "npc/model/%d/%d.nsbtx", v & 0xf8, v);
     return sVillagerTexturePathBuf;
 }
 
@@ -1652,7 +1652,7 @@ u8 *VillagerActor::getModelPath() {
     if (v == -1) {
         v = 0;
     }
-    ((void (*)(u8 *, u8 *, ...))Str_SPrintf)(sVillagerModelPathBuf,  ((u8 *)"npc/model/%d/%d.nsbmd"),  v & 0xf8,  v);
+    Str_SPrintf((char *)sVillagerModelPathBuf, "npc/model/%d/%d.nsbmd", v & 0xf8, v);
     return sVillagerModelPathBuf;
 }
 

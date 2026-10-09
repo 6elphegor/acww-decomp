@@ -65,7 +65,8 @@ beyond the baseline (`-v` lists them; exit status 0 when all are 0, as they are 
 clang from the PATH, else the newest of ~/acww/toolchains/LLVM-*/bin and ~/acww/toolchains/llvm-mingw-*/bin, or
 `--cc <path>`): the game and the host runtime's C by clang, melonDS and the link by g++. It passes the oracle
 (`tools/host_oracle.sh build/host64_clang_usa/acww quick|play`) and plays the town, save and continue scripts like
-the GCC build (docs/portability.md 2.1).
+the GCC build (docs/portability.md 2.1). With `--sanitize` too (and `--suffix _clang_asan`) it links with GCC's
+sanitizer runtimes; clang's UBSan also checks calls through mistyped function pointers (`-fsanitize=function`).
 
 The modern build (docs/modern.md) compiles the game with GCC and plays like the original in an emulator. The next
 step is a host build: the same sources compiled for the PC, with the DS hardware replaced. This note records what
