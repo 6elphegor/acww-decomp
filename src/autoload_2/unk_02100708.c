@@ -13,6 +13,7 @@ typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
 #include "uptr.h"
+#include "host_asan.h"
 
 typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
 typedef struct NNSFndList { void *head; void *tail; u16 num; u16 offset; } NNSFndList;
@@ -230,7 +231,39 @@ static inline void FillAlloc(HeapHead *h, void *dst, u32 size) {
         MIi_CpuClear32(zero, dst, size);
     }
 }
+
+// the sanitizer variant (include/host_asan.h): the free blocks' contents poisoned between the heap's operations, and
+// unpoisoned while one runs (the allocator fills and clears memory through the SDK's checked functions)
+static void HostAsan_FreeBlocks(HeapHead *heap, int poison) {
+#ifdef HOST_ASAN
+    MBlock *b;
+    for (b = heap->u.exp.freeHead; b != 0; b = b->next) {
+        if (poison) HOST_ASAN_POISON((u8 *)b + sizeof(MBlock), b->size);
+        else HOST_ASAN_UNPOISON((u8 *)b + sizeof(MBlock), b->size);
+    }
+#endif
+}
+
+static u32 ResizeForMBlockExpHeap(HeapHead *heap, void *memBlock, u32 size);
 u32 NNS_FndResizeForMBlockExpHeap(HeapHead *heap, void *memBlock, u32 size) {
+#ifdef HOST_ASAN
+    // the sanitizer variant: the block's bytes up to the new size unpoisoned, the rest and the free blocks poisoned
+    MBlock *b = GetMBlockHeadPtr(memBlock);
+    u32 r;
+    HOST_ASAN_UNPOISON(memBlock, b->size);
+    HostAsan_FreeBlocks(heap, 0);
+    r = ResizeForMBlockExpHeap(heap, memBlock, size);
+    HostAsan_FreeBlocks(heap, 1);
+    if (r) {
+        HOST_ASAN_UNPOISON(memBlock, size);
+        HOST_ASAN_POISON((u8 *)memBlock + size, b->size - size);
+    }
+    return r;
+#else
+    return ResizeForMBlockExpHeap(heap, memBlock, size);
+#endif
+}
+static u32 ResizeForMBlockExpHeap(HeapHead *heap, void *memBlock, u32 size) {
     ExpHead *e;
     MBlock *b;
     e = GetExpHead(heap);

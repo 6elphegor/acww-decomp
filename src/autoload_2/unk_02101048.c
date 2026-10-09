@@ -216,6 +216,7 @@ BOOL func_0210149c(u32 *narc) {
 
 #include "sys/NNSFndArchive.h"
 #include "uptr.h"
+#include "host_asan.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/autoload_2/unk_0210169c.h"
 #include "proto/autoload_2/unk_02119020.h"
@@ -342,7 +343,16 @@ HeapHead *NNS_FndCreateFrmHeapEx(void *start, u32 size, u16 opt) {
     uptr end = ((uptr)start + size) & ~(uptr)3;
     uptr st = ((uptr)start + 3) & ~(uptr)3;
     if (st > end || end - st < __builtin_offsetof(HeapHead, u) + sizeof(FrmHead)) return 0;  // (0x30 on the DS)
+#ifdef HOST_ASAN
+    {
+        // the sanitizer variant: the free middle poisoned
+        HeapHead *heap = InitFrameHeap((void *)st, (void *)end, opt);
+        HOST_ASAN_POISON(FRM(heap)->head, FRM(heap)->tail - FRM(heap)->head);
+        return heap;
+    }
+#else
     return InitFrameHeap((void *)st, (void *)end, opt);
+#endif
 }
 
 // NNS_FndDestroyFrmHeap
@@ -353,16 +363,30 @@ void NNS_FndDestroyFrmHeap(HeapHead *heap) {
 // NNS_FndAllocFromFrmHeapEx
 void *NNS_FndAllocFromFrmHeapEx(HeapHead *heap, u32 size, s32 alignment) {
     FrmHead *f = FRM(heap);
+#ifdef HOST_ASAN
+    // the sanitizer variant: only the size asked for unpoisoned
+    void *mem;
+    u32 asked = size;
+    if (size == 0) size = 1;
+    size = (size + 3) & ~3;
+    HOST_ASAN_UNPOISON(f->head, f->tail - f->head);  // (the allocator clears through the SDK's checked functions)
+    mem = alignment >= 0 ? AllocFromHead__FrameHeap(f, size, alignment) : AllocFromTail__FrameHeap(f, size, -alignment);
+    HOST_ASAN_POISON(f->head, f->tail - f->head);
+    if (mem) HOST_ASAN_UNPOISON(mem, asked);
+    return mem;
+#else
     if (size == 0) size = 1;
     size = (size + 3) & ~3;
     if (alignment >= 0) return AllocFromHead__FrameHeap(f, size, alignment);
     return AllocFromTail__FrameHeap(f, size, -alignment);
+#endif
 }
 
 // NNS_FndFreeToFrmHeap
 void NNS_FndFreeToFrmHeap(HeapHead *heap, u32 mode) {
     if (mode & 1) FreeHead(heap);
     if (mode & 2) FreeTail(heap);
+    HOST_ASAN_POISON(FRM(heap)->head, FRM(heap)->tail - FRM(heap)->head);  // (the sanitizer variant)
 }
 
 // ---- file-scope objects (.data 0x0213bc10-0x0213bc20): the default texture / palette VRAM manager functions

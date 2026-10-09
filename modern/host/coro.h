@@ -14,4 +14,12 @@ void host_coro_switch(void **save, void *to);
 // return.
 void *host_coro_prepare(void *stack, size_t size, void (*fn)(void *), void *arg);
 
+// The sanitizer variant (configure_host.py --sanitize address): every switch tells ASan which stack it goes to
+// (__sanitizer_start_switch_fiber / __sanitizer_finish_switch_fiber, coro.c), so that its stack checks and the
+// unpoisoning of a stack's frames follow the stack that runs.
+#if defined(HOST_ASAN) && !defined(HOST_CORO_IMPL)
+void host_coro_switch_asan(void **save, void *to);
+#define host_coro_switch host_coro_switch_asan
+#endif
+
 #endif

@@ -55,15 +55,30 @@ CXX_ARGS = ['-x', 'c++', '-std=gnu++14', '-fno-exceptions', '-fno-rtti', '-m64',
 
 
 def nm_vars(obj):
-    """(global data/bss names in symbol-table order, local data/bss names)"""
-    out = subprocess.run(["nm", "-p", obj], capture_output=True, text=True, check=True).stdout
+    """(global data/bss names in symbol-table order, local data/bss names): the writable ones. Constant data with
+    relocations (tables of pointers, vtables, the HOST_OVERLAY_VARS lists themselves) is in .data.rel.ro* in a
+    position-independent object (the x86-64 build since step 3.3), which nm calls data ('d'/'D') too: it is read-only
+    once relocated, as .rodata, so it needs no reset and isn't listed."""
+    out = subprocess.run(["objdump", "-t", obj], capture_output=True, text=True, check=True).stdout
     glob, loc = [], []
     for line in out.splitlines():
-        p = line.split()
-        if len(p) == 3 and p[1] in "DBC":
-            glob.append(p[2])
-        elif len(p) == 3 and p[1] in "db":
-            loc.append(p[2])
+        # address, 7 flag characters (binding first, 'O' for an object last), section, size, name
+        m = re.match(r"^[0-9a-f]+ (.{7}) (\S+)\s+[0-9a-f]+\s+(\S+)$", line)
+        if not m or m.group(1)[6] != "O":
+            continue
+        flags, sect, name = m.groups()
+        if sect == "*COM*":
+            writable = True
+        elif sect.startswith(".data.rel.ro"):
+            writable = False
+        else:
+            writable = re.match(r"\.(data|bss)(\.|$)", sect) is not None
+        if not writable:
+            continue
+        if flags[0] in "gu" or sect == "*COM*":
+            glob.append(name)
+        elif flags[0] == "l":
+            loc.append(name)
     return glob, loc
 
 

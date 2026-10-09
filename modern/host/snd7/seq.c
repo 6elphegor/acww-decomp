@@ -363,7 +363,9 @@ void snd7_set_track_param(int player, u32 trackMask, u32 offset, u32 data, int s
     }
 }
 
-static void SeqCacheFetch(const u8 *addr)
+// (the sanitizer variant: not checked - the ARM7 reads 16 aligned bytes of a sequence, also past its end, and may
+// still read a sequence the ARM9 has just freed: NNS_SndHeapClear frees, then waits for the commands to finish)
+__attribute__((no_sanitize_address)) static void SeqCacheFetch(const u8 *addr)
 {
     addr = (const u8 *)((uintptr_t)addr & ~(uintptr_t)3);
     sSeqCache.begin = addr;
