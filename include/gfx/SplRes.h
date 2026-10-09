@@ -63,9 +63,11 @@ struct Rb14 {
     u32 pad : 26;
 };
 
+// (SplRealRes: a header pointer and six block pointers; p4 was 16 bytes, so on 64-bit hosts p14 read the third
+// block pointer instead of the fifth - a child emitter's texture size from other data)
 struct ResB {
     /* 0x00 */ Rh *p0;
-    /* 0x04 */ u8 p4[0x10];
+    /* 0x04 */ void *p4[4];
     /* 0x14 */ Rb14 *p14;
 };
 

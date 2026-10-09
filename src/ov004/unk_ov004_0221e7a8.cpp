@@ -2114,7 +2114,7 @@ extern "C" void PlayerActor_FtrGrabApproachGetNetData(u8 *p, s32 *x, s32 *z, s16
 
 extern "C" void PlayerActor_SetupFtrGrabApproach(Obj *o, Obj *arg) {
     (o)->startAnimOnce(0x1a, 3, 0);
-    V3 *p = (V3 *)((u8 *)arg + 0xc);
+    V3 *p = (V3 *)(((PlayerActionRequest *)(void *)arg)->unk_0c_b);
     s32 x = p->x;
     s32 z = p->y;
     s16 h = (s16)p->z;
@@ -2206,7 +2206,7 @@ extern "C" void PlayerActor_FtrHoldGetNetData(u8 *src, u8 *a, u8 *b) {
 }
 
 extern "C" void PlayerActor_SetupFtrHold(Obj *o, Obj *arg) {
-    u8 *a = (u8 *)arg + 0xc;
+    u8 *a = ((PlayerActionRequest *)(void *)arg)->unk_0c_b;
     u8 *r = &o->actionWorkRaw[0];
     u32 x = a[0];
     u32 y = a[1];
@@ -2352,7 +2352,7 @@ extern "C" void PlayerActor_FtrRotateSetStickFlag(u8 *p, u32 v) {
 
 extern "C" void PlayerActor_SetupFtrRotate(Obj *o, Obj *arg) {
     u8 *p = &o->actionWorkRaw[0];
-    if (*((u8 *)arg + 0xc) != 0) {
+    if (*(((PlayerActionRequest *)(void *)arg)->unk_0c_b) != 0) {
         (o)->startAnimOnce(0x1b, 3, 0);
     } else {
         (o)->startAnimOnce(0x1c, 3, 0);
@@ -2972,11 +2972,11 @@ extern "C" void PlayerActor_SetupSitDownFront(Obj *o, Obj *arg) {
     s16 h;
     (o)->startAnimOnce(0x21, 3, 0);
     (o)->playSe(0x4c5);
-    V3 *p = (V3 *)((u8 *)arg + 0xc);
+    V3 *p = (V3 *)(((PlayerActionRequest *)(void *)arg)->unk_0c_b);
     h = (s16)p->z;
     s32 z = p->y;
     s32 y = *(volatile s32 *)&o->position.y;
-    s32 x = *(s32 *)((u8 *)arg + 0xc);
+    s32 x = *(s32 *)(((PlayerActionRequest *)(void *)arg)->unk_0c_b);
     V3c v(x, y, z);
     PlayerActor_SitDownFrontSetWork((Tgt *)&o->actionWork, x, z, h);
     PlayerActor_SitDownFrontSetNetData(o->netData.bytes, v.x, v.z, h);
@@ -3071,11 +3071,11 @@ extern "C" void PlayerActor_SetupSitDownSide2(Obj *o, Obj *arg) {
     s16 h;
     (o)->startAnimOnce(0x22, 0, 0);
     (o)->playSe(0x4c5);
-    V3 *p = (V3 *)((u8 *)arg + 0xc);
+    V3 *p = (V3 *)(((PlayerActionRequest *)(void *)arg)->unk_0c_b);
     h = (s16)p->z;
     s32 z = p->y;
     s32 y = *(volatile s32 *)&o->position.y;
-    s32 x = *(s32 *)((u8 *)arg + 0xc);
+    s32 x = *(s32 *)(((PlayerActionRequest *)(void *)arg)->unk_0c_b);
     V3c v(x, y, z);
     PlayerActor_SitDownSide2SetWork((Tgt *)&o->actionWork, x, z, h);
     PlayerActor_SitDownSide2SetNetData(o->netData.bytes, v.x, v.z, h);
@@ -3170,11 +3170,11 @@ extern "C" void PlayerActor_SetupSitDownSide1(Obj *o, Obj *arg) {
     s16 h;
     (o)->startAnimOnce(0x23, 0, 0);
     (o)->playSe(0x4c5);
-    V3 *p = (V3 *)((u8 *)arg + 0xc);
+    V3 *p = (V3 *)(((PlayerActionRequest *)(void *)arg)->unk_0c_b);
     h = (s16)p->z;
     s32 z = p->y;
     s32 y = *(volatile s32 *)&o->position.y;
-    s32 x = *(s32 *)((u8 *)arg + 0xc);
+    s32 x = *(s32 *)(((PlayerActionRequest *)(void *)arg)->unk_0c_b);
     V3c v(x, y, z);
     PlayerActor_SitDownSide1SetWork((Tgt *)&o->actionWork, x, z, h);
     PlayerActor_SitDownSide1SetNetData(o->netData.bytes, v.x, v.z, h);
@@ -3234,7 +3234,7 @@ extern "C" s32 PlayerActor_RequestSit(Obj *o, u32 a, u32 b, u32 c) {
 }
 
 extern "C" void PlayerActor_SetupSit(Obj *o, Obj *arg) {
-    u16 *r2 = (u16 *)((u8 *)arg + 0xc);
+    u16 *r2 = (u16 *)(((PlayerActionRequest *)(void *)arg)->unk_0c_b);
     if (o->animId != 0x24) {
         (o)->startAnim(0x24, *r2, 0);
     }
@@ -4897,7 +4897,7 @@ extern "C" void PlayerActor_DoorWalkInGetNetData(u8 *a, s32 *b, s32 *c) {
 
 extern "C" void PlayerActor_SetupDoorWalkIn(Obj *o, Obj *arg) {
     V3 c;
-    V3 *r6 = (V3 *)((u8 *)arg + 0xc);
+    V3 *r6 = (V3 *)(((PlayerActionRequest *)(void *)arg)->unk_0c_b);
     Rec *r0c = (Rec *)&o->actionWork;
     (o)->startAnim(1, 0, 0);
     s32 r7 = 0;
@@ -5060,7 +5060,7 @@ extern "C" void PlayerActor_DoorWalkOutGetNetData(u8 *a, s32 *b, s32 *c) {
 
 extern "C" void PlayerActor_SetupDoorWalkOut(Obj *o, Obj *arg) {
     V3 c;
-    V3 *r6 = (V3 *)((u8 *)arg + 0xc);
+    V3 *r6 = (V3 *)(((PlayerActionRequest *)(void *)arg)->unk_0c_b);
     if (o->animId != 1) (o)->startAnim(1, 3, 0);
     u32 r5 = 0;
     s32 r7 = Building_GetLastEntranceType();
@@ -5207,7 +5207,7 @@ extern "C" void PlayerActor_ExitWalkOutGetNetData(u8 *a, s32 *b, s32 *c) {
 
 extern "C" void PlayerActor_SetupExitWalkOut(Obj *o, Obj *arg) {
     V3 c;
-    V3 *r4 = (V3 *)((u8 *)arg + 0xc);
+    V3 *r4 = (V3 *)(((PlayerActionRequest *)(void *)arg)->unk_0c_b);
     if (o->animId != 1) (o)->startAnim(1, 3, 0);
     c.x = r4->x;
     c.y = r4->y;
@@ -5275,7 +5275,7 @@ extern "C" void PlayerActor_SetupExitWalkIn(Obj *o, Obj *arg) {
     V3 cur;
     V3 w;
     V3 tmp;
-    V3 *r5 = (V3 *)((u8 *)arg + 0xc);
+    V3 *r5 = (V3 *)(((PlayerActionRequest *)(void *)arg)->unk_0c_b);
     Rec *r6 = (Rec *)&o->actionWork;
     (o)->startAnim(1, 0, 0);
     ((AnimFrameCtrl &)o->bodyModel).frameStep = 0;
