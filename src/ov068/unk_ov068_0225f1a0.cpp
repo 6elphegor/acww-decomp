@@ -2976,18 +2976,18 @@ extern "C" {
 BOOL FieldVillagerAi_TryFallInPitfall(void *self, FieldVillager *o) {
     BOOL r;
     VecFx32 *p = (VecFx32 *)&o->position;
-    s32 a, b;
+    Vec2 u;  // (the DS code passed &a for an {a, b} pair of locals, which only its stack layout made adjacent)
     Vec2 q;
     VecFx32 t;
     r = FALSE;
-    a = r;
-    b = r;
-    FieldPos_ToUnit(&a, &b, p);
-    if (FieldVillagerAi_IsBuriedPitfallAt(self, (Vec2 *)&a) != 0) {
+    u.x = r;
+    u.y = r;
+    FieldPos_ToUnit(&u.x, &u.y, p);
+    if (FieldVillagerAi_IsBuriedPitfallAt(self, &u) != 0) {
         FieldPos_SnapToUnitCenter(&t, p);
         if (Vec_DistXZ(&t, p) <= 0xb00) {
-            q.x = a;
-            q.y = b;
+            q.x = u.x;
+            q.y = u.y;
             s32 idx = FieldAction_RequestPitfallAt((s8)((NpcActor *)(o))->getNpcIndex(), &q);
             if (idx >= 0) {
                 if (FieldAction_PollResult(idx) == 1) {

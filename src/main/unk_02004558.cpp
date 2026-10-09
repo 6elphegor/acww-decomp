@@ -252,7 +252,6 @@ void PlayerActor_FieldCheckUnitAhead(void *);
 extern s16 data_02135f44[];
 extern CommManager *gCommManager;
 extern s16 data_02135f44[];
-enum Unk_020d6df4_State { Unk_020d6df4_State_0 = 0 };
 union PM_02005294 {
     PMRaw raw;
     void (PlayerActor::*fn)();
@@ -6319,7 +6318,7 @@ void PlayerNetActionArgs::readS16(s16 *out) {
 
 void PlayerActor::setupAct77(u8 *msg) {
     using namespace nF;
-    s16 v = *(s16 *)(msg + 0xc);
+    s16 v = *(s16 *)(((PlayerActionRequest *)(void *)msg)->unk_0c_b);  // (the payload: 0xc on the DS, 0x10 on 64-bit)
     (this)->startAnimOnce(0x70, 3, 0);
     Effect_Create(0x43, &headTopPos, 0, 0);
     (this)->playSe(0x86);
@@ -7188,8 +7187,7 @@ void PlayerActor::doExecute() {
         }
     }
     if (((PlayerActor *)this)->prevAction != ((PlayerActor *)this)->action) {
-        // enum-typed copy: an s32 copy loads the two fields in the other order
-        *(Unk_020d6df4_State *)&((PlayerActor *)this)->prevAction = *(Unk_020d6df4_State *)&((PlayerActor *)this)->action;
+        ((PlayerActor *)this)->prevAction = ((PlayerActor *)this)->action;
     }
 }
 

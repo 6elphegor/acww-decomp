@@ -49,8 +49,7 @@ union MinuteHour {
 
 
 // rodata
-extern const u8 sDaysInMonthLeap[12];
-extern const u8 sDaysInMonth[12];
+extern const u8 sDaysInMonth[2][12];
 extern const u16 sWeatherPeriodEnds[20];
 extern const u16 sSeasonPeriodEnds[24];
 extern const u16 sDaysBeforeMonth[26];
@@ -603,10 +602,13 @@ extern "C" s32 Date_GetNthWeekdayDay(u32 a, u32 b, s32 c, s32 d) {
 }
 
 extern "C" s32 Date_GetDaysInMonth(u32 y, u32 m) {
-    if ((y & 3) == 0) {
-        return sDaysInMonthLeap[m - 1];
-    }
-    return sDaysInMonth[m - 1];
+    // An event rule asks for month 13 in December (EventRule_ResolveDay: the month after). The DS read past the
+    // table: a leap year's month 13 is the other table's January (31), a common year's the first byte of
+    // sWeatherPeriodEnds (4), which followed; month 0 the byte before the tables (0) or the leap table's December.
+    s32 i = ((y & 3) == 0 ? 0 : 12) + (s32)m - 1;
+    if (i < 0) return 0;
+    if (i >= 24) return (u8)sWeatherPeriodEnds[0];
+    return (&sDaysInMonth[0][0])[i];  // (both tables as one run of 24)
 }
 
 extern "C" void Time_AddHourMinute(MinuteHour a, MinuteHour b, u16 *out) {
@@ -784,16 +786,18 @@ extern "C" s32 ClockOffset_CalcSeconds(void *unused, u8 *b) {
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern const u8 sDaysInMonth[12];
-extern const u8 sDaysInMonthLeap[12];
+extern const u8 sDaysInMonth[2][12];
 extern const u16 sWeatherPeriodEnds[20];
 extern const u16 sSeasonPeriodEnds[24];
 extern const u16 sDaysBeforeMonth[26];
 extern s32 gClock[7];
 
-const u8 sDaysInMonth[12] = { 0x1f, 0x1c, 0x1f, 0x1e, 0x1f, 0x1e, 0x1f, 0x1f, 0x1e, 0x1f, 0x1e, 0x1f };
-
-const u8 sDaysInMonthLeap[12] = { 0x1f, 0x1d, 0x1f, 0x1e, 0x1f, 0x1e, 0x1f, 0x1f, 0x1e, 0x1f, 0x1e, 0x1f };
+// the days of each month, leap years first: sDaysInMonthLeap (0x020d0660) and sDaysInMonth (0x020d066c), one table
+// (Date_GetDaysInMonth reads across the two)
+const u8 sDaysInMonth[2][12] = {
+    { 0x1f, 0x1d, 0x1f, 0x1e, 0x1f, 0x1e, 0x1f, 0x1f, 0x1e, 0x1f, 0x1e, 0x1f },
+    { 0x1f, 0x1c, 0x1f, 0x1e, 0x1f, 0x1e, 0x1f, 0x1f, 0x1e, 0x1f, 0x1e, 0x1f },
+};
 
 const u16 sWeatherPeriodEnds[20] = {
     0x0104, 0x0217, 0x0218, 0x031f, 0x0408, 0x060f, 0x0716, 0x071f, 0x081f, 0x090f,

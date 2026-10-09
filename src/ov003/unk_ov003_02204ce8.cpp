@@ -8149,7 +8149,6 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
         s32 a0, b0, a1, b1, a2, b2;
         Pair p0, p1, p2;
     } ab;
-    u8 buf[0x24];
     V3 v0, v1, v2;
     if (o->animId == 0x49) {
         if (((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->isFinished() != 0) (o)->startAnimOnce(0x4f, 3, 0);
@@ -8194,9 +8193,10 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
             }
         }
         o->msgIndex = 1;
-        new (buf) ItemName((u16 *)(&o->actionItem));
-        ((TalkWindowState *)(o->window))->setNamedSlot(0, buf, 7);
-        ((ItemName *)(buf))->ItemName::~ItemName();
+        {
+            ItemName name((u16 *)(&o->actionItem));
+            ((TalkWindowState *)(o->window))->setNamedSlot(0, &name, 7);
+        }
     l54:
         o->window->nextState = 1;
         Bgm_ReleasePriority(0x12);

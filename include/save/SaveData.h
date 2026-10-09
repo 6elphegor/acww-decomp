@@ -39,12 +39,10 @@ struct SaveData {
     /* 0x0c330 */ u8 townMap[0x2226]; // TownMap
     /* 0x0e556 */ u8 gulliverQuest[0x1];
     /* 0x0e557 */ u8 roostGuestRoll[0x1];
-    /* 0x0e558 */ u8 house[0x1594];
-    /* 0x0faec */ u8 songSet[0x10];
+    /* 0x0e558 */ u8 house[0x15a4]; // HouseData, with the learned songs (HouseData::songs, 0x0faec)
     /* 0x0fafc */ u8 ableSistersPatterns[0x1140];
     /* 0x10c3c */ u8 townExchange[0x84c]; // TownExchangeRecord
-    /* 0x11488 */ u8 bbsBoard[0xb78];
-    /* 0x12000 */ u8 unk_12000[0x8];
+    /* 0x11488 */ u8 bbsBoard[0xb80]; // BbsBoard
     /* 0x12008 */ s32 donationTotal; // Donation_GetTotal / Donation_SetTotal (capped at 999999999)
     /* 0x1200c */ u8 mailboxes[4][0x98c]; // PlayerMailbox
     /* 0x1463c */ u8 letterOutbox[0x990];
@@ -55,8 +53,7 @@ struct SaveData {
     /* 0x15b5c */ u8 bottleLetter[0xfc];
     /* 0x15c58 */ u8 receivedLetters[0xf8];
     /* 0x15d50 */ u8 museum[0x64];
-    /* 0x15db4 */ u8 nookShop[0x4c];
-    /* 0x15e00 */ u8 unk_15e00[0x18];
+    /* 0x15db4 */ u8 nookShop[0x64]; // NookShop
     /* 0x15e18 */ u8 eventWeekSlots[0x8];
     /* 0x15e20 */ u8 unk_15e20[0x4];
     /* 0x15e24 */ u8 unk_15e24[0x30];
@@ -68,8 +65,7 @@ struct SaveData {
     /* 0x15f4c */ u8 turnipMarket[0x1a];
     /* 0x15f66 */ WeatherRecord weather;
     /* 0x15f6e */ u8 unk_15f6e[0x2];
-    /* 0x15f70 */ u8 reddShop[0x10];
-    /* 0x15f80 */ u8 unk_15f80[0x4];
+    /* 0x15f70 */ u8 reddShop[0x14]; // ReddShop
     /* 0x15f84 */ u8 ableShop[0x12];
     /* 0x15f96 */ u8 snowmen[0x12];
     /* 0x15fa8 */ s64 townTune; // the packed melody (Melody_SetPacked)

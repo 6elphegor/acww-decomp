@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "ds_shift.h"
 #include "sys/new.h"
 #include "gfx/VecFx32.h"
 #include "game/GroundInfoBase.h"
@@ -282,7 +283,9 @@ BOOL ObjShadowStrip::build(VecFx32 *pos, s32 size, s32 shift, s32 idx, s32 a, s3
     basePos = *pos;
     halfWidth = size >> 1;
     s32 v = halfWidth;
-    if ((v >> shift) == 0) {
+    // (`shift` is a depth, 0x119a - 0x2000: a Thumb ASR by register, which gives 0 for a bottom byte of 32 or more;
+    // x86 shifted by the count modulo 32, and the tree stage 3 shadow got cullExtent 0xb33 instead of 0x1666)
+    if (DS_ASR(v, shift) == 0) {
         v = shift;
     }
     cullExtent = v;

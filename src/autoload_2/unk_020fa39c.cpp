@@ -54,7 +54,7 @@ void spl_gen_ptcl(void *e, void *l);
 
 
 
-typedef s32 (*PosCb)(VecFx32 *, VecFx32);
+typedef u16 (*PosCb)(VecFx32 *, VecFx32);  // (SplPosFn, an angle: was s32, the u16 result's upper bits undefined)
 typedef void (*SetFn)(s32, s32, s32, s32);
 typedef void (*MkFn)(s32, s32, Mt *);
 

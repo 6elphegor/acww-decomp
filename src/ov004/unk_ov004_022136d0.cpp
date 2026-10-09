@@ -55,7 +55,8 @@ public:
     BOOL registerSelf();
 
     /* 0x130 */ s32 act;
-    /* 0x134 */ u32 touchSphere[0x1c / 4]; // a TouchPickSphere, built and destroyed by explicit C1/D1 calls
+    /* 0x134 */ alignas(TouchPickSphere) u8 touchSphere[sizeof(TouchPickSphere)]; // a TouchPickSphere, built and
+                // destroyed by explicit C1/D1 calls (0x1c bytes on the DS; was 0x1c on every host, 4 short on 64-bit)
     /* 0x150 */ u8 index;
     /* 0x151 */ u8 pad_151;
     /* 0x152 */ s16 signMsgIndex;

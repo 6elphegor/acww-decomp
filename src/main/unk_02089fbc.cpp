@@ -59,7 +59,6 @@ extern u8 data_020d4794[];
 extern u8 data_020d477c[];
 extern u8 data_020d4784[];
 extern u8 data_020d478c[];
-extern u8 data_020d467c[];
 // The sequence table at data_020d467c spans several arrays (src/main/unk_020d467c.cpp)
 extern void *const gSpriteSeqTable[45];
 extern u16 gPad[];

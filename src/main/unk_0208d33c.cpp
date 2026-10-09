@@ -16,7 +16,6 @@ extern u8 sHandCursorAnimHasLayer2[];
 extern s32 sScrollKnobSeqIds[];
 extern s32 sScrollKnobPlayOnce[];
 extern u8 data_020d5b0c[];
-extern u8 data_020d467c[];
 
 // ---------------------------------------------------------------------------------------------------------------------
 

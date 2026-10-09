@@ -70,7 +70,6 @@ BOOL TownSign::onDraw() {
 
 void TownSign::setupTalkMsg() {
     u16 v[2];
-    u32 obj[9];
     setFileName("obj_etc_board");
     msgIndex = signIndex % 14 + 1;
     u16 w;
@@ -80,9 +79,8 @@ void TownSign::setupTalkMsg() {
         w = 0x1518;
     }
     v[1] = w;
-    new (obj) ItemName(&v[1]);
-    window->setSlot(1, obj);
-    ((ItemName *)(obj))->ItemName::~ItemName();
+    ItemName obj(&v[1]);
+    window->setSlot(1, &obj);
 }
 
 BOOL TownSign::isOpen() {
