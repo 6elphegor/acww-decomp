@@ -855,6 +855,44 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     - **x86_64-w64-mingw32** with llvm-mingw plus Wine (portable tarball). This exercises LLP64, MS bitfields (with `-mno-ms-bitfields`), the Win32 platform layer and the coroutine switch.
     - **macOS:** the remaining differences from aarch64-linux are Mach-O/ld64, the `_` symbol prefix in coro_switch.S (already handled), Apple's signed char and `va_list`, and constructor ordering. A CI runner (GitHub Actions macos-14 is arm64) can build and run the headless oracle before anyone owns a Mac.
 
+**Step 4.4, aarch64-linux part: done (2026-10-08).** What was done and measured:
+- **Build**: `configure_host.py --arch aarch64` (`build_host_a64.ninja`, `build/hosta64_usa`): ARM's GCC 14.3
+  cross toolchain with its glibc sysroot (`--cross`), the game with `-fsigned-char` (kept) and `-ffp-contract=off`
+  (GCC contracts a * b + c into FMAs on arm64 by default; x86-64 has no FMA without -mfma), the runtime likewise,
+  PIE. melonDS's core cross-built in `~/acww/ref/melonDS/build-core-a64` with `tools/host/aarch64-linux.toolchain.cmake`
+  (JIT and GDB stub off, `-ffp-contract=off`; the command in docs/host.md). No SDL2 for arm64: a 64-bit build without
+  SDL2 headers gets `modern/host/frontend_none.c` (`HOST_FRONTEND_NONE`, headless). Every unit compiles without
+  errors with GCC 14 (the x86 builds use GCC 15); `--cc clang` is refused for aarch64 for now (llvm-mingw's clang with
+  `--target=aarch64-linux-gnu` and the toolchain's sysroot would be the way).
+- **Running**: qemu-aarch64 user mode, `-L <toolchain>/aarch64-none-linux-gnu/libc`; `tools/host_oracle.sh` runs the
+  binary through `$ACWW_RUNNER` (new), with `QUICK_TIMEOUT` / `PLAY_TIMEOUT` raised. 15-35 frames a second: quick
+  ~10 minutes, play ~28-33, save + continue ~40-55.
+- **What arm64 exposed in the sources: nothing that changes behaviour.** The coroutine switch's arm64 path (never run
+  before) was right as written: the game's threads run on it, and `coro-a64-test` (`modern/host/tests/coro_a64_test.c`,
+  `ninja -f build_host_a64.ninja coro-a64-test`, under qemu) checks it alone: x19-x29 and d8-d15 survive a switch
+  while the other side overwrites them all, new coroutines get their argument and an aligned stack inside their
+  memory, 2001 switches with doubles live; each of four deliberate breakages (no d14/d15 restore, no x27/x28 restore,
+  x19 not saved, d9 not restored) makes it fail. Division (`DS_DIV`/`DS_MOD` since phase 1), PMFs (the compiler's
+  since 2.7: the ARM encoding just works), struct returns (typed calls since 2.10: x8 as the result register makes no
+  difference) and char signedness (`-fsigned-char`; the runtime compiled for arm64 with `-Wtype-limits
+  -Wchar-subscripts` shows no char compared as signed) needed nothing. Changed for arm64 only: debug_posix.c reads
+  the arm64 registers (pc, sp, x29) for its crash report and keeps `ACWW_WATCH` (the trap flag) x86-only;
+  `host_panic` prints only the format on Linux arm64 (a `void *` can't be a `va_list` there; `Fatal_PanicV` has no
+  caller).
+- **Evidence** (after merging modern at f96f0c6c): `tools/host_oracle.sh build/hosta64_usa/acww quick` and `play`
+  under qemu: every line "identical" against captures_v2 (both screenshots and the 17.5 MB WAV; the 7 play
+  screenshots). The save and continue scripts (`tools/host_play_script.py`): the 70 + 16 screenshots (every 500
+  frames), the save file after the save and after the continue, and the `ACWW_IOTRACE` files (35002 and 8002
+  lines: register traffic and values per frame) byte-identical to the x86-64 build's.
+- **A difference on the way, explained**: before modern's sanitizer sweep (f92e867d) was merged, the arm64 save and
+  continue runs had the same screenshots and save files as x86-64 but register traffic that parted at frame 24245
+  (save: going into the house; extra PXI sound commands) and 3425 (continue: one more `FX_Sqrt` from
+  `Snd_CalcListenerDistance` on x86-64, a sound effect's emitter); quick and play were identical. With the sweep's
+  fixes (reads past ends, uninitialised and DS-sized storage, the payloads read at DS offsets - layout-dependent
+  reads that give different garbage on each architecture) both builds agree. Not narrowed to the single fix: not
+  `Bgm_GetSceneBgmId`'s table end and not the PlayerActor files (each reverted alone on arm64: still equal to x86-64);
+  the rest of that commit's source fixes depend on its header changes.
+
 ### Phase 5: renderer (independent, can start any time)
 28. **5.1** Own 2D compositor behind the 8-function interface (BG text/affine/extended modes, OBJ, windows, blending, master brightness), compared per frame with melonDS in the same process (both fed the same register/VRAM stream).
 29. **5.2** Own 3D geometry engine (matrix stacks, lighting, polygon setup, the synchronous read-backs: GXSTAT, position/vector tests, RAM counts), then a software rasteriser matching melonDS's output; later a GPU (WebGPU-class) backend.

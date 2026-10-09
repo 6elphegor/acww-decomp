@@ -344,7 +344,7 @@ melonDS's core is cross-built once, outside the repository, with the CMake toolc
 change melonDS's class layouts). It runs under qemu user mode (`~/acww/toolchains/qemu/usr/bin/qemu-aarch64 -L
 <toolchain>/aarch64-none-linux-gnu/libc build/hosta64_usa/acww <rom>`), at 15-35 frames a second;
 `tools/host_oracle.sh` runs the binary through `$ACWW_RUNNER` (that qemu command line) with `QUICK_TIMEOUT` /
-`PLAY_TIMEOUT` raised (quick takes about 9 minutes, play about 33). Status: quick (both screenshots and the whole
+`PLAY_TIMEOUT` raised (quick takes about 10 minutes, play about 30). Status: quick (both screenshots and the whole
 WAV) and play identical to captures_v2; the save and continue scripts give the x86-64 build's screenshots (70 and
 16, every 500 frames), save files and `ACWW_IOTRACE` files byte for byte. No source change was needed for that
 beyond the build: the runtime's x86-only bits were already guarded (debug_posix.c now also reads the arm64
