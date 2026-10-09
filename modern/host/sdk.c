@@ -205,8 +205,11 @@ s32 _s32_div_f(s32 a, s32 b) { return DS_DIV(a, b); }
 u32 _u32_div_f(u32 a, u32 b) { return DS_UDIV(a, b); }
 
 // ---- waits
-void OS_SpinWait(u32 n) { (void)n; }
-void WaitByLoop(s32 n) { (void)n; }
+void host_spend_cycles(u64 n);  // (hw.c)
+// (busy waits of a given length: they take that much virtual time - the ARM9's 67 MHz CPU cycles are half as many
+// bus cycles; SVC_WaitByLoop's loop takes 4 CPU cycles a turn)
+void OS_SpinWait(u32 n) { host_spend_cycles(n / 2); }
+void WaitByLoop(s32 n) { if (n > 0) host_spend_cycles((u64)n * 2); }
 void RtcWaitBusy(void) {}
 
 // ---- Metrowerks runtime: 64-bit logical shift right (lo, hi, n)

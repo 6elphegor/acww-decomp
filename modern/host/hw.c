@@ -6,8 +6,9 @@
 // (include/nitro/io_access.h), which carry out the access and its side effects. Nothing is mapped at the DS's I/O
 // addresses: a stray access there crashes (debug_posix.c reports where).
 //
-// Time is virtual: a cycle counter (ARM9 bus clock) that advances a little on every I/O read (so polling loops
-// progress) and jumps to the next event when the game halts or waits. Interrupts are taken only at safe points:
+// Time is virtual: a cycle counter (ARM9 bus clock) that advances on what the game can observe of time - reads of the
+// display status and the timers, polling loops, busy waits (io_read_cost) - and jumps to the next event when the game
+// halts or waits; other register accesses take no time (docs/host.md, "Virtual time"). Interrupts are taken only at safe points:
 // after a register access, and when the game enables interrupts, halts or waits (os.c).
 
 #define _GNU_SOURCE
@@ -57,6 +58,7 @@ void host_vram_control(u32 addr, u8 value);
 #define FRAME_LINES 263u
 #define FRAME_CYCLES (LINE_CYCLES * FRAME_LINES)
 static u64 sCycles;
+static u32 sTimeless;  // register accesses since time last moved (a spin without time: see io_spin_check)
 u64 host_frame(void) { return sCycles / FRAME_CYCLES; }
 u64 host_cycles(void) { return sCycles; }
 u64 pxi7_next_due(void);
@@ -186,7 +188,10 @@ u32 host_irq_state(void);
 // ---- events
 static u64 sNextVblank = 192u * LINE_CYCLES;
 static void run_events(void);
+static void io_trace_frame(void);
+static u32 sStatWaits;
 void host_advance_to_next_event(void) {
+    sStatWaits++;
     u64 next = sNextVblank;
     if (pxi7_next_due() < next) next = pxi7_next_due();
     extern u64 snd7_next_due(void);
@@ -207,6 +212,7 @@ static void run_events_body(void);
 static void run_events(void) {
     if (sInEvents) return;  // (a register access from inside the event handling)
     sInEvents = 1;
+    sTimeless = 0;
     run_events_body();
     __atomic_store_n(&sHeartbeat, (u32)sCycles, __ATOMIC_RELAXED);
     sInEvents = 0;
@@ -230,6 +236,7 @@ static void run_events_body(void) {
         host_heap_check();
         host_guards_frame();  // ACWW_GUARDS (the guard variant)
         host_screenshot();
+        io_trace_frame();
         {   // ACWW_POSLOG=<n>: the local player's position (fx32 x y z, in units of 1/4096) every n frames - for
             // writing input scripts that walk somewhere
             static long every = -2;
@@ -455,13 +462,43 @@ void host_card_dma(void) {
 void gx_fifo_write(u32 addr, u32 value) { sGxWrites++; melon_write32(addr, value); }
 
 // ---- register reads and writes
-static void io_read(u32 a) {
-    // a register read again and again is a polling loop: let time pass faster there (each read costs a trap)
-    static u32 last, repeat;
-    repeat = a == last ? repeat + 1 : 0;
-    last = a;
-    sCycles += repeat > 4 ? 4096 : 64;
+// How much virtual time a register read takes (docs/host.md, "Virtual time"). Only what the game can observe of time
+// moves it: a read of the display status / VCOUNT or of a timer's counter (64 cycles: one OS tick), and a polling loop
+// (the same register read again with no other register access in between: from the fifth read on, 4096 cycles a
+// read). Every other access takes no time, so how many accesses a stretch of code makes (the code's shape: an extra
+// interrupt-mask save, a copy done by DMA or by the CPU, the build's architecture) doesn't move the clock.
+// ACWW_TIMING=legacy: the earlier model (64 cycles for every read, 4096 for a read of the register read last).
+static int sTimingLegacy = -1;
+static u32 sPollAddr = ~0u, sPollRepeat;  // the address of the last access if it was a read; how often in a row
+static u32 sStatPolls, sStatClockReads;  // per frame, for ACWW_IOTRACE
+static void io_spin_check(void);
+static uintptr_t io_last_caller(void);
+static u32 io_read_cost(u32 a) {
+    u32 w = a & ~3u;
+    if (sTimingLegacy) {
+        static u32 last, repeat;
+        repeat = a == last ? repeat + 1 : 0;
+        last = a;
+        return repeat > 4 ? 4096 : 64;
+    }
+    sPollRepeat = a == sPollAddr ? sPollRepeat + 1 : 0;
+    sPollAddr = a;
+    if (sPollRepeat > 4) { sStatPolls++; return 4096; }
+    if (w == 0x04000004 || (w >= 0x04000100 && w < 0x04000110)) { sStatClockReads++; return 64; }
+    return 0;
+}
+// a stretch of game code that waits a given time without reading a clock (OS_SpinWait, SVC_WaitByLoop)
+void host_spend_cycles(u64 n) {
+    if (sTimingLegacy) return;
+    sCycles += n;
     run_events();
+}
+static void io_read(u32 a) {
+    u32 cost = io_read_cost(a);
+    if (cost) {
+        sCycles += cost;
+        run_events();
+    } else io_spin_check();
     u32 w = a & ~3u;
     if (w == 0x04000004) update_display();
     else if (w >= 0x04000100 && w < 0x04000110) {
@@ -498,8 +535,26 @@ static int is_display(u32 w) {
            w == 0x04000304 || (w >= 0x04000320 && w < 0x040006a4);
 }
 
+// The game spinning on memory with register accesses that take no time (an interrupt-mask save and restore around a
+// check of a flag that an interrupt handler sets): after a million accesses without time passing, time moves to the
+// next event (and that is reported once, with the caller: the site wants an explicit wait). None is known.
+static void io_spin_check(void) {
+    if (++sTimeless < 1000000) return;
+    static int reported;
+    if (!reported++)
+        fprintf(stderr, "host: %u register accesses without time passing (frame %llu, last from %p): the game spins; "
+                "virtual time moves to the next event\n", sTimeless, (unsigned long long)host_frame(),
+                (void *)io_last_caller());
+    sTimeless = 0;
+    host_advance_to_next_event();
+}
+
 static void io_write(u32 a, u32 old) {
     u32 w = a & ~3u;
+    if (!sTimingLegacy) {
+        sPollAddr = ~0u;  // (a write ends a polling loop)
+        io_spin_check();
+    }
     static long logw = -2;
     if (logw == -2) logw = getenv("ACWW_IOLOG") ? strtol(getenv("ACWW_IOLOG"), 0, 16) : -1;
     if ((long)w == logw) fprintf(stderr, "io: frame %llu [%08x] %08x -> %08x\n", (unsigned long long)host_frame(), w, old, R32(w));
@@ -564,6 +619,8 @@ void host_io_ring_dump(void) {
         fprintf(stderr, "  %s %08x from %08lx\n", l->write ? "write" : "read ", l->addr, (unsigned long)l->pc);
     }
 }
+static uintptr_t io_last_caller(void) { return sRing[(sRingPos - 1) & 15].pc; }
+
 // the reports written at exit: atexit, ACWW_EXIT_FRAME (_Exit), SIGINT (debug_posix.c)
 void host_exit_dumps(void) {
     io_hist_dump();
@@ -587,6 +644,47 @@ int host_irq_ready(void);
 static inline void io_access_done(void) {
     if (host_irq_ready()) host_deliver_irqs();
 }
+// ACWW_IOTRACE=<file>: per frame, the number of register reads and writes and a hash of their sequence (addresses
+// and values) - two builds' first frame whose register traffic differs; ACWW_IOTRACE_FRAMES=<from>-<to>: every
+// access in those frames too ("r|w address value cycles caller", the caller less host_frame's address: add
+// host_frame's address from `nm` for addr2line)
+static int sIoTrace = -1;
+static FILE *sIoTraceFile;
+static u64 sTrHash = 0xcbf29ce484222325ull, sTrReads, sTrWrites;
+static long sTrFrom = -1, sTrTo = -1;
+static uintptr_t sTrCaller;
+static void io_trace_init(void) {
+    const char *e = getenv("ACWW_IOTRACE");
+    sIoTrace = e && *e;
+    if (!sIoTrace) return;
+    if (!(sIoTraceFile = fopen(e, "w"))) { sIoTrace = 0; return; }
+    const char *r = getenv("ACWW_IOTRACE_FRAMES");
+    if (r) sscanf(r, "%ld-%ld", &sTrFrom, &sTrTo);
+}
+static void io_trace_mix(u64 v) { sTrHash = (sTrHash ^ v) * 0x100000001b3ull; }
+static void io_trace(u32 a, int write, void *caller) {
+    io_trace_mix(a | (u64)write << 32);
+    if (write) sTrWrites++; else sTrReads++;
+    sTrCaller = (uintptr_t)caller;
+}
+static void io_trace_value(u32 a, int write, unsigned long long v) {
+    if (!write) io_trace_mix(v);  // (the values read: written ones include host addresses - DMA, PXI)
+    long f = (long)host_frame();
+    if (f >= sTrFrom && f <= sTrTo)
+        fprintf(sIoTraceFile, "%c %08x %llx %llu %lx\n", write ? 'w' : 'r', a, v, (unsigned long long)sCycles,
+                (unsigned long)(sTrCaller - (uintptr_t)&host_frame));
+}
+static void io_trace_frame(void) {
+    if (sIoTrace < 0) io_trace_init();
+    if (!sIoTrace) return;
+    fprintf(sIoTraceFile, "frame %llu reads %llu writes %llu hash %016llx cycles %llu clock %u polls %u waits %u\n",
+            (unsigned long long)host_frame(), (unsigned long long)sTrReads, (unsigned long long)sTrWrites,
+            (unsigned long long)sTrHash, (unsigned long long)sCycles, sStatClockReads, sStatPolls, sStatWaits);
+    fflush(sIoTraceFile);
+    sTrReads = sTrWrites = 0;
+    sStatClockReads = sStatPolls = sStatWaits = 0;
+}
+
 // (the whole pointer-sized address: a host pointer above 4 GB whose low word looks like a register isn't one)
 static void io_note(uintptr_t a, int write, void *caller) {
     if (a > 0xffffffffu || !is_io((u32)a)) {
@@ -594,6 +692,7 @@ static void io_note(uintptr_t a, int write, void *caller) {
         host_fatal("bad register address");
     }
     sIoCount++;
+    if (sIoTrace > 0) io_trace((u32)a, write, caller);
     sRing[sRingPos++ & 15] = (struct IoLog){(u32)a, (u32)write, (uintptr_t)caller};
     if (sIoHist < 0) sIoHist = getenv("ACWW_IOHIST") != NULL;
     if (sIoHist) io_hist((u32)a, (uintptr_t)caller, write);
@@ -602,12 +701,14 @@ unsigned long long HostIo_Read(uintptr_t addr, unsigned int size) {
     io_note(addr, 0, __builtin_return_address(0));
     u32 a = (u32)addr;
     unsigned long long v = size == 8 ? io_load(a, 4) | (unsigned long long)io_load(a + 4, 4) << 32 : io_load(a, size);
+    if (sIoTrace > 0) io_trace_value(a, 0, v);
     io_access_done();
     return v;
 }
 unsigned long long HostIo_Write(uintptr_t addr, unsigned int size, unsigned long long v) {
     io_note(addr, 1, __builtin_return_address(0));
     u32 a = (u32)addr;
+    if (sIoTrace > 0) io_trace_value(a, 1, v);
     if (size == 8) {
         io_store(a, 4, (u32)v);
         io_store(a + 4, 4, (u32)(v >> 32));
@@ -679,6 +780,11 @@ void host_highmem_init(void) {
 }
 
 void host_map_memory(void) {
+    {
+        const char *e = getenv("ACWW_TIMING");
+        sTimingLegacy = e && !strcmp(e, "legacy");
+        if (sTimingLegacy) fprintf(stderr, "host: ACWW_TIMING=legacy: every register read takes time\n");
+    }
     HostMem_Check();  // (mem.c: the game's variables and the host blocks where they should be)
     host_debug_init();
     R16(0x04000130) = 0x3ff;

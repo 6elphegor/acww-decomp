@@ -49,6 +49,7 @@ void host_irq_raise(u32 mask);
 void host_advance_to_next_event(void);
 u64 host_frame(void);
 u64 host_cycles(void);
+void host_spend_cycles(u64 n);  // a busy wait of n cycles (hw.c; nothing with ACWW_TIMING=legacy)
 
 // os.c
 void *host_stack_alloc(size_t n);  // a stack for game code

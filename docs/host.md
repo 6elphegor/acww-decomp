@@ -144,7 +144,7 @@ that scripted runs stay reproducible; `ACWW_RTC=host` gives them the local time)
 `ACWW_WAV=file.wav` (the sound, also headless; ACWW_KEYS masks are hex KEYINPUT bits: 1 A, 2 B, 8 Start, 10 Right,
 20 Left, 40 Up, 80 Down, 400 X, 800 Y), `ACWW_MUTE=1`; debugging: `ACWW_STATS`, `ACWW_FPS`, `ACWW_IOLOG=addr`,
 `ACWW_IOHIST` (register accesses by address and calling code, to `acww_iohist.txt`; written at exit, on SIGINT and
-at `ACWW_EXIT_FRAME`), `ACWW_POSLOG=<n>` (the local player's
+at `ACWW_EXIT_FRAME`), `ACWW_IOTRACE=<file>` and `ACWW_IOTRACE_FRAMES=<from>-<to>` (the register traffic frame by frame: "Virtual time"), `ACWW_TIMING=legacy` (the earlier access-counting virtual time), `ACWW_POSLOG=<n>` (the local player's
 position every n frames: for writing input scripts that walk somewhere), `ACWW_WATCH=addr:len` (x86 Linux),
 `ACWW_PROFILE` (to `acww_profile.txt`, at the same points as `ACWW_IOHIST`), `ACWW_WATCHDOG`, `ACWW_HIGHMEM` (64-bit hosts: see below), `ACWW_PROCLOG`, `ACWW_HEAPCHECK`, `ACWW_SNDTRACE` (sound commands),
 `ACWW_SNDSTATE` (the sound driver's players and channels once a second), `ACWW_AUDIO_INFO` (the frontend's audio
@@ -228,6 +228,60 @@ Differences from the DS that the sources handle under `HOST` (or MODERN):
 - Integer division by zero: the DS's division routine (`_s32_div_f`) gives the dividend as the quotient and 0 as
   the remainder; x86 traps (hw.c gives the DS's result and reports the site), arm64 gives 0. The game does it (e.g.
   `spl_scl_in_out` at the end of a particle animation).
+
+### Virtual time (docs/portability.md 3.4)
+
+The clock is a cycle counter (`sCycles`, the ARM9's 33.5 MHz bus clock: 2130 cycles a line, 263 lines a frame) that
+the game sees only through: the VBlank (and the once-a-frame HBlank) interrupt and DISPSTAT / VCOUNT; the timers -
+timer 0 is `OS_GetTick`'s counter (prescaler 64, its overflow interrupt extends it), timer 1 runs the OS alarms
+(`OS_Sleep`, the SDK's alarms); the replies the host delays (the card's backup transfers, `pxi7_send_after`); the ARM7
+sound driver's ticks and alarms (snd7, clocked by the counter); busy waits (`OS_SpinWait`, `SVC_WaitByLoop`); and
+the polling loops that wait for one of these. When the game halts or waits for an interrupt (`OS_Halt`, the idle
+thread, `VBlankIntrWait`), the clock jumps to the next event.
+
+What moves the clock between waits (hw.c, `io_read_cost`):
+
+- a read of DISPSTAT / VCOUNT or of a timer's counter: 64 cycles (one OS tick);
+- a polling loop - the same register read again with no other register access in between: from the fifth read on,
+  4096 cycles a read;
+- `OS_SpinWait(n)`: n / 2 cycles (n is in 67 MHz CPU cycles), `SVC_WaitByLoop(n)`: 2n;
+- nothing else. Any other register access (the interrupt master enable saved and restored around every critical
+  section, DMA, the divider and square root units, the 3D command ports, the PXI FIFO, ...) takes no time.
+
+So the clock depends on what the game does that it can observe, not on how many register accesses the code makes
+on the way: an extra interrupt-mask save, a copy done by DMA or by the CPU, an SDK routine rewritten in C, a
+renderer that answers status reads differently once (but not one that keeps the geometry engine busy longer: a
+polling loop's length counts), or the build's architecture. Before (until 2026-10-08; `ACWW_TIMING=legacy` brings it
+back) every register read took 64 cycles and a read of the register read last 4096: time inside a frame counted the
+reads of the interrupt mask, of DMA channel 1's control after each DMA (read, write, read: counted as a polling loop
+since writes didn't break it), of the divider... - ov004's `FX_Div` constructor at the overlay's load once moved the
+attract demo's town by a frame, and any change to such code shifted every later frame.
+
+What the game uses time for, measured (oracle play script, 25000 frames, legacy model, `ACWW_IOHIST`): 6.68 million
+register reads, of them the interrupt master enable 29 %, DMA channel 1's control 10 %, GXSTAT 10 %, IE 8.5 %, IF
+6 %, the PXI FIFO control 5.5 %, the divider 7.6 %, the square root 4.5 %; the clock reads are 0.6 %: VCOUNT 41,296
+(`HBlank_Handler` once a frame, and the VRAM upload queues `VramQueueTex_Run` / `VramQueue2d_Run`, which run queued
+uploads while `VCOUNT + cost` fits the VBlank), DISPSTAT 4, the tick counter 77 (`OS_GetTick`: the 40 ms budget of
+`FieldScene` creation and of two loaders that then continue in the next frame, the communication icon's blink,
+`Backup_CancelAndWait`'s timeout, the crash screen's clock). With the new model (the same script): 43,425 clock
+reads, 1,595 polling reads in 15 frames - all of them `G3X_ClearFifo` waiting for the geometry engine at a scene's
+start (melonDS's GPU reports it busy until its frame has run: 137 reads, one frame), 167,020 waits.
+
+Consequences: a frame's work takes (almost) no virtual time, so the game always reaches its VBlank wait in time (no
+slow frames), the VRAM queues upload everything queued in one VBlank, the 40 ms creation budget is never used up (a
+scene is created in one go) and loading is instant: the title screen is up at frame 250 (the legacy model: 1550, after
+1000 black frames; the DS about 900). `OS_GetTick` advances one tick per call within a frame and 8752 ticks a frame.
+Both builds give the same register traffic frame for frame: `ACWW_IOTRACE=<file>` writes a line per frame (reads,
+writes, a hash of every access's address and every value read, the clock, the clock reads, polls and waits;
+`ACWW_IOTRACE_FRAMES=<from>-<to>` lists every access in those frames, with the calling code), and the i386 and
+x86-64 traces of the play script are byte-identical (25002 lines), as are those of the town, save and continue
+scripts. The traces are how the 64-bit bugs that made the builds part were found (docs/portability.md 3.4): the first
+frame whose line differs, then the first access that differs in it, then gdb at that cycle in both builds.
+
+A spin on memory with only timeless register accesses (an interrupt-mask save and restore around a check of a flag
+an interrupt handler sets) would hang; after a million accesses without time passing, time moves to the next event and
+the site is reported once ("register accesses without time passing"). None is known (it never fired in the quick,
+play, town, save and continue scripts); the watchdog (`ACWW_WATCHDOG`) reports a spin without any register access.
 
 ### 64-bit hosts (in progress)
 
@@ -377,8 +431,9 @@ earlier behaviour (every overlay's StaticInits once at start-up, no reset), `ACW
 listed. ov004's information points use the divider registers (`MuseumInfoPoint_InitFromDef`: `FX_Div`), so virtual
 time passes for them at the overlay's load.
 
-The game reaches each scene later (in frames) than on the DS: the title at about frame 1500 instead of 900 (virtual time passes in waits that the DS doesn't
-have).
+The game reaches each scene sooner (in frames) than on the DS: loading takes no virtual time, so the title is up at
+frame 250 instead of about 900 (with the earlier access-counting time, `ACWW_TIMING=legacy`, at 1550: see "Virtual
+time").
 
 ## The choice: how to provide the hardware (decided: A for the display for now, B for sound)
 
