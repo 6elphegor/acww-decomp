@@ -90,6 +90,15 @@ extern "C" void melon_frame(void) {
     sNds->RunFrame();
 }
 
+// the 3D picture the coming frame shows (melonDS renders the next one during the frame, at line 215): 192 lines of
+// 256 pixels, 6-bit red, green, blue in bits 0-5, 8-13, 16-21, alpha 0-31 in bits 24-28, before BG0HOFS's scroll -
+// the own 2D renderer's BG0 (render.c)
+extern "C" void melon_3d_lines(u32 *out) {
+    GPU3D &g = sNds->GPU.GPU3D;
+    if (g.AbortFrame) { memset(out, 0, 256 * 192 * 4); return; }
+    for (int line = 0; line < 192; line++) memcpy(out + line * 256, g.GetCurrentRenderer().GetLine(line), 256 * 4);
+}
+
 // screen 0 top, 1 bottom: 256x192 pixels, 0x00RRGGBB
 extern "C" const u32 *melon_screen(int screen) {
     return sNds->GPU.Framebuffer[sNds->GPU.FrontBuffer][screen].get();

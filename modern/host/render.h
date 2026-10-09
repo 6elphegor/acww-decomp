@@ -1,0 +1,25 @@
+// Host build: the display interface (render.c). hw.c, main.c and frontend.c use only these; behind them the 2D
+// engines are rendered by melonDS (melon.cpp) or by the project's own renderer (gpu2d/), the 3D engine by melonDS
+// for now (docs/portability.md 5.1, 5.2).
+#ifndef HOST_RENDER_H
+#define HOST_RENDER_H
+
+#include "host.h"
+
+void render_init(void);
+// the display registers the game writes (hw.c forward_display): engine A and B's 0x04000000-0x0400006f and
+// 0x04001000-0x0400106f, POWCNT1, VRAMCNT, the 3D registers and command ports
+void render_write8(u32 addr, u8 v);
+void render_write16(u32 addr, u16 v);
+void render_write32(u32 addr, u32 v);
+u32 render_read32(u32 addr);       // the 3D engine's status and results (0x04000320, 0x04000600-0x040006a3)
+void render_frame(void);           // at VBlank: the frame from the VRAM banks, palettes, OAM and registers
+const u32 *render_screen(int screen);  // 0 top, 1 bottom: 256x192 pixels, 0x00RRGGBB (the top byte is ignored)
+int render_gx_fifo_irq_level(void);    // the GX FIFO interrupt line (IRQ 21)
+void render_debug(void);           // ACWW_STATS diagnostics
+void render_exit_report(void);     // ACWW_RENDER_COMPARE's summary, ACWW_GPU2D_FEATURES
+// render.c / render_selftest.c internals: the comparison of the two renderers' last frame, the self-test
+int render_compare(const char *kind, u64 label);
+void render_selftest(long scenes) __attribute__((noreturn));
+
+#endif

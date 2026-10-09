@@ -25,6 +25,7 @@
 #include "host_mem.h"
 #include "plat.h"
 #include "guards.h"
+#include "render.h"
 
 // 3D command port writes since the last ACWW_STATS line (register writes and GX FIFO DMA)
 static unsigned long long sGxWrites;
@@ -43,13 +44,6 @@ static u8 sIo1[PAGE] __attribute__((aligned(8)));
 u8 *host_io(u32 a) { return a >= IO1 ? sIo1 + (a - IO1) : a >= IOB ? sIoB + (a - IOB) : sIo0 + (a - IO0); }
 static int is_io(u32 a) { return (a >= IO0 && a < IOB + PAGE) || (a >= IO1 && a < IO1 + PAGE); }
 
-// melon.cpp
-void melon_write8(u32 addr, u8 v);
-void melon_write16(u32 addr, u16 v);
-void melon_write32(u32 addr, u32 v);
-u32 melon_read32(u32 addr);
-void melon_frame(void);
-const u32 *melon_screen(int screen);
 // vram.c
 void host_vram_control(u32 addr, u8 value);
 #define R16(a) (*(u16 *)host_io(a))
@@ -70,9 +64,8 @@ void pxi7_run_due(void);
 static u32 sIF;
 void host_irq_raise(u32 m) { sIF |= m; }
 void host_irq_ack(u32 m) { sIF &= ~m; }
-int melon_gx_fifo_irq_level(void);
 u32 host_irq_pending(void) {
-    u32 lines = sIF | (melon_gx_fifo_irq_level() ? 1u << 21 : 0);  // the GX FIFO line is level-triggered
+    u32 lines = sIF | (render_gx_fifo_irq_level() ? 1u << 21 : 0);  // the GX FIFO line is level-triggered
     return (R32(0x04000208) & 1) ? (R32(0x04000210) & lines) : 0;
 }
 
@@ -145,7 +138,7 @@ static void host_screenshot(void) {
             if (o) {
                 fprintf(o, "P6\n256 384\n255\n");
                 for (int s = 0; s < 2; s++) {
-                    const u32 *px = melon_screen(s);
+                    const u32 *px = render_screen(s);
                     for (int i = 0; i < 256 * 192; i++) { u8 rgb[3] = {px[i] >> 16, px[i] >> 8, px[i]}; fwrite(rgb, 1, 3, o); }
                 }
                 fclose(o);
@@ -231,7 +224,7 @@ static void run_events_body(void) {
         if (st & 8) host_irq_raise(1);    // VBlank
         if (st & 16) host_irq_raise(2);   // HBlank (once per frame: the per-line effects aren't emulated)
         dma_on_vblank();
-        melon_frame();
+        render_frame();
         extern void frontend_frame(void);
         frontend_frame();
         extern void host_heap_check(void);
@@ -336,8 +329,7 @@ static void run_events_body(void) {
             extern u32 gScreenTransition[];
             fprintf(stderr, " transition");
             for (int i = 0; i < 12; i++) fprintf(stderr, " %x", gScreenTransition[i]);
-            extern void melon_debug(void);
-            melon_debug();
+            render_debug();
             fprintf(stderr, " gx %llu", sGxWrites);
             sGxWrites = 0;
             { static unsigned long long lastIo; fprintf(stderr, " io %llu", (unsigned long long)sIoCount - lastIo); lastIo = sIoCount; }
@@ -461,7 +453,7 @@ void host_card_dma(void) {
 }
 
 // ---- the 3D engine: for now a sink; GXSTAT says idle with an empty FIFO
-void gx_fifo_write(u32 addr, u32 value) { sGxWrites++; melon_write32(addr, value); }
+void gx_fifo_write(u32 addr, u32 value) { sGxWrites++; render_write32(addr, value); }
 
 // ---- register reads and writes
 // How much virtual time a register read takes (docs/host.md, "Virtual time"). Only what the game can observe of time
@@ -507,7 +499,7 @@ static void io_read(u32 a) {
         int i = (w - 0x04000100) / 4;
         R16(w) = tm_counter(&sTm[i]);
     } else if (w == 0x04000214) R32(w) = sIF;
-    else if ((w >= 0x04000600 && w < 0x040006a4) || w == 0x04000320) R32(w) = melon_read32(w);  // 3D status, results
+    else if ((w >= 0x04000600 && w < 0x040006a4) || w == 0x04000320) R32(w) = render_read32(w);  // 3D status, results
     else if (w == 0x04000184 || w == 0x04000180 || w == IO1) {
         extern void pxi7_prepare_read(u32 a);
         pxi7_prepare_read(w);
@@ -519,17 +511,17 @@ static void io_read(u32 a) {
 // display registers for the renderer: the 3D command ports in full on every write, the others as changed halves
 static void forward_display(u32 w, u32 old) {
     u32 v = R32(w);
-    if ((w >= 0x04000400 && w < 0x04000600) || w == 0x04000600) { sGxWrites++; melon_write32(w, v); return; }
+    if ((w >= 0x04000400 && w < 0x04000600) || w == 0x04000600) { sGxWrites++; render_write32(w, v); return; }
     if (w >= 0x04000240 && w < 0x0400024c) {
         for (int i = 0; i < 4; i++) {
             u8 b = v >> (8 * i), o = old >> (8 * i);
-            if (b != o) { host_vram_control(w + i, b); melon_write8(w + i, b); }
+            if (b != o) { host_vram_control(w + i, b); render_write8(w + i, b); }
         }
         return;
     }
     for (int h = 0; h < 2; h++) {
         u16 n = v >> (16 * h), o = old >> (16 * h);
-        if (n != o) melon_write16(w + 2 * h, n);
+        if (n != o) render_write16(w + 2 * h, n);
     }
 }
 static int is_display(u32 w) {
@@ -626,6 +618,7 @@ static uintptr_t io_last_caller(void) { return sRing[(sRingPos - 1) & 15].pc; }
 // the reports written at exit: atexit, ACWW_EXIT_FRAME (_Exit), SIGINT (debug_posix.c)
 void host_exit_dumps(void) {
     io_hist_dump();
+    render_exit_report();
     host_guards_exit();
     host_debug_exit_dumps();
 }

@@ -8,6 +8,7 @@
 
 #include "coro.h"
 #include "host.h"
+#include "render.h"
 #include "host_mem.h"
 #include "overlay.h"
 #include "plat.h"
@@ -71,7 +72,6 @@ void NitroStartUp(void);
 
 // before the game's static constructors (which may touch DS memory): map it first
 void host_vram_init(void);
-void melon_init(void);
 #include "guards.h"
 __attribute__((constructor(101))) static void early_init(void) {
     HostMem_Init();
@@ -106,7 +106,7 @@ int main(int argc, char **argv) {
     memcpy(gHostSysWork.bootCheckInfo, rom + 0x0c, 4);
     *(volatile u16 *)gHostSysWork.wmBootBuf = 1;
     pxi7_init();
-    melon_init();
+    render_init();
     host_debug_crash_handlers();  // (melonDS's JIT replaced the SIGSEGV handler)
     extern void frontend_init(const char *argv0);
     extern void frontend_shutdown(void);

@@ -13,7 +13,7 @@
 
 static AcwwShm *sShm;
 
-const u32 *melon_screen(int screen);
+#include "render.h"
 
 void frontend_init(const char *argv0) {
     if (getenv("ACWW_HEADLESS")) return;
@@ -44,7 +44,7 @@ void frontend_frame(void) {
     // (released = 1); bit 15 clear = not folded
     u16 xy = 0x2c00;
     if (sShm) {
-        for (int s = 0; s < 2; s++) memcpy(sShm->pixels + s * 256 * 192, melon_screen(s), 256 * 192 * 4);
+        for (int s = 0; s < 2; s++) memcpy(sShm->pixels + s * 256 * 192, render_screen(s), 256 * 192 * 4);
         __atomic_thread_fence(__ATOMIC_SEQ_CST);
         sShm->frame++;
         frontend_backend_frame(sShm);
