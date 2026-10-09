@@ -53,6 +53,7 @@ void render_init(void) {
     sGpu2d = sOwn || sCompare;
     melon_init();
     gpu2d_reset();
+    gpu2d_set_diagnostics(sCompare || getenv("ACWW_RENDER_SELFTEST"));
     if (getenv("ACWW_RENDER_SELFTEST")) {  // (render_selftest.c)
         sGpu2d = sCompare = sSelftest = 1;
         render_selftest(strtol(getenv("ACWW_RENDER_SELFTEST"), 0, 10));

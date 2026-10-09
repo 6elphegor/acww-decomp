@@ -14,6 +14,9 @@ static u16 sPowCnt;       // POWCNT1
 static u8 sVramCnt[9];    // VRAMCNT_A-I
 static u32 sScreen[2][SCREEN_W * SCREEN_H];
 static u32 sFrame;        // frames rendered
+static int sDiagnostics;  // keep what gpu2d_describe_pixel reports
+
+void gpu2d_set_diagnostics(int on) { sDiagnostics = on; }
 
 // ---- features seen: the frame each was first seen in, + 1 (0: not yet)
 static u32 sFeatureFrame[2][F_COUNT];
@@ -315,8 +318,16 @@ static void compose_line(Engine *e, int line, const u32 *line3d, u32 *dst) {
     if (has3d) gpu2d_feature(e, F_3D);
     s32 hofs3d = reg16(e, REG_BGHOFS) & 0x1ff;
     if (hofs3d & 0x100) hofs3d -= 0x200;
-    u32 prio[4];
-    for (int n = 0; n < 4; n++) prio[n] = reg16(e, REG_BGCNT + 2 * n) & 3;
+    // the layers front to back: at each priority the OBJs, then BG0-3 (OBJ_ORDER stands for the OBJs, whose
+    // priority is per pixel)
+    enum { OBJ_ORDER = 4 + 4 };
+    u8 order[4 * 5];
+    int layers = 0;
+    for (u32 p = 0; p < 4; p++) {
+        if (dispcnt & 0x1000) order[layers++] = (u8)(OBJ_ORDER + p);
+        for (int n = 0; n < 4; n++)
+            if ((reg16(e, REG_BGCNT + 2 * n) & 3) == p && (dispcnt & 0x100u << n)) order[layers++] = (u8)n;
+    }
     u16 bldcnt = reg16(e, REG_BLDCNT), bldalpha = reg16(e, REG_BLDALPHA);
     u32 effect = bldcnt >> 6 & 3, first = bldcnt & 0x3f, second = bldcnt >> 8 & 0x3f;
     u32 eva = bldalpha & 0x1f, evb = bldalpha >> 8 & 0x1f, evy = reg16(e, REG_BLDY) & 0x1f;
@@ -324,34 +335,35 @@ static void compose_line(Engine *e, int line, const u32 *line3d, u32 *dst) {
     if (evb > 16) evb = 16;
     if (evy > 16) evy = 16;
     u32 backdrop = rgb6(pal16(e->palette, 0));
-    int objOn = dispcnt & 0x1000;  // (now: the OBJs of line 0 were prepared under the previous frame's DISPCNT)
+    u32 effectsUsed = 0;  // (1 << EFF_*)
     for (int x = 0; x < SCREEN_W; x++) {
-        // the two front layers at x: in priority order OBJ, then BG0-3 at each priority; the backdrop behind all
+        // the two front layers at x (the backdrop behind all)
         u32 col[2] = {backdrop, backdrop};
         u8 lay[2] = {LAYER_BACKDROP, LAYER_BACKDROP};  // (the 3D layer: LAYER_BG0 with is3d)
         int is3d[2] = {0, 0}, found = 0;
         u32 alpha3d = 0;
         u8 m = mask[x];
-        for (u32 p = 0; p < 4 && found < 2; p++) {
-            if (objOn && (m & 0x10) && obj->source[x] && obj->prio[x] == p) {
-                col[found] = rgb6(obj_color(e, dispcnt, obj, x));
-                lay[found++] = LAYER_OBJ;
-            }
-            for (int n = 0; n < 4 && found < 2; n++) {
-                if (prio[n] != p || !(m & 1 << n)) continue;
-                if (n == 0 && has3d) {
-                    s32 sx = x + hofs3d;
-                    if (sx < 0 || sx >= SCREEN_W) continue;
-                    u32 c = line3d[sx];
-                    if (!(c >> 24 & 0x1f)) continue;
-                    if (!found) alpha3d = c >> 24 & 0x1f;
-                    is3d[found] = 1;
-                    col[found] = c & 0x3f3f3f;
-                    lay[found++] = LAYER_BG0;
-                } else if (e->bg[n][x] & PIX_OPAQUE) {
-                    col[found] = rgb6(e->bg[n][x]);
-                    lay[found++] = (u8)n;
+        for (int k = 0; k < layers && found < 2; k++) {
+            int n = order[k];
+            if (n >= OBJ_ORDER) {
+                if ((m & 0x10) && obj->source[x] && obj->prio[x] == n - OBJ_ORDER) {
+                    col[found] = rgb6(obj_color(e, dispcnt, obj, x));
+                    lay[found++] = LAYER_OBJ;
                 }
+            } else if (!(m & 1 << n)) {
+                continue;
+            } else if (n == 0 && has3d) {
+                s32 sx = x + hofs3d;
+                if (sx < 0 || sx >= SCREEN_W) continue;
+                u32 c = line3d[sx];
+                if (!(c >> 24 & 0x1f)) continue;
+                if (!found) alpha3d = c >> 24 & 0x1f;
+                is3d[found] = 1;
+                col[found] = c & 0x3f3f3f;
+                lay[found++] = LAYER_BG0;
+            } else if (e->bg[n][x] & PIX_OPAQUE) {
+                col[found] = rgb6(e->bg[n][x]);
+                lay[found++] = (u8)n;
             }
         }
         if (!found) lay[1] = LAYER_NONE;  // (the backdrop is the top: nothing below it to blend with)
@@ -375,26 +387,31 @@ static void compose_line(Engine *e, int line, const u32 *line3d, u32 *dst) {
             else if (effect == 2) { out = brighten(col[0], evy, 8); eff = EFF_UP; }
             else if (effect == 3) { out = darken(col[0], evy, 7); eff = EFF_DOWN; }
         }
-        if (eff == EFF_ALPHA || eff == EFF_SEMI_OBJ || eff == EFF_BITMAP_OBJ || eff == EFF_3D) gpu2d_feature(e, F_ALPHA);
-        else if (eff == EFF_UP) gpu2d_feature(e, F_BRIGHT_UP);
-        else if (eff == EFF_DOWN) gpu2d_feature(e, F_BRIGHT_DOWN);
+        effectsUsed |= 1u << eff;
         dst[x] = out;
-        int at = line * SCREEN_W + x;
-        e->dbgTop[at] = is3d[0] ? DBG_3D : lay[0];
-        e->dbgBelow[at] = is3d[1] ? DBG_3D : lay[1];
-        e->dbgEffect[at] = (u8)eff;
-        e->dbgObj[at] = obj->index[x];
-        e->dbgAlpha[at] = (u8)(is3d[0] ? alpha3d : obj->alpha[x]);
-        e->dbgTopColor[at] = col[0];
-        e->dbgBelowColor[at] = col[1];
+        if (sDiagnostics) {
+            int at = line * SCREEN_W + x;
+            e->dbgTop[at] = is3d[0] ? DBG_3D : lay[0];
+            e->dbgBelow[at] = is3d[1] ? DBG_3D : lay[1];
+            e->dbgEffect[at] = (u8)eff;
+            e->dbgObj[at] = obj->index[x];
+            e->dbgAlpha[at] = (u8)(is3d[0] ? alpha3d : obj->alpha[x]);
+            e->dbgTopColor[at] = col[0];
+            e->dbgBelowColor[at] = col[1];
+        }
     }
+    if (effectsUsed & (1u << EFF_ALPHA | 1u << EFF_SEMI_OBJ | 1u << EFF_BITMAP_OBJ | 1u << EFF_3D)) gpu2d_feature(e, F_ALPHA);
+    if (effectsUsed & 1u << EFF_UP) gpu2d_feature(e, F_BRIGHT_UP);
+    if (effectsUsed & 1u << EFF_DOWN) gpu2d_feature(e, F_BRIGHT_DOWN);
 }
 
 // one line of an engine's picture: the display mode (DISPCNT bits 16-17), then master brightness
 static void render_line(Engine *e, const Gpu2dFrameInput *in, int line) {
     u32 dispcnt = reg32(e, REG_DISPCNT), *dst = e->out + line * SCREEN_W;
-    memset(e->dbgTop + line * SCREEN_W, LAYER_NONE, SCREEN_W);  // (compose_line sets them)
-    memset(e->dbgEffect + line * SCREEN_W, EFF_NONE, SCREEN_W);
+    if (sDiagnostics) {  // (compose_line sets them)
+        memset(e->dbgTop + line * SCREEN_W, LAYER_NONE, SCREEN_W);
+        memset(e->dbgEffect + line * SCREEN_W, EFF_NONE, SCREEN_W);
+    }
     if (e->num == 1 && !(sPowCnt & 0x200)) {  // engine B switched off (POWCNT1 bit 9): white, no brightness
         gpu2d_feature(e, F_ENGINE_B_OFF);
         for (int x = 0; x < SCREEN_W; x++) dst[x] = 0x3f3f3f;

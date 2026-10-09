@@ -44,7 +44,9 @@ void gpu2d_render_frame(const Gpu2dFrameInput *in);
 // screen 0 top, 1 bottom (POWCNT1 bit 15 decides which engine shows where): 256x192 pixels, 0xffRRGGBB
 const uint32_t *gpu2d_screen(int screen);
 
-// diagnostics: what made pixel (x, y) of a screen in the last frame, as text ("engine A: OBJ#12 over BG2, alpha")
+// diagnostics: what made pixel (x, y) of a screen in the last frame, as text ("engine A: OBJ#12 over BG2, alpha");
+// only with gpu2d_set_diagnostics(1) (it costs time)
+void gpu2d_set_diagnostics(int on);
 void gpu2d_describe_pixel(int screen, int x, int y, char *buf, size_t size);
 // ACWW_GPU2D_STATS-style census of the features the frames used (one line per feature with the first frame)
 void gpu2d_print_features(void);

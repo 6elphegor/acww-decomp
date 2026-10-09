@@ -180,7 +180,20 @@ The runtime (`modern/host/`):
   (`HostVram_CpuPtr(dsaddr)`) that follow VRAMCNT - written back to the banks before the renderer reads them and at
   every VRAMCNT change, then filled from the banks' new places, so a pointer kept across a change sees what the DS
   shows there.
-- `melon.cpp`: the display through melonDS's GPU (register forwarding, 3D commands run at once, VRAM sync).
+- `render.c` / `render.h`: the display interface the rest of the runtime uses (`render_init`, `render_write8/16/32`,
+  `render_read32`, `render_frame`, `render_screen`, `render_gx_fifo_irq_level`), and the choice of renderer:
+  `ACWW_RENDERER=melon` (default) or `own`, `ACWW_RENDER_COMPARE=1` (both every frame, the first differing pixel of
+  each differing frame reported with the layers and effect the own renderer used there; a summary at exit),
+  `ACWW_RENDER_SELFTEST=<n>` (`render_selftest.c`: n random scenes through both renderers before the game starts,
+  then exit; `_SEED`, `_MASK`, `_OBJ`, `_OBJS`, `_SHOTS` narrow it down), `ACWW_GPU2D_FEATURES=1` (the 2D features the
+  frames used, at exit).
+- `gpu2d/`: the project's own renderer of the two 2D engines (docs/portability.md 5.1), plain C with no host or
+  emulator dependencies (`gpu2d.h`): registers as written, VRAM banks, palettes, OAM and the 3D picture in, both
+  screens out. `gpu2d.c` (VRAM mapping with the banks' mirrors, windows, compositing and effects, display modes,
+  master brightness), `gpu2d_bg.c` (text, affine, extended and large bitmap BGs, mosaic), `gpu2d_obj.c` (OBJs).
+  Compiled with -O2 (about 2 ms a frame on this machine).
+- `melon.cpp`: melonDS's GPU (register forwarding, 3D commands run at once, VRAM sync): the 3D engine, and the 2D
+  engines unless `ACWW_RENDERER=own`; `melon_3d_lines` hands its 3D picture to the own renderer.
 - `os.c`: interrupt masking per thread, thread contexts (a host stack each, `coro.h`), lock ids, BIOS waits.
 - `pxi7.c`: the ARM7 services - start-up handshake, WVR, NVRAM (firmware image), RTC (the host's local time;
   `ACWW_RTC`), touch panel, card backup (the save memory, `ACWW_SAVE`; replies delayed like the DS's), power management (PMIC registers kept in the host:

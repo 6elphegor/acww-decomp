@@ -69,19 +69,28 @@ static void text_line(Engine *e, int n, int line, u16 *dst) {
     int color256 = cnt & 0x80;
     const u8 *ext = color256 ? ext_palette(e, n, cnt) : NULL;
     gpu2d_feature(e, color256 ? (ext ? F_TEXT8_EXTPAL : F_TEXT8) : F_TEXT4);
-    for (int x = 0; x < SCREEN_W; x++) {
+    for (int x = 0; x < SCREEN_W;) {  // a tile at a time
         u32 sx = (x + hofs) & (wide - 1);
         u16 entry = bg16(e, rowBase + (sx >= 256 ? 0x800u : 0) + (sx & 255) / 8 * 2);
-        u32 px = sx & 7, py = y & 7;
+        u32 tile = entry & 0x3ffu, py = entry & 0x800 ? 7 - (y & 7) : y & 7;
+        u8 row[8];  // the tile's row as shown (colour indexes, 0 transparent)
+        const u8 *pal;
         if (color256) {
-            dst[x] = tile8_pixel(e, cb, entry, px, py, ext);
-            continue;
+            for (u32 i = 0; i < 8; i++) row[i] = bg8(e, cb + tile * 64 + py * 8 + i);
+            pal = ext ? ext + (entry >> 12) * 512u : e->palette;
+        } else {
+            for (u32 i = 0; i < 4; i++) {
+                u8 b = bg8(e, cb + tile * 32 + py * 4 + i);
+                row[2 * i] = b & 15;
+                row[2 * i + 1] = b >> 4;
+            }
+            pal = e->palette + (entry >> 12) * 32u;
         }
-        if (entry & 0x400) px = 7 - px;
-        if (entry & 0x800) py = 7 - py;
-        u8 b = bg8(e, cb + (entry & 0x3ffu) * 32 + py * 4 + px / 2);
-        u8 idx = px & 1 ? b >> 4 : b & 15;
-        dst[x] = idx ? (u16)((pal16(e->palette, (entry >> 12) * 16u + idx) & 0x7fff) | PIX_OPAQUE) : 0;
+        int flip = entry & 0x400 ? 7 : 0;
+        for (u32 px = sx & 7; px < 8 && x < SCREEN_W; px++, x++) {
+            u8 idx = row[px ^ flip];
+            dst[x] = idx ? (u16)((pal16(pal, idx) & 0x7fff) | PIX_OPAQUE) : 0;
+        }
     }
 }
 

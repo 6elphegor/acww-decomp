@@ -142,7 +142,7 @@ there**). They worked on x86-64 only because everything was kept below 4 GB.
   - every write to the 3D ports 0x04000400-0x04000600;
   - VRAMCNT 0x04000240-0x0400024b byte by byte.
 - 3D read-backs (GXSTAT, matrix/vector test results and RAM counts, 0x04000600-0x040006a3, 0x04000320) come back synchronously through `melon_read32` (hw.c:405). The renderer must answer them during the frame.
-- **The renderer interface (melon.cpp) is 8 functions:** `melon_init`, `melon_write8/16/32`, `melon_read32`, `melon_frame` (VRAM/palette/OAM sync plus `RunFrame`), `melon_screen(i)` (256×192 0x00RRGGBB), `melon_gx_fifo_irq_level` (IRQ 21 level). `melon_debug` exists for diagnostics only.
+- **The renderer interface (melon.cpp) is 8 functions:** `melon_init`, `melon_write8/16/32`, `melon_read32`, `melon_frame` (VRAM/palette/OAM sync plus `RunFrame`), `melon_screen(i)` (256×192 0x00RRGGBB), `melon_gx_fifo_irq_level` (IRQ 21 level). `melon_debug` exists for diagnostics only. **5.1:** the runtime now calls `render_*` (modern/host/render.h, the same 8 functions), which dispatch to melonDS and the own 2D renderer (modern/host/gpu2d).
 - **Inputs to the renderer:**
   - 9 VRAM banks from vram.c (`host_vram_bank`, `host_vram_bank_size`), compared with `memcmp` per frame in `VRAMDirtyGranularity` blocks (melon.cpp:64-80);
   - palette 0x05000000 and OAM 0x07000000, copied each frame (melon.cpp:77-78).
@@ -955,6 +955,39 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
 
 ### Phase 5: renderer (independent, can start any time)
 28. **5.1** Own 2D compositor behind the 8-function interface (BG text/affine/extended modes, OBJ, windows, blending, master brightness), compared per frame with melonDS in the same process (both fed the same register/VRAM stream).
+    **Done (2026-10-09).** modern/host/gpu2d/ (C, about 1100 lines with comments, written from the hardware's
+    documented behaviour, no melonDS code), behind modern/host/render.h: `ACWW_RENDERER=own|melon` (default still
+    melon), `ACWW_RENDER_COMPARE=1`, `ACWW_RENDER_SELFTEST=<n>` (modern/host/render.c, render_selftest.c; docs/host.md).
+    melonDS now runs only the 3D engine for the own renderer (its 2D still runs, unused); its 3D picture is copied
+    before its frame (`melon_3d_lines`: melonDS renders the next frame's 3D during the frame) and composited as BG0
+    with BG0HOFS's scroll. What the renderer does: BG modes 0-6 (text 16/256 colours with extended palettes, affine,
+    extended affine with 16-bit tiles, 256-colour and direct-colour bitmaps, the large bitmap), BG mosaic, OBJs
+    (normal, affine, double size, 1D/2D tile and bitmap mapping, 256 colours, extended palettes, semi-transparent,
+    bitmap alpha, OBJ window, OBJ mosaic with its line counter), windows 0/1/OBJ (the per-line vertical and
+    horizontal "inside" flags, which carry over lines and frames), alpha blending, brightness up/down, the 3D layer's
+    own alpha, display modes off/normal/VRAM, master brightness, POWCNT1's engine B switch and screen swap, VRAM
+    banking with the small banks' mirrors and OR-ed overlaps. Timing as melonDS has it in this host: OBJs are
+    prepared a line ahead (line 0's at the previous frame's end, under the previous frame's OAM and registers; their
+    palette colours are looked up when the line is shown).
+    **Checks (x86-64):** with `ACWW_RENDERER=own`, `tools/host_oracle.sh build/host64_usa/acww quick` (both
+    screenshots and the WAV) and `play` (all 7) identical to captures_v2; `ACWW_RENDER_COMPARE=1` finds **no differing
+    pixel in any frame**: quick 8002 frames, play 25002, the save script 35002 (covers the town script, whose inputs
+    are its prefix; 70 screenshots and the save file identical to the melonDS build's), continue 8002 (16
+    screenshots identical), the town script on its own 23002. The i386 build with `ACWW_RENDERER=own`: quick and play
+    identical to captures_v2, 8002 and 25002 frames compared, 0 differ. With the default (melon) both builds' quick
+    and play are identical as before; `tools/host_strict_errors.sh` 0. The self-test (random
+    VRAM, palettes, OAM, VRAMCNT and registers for both engines; 1000 scenes, 2 frames each) matches melonDS
+    everywhere. The game itself uses: BG modes 0 and 1, text BGs (16 colours), engine B's affine BG, the 3D layer,
+    tiled OBJs (2D mapping, double size), window 0 and 1, the OBJ window, alpha blending, brightness up/down, display
+    off; everything else is checked by the self-test only.
+    **Where it differs from melonDS (the self-test leaves these out; the game never does them):** 16-bit writes to
+    BGxX/BGxY's high half with bits 12-15 not a copy of bit 11 (melonDS keeps them, the DS has 28 bits); alpha
+    blending of the backdrop as 1st target where nothing is above it (melonDS blends with a stale 2nd layer); engine
+    A's extended OBJ palette in both F and G (melonDS shows something else than the OR); OBJ shape 3 (undefined;
+    melonDS draws 8x8); melonDS's first two frames after start show engine B's BGs wrong (its caches). **Not done:**
+    display capture (not used: `ACWW_GPU2D_FEATURES` reports it), main memory display mode (reported, black), the
+    OBJ rendering-time limit per line (melonDS has none either), HBlank per-line effects (step 5.3). melonDS stays the
+    default until the renderer is wanted for 5.2/5.3: switching the default changes no picture.
 29. **5.2** Own 3D geometry engine (matrix stacks, lighting, polygon setup, the synchronous read-backs: GXSTAT, position/vector tests, RAM counts), then a software rasteriser matching melonDS's output; later a GPU (WebGPU-class) backend.
 30. **5.3** Drop melonDS (and the GPL obligation), then HBlank effects (`Sky_HBlank*` stubs).
 
