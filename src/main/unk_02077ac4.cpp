@@ -540,7 +540,7 @@ s32 Villager_SendLetterWithPaper(void *a, u32 b, void *c, void *d, void *e, s32 
 s32 ItemPick_One(void *a, void *b, void *c, void *d, s32 e, s32 f, void *g);
 s32 MailCheck_GradeLetter(void *p);
 s32 Letter_GetBodyLength(void *p);
-s32 ItemPick_FromRange(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
+void ItemPick_FromRange(u16 *out, s32 base, u32 cnt, u16 *list, u32 listLen, void *a5, s32 a6, s32 a7, void *rng, s32 a9);
 static inline BOOL Unk_0207ff5c_B(s32 v) {
     if (v) {
         return TRUE;

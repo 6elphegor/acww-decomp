@@ -164,7 +164,9 @@ extern RTCWork data_021feb90;
 
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
-extern u32 TP_CalcCalibrateParam(TPCalibrateParam *p, u16 x1, u16 y1, u8 dx1, u8 dy1, u16 x2, u16 y2, u8 dx2, u8 dy2);
+// (the screen points as u16, as the definition has them: u8 here left the upper byte of the fifth, eighth and ninth
+// arguments' stack slots undefined on 64-bit Windows)
+extern u32 TP_CalcCalibrateParam(TPCalibrateParam *p, u16 x1, u16 y1, u16 dx1, u16 dy1, u16 x2, u16 y2, u16 dx2, u16 dy2);
 extern BOOL PXI_IsCallbackReady(u32 tag, u32 proc);
 extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
 extern s32 PXI_SendWordByFifo(u32 tag, u32 data, u32 err);

@@ -43,6 +43,12 @@ parser.add_argument("--cross", default=os.path.expanduser(
 parser.add_argument("--qemu", default=os.path.expanduser("~/acww/toolchains/qemu/usr/bin/qemu-aarch64"),
                     help="--arch aarch64: qemu-aarch64 (user mode) for running the tests (the game: ACWW_RUNNER, "
                          "tools/host_oracle.sh)")
+parser.add_argument("--os", choices=["linux", "windows"], default="linux",
+                    help="windows (with --arch x86_64): a cross build for x86-64 Windows with llvm-mingw (clang, UCRT, "
+                         "libc++, lld; --mingw): build_host_win64.ninja, build/hostwin64_<v>/acww.exe, headless only "
+                         "(no frontend yet), run with Wine here (ACWW_RUNNER; docs/host.md)")
+parser.add_argument("--mingw", default="",
+                    help="the llvm-mingw directory for --os windows (default: the newest ~/acww/toolchains/llvm-mingw-*)")
 parser.add_argument("--extra-cflags", default="",
                     help="more compiler flags for the game code (a debugging build, e.g. -fstack-protector-all; "
                          "use with --suffix)")
@@ -68,8 +74,20 @@ parser.add_argument("version", nargs="?", default="usa")
 args = parser.parse_args()
 
 root = Path(__file__).resolve().parent.parent
-CLANG = os.path.basename(args.cc).startswith("clang")
-if CLANG:
+WIN = args.os == "windows"
+if WIN:
+    if args.arch != "x86_64":
+        sys.exit("--os windows: x86_64 only")
+    if args.guards or args.sanitize:
+        sys.exit("--os windows: no --guards or --sanitize (GNU ld / Linux runtimes)")
+    if not args.mingw:
+        found = sorted(glob.glob(os.path.expanduser("~/acww/toolchains/llvm-mingw-*/bin/x86_64-w64-mingw32-clang")))
+        if not found:
+            sys.exit("configure_host.py: no llvm-mingw in ~/acww/toolchains (--mingw)")
+        args.mingw = str(Path(found[-1]).parent.parent)
+    args.cc = f"{args.mingw}/bin/x86_64-w64-mingw32-clang"
+CLANG = os.path.basename(args.cc).startswith("clang") or WIN
+if CLANG and not WIN:
     if not args.suffix:
         args.suffix = "_clang"
     if not shutil.which(args.cc):
@@ -102,6 +120,11 @@ if A64:
     CXX = f"{args.cross}/bin/aarch64-none-linux-gnu-g++"
     build = Path("build") / f"hosta64{args.suffix}_{args.version}"
     NINJA_FILE = f"build_host_a64{args.suffix}.ninja"
+elif WIN:
+    # llvm-mingw's C++ compiler for the runtime's C++ units and the link (its libc++)
+    CXX = f"{args.mingw}/bin/x86_64-w64-mingw32-clang++"
+    build = Path("build") / f"hostwin64{args.suffix}_{args.version}"
+    NINJA_FILE = f"build_host_win64{args.suffix}.ninja"
 else:
     build = Path("build") / (f"host64{args.suffix}_{args.version}" if X64 else f"host{args.suffix}_{args.version}")
     NINJA_FILE = f"build_host64{args.suffix}.ninja" if X64 else f"build_host{args.suffix}.ninja"
@@ -110,19 +133,22 @@ G = f"{R}/usr/lib/gcc/x86_64-linux-gnu/15/32"
 M_FLAG = "-m64" if X64 else "" if A64 else "-m32"
 # the compiler command; clang is told its target (llvm-mingw's clang is a cross compiler for Windows too; on Linux it
 # finds the system's GCC installation for the host runtime's headers and libraries)
-CC = f"{args.cc} --target={'x86_64' if X64 else 'i386'}-linux-gnu" if CLANG else args.cc
+CC = f"{args.cc} --target={'x86_64' if X64 else 'i386'}-linux-gnu" if CLANG and not WIN else args.cc
 LD_EMU = "elf_x86_64" if X64 else "aarch64linux" if A64 else "elf_i386"
 
 # the 64-bit builds: position-independent executables (loaded anywhere, ASLR; docs/portability.md 3.3); i386, the
 # frozen reference, stays a fixed-address executable (its captures were taken so)
-PIE = "-fPIE" if HOST64 else "-fno-pie"
+PIE = "" if WIN else "-fPIE" if HOST64 else "-fno-pie"
 GAME_FLAGS = " ".join([
-    *([M_FLAG] if M_FLAG else []), PIE, "-fno-short-enums", "-fsigned-char", "-fshort-wchar", "-ffreestanding", "-nostdinc",
+    *([M_FLAG] if M_FLAG else []), *([PIE] if PIE else []), "-fno-short-enums", "-fsigned-char", "-fshort-wchar", "-ffreestanding", "-nostdinc",
     "-fno-strict-aliasing", "-fno-builtin", "-O1", "-g", "-w", "-fno-omit-frame-pointer", "-falign-functions=4",
     "-DMODERN", "-DHOST", f"-DGAME_VERSION_{args.version.upper()}", "-Iinclude",
     # the game's C library names renamed to ds_* (its own libc, apart from the host's)
     "-include", "include/host_libc_rename.h",
 ])
+if WIN:
+    # GCC's bitfield layout, not Microsoft's: the save data's layout (its static_asserts) needs it
+    GAME_FLAGS += " -mno-ms-bitfields"
 if not HOST64:
     # small structs returned in memory, as mwcc does: kept while the 32-bit build is the reference (its captures were
     # taken with it); the 64-bit builds use the platform ABI (clang supports the flag only on i386)
@@ -171,7 +197,7 @@ M = args.melonds
 GUARD_FLAGS = " -DHOST_GUARDS" if args.guards else ""
 # the frontend: SDL2 in the game's process (modern/host/frontend_sdl.c) when its headers are there (x86-64: --sdl2,
 # linked with the system's libSDL2); otherwise none (modern/host/frontend_none.c: headless only)
-SDL2 = X64 and os.path.exists(f"{args.sdl2}/usr/include/SDL2/SDL.h")
+SDL2 = X64 and not WIN and os.path.exists(f"{args.sdl2}/usr/include/SDL2/SDL.h")
 FRONTEND_FLAG = " -DHOST_FRONTEND_SDL=1" if SDL2 else " -DHOST_FRONTEND_NONE=1" if HOST64 else ""
 SDL_CFLAGS = f"-I{args.sdl2}/usr/include/SDL2 -I{args.sdl2}/usr/include/x86_64-linux-gnu" if SDL2 else ""
 SDL_LIBS = "-l:libSDL2-2.0.so.0" if SDL2 else ""
@@ -183,6 +209,17 @@ if A64:
     LINK_FLAGS = "-pie"
     HOST_CXX_FLAGS = f"-fPIE -O1 -g -ffp-contract=off -std=c++17 -I{M}/src -I{M}/build-core-a64/src -DHOST"
     MELON_LIBS = f"{M}/build-core-a64/src/libcore.a {M}/build-core-a64/src/teakra/src/libteakra.a"
+elif WIN:
+    # llvm-mingw's own libraries (UCRT, libc++, winpthreads), linked statically: the program needs only system DLLs.
+    # melonDS's core cross-built for Windows in build-core-win64 (tools/host/win64-mingw.toolchain.cmake; no JIT, no
+    # GDB stub). The runtime's C units share the game's structures, so they take -mno-ms-bitfields too; the C++ units
+    # include melonDS's headers and keep the platform layout of its library.
+    HOST_FLAGS = ("-m64 -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 -DHOST -Iinclude -mno-ms-bitfields"
+                  + FRONTEND_FLAG)
+    # (an 8 MB stack for the process's own thread: the game's threads have stacks of their own, os.c)
+    LINK_FLAGS = "-m64 -static -Wl,--stack,8388608"
+    HOST_CXX_FLAGS = f"-m64 -O1 -g -std=c++17 -I{M}/src -I{M}/build-core-win64/src -DHOST"
+    MELON_LIBS = f"{M}/build-core-win64/src/libcore.a {M}/build-core-win64/src/teakra/src/libteakra.a"
 elif X64:
     # the system's own 64-bit libraries; melonDS's 64-bit core (build-core, configured with the JIT and the GDB stub)
     HOST_FLAGS = ("-m64 -fPIE -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 -DHOST -Iinclude" + FRONTEND_FLAG
@@ -237,11 +274,11 @@ def main():
                depfile="$out.d", deps="gcc", description="CXX $in")
         n.rule("hostcc", f"{CC} {HOST_FLAGS} $flags -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCC $in")
-        n.rule("hostas_S", f"{CC} {M_FLAG} {PIE} -c $in -o $out", description="AS $in")
+        n.rule("hostas_S", " ".join(x for x in (CC, M_FLAG, PIE) if x) + " -c $in -o $out", description="AS $in")
         n.rule("hostcxx", f"{CXX} {HOST_CXX_FLAGS} -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCXX $in")
-        n.rule("link", f"{CXX} {LINK_FLAGS} -o $out @$objects {MELON_LIBS} {SDL_LIBS} -lstdc++ -lpthread -lm -lc -lgcc",
-               description="LINK $out")
+        libs = "" if WIN else f" {SDL_LIBS} -lstdc++ -lpthread -lm -lc -lgcc"
+        n.rule("link", f"{CXX} {LINK_FLAGS} -o $out @$objects {MELON_LIBS}{libs}", description="LINK $out")
         objs = []
         for s in sources(Path("src"), (".c", ".cpp")):
             o = str(build / s.with_suffix(".o"))
@@ -253,6 +290,8 @@ def main():
         for s in sources(Path("modern/host"), (".c", ".cpp", ".S")):
             if "viewer" in s.parts or "tests" in s.parts:
                 continue
+            if WIN and s.name in ("frontend_sdl.c", "frontend_viewer.c", "plat_posix.c"):
+                continue  # (debug_posix.c and guards.c are empty there: HOST_DEBUG_POSIX 0, no HOST_GUARDS)
             o = str(build / s.with_suffix(".o"))
             rule = {".cpp": "hostcxx", ".S": "hostas_S"}.get(s.suffix, "hostcc")
             sdl = s.name == "frontend_sdl.c" and SDL_CFLAGS
@@ -320,12 +359,14 @@ def main():
         # (the game's C library names don't clash with the host's: include/host_libc_rename.h)
         objects_file = build / "objects.txt"
         objects_file.write_text("".join(f"{o}\n" for o in link_objs))
-        exe = str(build / "acww")
+        exe = str(build / ("acww.exe" if WIN else "acww"))
         n.build(exe, "link", link_objs, implicit=[str(objects_file)], variables={"objects": str(objects_file)})
         # the viewer: a 64-bit SDL2 program (SDL2 headers from --sdl2, the system's libSDL2 at run time)
         n.rule("viewer", f"gcc -O2 -I{args.sdl2}/usr/include -I{args.sdl2}/usr/include/x86_64-linux-gnu $in -o $out "
                          "-l:libSDL2-2.0.so.0", description="VIEWER $out")
-        if A64:
+        if WIN:
+            n.default([exe])
+        elif A64:
             n.default([exe])
             # the arm64 stack switch (coro_switch.S): `ninja -f build_host_a64.ninja coro-a64-test`, run under --qemu
             # (modern/host/tests/coro_a64_test.c)

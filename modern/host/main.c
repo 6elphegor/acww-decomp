@@ -5,12 +5,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/mman.h>
 
 #include "coro.h"
 #include "host.h"
 #include "host_mem.h"
 #include "overlay.h"
+#include "plat.h"
 
 int gHostVerbose;
 const char *gHostRomPath;
@@ -26,6 +26,13 @@ void host_log_proc(u32 profile, void *create, void *obj) {
     static int on = -1;
     if (on < 0) on = getenv("ACWW_PROCLOG") != 0;
     if (on) fprintf(stderr, "proc: frame %llu profile %u create %p -> %p\n", (unsigned long long)host_frame(), profile, create, obj);
+}
+
+// is p inside the program's image (code, data, bss)? (1 where the platform doesn't say: plat.h)
+int host_in_program_image(const void *p) {
+    uintptr_t lo, hi;
+    if (!host_plat_image_bounds(&lo, &hi)) return 1;
+    return (uintptr_t)p >= lo && (uintptr_t)p < hi;
 }
 
 void host_bad_object(u32 profile, void *create, void *obj) {
@@ -67,6 +74,7 @@ void host_vram_init(void);
 void melon_init(void);
 #include "guards.h"
 __attribute__((constructor(101))) static void early_init(void) {
+    HostMem_Init();
     host_map_memory();
     host_vram_init();
     host_guards_init();   // (the guard variant: configure_host.py --guards)
@@ -164,7 +172,7 @@ void host_heap_check(void) {
 
 // The root heap's memory on 64-bit hosts (Heap_InitSystem): the game's objects are larger there (pointers), so the
 // DS's main RAM arena (about 1.4 MB for the root heap) runs out; the heap gets a larger block of its own instead
-// (anywhere: an anonymous mapping).
+// (anywhere: whole pages, host_plat_pages_alloc).
 
 // ::operator delete (newdelete.cpp): is p a block of the game's heaps? They are in the game's memory blocks
 // (include/host_mem.h: the main RAM block and the arenas), the game's data and bss (a heap in a static buffer) or,
@@ -179,8 +187,8 @@ void host_root_heap_bounds(uintptr_t *lo, uintptr_t *hi) {
 
 void *host_root_heap_region(unsigned int *size) {
     const unsigned int kSize = 8u << 20;
-    void *p = mmap(0, kSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-    if (p == MAP_FAILED) return 0;
+    void *p = host_plat_pages_alloc(kSize);
+    if (!p) return 0;
     *size = kSize;
     sRootHeapLo = (uintptr_t)p;
     sRootHeapHi = (uintptr_t)p + kSize;

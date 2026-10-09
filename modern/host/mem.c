@@ -7,14 +7,34 @@
 
 #include "host.h"
 #include "host_mem.h"
+#include "plat.h"
 
 HostSysWork gHostSysWork __attribute__((aligned(0x1000)));
-unsigned char gHostDtcm[0x4000] __attribute__((aligned(0x4000)));
-unsigned char gHostItcm[0x8000] __attribute__((aligned(0x8000)));
 unsigned char gHostPltt[0x800] __attribute__((aligned(0x800)));
 unsigned char gHostOam[0x800] __attribute__((aligned(0x800)));
-unsigned char gHostMainRam[HOST_MAIN_RAM_HI - HOST_MAIN_RAM_LO] __attribute__((aligned(0x200000)));
 unsigned char gHostWramArena[32] __attribute__((aligned(32)));
+
+// size bytes aligned to align (a power of two), zeroed, never freed
+void *HostMem_AlignedBlock(size_t size, size_t align) {
+    unsigned char *p = host_plat_pages_alloc(size + align);
+    if (!p) host_fatal("no memory for a host memory block");
+    return p + (-(uintptr_t)p & (align - 1));
+}
+
+#if HOST_MEM_RUNTIME_ALIGN
+unsigned char (*gHostDtcmBlock)[0x4000], (*gHostItcmBlock)[0x8000];
+unsigned char (*gHostMainRamBlock)[HOST_MAIN_RAM_HI - HOST_MAIN_RAM_LO];
+void HostMem_Init(void) {
+    gHostDtcmBlock = HostMem_AlignedBlock(sizeof gHostDtcm, 0x4000);
+    gHostItcmBlock = HostMem_AlignedBlock(sizeof gHostItcm, 0x8000);
+    gHostMainRamBlock = HostMem_AlignedBlock(sizeof gHostMainRam, 0x200000);
+}
+#else
+unsigned char gHostDtcm[0x4000] __attribute__((aligned(0x4000)));
+unsigned char gHostItcm[0x8000] __attribute__((aligned(0x8000)));
+unsigned char gHostMainRam[HOST_MAIN_RAM_HI - HOST_MAIN_RAM_LO] __attribute__((aligned(0x200000)));
+void HostMem_Init(void) {}
+#endif
 
 #if __SIZEOF_POINTER__ == 4
 // the DS's layout of the system work area (32-bit hosts: the same member sizes)

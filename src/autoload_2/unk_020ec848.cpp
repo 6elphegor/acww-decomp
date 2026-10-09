@@ -393,8 +393,8 @@ extern "C" ProcBase *Proc_Create(u32 a, TreeNode *parent, u32 c, u32 d) {
         extern void host_log_proc(u32 profile, void *create, void *obj);
         host_log_proc(a, (void *)gProfileTable[a]->create, r);
     }
-    extern char __executable_start[], _end[];  // the program image (linker symbols)
-    if (r != NULL && (*(uptr *)r < (uptr)__executable_start || *(uptr *)r >= (uptr)_end)) {  // a vtable outside it
+    extern int host_in_program_image(const void *p);
+    if (r != NULL && !host_in_program_image(*(void **)r)) {  // a vtable outside the program image
         extern void host_bad_object(u32 profile, void *create, void *obj);
         host_bad_object(a, (void *)gProfileTable[a]->create, r);
     }

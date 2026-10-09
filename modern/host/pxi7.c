@@ -254,7 +254,7 @@ static void card_request(u32 data) {
     default: break;  // identify, read id, status ...
     }
     b->result = result;
-    if (gHostVerbose) fprintf(stderr, "pxi7: card %u src %lx dst %lx len %x -> %u (frame %llu)\n", data, (unsigned long)src, (unsigned long)dst, len, result,
+    if (gHostVerbose) fprintf(stderr, "pxi7: card %u src %llx dst %llx len %x -> %u (frame %llu)\n", data, (unsigned long long)src, (unsigned long long)dst, len, result,
                               (unsigned long long)host_frame());
     pxi7_send_after(11 | 1u << 5, 20000);
 }

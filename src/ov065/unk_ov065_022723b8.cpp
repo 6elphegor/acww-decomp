@@ -97,7 +97,7 @@ s32 gpSetStatusA(GPConnection *, s32, char *, char *);
 s32 gpDeleteBuddy(void *, s32);
 s32 gpIsBuddy(void *connection, s32 profile);
 s32 gpGetBuddyStatus(void *connection, s32 index, void *status);
-s32 gpGetInfo(void *, s32, s32, s32, void (*)(), s32);
+s32 gpGetInfo(void *, s32, s32, s32, void (*)(), void *);
 s32 DwcFriend_GetStatus(void *, u8 *, u8 *, char *);
 s32 DwcFriend_GetStatusString(void *, char *);
 s32 DwcFriend_GetProfileId(s32);

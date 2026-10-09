@@ -310,8 +310,8 @@ static void command_proc(void) {
             struct SNDCommand c = *p;
             const uintptr_t *a = c.arg;
             if (sTrace)
-                fprintf(stderr, "snd7: frame %llu cmd %d %08lx %08lx %08lx %08lx\n", (unsigned long long)host_frame(), c.id,
-                        (unsigned long)a[0], (unsigned long)a[1], (unsigned long)a[2], (unsigned long)a[3]);
+                fprintf(stderr, "snd7: frame %llu cmd %d %08llx %08llx %08llx %08llx\n", (unsigned long long)host_frame(), c.id,
+                        (unsigned long long)a[0], (unsigned long long)a[1], (unsigned long long)a[2], (unsigned long long)a[3]);
             switch (c.id) {
             case 0x00: snd7_start_seq((int)a[0], (const void *)(uintptr_t)a[1], a[2], (struct SNDBankData *)(uintptr_t)a[3]); break;
             case 0x01: snd7_stop_seq((int)a[0]); break;

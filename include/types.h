@@ -19,7 +19,8 @@ typedef volatile u32 vu32;
 // including a game header.)
 typedef __SIZE_TYPE__ size_t;
 
-// mwcc's __declspec(weak) (the only __declspec in the code)
+// mwcc's __declspec(weak) (the only __declspec in the code; MinGW compilers predefine the same macro)
+#undef __declspec
 #define __declspec(x) __attribute__((x))
 // mwcc intrinsic: zero n bytes at p
 #define __builtin__clear(p, n) __builtin_memset((p), 0, (n))

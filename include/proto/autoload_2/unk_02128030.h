@@ -37,7 +37,7 @@ int __wctomb_noconv(char *s, u16 wc);
 int mbstowcs(u16 *pwcs, const char *s, u32 n);
 #endif
 #ifndef PROTO_LOCAL_scalbn
-s64 scalbn(s64 a, s32 delta);
+double scalbn(double a, s32 delta);
 #endif
 #ifndef PROTO_LOCAL_data_0213c400
 extern u16 data_0213c400[58];

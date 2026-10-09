@@ -74,8 +74,23 @@ extern HostSysWork gHostSysWork;
 #define HW_SYSWORK(T, m) ((T *)&gHostSysWork.m)
 #define HW_SYSWORK_AT(T, m, o) ((T *)((unsigned char *)&gHostSysWork.m + (o)))
 
+// HOST_MEM_RUNTIME_ALIGN (Windows): COFF objects can't ask for more than 8 KB of alignment, so the blocks aligned
+// more (DTCM, ITCM, the main RAM block; vram.c's banks and windows) are allocated at start-up (HostMem_Init, from
+// main.c's early_init) and their names stand for the allocations (sizeof still gives the block's size)
+#if defined(_WIN32)
+#define HOST_MEM_RUNTIME_ALIGN 1
+#else
+#define HOST_MEM_RUNTIME_ALIGN 0
+#endif
+
+#if HOST_MEM_RUNTIME_ALIGN
+extern unsigned char (*gHostDtcmBlock)[0x4000], (*gHostItcmBlock)[0x8000];
+#define gHostDtcm (*gHostDtcmBlock)
+#define gHostItcm (*gHostItcmBlock)
+#else
 extern unsigned char gHostDtcm[0x4000];
 extern unsigned char gHostItcm[0x8000];
+#endif
 #define HW_DTCM_BLOCK (gHostDtcm)
 #define HW_ITCM_BLOCK (gHostItcm)
 #define HW_INTR_CHECK_BUF ((volatile unsigned int *)(gHostDtcm + 0x3ff8))
@@ -89,7 +104,12 @@ void *HostVram_CpuPtr(unsigned int dsaddr);
 
 #define HOST_MAIN_RAM_LO 0x02200000u
 #define HOST_MAIN_RAM_HI 0x02400000u
+#if HOST_MEM_RUNTIME_ALIGN
+extern unsigned char (*gHostMainRamBlock)[HOST_MAIN_RAM_HI - HOST_MAIN_RAM_LO];
+#define gHostMainRam (*gHostMainRamBlock)
+#else
 extern unsigned char gHostMainRam[HOST_MAIN_RAM_HI - HOST_MAIN_RAM_LO];
+#endif
 void *HostMainRam_Ptr(unsigned int dsaddr);
 
 // the empty private-WRAM arena (OS arena 6: lo == hi on the DS)

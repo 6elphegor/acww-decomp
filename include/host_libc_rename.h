@@ -32,6 +32,7 @@ extern "C" int atexit(void (*func)(void)) HOST_LIBC_SYMBOL(ds_atexit);
 #define srand ds_srand
 #define strtol ds_strtol
 #define strtoul ds_strtoul
+#define __strtold ds___strtold  // (MinGW-w64's libmingwex has its own)
 #define time ds_time
 #define fclose ds_fclose
 #define fflush ds_fflush
@@ -60,6 +61,7 @@ extern "C" int atexit(void (*func)(void)) HOST_LIBC_SYMBOL(ds_atexit);
 #define strlen ds_strlen
 #define strncmp ds_strncmp
 #define strncpy ds_strncpy
+#define _strlwr ds__strlwr  // (also a Microsoft C library name)
 #define strspn ds_strspn
 #define strstr ds_strstr
 #define wcschr ds_wcschr
@@ -78,6 +80,7 @@ extern "C" int atexit(void (*func)(void)) HOST_LIBC_SYMBOL(ds_atexit);
 // sockets (the network library's SOC_* layer)
 #define accept ds_accept
 #define bind ds_bind
+#define closesocket ds_closesocket  // (also a Winsock name)
 #define connect ds_connect
 #define getsockname ds_getsockname
 #define getsockopt ds_getsockopt

@@ -25,7 +25,7 @@ No worktree was needed. All compiles read the main checkout and wrote only to th
 | D | Signals and CPU tricks | SIGSEGV I/O emulation and single-stepping (x86 only), interrupt injection under SP (`-mno-red-zone`, irq_entry.S), SIGFPE division emulation, SIGVTALRM hang guard, SIGPROF, `ucontext` gregs | macOS (different ucontext, no x86), Windows (no signals), arm64 (no division trap) | Already almost unused: 0 trapped I/O accesses in 11043 attract-demo frames (`ACWW_IOHIST`); hang guard silent over 25001 play frames; 1 division-by-zero site (`spl_scl_in_out`). Replace with explicit code. **Done 2026-10-08 (phase 1): only debug aids remain, behind `HOST_DEBUG_POSIX`** |
 | E | ELF / GNU-ld-only build steps | `ld -r -T` (2 partial links), 291 `--wrap` thunks in x86 asm, `--defsym`, `objcopy --localize-symbols` (76 names), provides.ld (7784 PROVIDE, of which 99 labels + 133 aliases are referenced), `.init_array` per-overlay ranges, `__start_/__stop_` symbols, gap data as ELF inline asm (113 objects), `.set` absolute symbols, `--allow-multiple-definition` | ld64 (Mac), lld-link / ld.bfd for PE (Windows) | Generated C instead of linker features; source-level fixes. **Done** (2.4-2.11, 0.2, 3.2, 3.3): the game links with a plain `g++ -pie -o acww *.o <libs>` (i386: `-no-pie` and the sysroot's options); only the guard variant (a GNU-ld debugging build) keeps its partial links |
 | F | GCC-only leniency and flags | Clang (Apple's only compiler) rejects 47 units with 2370 errors (1735 distinct) that GCC accepts. **0 after step 2.1.** GCC-only flags: `-malign-data=abi` (**dropped, 2.8**), `-fpcc-struct-return` (unsupported by clang off i386; changes 39 functions in 17 units; dropped on x86-64, 2.2) | macOS | Fix the declarations (the PROTO_LOCAL backlog); drop the flags after testing them |
-| G | LLP64 (Windows) | 831 errors (mostly `IO_ADDR_`'s `(unsigned long)` cast), 8 `__LP64__` checks, `unsigned long` pointer words in modern/ds/overlays.c. **0 beyond the baseline with `-mno-ms-bitfields` after step 2.3.** MS bitfield layout breaks the save `static_assert`s (696 + 54 + others); the MSVC ABI also breaks member-pointer casts (133) and the MWCC_LAYOUT tail-padding trick | Windows | One-line `IO_ADDR_` fix; MinGW-w64 (clang or gcc, Itanium C++ ABI) with `-mno-ms-bitfields`, **not MSVC**. With these, only 11 extra diagnostics remain |
+| G | LLP64 (Windows) | **4.4: the Windows build runs (llvm-mingw, Wine) with the oracle identical.** 831 errors (mostly `IO_ADDR_`'s `(unsigned long)` cast), 8 `__LP64__` checks, `unsigned long` pointer words in modern/ds/overlays.c. **0 beyond the baseline with `-mno-ms-bitfields` after step 2.3.** MS bitfield layout breaks the save `static_assert`s (696 + 54 + others); the MSVC ABI also breaks member-pointer casts (133) and the MWCC_LAYOUT tail-padding trick | Windows | One-line `IO_ADDR_` fix; MinGW-w64 (clang or gcc, Itanium C++ ABI) with `-mno-ms-bitfields`, **not MSVC**. With these, only 11 extra diagnostics remain |
 | H | Display and frontend | melonDS (GPL-3.0, patched, 32-bit core for i386) behind 8 `melon_*` functions; a separate SDL2 viewer process through `shm_open` + `fork`/`execl` | Licence; process model on Windows | In-process SDL frontend; own renderer behind the same 8-function interface |
 | I | Compiler assumptions | char signedness changes 21 functions in 11 units; `wchar_t` 72 uses / `L""` 11; `long` 196 uses (7 casts); `s64`/`u64` `aligned(4)` typedef; arm64 member-function-pointer (PMF) encoding differs from x86 (12 hand-encoded PMFs in gap data) | – | Keep `-fsigned-char` (gcc and clang support it on every target); `char16_t`; PMFs as typed C |
 
@@ -108,7 +108,7 @@ there**). They worked on x86-64 only because everything was kept below 4 GB.
 | SIGVTALRM hang guard every 2 ms of CPU time (`setitimer(ITIMER_VIRTUAL)`) | hw.c:759-782, :919-928; `EINTR` loop at hw.c:115 | Never fired in 25001 play frames | No Windows equivalent; reads ucontext | A report-only watchdog (thread or per-frame counter); explicit `host_poll()` at any spin site it reports |
 | SIGPROF sampler (`ACWW_PROFILE`), SIGINT dump, `ACWW_WATCH` (mprotect + trap flag), `ACWW_NOEMULATE` | hw.c:710-728, :784-808, :491-501, :647-655 | Debugging only | Linux/x86 only | Keep behind `#if HOST_DEBUG_POSIX`; elsewhere use the platform debugger |
 | Fault reporting with frame-pointer walk and `execinfo` `backtrace` | hw.c:480-489, :643-666, :842-852 | Crash reporting | glibc | Optional per-platform crash handler |
-| Stack switching for game threads | coro_switch.S (i386, x86-64 System V, x86-64 Windows, arm64 incl. Apple `_` prefix), coro.c | Yes | ~~Windows x64 missing~~ **written (4.3)**: saves rdi, rsi, xmm6-15 too and switches the TIB's stack bounds; tested on Linux through `ms_abi` (`coro-win64-test`), not yet on Windows | arm64: **runs (4.4)**, the aarch64 build under qemu, and `coro-a64-test` |
+| Stack switching for game threads | coro_switch.S (i386, x86-64 System V, x86-64 Windows, arm64 incl. Apple `_` prefix), coro.c | Yes | ~~Windows x64 missing~~ **written (4.3)**: saves rdi, rsi, xmm6-15 too and switches the TIB's stack bounds; tested on Linux through `ms_abi` (`coro-win64-test`); **runs (4.4)** the Windows build's threads under Wine | arm64: **runs (4.4)**, the aarch64 build under qemu, and `coro-a64-test` |
 | `ucontext` | hw.c:21, :31-43, :541-553 | Only in the handlers above | glibc register names | Goes away with the handlers |
 | ~~`-fno-pie`/`-no-pie`, `-Ttext-segment`, `--section-start`~~ | – | – | – | **Done (3.3)** on x86-64: `-fPIE -pie`; i386 keeps `-fno-pie`/`-no-pie` (default fixed address, no options) |
 
@@ -892,6 +892,66 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
   reads that give different garbage on each architecture) both builds agree. Not narrowed to the single fix: not
   `Bgm_GetSceneBgmId`'s table end and not the PlayerActor files (each reverted alone on arm64: still equal to x86-64);
   the rest of that commit's source fixes depend on its header changes.
+
+**Step 4.4, Windows part: done (2026-10-09).** What was done and measured:
+- **Build**: `configure_host.py --arch x86_64 --os windows` (`build_host_win64.ninja`, `build/hostwin64_usa/acww.exe`):
+  llvm-mingw 20261006 (clang 23.1.3, UCRT, libc++, lld; `--mingw`), linked `-static`, `-Wl,--stack,8388608`; the game
+  and the runtime's C with `-mno-ms-bitfields`, no PIE flag (lld's PE default: relocatable, high-entropy ASLR, so the
+  image is at 0x140000000 and above 4 GB). melonDS's core cross-built in `~/acww/ref/melonDS/build-core-win64`
+  (`tools/host/win64-mingw.toolchain.cmake`; JIT and GDB stub off). Headless only (modern's `frontend_none.c`). All
+  865 game units and the runtime compile with no errors; `plat_win32.c` compiled for the first time with no change
+  needed.
+- **Running**: Wine 10.0, `tools/host_wine.sh` (new: no display, `WINEDEBUG=-all`, its own prefix) as
+  `ACWW_RUNNER` of `tools/host_oracle.sh`. Speed as on Linux.
+- **What Windows exposed** (each fixed in the source):
+  - *Link*: the game's MSL `__strtold` clashed with libmingwex's (renamed `ds___strtold` in
+    include/host_libc_rename.h); a scan of every global the program defines against the toolchain's libraries found
+    two more the game defines and Windows' libraries have (`_strlwr`, `closesocket`: renamed too). `Proc_Create`'s
+    vtable check used the ELF linker symbols `__executable_start` / `_end`: now `host_in_program_image()` (plat.h:
+    `host_plat_image_bounds`, ELF symbols on POSIX, the PE header's `SizeOfImage` on Windows).
+  - *COFF alignment*: static objects can't be aligned beyond 8 KB (clang: "requested alignment must be 8192 bytes or
+    smaller" for DTCM 16 KB, ITCM 32 KB, main RAM 2 MB, the VRAM banks and windows up to 512 KB). With
+    `HOST_MEM_RUNTIME_ALIGN` (Windows) those blocks are allocated aligned at start-up (`HostMem_Init`,
+    `HostMem_AlignedBlock`) and their names stand for the allocations (`#define gHostDtcm (*gHostDtcmBlock)`: `sizeof`
+    still gives the size); elsewhere they stay static arrays.
+  - *Arguments in memory*: the Microsoft x64 convention passes the 5th and later arguments in stack slots whose bytes
+    beyond the argument's own size are undefined, where System V passes up to 6 in registers (extended by the
+    caller). So a call through a declaration with a narrower or 32-bit parameter where the definition reads a wider
+    one gets garbage there. Found: `InsectSpawn_FindUnitInBlock` (ov003, declared `u8 flag` 6th, defined `s32 mode`:
+    the attract demo's insects never spawned, the first visible divergence - a villager turned towards a missing
+    insect at frame 366 - found with the `ACWW_IOTRACE` frame hashes, then the arguments of the diverging `Vec_DistXZ`
+    call and a watch on the insect table between register accesses); `G3i_PerspectiveW_` (src/main/unk_020027b4.cpp,
+    `u32` for the 8th, an `s32 *` matrix: crashed at start-up writing through 0x100000000); `TP_CalcCalibrateParam`
+    (u8 for three u16 screen points, 5th, 8th, 9th); `CARDi_RequestStreamCommand`, `ItemPick_FromRange` and
+    `gpGetInfo` (s32 for pointers in slots 5-9). The check (a scratch libclang script over every call: the callee's
+    declaration as the calling unit sees it against the definition's parameter types from `tools/host_decls.py`,
+    flagging slots 5+ where the declared type is narrower than the defined one) now reports 0. Calls through function
+    pointers are not covered by it.
+  - *LLP64*: `__ptmf_null` (src/autoload_2/unk_0213a740.c) was two `long`s, 8 bytes on Windows, read as a 16-byte
+    member pointer: now two pointer-sized words. The runtime's `%lx` prints of addresses take `unsigned long long`.
+    The game's own `long`s (196 uses) are 32-bit on Windows as on the DS; the DWARF layouts of every named struct in
+    every unit are the same in the Linux x86-64 and the Windows objects (objdump --dwarf, compared per unit).
+  - *Found on the way, every build*: the MSL `scalbn` (src/autoload_2/unk_02128030.c) was decompiled as `s64
+    scalbn(s64, s32)` (a double and an s64 travel in the same registers on the DS) while its caller, `pow`, passes a
+    double: now `double scalbn(double, s32)` (only `pow`'s subnormal results reach it).
+  - *Text files*: the runtime's `ACWW_IOTRACE`, `ACWW_RAMHASH` and `ACWW_IOHIST` files are written in binary mode (the
+    UCRT's text mode wrote CR LF).
+  - *Not needed*: wchar_t is 16-bit on Windows anyway (`-fshort-wchar` kept, harmless); printf's formats (UCRT
+    supports `%llu`, `%zu`); paths (Unix paths reach the program as they are and Wine maps them; the program never
+    splits them); stacks (`host_plat_stack_alloc` commits the whole stack with a no-access page below and the switch
+    points the TIB's StackBase / StackLimit / DeallocationStack at it, so `__chkstk`'s probes and exception dispatch
+    see the right bounds; TLS is reached through the TEB, which a stack switch doesn't touch).
+- **Evidence** (after merging modern at 69bab3b0): `ACWW_RUNNER=tools/host_wine.sh tools/host_oracle.sh
+  build/hostwin64_usa/acww.exe quick` and `play`: every line "identical" against captures_v2 (both screenshots and
+  the 17.5 MB WAV; the 7 play screenshots). The save and continue scripts: the 70 + 16 screenshots (every 500
+  frames), the save file after the save and after the continue, and the `ACWW_IOTRACE` files (35002 and 8002 lines)
+  byte-identical to the x86-64 build's. The Linux builds with the same sources: i386 and x86-64 `host_oracle.sh` quick
+  and play identical against captures_v2 (and the i386 build's quick under `ACWW_TIMING=legacy` against the old
+  captures), `host_strict_errors.sh` 0, `coro-win64-test` passes.
+- **Left for Windows**: a frontend (SDL2 for Windows, or SDL3), a run on real Windows (Wine's TEB and exception
+  handling are close to Windows' but not the same), unwind information (`.pdata`) for coro_switch.S so a debugger's
+  stack walk crosses a coroutine's entry, and crash reports (`HOST_DEBUG_POSIX` is off: no handler yet, a fault ends
+  the process).
 
 ### Phase 5: renderer (independent, can start any time)
 28. **5.1** Own 2D compositor behind the 8-function interface (BG text/affine/extended modes, OBJ, windows, blending, master brightness), compared per frame with melonDS in the same process (both fed the same register/VRAM stream).

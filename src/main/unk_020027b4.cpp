@@ -124,7 +124,7 @@ extern "C" {
 }
 
 extern "C" {
-void G3i_PerspectiveW_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
+void G3i_PerspectiveW_(s32 fovySin, s32 fovyCos, s32 aspect, s32 near, s32 far, s32 scale, s32 load, s32 *mtx);
 }
 
 extern "C" {

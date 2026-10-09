@@ -167,9 +167,11 @@ int mbstowcs(u16 *pwcs, const char *s, u32 n) {
     return i;
 }
 
-s64 scalbn(s64 a, s32 delta) {
+// (doubles: on the DS a double and an s64 travel in the same registers, so the decompiled s64 version worked there;
+// on the host it converted the values numerically and its caller, pow, passes a double in a float register)
+double scalbn(double a, s32 delta) {
     s32 v;
-    s64 r = frexp(a, &v);
+    double r = frexp(a, &v);
     v += delta;
     return ldexp(r, v);
 }

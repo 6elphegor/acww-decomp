@@ -1,8 +1,8 @@
 // Host build runtime: the operating-system services the runtime needs (docs/portability.md 1.4, 4.2). One
 // implementation per platform: plat_posix.c (Linux, macOS), plat_win32.c (Windows); the parts that are plain C
 // are in plat_common.c. Nothing else in modern/host calls the operating system directly, except the POSIX-only
-// debugging aids (debug_posix.c, guards.c), the i386 viewer link (frontend_viewer.c) and the memory setup in
-// hw.c / main.c (docs/portability.md 3.3).
+// debugging aids (debug_posix.c, guards.c), the i386 viewer link (frontend_viewer.c) and the low-4 GB harness
+// (hw.c, ACWW_HIGHMEM: x86-64 Linux only).
 #ifndef HOST_PLAT_H
 #define HOST_PLAT_H
 
@@ -25,6 +25,11 @@ int host_plat_thread_start(void (*fn)(void *), void *arg);
 // where the system can do that (flags: none yet, 0). 0 if there is no memory.
 void *host_plat_stack_alloc(size_t n, int flags);
 void host_plat_stack_free(void *stack, size_t n);
+// n bytes of zeroed, page-aligned memory (anywhere), never freed; 0 if there is no memory.
+void *host_plat_pages_alloc(size_t n);
+
+// ---- the program image: [*lo, *hi) holds the program's code, data and bss; 0 where that isn't known
+int host_plat_image_bounds(uintptr_t *lo, uintptr_t *hi);
 
 // ---- files
 // The whole file in memory (malloc'd, freed with free); *size its length. 0 (and errno / GetLastError set) if it

@@ -31,7 +31,9 @@ extern const char *gHostRomPath;
 void host_map_memory(void);
 int host_highmem(void);                // ACWW_HIGHMEM: the low-4 GB poisoning harness (x86-64 Linux)
 void host_highmem_init(void);          // reserve the low 4 GB
+void HostMem_Init(void);               // mem.c: the host memory blocks allocated at start-up (HOST_MEM_RUNTIME_ALIGN)
 void HostMem_Check(void);              // mem.c: the game's variables and the host memory blocks as expected
+void *HostMem_AlignedBlock(size_t size, size_t align);  // zeroed, aligned, never freed
 u8 *host_io(u32 addr);                 // an I/O register (the register model's storage)
 // the game's register accesses (include/nitro/io_access.h): the register's address as a pointer-sized number
 unsigned long long HostIo_Read(uintptr_t addr, unsigned int size);

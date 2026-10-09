@@ -93,6 +93,19 @@ void host_plat_stack_free(void *stack, size_t n) {
     if (stack) VirtualFree((unsigned char *)stack - page_size(), 0, MEM_RELEASE);
 }
 
+void *host_plat_pages_alloc(size_t n) {
+    return VirtualAlloc(0, n, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+}
+
+int host_plat_image_bounds(uintptr_t *lo, uintptr_t *hi) {
+    // the PE headers of the program's own module (its base is the module handle)
+    const unsigned char *base = (const unsigned char *)GetModuleHandleW(0);
+    const IMAGE_NT_HEADERS *nt = (const IMAGE_NT_HEADERS *)(base + ((const IMAGE_DOS_HEADER *)base)->e_lfanew);
+    *lo = (uintptr_t)base;
+    *hi = (uintptr_t)base + nt->OptionalHeader.SizeOfImage;
+    return 1;
+}
+
 int host_plat_backtrace(void **pcs, int n) {
     if (n > 62) n = 62;  // (the limit of RtlCaptureStackBackTrace before Windows Vista; harmless now)
     return CaptureStackBackTrace(1, (DWORD)n, pcs, 0);

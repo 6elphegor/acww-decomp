@@ -113,9 +113,9 @@ and the instruction decoding that used to catch missed accesses are gone since 2
 in the play and save/continue scripts).
 
 Threads switch stacks with `coro_switch.S` (i386, x86-64 System V, x86-64 Windows, arm64; `coro.h`), not
-`ucontext`. The Windows variant (rdi, rsi and xmm6-15 saved too, the TIB's stack bounds switched with the stack) has
-not run on Windows yet; `ninja -f build_host64.ninja coro-win64-test` runs the same code on Linux, called with
-GCC's `ms_abi` and a stand-in TIB (`modern/host/tests/coro_win64_test.c`). The arm64 variant runs the aarch64 build
+`ucontext`. The Windows variant (rdi, rsi and xmm6-15 saved too, the TIB's stack bounds switched with the stack) runs
+the Windows build's game threads (under Wine, below); `ninja -f build_host64.ninja coro-win64-test` also runs the
+same code on Linux, called with GCC's `ms_abi` and a stand-in TIB (`modern/host/tests/coro_win64_test.c`). The arm64 variant runs the aarch64 build
 under qemu (below), and `ninja -f build_host_a64.ninja coro-a64-test` checks it alone (`modern/host/tests/coro_a64_test.c`:
 x19-x29 and d8-d15 survive a switch, arguments, stack alignment). Interrupts are
 delivered only at safe points: register accesses, and when the game enables interrupts, halts or waits. No signal
@@ -167,9 +167,10 @@ The runtime (`modern/host/`):
   accesses; 60 Hz pacing; the watchdog.
 - `plat.h`, `plat_posix.c`, `plat_win32.c`, `plat_common.c`: the operating-system services (docs/portability.md
   4.2): monotonic time, sleeping until a deadline, the local time, a background thread, coroutine stacks (with a
-  guard page), reading a file into memory (the ROM), a backtrace. The rest of the runtime calls no POSIX function
-  except the root heap's `mmap` (`main.c`), the `ACWW_HIGHMEM` harness (`hw.c`), the debugging aids (`debug_posix.c`, `guards.c`) and
-  the i386 viewer link (`frontend_viewer.c`). `plat_win32.c` is written but not compiled yet (no Windows build).
+  guard page), zeroed page-aligned blocks (the root heap, the blocks of `HOST_MEM_RUNTIME_ALIGN`), the program
+  image's bounds, reading a file into memory (the ROM), a backtrace. The rest of the runtime calls no POSIX function
+  except the `ACWW_HIGHMEM` harness (`hw.c`, x86-64 Linux only), the debugging aids (`debug_posix.c`, `guards.c`) and
+  the i386 viewer link (`frontend_viewer.c`). `plat_win32.c` is the Windows build's (below).
 - `debug_posix.c`: the signal-based debugging aids (`HOST_DEBUG_POSIX`).
 - `mem.c`: the DS memory the game reaches by address, as host objects (include/host_mem.h): the system work area
   (`gHostSysWork`, `HW_SYSWORK(T, member)`), DTCM and ITCM (16 / 32 KB blocks), palettes and OAM (`HW_PLTT`,
@@ -350,6 +351,32 @@ WAV) and play identical to captures_v2; the save and continue scripts give the x
 beyond the build: the runtime's x86-only bits were already guarded (debug_posix.c now also reads the arm64
 registers for its crash report; `ACWW_WATCH` stays x86), and `host_panic` prints only the format on Linux arm64
 (its `void *` argument list can't be a `va_list` there).
+
+**Windows x86-64** (docs/portability.md 4.4): `python3 tools/configure_host.py --arch x86_64 --os windows && ninja -f
+build_host_win64.ninja` cross-compiles `build/hostwin64_usa/acww.exe` with llvm-mingw (clang, the UCRT, libc++ and
+lld: `--mingw`, default the newest `~/acww/toolchains/llvm-mingw-*`), linked statically (only system DLLs needed),
+with an 8 MB stack for the process's own thread. MinGW keeps the Itanium C++ ABI; the game and the runtime's C get
+`-mno-ms-bitfields` (GCC's bitfield layout, which the save data's `static_assert`s need); the runtime's C++ units
+(melonDS's headers) keep the platform's. No frontend yet (`frontend_none.c`: headless). The runtime builds without
+POSIX: `plat_win32.c`, no `frontend_sdl.c` / `frontend_viewer.c` / `plat_posix.c`; `debug_posix.c` and `guards.c`
+compile to their stubs (`HOST_DEBUG_POSIX` 0). COFF objects can't be aligned beyond 8 KB, so the host blocks aligned
+more (DTCM, ITCM, the main RAM block, VRAM's banks and windows) are allocated at start-up there
+(`HOST_MEM_RUNTIME_ALIGN`, include/host_mem.h; `HostMem_Check` verifies the alignment as before). melonDS's core is
+cross-built once, outside the repository:
+
+    cd ~/acww/ref/melonDS && cmake -S . -B build-core-win64 -G Ninja \
+      -DCMAKE_TOOLCHAIN_FILE=<repo>/tools/host/win64-mingw.toolchain.cmake -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_CXX_FLAGS=-ffp-contract=off -DBUILD_QT_SDL=OFF -DENABLE_JIT=OFF -DENABLE_GDBSTUB=OFF \
+      -DENABLE_OGLRENDERER=OFF -DENABLE_LTO_RELEASE=OFF -DUSE_VCPKG=OFF
+    ninja -C build-core-win64 core
+
+It runs under Wine here: `tools/host_wine.sh build/hostwin64_usa/acww.exe <rom>` (no display, `WINEDEBUG=-all`, a
+prefix of its own: `$WINEPREFIX`, default `~/.cache/acww-wine`; Unix paths work as they are, through Wine's Z:
+drive), and `ACWW_RUNNER=tools/host_wine.sh tools/host_oracle.sh build/hostwin64_usa/acww.exe quick|play` (as fast as
+the Linux build: quick about 1.5 minutes, play about 4). Status: quick (both screenshots and the whole WAV) and play
+identical to captures_v2; the save and continue scripts give the x86-64 build's screenshots (70 and 16, every 500
+frames), save files and `ACWW_IOTRACE` files byte for byte. The runtime writes its text files (`ACWW_IOTRACE`,
+`ACWW_RAMHASH`, `ACWW_IOHIST`) in binary mode, so they have LF line ends on Windows too.
 
 `ACWW_HIGHMEM=1` (x86-64 Linux) is the low-4 GB poisoning harness (docs/portability.md 3.0, 3.3): the whole low 4 GB
 (from 64 KB up) reserved without access (`PROT_NONE`, as macOS's `__PAGEZERO`); the PIE program, the C library's

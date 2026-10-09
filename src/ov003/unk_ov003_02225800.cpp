@@ -441,7 +441,9 @@ void *FxVec3_Construct(void *);
 void *func_02000c8c(void *);
 u32 Item_MakeBuilding(u32 a);
 void *StrBSize_Get(u16 *p);
-BOOL InsectSpawn_FindUnitInBlock(void *a, s32 code, s32 *x, s32 *y, void *obj, u8 flag);
+// (the mode as the definition has it, s32: a u8 here left the upper bytes of its stack slot undefined on 64-bit Windows,
+// where the sixth argument is passed in memory)
+BOOL InsectSpawn_FindUnitInBlock(void *a, s32 code, s32 *x, s32 *y, void *obj, s32 flag);
 Actor *PlayerActor_GetActor(u32 n);
 s32 Vec_DistXZ(void *a, void *b);
 s32 Weather_GetFallingPrecip();

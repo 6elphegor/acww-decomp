@@ -14,7 +14,8 @@ extern "C" void OS_ReleaseLockID(u16 v);
 extern "C" s32 OS_GetLockID(void);
 extern "C" void CARD_LockBackup(u16 v);
 // (src, dst: card addresses or ARM9 memory)
-extern "C" s32 CARDi_RequestStreamCommand(uptr a, uptr b, u32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i);
+extern "C" s32 CARDi_RequestStreamCommand(uptr a, uptr b, u32 c, void (*callback)(void *), void *arg, s32 f, u32 g,
+                                          u32 h, u32 i);
 
 extern "C" void FishDisplay_RecvAct02(u8 *p, u32 v);
 extern "C" void FishDisplay_RecvAct01(u8 *p, u32 v);

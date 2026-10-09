@@ -4,8 +4,10 @@
 // last). Code compiled by mwcc loads it to clear or compare a pointer to member function (main, many overlays).
 // No function of the runtime's ptmf file is in the ROM (mwcc's ARM code does not call them), so this is a
 // data-only unit.
+// (pointer-sized words: a pointer to member function is two of them - the DS's long, but on 64-bit Windows a
+// long has 32 bits and the 16-byte member pointers read past an 8-byte object)
 typedef struct __ptmf {
-    long w[2];
+    __UINTPTR_TYPE__ w[2];
 } __ptmf;
 
 extern const __ptmf __ptmf_null;

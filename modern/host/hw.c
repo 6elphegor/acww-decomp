@@ -15,9 +15,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <fcntl.h>
+#if defined(__x86_64__) && defined(__linux__)
+#include <fcntl.h>     // (ACWW_HIGHMEM: /proc/self/maps, the reservations)
 #include <sys/mman.h>
 #include <unistd.h>
+#endif
 
 #include "host.h"
 #include "host_mem.h"
@@ -269,7 +271,7 @@ static void run_events_body(void) {
             static FILE *hf; static int hinit; static const char *ramList, *ramTo;
             if (!hinit) {
                 hinit = 1;
-                if (getenv("ACWW_RAMHASH")) hf = fopen(getenv("ACWW_RAMHASH"), "w");
+                if (getenv("ACWW_RAMHASH")) hf = fopen(getenv("ACWW_RAMHASH"), "wb");
                 ramList = getenv("ACWW_RAMDUMP");
                 ramTo = ramList && strchr(ramList, ':') ? strchr(ramList, ':') + 1 : 0;
             }
@@ -413,8 +415,8 @@ static void dma_run(int ch) {
     int dc = cnt >> 21 & 3, sc = cnt >> 23 & 3;
     if (n == 0) n = 0x200000;
     if (src < 0x10000 || dst < 0x10000) {  // (a null pointer, a small number)
-        fprintf(stderr, "host: DMA%d from %08lx to %08lx, control %08x: bad address\n", ch, (unsigned long)src,
-                (unsigned long)dst, cnt);
+        fprintf(stderr, "host: DMA%d from %08llx to %08llx, control %08x: bad address\n", ch, (unsigned long long)src,
+                (unsigned long long)dst, cnt);
         R32(base + 8) = cnt & ~0x80000000u;
         return;
     }
@@ -606,17 +608,17 @@ static void io_hist_dump(void) {
     static int done;
     if (sIoHist <= 0 || done) return;
     done = 1;
-    FILE *f = fopen("acww_iohist.txt", "w");
+    FILE *f = fopen("acww_iohist.txt", "wb");
     if (!f) return;
     for (int i = 0; i < 4096; i++)
-        if (sHist[i].n) fprintf(f, "%u %08x %08lx %c\n", sHist[i].n, sHist[i].addr, (unsigned long)sHist[i].pc, sHist[i].write ? 'w' : 'r');
+        if (sHist[i].n) fprintf(f, "%u %08x %08llx %c\n", sHist[i].n, sHist[i].addr, (unsigned long long)sHist[i].pc, sHist[i].write ? 'w' : 'r');
     fclose(f);
 }
 void host_io_ring_dump(void) {
     fprintf(stderr, "host: %llu I/O accesses; last ones:\n", (unsigned long long)sIoCount);
     for (int i = 0; i < 16; i++) {
         struct IoLog *l = &sRing[(sRingPos + i) & 15];
-        fprintf(stderr, "  %s %08x from %08lx\n", l->write ? "write" : "read ", l->addr, (unsigned long)l->pc);
+        fprintf(stderr, "  %s %08x from %08llx\n", l->write ? "write" : "read ", l->addr, (unsigned long long)l->pc);
     }
 }
 static uintptr_t io_last_caller(void) { return sRing[(sRingPos - 1) & 15].pc; }
@@ -647,7 +649,8 @@ static inline void io_access_done(void) {
 // ACWW_IOTRACE=<file>: per frame, the number of register reads and writes and a hash of their sequence (addresses
 // and values) - two builds' first frame whose register traffic differs; ACWW_IOTRACE_FRAMES=<from>-<to>: every
 // access in those frames too ("r|w address value cycles caller", the caller less host_frame's address: add
-// host_frame's address from `nm` for addr2line)
+// host_frame's address from `nm` for addr2line). (The text files here are written in binary mode: the same
+// bytes, LF line ends, on Windows too, so that two builds' files compare.)
 static int sIoTrace = -1;
 static FILE *sIoTraceFile;
 static u64 sTrHash = 0xcbf29ce484222325ull, sTrReads, sTrWrites;
@@ -657,7 +660,7 @@ static void io_trace_init(void) {
     const char *e = getenv("ACWW_IOTRACE");
     sIoTrace = e && *e;
     if (!sIoTrace) return;
-    if (!(sIoTraceFile = fopen(e, "w"))) { sIoTrace = 0; return; }
+    if (!(sIoTraceFile = fopen(e, "wb"))) { sIoTrace = 0; return; }
     const char *r = getenv("ACWW_IOTRACE_FRAMES");
     if (r) sscanf(r, "%ld-%ld", &sTrFrom, &sTrTo);
 }
@@ -674,8 +677,8 @@ static void io_trace_value(u32 a, int write, unsigned long long v) {
     if (!write || !addrReg) io_trace_mix(v);
     long f = (long)host_frame();
     if (f >= sTrFrom && f <= sTrTo)
-        fprintf(sIoTraceFile, "%c %08x %llx %llu %lx\n", write ? 'w' : 'r', a, v, (unsigned long long)sCycles,
-                (unsigned long)(sTrCaller - (uintptr_t)&host_frame));
+        fprintf(sIoTraceFile, "%c %08x %llx %llu %llx\n", write ? 'w' : 'r', a, v, (unsigned long long)sCycles,
+                (unsigned long long)(sTrCaller - (uintptr_t)&host_frame));
 }
 static void io_trace_frame(void) {
     if (sIoTrace < 0) io_trace_init();
@@ -691,7 +694,7 @@ static void io_trace_frame(void) {
 // (the whole pointer-sized address: a host pointer above 4 GB whose low word looks like a register isn't one)
 static void io_note(uintptr_t a, int write, void *caller) {
     if (a > 0xffffffffu || !is_io((u32)a)) {
-        fprintf(stderr, "host: register access to %08lx (not an I/O register) from %p\n", (unsigned long)a, caller);
+        fprintf(stderr, "host: register access to %08llx (not an I/O register) from %p\n", (unsigned long long)a, caller);
         host_fatal("bad register address");
     }
     sIoCount++;

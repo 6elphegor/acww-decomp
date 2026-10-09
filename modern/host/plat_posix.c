@@ -95,6 +95,23 @@ void host_plat_stack_free(void *stack, size_t n) {
     munmap((unsigned char *)stack - page, n + page);
 }
 
+void *host_plat_pages_alloc(size_t n) {
+    void *p = mmap(0, n, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    return p == MAP_FAILED ? 0 : p;
+}
+
+int host_plat_image_bounds(uintptr_t *lo, uintptr_t *hi) {
+#if defined(__ELF__)
+    extern char __executable_start[], _end[];  // (the linkers' symbols: GNU ld, lld, gold)
+    *lo = (uintptr_t)__executable_start;
+    *hi = (uintptr_t)_end;
+    return 1;
+#else
+    (void)lo; (void)hi;
+    return 0;
+#endif
+}
+
 int host_plat_backtrace(void **pcs, int n) {
 #if HAVE_EXECINFO
     return backtrace(pcs, n);

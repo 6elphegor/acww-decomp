@@ -20,25 +20,36 @@ static const u32 kSize[9] = {0x20000, 0x20000, 0x20000, 0x20000, 0x10000, 0x4000
 static const u32 kLcdc[9] = {0x06800000, 0x06820000, 0x06840000, 0x06860000, 0x06880000, 0x06890000, 0x06894000,
                              0x06898000, 0x068a0000};
 static u32 sOffset[9];
+#if HOST_MEM_RUNTIME_ALIGN
+static u8 (*sBanksBlock)[BANK_TOTAL];  // (allocated by host_vram_init: include/host_mem.h)
+#define sBanks (*sBanksBlock)
+#else
 static u8 sBanks[BANK_TOTAL] __attribute__((aligned(0x20000)));
+#endif
 static u8 sCnt[9];
 
 u8 *host_vram_bank(int i) { return sBanks + sOffset[i]; }
 u32 host_vram_bank_size(int i) { return kSize[i]; }
 
+// the windows: their DS address, size and alignment (the size, at most 128 KB); their memory (sWinMem)
+static const struct { u32 base, size, align; } kWindows[] = {
+    {0x06000000, 0x80000, 0x80000},  // engine A BG
+    {0x06200000, 0x20000, 0x20000},  // engine B BG
+    {0x06400000, 0x40000, 0x40000},  // engine A OBJ
+    {0x06600000, 0x20000, 0x20000},  // engine B OBJ
+    {0x06800000, 0xa4000, 0x20000},  // LCDC
+};
+#define NWIN (sizeof kWindows / sizeof kWindows[0])
+#if HOST_MEM_RUNTIME_ALIGN
+static u8 *sWinMem[NWIN];  // (allocated by host_vram_init)
+#else
 static u8 sWinBgA[0x80000] __attribute__((aligned(0x80000)));
 static u8 sWinBgB[0x20000] __attribute__((aligned(0x20000)));
 static u8 sWinObjA[0x40000] __attribute__((aligned(0x40000)));
 static u8 sWinObjB[0x20000] __attribute__((aligned(0x20000)));
 static u8 sWinLcdc[0xa4000] __attribute__((aligned(0x20000)));
-static const struct { u32 base, size; u8 *mem; } kWindows[] = {
-    {0x06000000, sizeof sWinBgA, sWinBgA},    // engine A BG
-    {0x06200000, sizeof sWinBgB, sWinBgB},    // engine B BG
-    {0x06400000, sizeof sWinObjA, sWinObjA},  // engine A OBJ
-    {0x06600000, sizeof sWinObjB, sWinObjB},  // engine B OBJ
-    {0x06800000, sizeof sWinLcdc, sWinLcdc},  // LCDC
-};
-#define NWIN (sizeof kWindows / sizeof kWindows[0])
+static u8 *const sWinMem[NWIN] = {sWinBgA, sWinBgB, sWinObjA, sWinObjB, sWinLcdc};
+#endif
 
 // the windows in granules of 16 KB (every bank's size and place is a multiple): which bank shows there (-1: none)
 // and at which offset in the bank
@@ -132,17 +143,21 @@ void host_vram_control(u32 addr, u8 value) {
 static u8 sScratch[0x80000];
 void *HostVram_CpuPtr(unsigned int a) {
     for (unsigned w = 0; w < NWIN; w++)
-        if (a >= kWindows[w].base && a - kWindows[w].base < kWindows[w].size) return kWindows[w].mem + (a - kWindows[w].base);
+        if (a >= kWindows[w].base && a - kWindows[w].base < kWindows[w].size) return sWinMem[w] + (a - kWindows[w].base);
     static int reported;
     if (!reported++) fprintf(stderr, "vram: CPU address %08x outside the VRAM windows (frame %llu)\n", a, (unsigned long long)host_frame());
     return sScratch;
 }
 
 void host_vram_init(void) {
+#if HOST_MEM_RUNTIME_ALIGN
+    sBanksBlock = HostMem_AlignedBlock(sizeof sBanks, 0x20000);
+    for (unsigned w = 0; w < NWIN; w++) sWinMem[w] = HostMem_AlignedBlock(kWindows[w].size, kWindows[w].align);
+#endif
     u32 total = 0;
     for (int i = 0; i < 9; i++) { sOffset[i] = total; total += kSize[i]; }
     int g = 0;
     for (unsigned w = 0; w < NWIN; w++)
-        for (u32 off = 0; off < kWindows[w].size; off += GRANULE, g++) sGran[g].win = kWindows[w].mem + off;
+        for (u32 off = 0; off < kWindows[w].size; off += GRANULE, g++) sGran[g].win = sWinMem[w] + off;
     remap();
 }
