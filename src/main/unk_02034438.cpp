@@ -82,7 +82,6 @@ extern ProcBase *gActorDefaultParent;
 void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Event_GetState(u32, void *, u32);
-extern u16 data_020c8b9c[];
 s32 Clock_GetYear(void);
 void Clock_GetDayMonth(u16 *);
 void Clock_GetMinuteHour(u16 *);
@@ -810,7 +809,8 @@ void RoomBgm::end() {
 void RoomBgm::setKeep(u32 a) { keep = a; }
 
 extern "C" s32 Bgm_GetSceneBgmId(s32 a) {
-    u16 *e = data_020c8b9c;
+    // (the table's end: on the DS the address of the next object, data_020c8b9c, an unrelated constant)
+    const u16 *e = sSceneBgmTable + sizeof(sSceneBgmTable) / sizeof(sSceneBgmTable[0]);
     u32 r = 0xffff;
     const u16 *p;
     for (p = sSceneBgmTable; p < e; p += 2) {

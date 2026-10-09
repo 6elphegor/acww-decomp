@@ -721,7 +721,7 @@ extern "C" void PlayerActor_LieInBedSetWork(u8 *p, u32 v) {
 }
 
 extern "C" void PlayerActor_SetupLieInBed(Obj *o, u8 *p, s32 c) {
-    u8 *q = p + 0xc;
+    u8 *q = ((PlayerActionRequest *)(void *)p)->unk_0c_b;
     u8 *rec = o->actionWorkRaw;
     if (o->animId != 0x11) {
         if (c == 0xf || c == 0xd || !((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot)) {
@@ -984,8 +984,7 @@ extern "C" void PlayerActor_GetOutOfBedGetNetData(u8 *p, u8 *out) {
 }
 
 extern "C" void PlayerActor_SetupGetOutOfBed(Obj *o, Msg *m) {
-    u8 *q0 = (u8 *)m;
-    u8 *q = q0 + 0xc;
+    u8 *q = m->unk_0c_b;
     u8 c = m->unk_0c_b[0];
     if (Unk_ov004_02224284_IsOne(gFieldSceneKind)) {
         FtrMgr_PlaySeatSound2At((V3 *)&o->position);

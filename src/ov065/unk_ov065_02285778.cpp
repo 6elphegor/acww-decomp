@@ -54,6 +54,7 @@ BOOL gti2HandleESN(Cn *, u32);
 s32 gti2HandleAck(Cn *c, u8 *p, s32 n);
 s32 gti2HandleNack(Cn *c, u8 *p, s32 n);
 s32 gti2HandlePing(Cn *c, u8 *p, s32 n);
+s32 gti2SendPong(Cn *o, u8 *b, s32 n);
 s32 gti2HandlePong(Cn *c, u8 *p, s32 n);
 s32 gti2HandleClosed(Cn *c);
 void gti2SetPendingAck(Cn *c);
@@ -1081,6 +1082,8 @@ BOOL gti2HandleNack(Cn *c, u8 *p, s32 n)
 namespace N02285630 { extern "C" {
 s32 gti2HandlePing(Cn *c, u8 *p, s32 n)
 {
+    // (the original is a branch to gti2SendPong with the same arguments; the empty body returned nothing)
+    return gti2SendPong(c, p, n);
 }
 } }
 

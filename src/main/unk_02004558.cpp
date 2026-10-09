@@ -6319,7 +6319,7 @@ void PlayerNetActionArgs::readS16(s16 *out) {
 
 void PlayerActor::setupAct77(u8 *msg) {
     using namespace nF;
-    s16 v = *(s16 *)(msg + 0xc);
+    s16 v = ((PlayerActionRequest *)(void *)msg)->unk_0c_h;
     (this)->startAnimOnce(0x70, 3, 0);
     Effect_Create(0x43, &headTopPos, 0, 0);
     (this)->playSe(0x86);
@@ -6506,7 +6506,7 @@ BOOL PlayerActor::requestErrorMessage(u8 v, u32 a, u32 b) {
 void PlayerActor::setupErrorMessage(u8 *msg) {
     using namespace nF;
     u8 *p = &actionWorkRaw[0];
-    p[0] = msg[0xc];
+    p[0] = ((PlayerActionRequest *)(void *)msg)->unk_0c_b[0];
     p[1] = 0;
     (this)->startAnim(0, 3, 3);
 }

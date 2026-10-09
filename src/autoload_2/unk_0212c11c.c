@@ -615,8 +615,10 @@ void *__wStringWrite(void *osc, const wchar_t *buf, u32 n) {
     __wOutStr *s = (__wOutStr *)osc;
     u32 chars;
     chars = ((s->CharsWritten + n) <= s->MaxCharCount) ? n : s->MaxCharCount - s->CharsWritten;
-    wmemcpy(s->CharStr + s->CharsWritten, buf, chars);
+    // (the original returns wmemcpy's result, the destination: non-NULL, the caller's success test)
+    void *r = wmemcpy(s->CharStr + s->CharsWritten, buf, chars);
     s->CharsWritten += chars;
+    return r;
 }
 
 // vswprintf (declared before swprintf, defined below it)
