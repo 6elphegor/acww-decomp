@@ -673,6 +673,55 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     (4.1-4.3): the same results.
 23. **3.4** Retire the i386 build as the reference: re-record the oracle from the x86-64 build. First make virtual time independent of code shape, so arm64 matches too. Today the 64-bit timing drifts by a frame or two after scene changes.
 
+    **Done (2026-10-08).** The i386 and x86-64 builds now give the same output - every screenshot, the sound, the
+    save files and the register traffic frame for frame - in the quick, play, town, save and continue scripts, and
+    the x86-64 build is the reference (captures in `~/acww/ref/oracle/captures_v2`). What was found and done:
+    - **The drift was not timing.** `ACWW_IOTRACE` (new: per frame the reads, writes, a hash of every access's
+      address and value, the clock; `ACWW_IOTRACE_FRAMES` lists each access with its caller) showed the two builds'
+      register traffic identical, read values and clock included, up to frame 1467 of the play script. There the
+      first differing access led, through gdb at that cycle in both builds, to a 64-bit bug; fixed, the next
+      difference to the next one. Seven 64-bit bugs, all DS layouts read on 64-bit hosts (commits 1ce5cf3c,
+      bc50ae1f): the collision query's wall list written through a DS-layout view (no wall was ever found: NPCs
+      walked through cliffs), the joint-blend callbacks reading the render state as a model (the NPCs' blended
+      poses), `func_01ffcc10` reading `recJntAnm` at the DS offset, the talk request reaching the NPC's voice
+      (Kapp'n had no voice) and action control at DS offsets, `HandOverItem` / the bed check / a villager's put-away
+      reading `profile` and a frame control at DS offsets, the particle resource view `ResB` (a child emitter's
+      texture size: the taxi's exhaust), and ov004's `PlayerActor_Setup*` reading the action request's payload at
+      the DS offset 0xc (the walk out of a building aimed elsewhere). With the first five fixed, the builds'
+      traffic was identical through all 25000 frames of the play script under the old timing already; the access
+      counting only turned every behaviour difference into a time shift that moved everything after it. Each fix
+      leaves the i386 build unchanged (oracle quick and play identical to the old captures under
+      `ACWW_TIMING=legacy`).
+    - **Virtual time from what the game observes** (hw.c `io_read_cost`, docs/host.md "Virtual time"): measured
+      first what the game uses time for (`ACWW_IOHIST`, play script, legacy time: 6.68 million register reads, of
+      them 0.6 % clock reads - VCOUNT 41,296 for the HBlank handler and the VRAM upload queues, DISPSTAT 4,
+      `OS_GetTick` 77 for the 40 ms scene-creation budget, two loaders, a blink and a timeout; the interrupt
+      master enable alone 29 %). Now a clock read (DISPSTAT / VCOUNT, a timer's counter) takes 64 cycles, a polling
+      read (the fifth and later read of one register with no other access between) 4096, `OS_SpinWait` /
+      `SVC_WaitByLoop` their length (they took none before; `SND_RecvCommandReply`'s wait needs it), every other
+      access nothing; halts and interrupt waits jump to the next event as before. Before -> after on the play
+      script: every one of 6.68 million reads timed -> 43,425 clock reads and 1,595 polling reads (in 15 frames, all
+      `G3X_ClearFifo` waiting a frame for melonDS's geometry engine at a scene start), no spin without time
+      (a million timeless accesses would be reported and skipped to the next event: never happened). The game now
+      reaches its VBlank wait in every frame, loads instantly (the title at frame 250, legacy 1550, the DS ~900)
+      and, its random seeds coming from the clock, makes a different town in the new-game scripts.
+      `ACWW_TIMING=legacy` keeps the old model for comparing with the old captures.
+    - **Evidence**: the i386 and x86-64 `ACWW_IOTRACE` files are byte-identical for play (25002 frames), save (35000)
+      and continue (8000); quick and play screenshots and the whole quick WAV identical; the save script's 70 and the
+      continue's 32 screenshots identical, and the save file identical after the save and after the continue. arm64
+      is not built yet; nothing in the model depends on the architecture (no host time, no access counts).
+    - **Oracle**: `tools/host_oracle.sh <binary> quick|play|record` (CAPDIR, default
+      `~/acww/ref/oracle/captures_v2`, recorded from the x86-64 build of this step; `record` never writes
+      `captures/`). The old captures and `~/acww/ref/oracle/oracle.sh` are untouched; they still match the i386 and
+      x86-64 builds under `ACWW_TIMING=legacy`. To switch every check to the new reference: run
+      `tools/host_oracle.sh` instead of `oracle.sh` (or point oracle.sh at the new directory:
+      `mv ~/acww/ref/oracle/captures ~/acww/ref/oracle/captures_i386_legacy && ln -s captures_v2
+      ~/acww/ref/oracle/captures`).
+    - **One script per scenario** for both builds: `tools/host_play_script.py play|town|save|continue` (prints
+      `ACWW_KEYS` / `ACWW_TOUCH`); the separate x86-64 town script is gone. The new-game town differs from the
+      legacy one, so the walk to the house was found anew (`ACWW_POSLOG`, the town map, `Town_FindPlayerHouse`
+      from gdb; docs/host.md). The clock stays pinned (the headless default).
+
 ### Phase 4: platform layer and frontend (Linux first, about 1-2 weeks)
 24. **4.1** In-process SDL frontend (window, input, audio callback on the ring) for 64-bit builds; drop `shm_open`/`fork`/`execl`. The viewer stays only for i386, if i386 is kept at all.
 25. **4.2** `modern/host/plat.h` with POSIX and Win32 implementations: monotonic time, sleep-until, read the ROM file into memory (instead of `mmap`), local time, stack allocation, optional backtrace. `typeof` → C23 `__typeof__` or an explicit type.
