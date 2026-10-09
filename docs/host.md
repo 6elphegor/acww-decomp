@@ -62,7 +62,10 @@ baseline: what clang rejects although GCC accepts it) and for arm64-apple-macos 
 `-mno-ms-bitfields` (`--targets` for others), and reports the baseline's errors and, per target, only the diagnostics
 beyond the baseline (`-v` lists them; exit status 0 when all are 0, as they are since 2026-10-08). A clang build:
 `python3 tools/configure_host.py --arch x86_64 --cc clang && ninja -f build_host64_clang.ninja` (build/host64_clang_usa;
-clang from the PATH or an LLVM release unpacked in ~/acww/toolchains/LLVM-*).
+clang from the PATH, else the newest of ~/acww/toolchains/LLVM-*/bin and ~/acww/toolchains/llvm-mingw-*/bin, or
+`--cc <path>`): the game and the host runtime's C by clang, melonDS and the link by g++. It passes the oracle
+(`tools/host_oracle.sh build/host64_clang_usa/acww quick|play`) and plays the town, save and continue scripts like
+the GCC build (docs/portability.md 2.1).
 
 The modern build (docs/modern.md) compiles the game with GCC and plays like the original in an emulator. The next
 step is a host build: the same sources compiled for the PC, with the DS hardware replaced. This note records what
