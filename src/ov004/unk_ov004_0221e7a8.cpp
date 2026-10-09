@@ -721,6 +721,8 @@ extern "C" void PlayerActor_LieInBedSetWork(u8 *p, u32 v) {
 }
 
 extern "C" void PlayerActor_SetupLieInBed(Obj *o, u8 *p, s32 c) {
+    // (the request's payload: at 0xc on the DS, 0x10 on 64-bit hosts - read at 0xc, the padding before it, which the
+    // request on the stack left as it was: whether the player wakes up with a yawn depended on stack contents)
     u8 *q = ((PlayerActionRequest *)(void *)p)->unk_0c_b;
     u8 *rec = o->actionWorkRaw;
     if (o->animId != 0x11) {

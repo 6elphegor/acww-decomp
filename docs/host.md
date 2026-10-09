@@ -236,6 +236,23 @@ Differences from the DS that the sources handle under `HOST` (or MODERN):
   (villagers' plans and items, events, the random seed `Clock_GetTimeSeed`): a sweep of headless runs with many
   pinned `ACWW_RTC` values (`ACWW_EXIT_FRAME=3000`; every hour of a day, the 1st and 15th of each month, holidays,
   random minutes and seconds) reaches what the default clock doesn't.
+- The sanitizer variant sees reads too: `python3 tools/configure_host.py --arch x86_64 --sanitize
+  address,bounds,undefined && ninja -f build_host64_asan.ninja` (build/host64_asan_usa; x86-64 only) compiles the
+  game and the runtime with ASan (redzones around globals, stack and heap objects: a read past an end is reported as
+  well as a write), UBSan's array bounds (`bounds`: indexes against the declared size, also arrays inside structs) and
+  the rest of UBSan (`undefined`, without `alignment` - the DS heaps' 4-byte aligned blocks - and `shift-base`; shift
+  counts past the width stay checked: ARM gives 0 for them, x86 shifts by the count modulo 32, `include/ds_shift.h`).
+  Every check recovers (`-fsanitize-recover=all`): a run goes on and reports each place once. Run it with
+  `ASAN_OPTIONS=halt_on_error=0:detect_leaks=0:log_path=<prefix> UBSAN_OPTIONS=halt_on_error=0:print_stacktrace=1:log_path=<prefix>`.
+  The runtime's stack switches tell ASan which stack runs (`coro.c`: `__sanitizer_start_switch_fiber` /
+  `__sanitizer_finish_switch_fiber`, `HOST_ASAN`). The game's heaps are carved out of big blocks, so the NNS expanded
+  and frame heap allocators poison what isn't allocated (free blocks, a frame heap's free middle, a block's bytes past
+  the size asked for; `include/host_asan.h`) and are themselves compiled without ASan's checks, as are the C library's
+  word-at-a-time string functions (`ASAN_UNCHECKED` in configure_host.py); an overlay's reset unpoisons its variables
+  (a heap may have lived in one), and the ARM7 sequence reader (`snd7/seq.c` `SeqCacheFetch`) isn't checked (it reads
+  16 aligned bytes, and may read a sequence the ARM9 has just freed, as the SDK's heap protocol allows). It runs the
+  oracle's scripts with the same pictures and sound as the plain x86-64 build (about 4x slower). Its findings and the
+  fixes: docs/portability.md 2.8, "sanitizer sweep".
 - Integer division by zero: the DS's division routine (`_s32_div_f`) gives the dividend as the quotient and 0 as
   the remainder; x86 traps (hw.c gives the DS's result and reports the site), arm64 gives 0. The game does it (e.g.
   `spl_scl_in_out` at the end of a particle animation).
@@ -437,7 +454,11 @@ constant-initialised (constexpr constructor) or initialise it in StaticInit). `m
 variables in `HostOverlay_Init()`, first thing in `main()`; `FS_StartOverlay` restores overlay N's variables and
 runs its StaticInits in link order. Objects of classes with default constructors are constructed at start-up too
 (their constructors only set their members) and again at every load. Overlays that share an address range on the
-DS keep separate variables here; each is reset on its own load. 332 units with 2959 variables, 15 StaticInits.
+DS keep separate variables here; each is reset on its own load. 332 units with 2956 variables, 15 StaticInits.
+(The tool reads the writable data and bss of each object, `objdump -t`: constant data with relocations - tables of
+pointers, vtables, the lists themselves - is in `.data.rel.ro*` in the position-independent x86-64 objects, which nm
+calls data too; until 2026-10-08 `--check` reported every unit out of date and 231 function-local constant tables as
+"can't be reset" for that reason, since step 3.3 made the x86-64 build a PIE.)
 Debugging: `ACWW_OVLOG=1` lists each load (the bytes the reset undoes, by variable), `ACWW_OVRESET=0` restores the
 earlier behaviour (every overlay's StaticInits once at start-up, no reset), `ACWW_OVRESET=-4,9` that for the overlays
 listed. ov004's information points use the divider registers (`MuseumInfoPoint_InitFromDef`: `FX_Div`), so virtual

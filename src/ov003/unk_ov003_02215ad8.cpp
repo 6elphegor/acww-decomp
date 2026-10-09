@@ -114,13 +114,11 @@ void KatrinaTent::setupTalkMsg() {
     } else {
         msgIndex = 0x12;
     }
-    u32 buf[7];
+    MsgString9B name;  // (was a 0x1c-byte word buffer: the DS size, 12 bytes short on 64-bit hosts)
     u16 v[2];
-    new (buf) MsgString9B();
     v[1] = 0xd00a;
-    Npc_GetName(buf, &v[1]);
-    setSpeakerName(((MsgString9B *)buf)->data(), 1);
-    ((MsgString9B *)(buf))->MsgString9B::~MsgString9B();
+    Npc_GetName(&name, &v[1]);
+    setSpeakerName(name.data(), 1);
 }
 
 // ---- overlay variables (generated: tools/host_overlay_vars.py) ----

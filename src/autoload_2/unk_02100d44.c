@@ -12,6 +12,7 @@ typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
 #include "uptr.h"
+#include "host_asan.h"
 
 typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
 typedef struct NNSFndList { void *head; void *tail; u16 num; u16 offset; } NNSFndList;
@@ -222,7 +223,9 @@ BOOL NNS_FndRecordStateForFrmHeap(HeapHead *heap, u32 tag) {
     FrmHead *f = FRM(heap);
     FrmState *st;
     oldHead = f->head;
+    HOST_ASAN_UNPOISON(f->head, f->tail - f->head);  // (the sanitizer variant: the free middle poisoned again below)
     st = (FrmState *)AllocFromHead__FrameHeap(f, sizeof(FrmState), 4);
+    HOST_ASAN_POISON(f->head, f->tail - f->head);
     if (st == 0) return 0;
     st->tag = tag;
     st->head = oldHead;
@@ -246,6 +249,7 @@ BOOL NNS_FndFreeByStateToFrmHeap(HeapHead *heap, u32 tag) {
     f->head = st->head;
     f->tail = st->tail;
     f->state = st->prev;
+    HOST_ASAN_POISON(f->head, f->tail - f->head);  // (the sanitizer variant: the free middle poisoned)
     return 1;
 }
 
@@ -272,9 +276,12 @@ u32 NNS_FndResizeForMBlockFrmHeap(HeapHead *heap, void *mem, u32 size) {
     if (size == oldSize) return size;
     if (size > oldSize) {
         if ((s32)(newHead - f->tail) > 0) return 0;
+        HOST_ASAN_UNPOISON(oldHead, size - oldSize);  // (the sanitizer variant)
         ClearMem(heap, oldHead, size - oldSize);
     }
     f->head = newHead;
+    HOST_ASAN_UNPOISON(mem, size);  // (the sanitizer variant: the free middle poisoned)
+    HOST_ASAN_POISON(f->head, f->tail - f->head);
     return size;
 }
 

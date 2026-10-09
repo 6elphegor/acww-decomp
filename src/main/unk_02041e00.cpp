@@ -2199,7 +2199,9 @@ extern "C" void TownEval_EvaluateAndClean(TownEval *a, TownBlockMap *b, s32 w, s
     TownEvalAcrePos pr;
     pr.acreX = by;
     pr.acreZ = bx;
-    TownEval_PickAdvice(&a->advice, &pr, &a->acres[by][bx]);
+    // no acre below the best score (0 here): by = bx = -1, and PickAdvice doesn't look at the acre (the DS code passed
+    // the address of acres[-1][-1], outside the object)
+    TownEval_PickAdvice(&a->advice, &pr, by < 0 ? 0 : &a->acres[by][bx]);
     a->rank = TownEval_GetTownRank(a, nZ::gTownEval.counts, w, h);
 }
 }

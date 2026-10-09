@@ -63,7 +63,8 @@ public:
     BOOL changeAct(s32 m);
 
     /* 0x130 */ s32 act;
-    /* 0x134 */ u32 touchSphere[0x1c / 4]; // a TouchPickSphere, built and destroyed by explicit C1/D1 calls
+    /* 0x134 */ alignas(TouchPickSphere) u8 touchSphere[sizeof(TouchPickSphere)]; // a TouchPickSphere, built and
+                // destroyed by explicit C1/D1 calls (0x1c bytes on the DS; was 0x1c on every host, 4 short on 64-bit)
 };
 
 typedef void (VillagerBoard::*Unk_022049a8_Fn)();

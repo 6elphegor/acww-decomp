@@ -544,6 +544,10 @@ extern "C" BOOL PatternPresetInfo_Apply(PatternPresetInfoFile *tbl, PatternInfo 
             TownId_Construct();
             TownId_SetNameString((u8 *)&town, &townName);
             PlayerId author((void *)NULL);
+            // (the constructor sets nothing and the record's gender and its padding byte are never set: the DS code
+            // copied stack contents into the Able Sisters' default patterns and the save file - here they were
+            // build-dependent, 0 in the plain builds; now 0 always)
+            __builtin_memset((void *)&author, 0, sizeof(author));
             author.setNameString(&playerName);
             author.setTown(&town);
             dst->setAuthor(AsIdRecord(&author));

@@ -23,6 +23,16 @@ void *operator new[](std::size_t size) {
     return ::operator new(size);
 }
 
+// the nothrow forms (melonDS uses them): the C++ library's call the forms above, but a replaced allocator (the
+// sanitizer variant's ASan) would take them over and see its blocks freed with free
+void *operator new(std::size_t size, const std::nothrow_t &) noexcept {
+    return std::malloc(size ? size : 1);
+}
+
+void *operator new[](std::size_t size, const std::nothrow_t &) noexcept {
+    return std::malloc(size ? size : 1);
+}
+
 void operator delete(void *p) noexcept {
     if (!p) return;
     if (host_is_game_heap(p)) Mem_FreeForDelete(p);
@@ -38,5 +48,13 @@ void operator delete(void *p, std::size_t) noexcept {
 }
 
 void operator delete[](void *p, std::size_t) noexcept {
+    ::operator delete(p);
+}
+
+void operator delete(void *p, const std::nothrow_t &) noexcept {
+    ::operator delete(p);
+}
+
+void operator delete[](void *p, const std::nothrow_t &) noexcept {
     ::operator delete(p);
 }

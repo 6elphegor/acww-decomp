@@ -405,7 +405,7 @@ extern "C" BOOL SongSet_TestBit(u8 *bits, u32 i)
 extern "C" BOOL SongSet_HasSong(u32 id)
 {
     if (id >= 0x1323 && id <= 0x1368) {
-        return SongSet_TestBit(gSaveData.songSet, Unk_02060044_Idx(id));
+        return SongSet_TestBit(((HouseData *)gSaveData.house)->songs.bits, Unk_02060044_Idx(id));
     }
     return FALSE;
 }
@@ -420,7 +420,7 @@ extern "C" void SongSet_SetBit(u8 *bits, u32 i)
 extern "C" void SongSet_AddSong(u32 id)
 {
     if (id >= 0x1323 && id <= 0x1368) {
-        SongSet_SetBit(gSaveData.songSet, Unk_02060044_Idx(id));
+        SongSet_SetBit(((HouseData *)gSaveData.house)->songs.bits, Unk_02060044_Idx(id));
     }
 }
 
@@ -434,7 +434,7 @@ extern "C" void SongSet_ClearBit(u8 *bits, u32 i)
 extern "C" void SongSet_RemoveSong(u32 id)
 {
     if (id >= 0x1323 && id <= 0x1368) {
-        SongSet_ClearBit(gSaveData.songSet, Unk_02060044_Idx(id));
+        SongSet_ClearBit(((HouseData *)gSaveData.house)->songs.bits, Unk_02060044_Idx(id));
     }
 }
 

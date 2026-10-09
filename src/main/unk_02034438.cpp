@@ -809,7 +809,8 @@ void RoomBgm::end() {
 void RoomBgm::setKeep(u32 a) { keep = a; }
 
 extern "C" s32 Bgm_GetSceneBgmId(s32 a) {
-    // (the table's end: on the DS the address of the next object, data_020c8b9c, an unrelated constant)
+    // the table's own end (the DS code ran to the address of the next variable, data_020c8b9c, which is where the
+    // table ends in the DS layout but not on the host)
     const u16 *e = sSceneBgmTable + sizeof(sSceneBgmTable) / sizeof(sSceneBgmTable[0]);
     u32 r = 0xffff;
     const u16 *p;

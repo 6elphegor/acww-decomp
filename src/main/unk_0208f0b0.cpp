@@ -29,12 +29,14 @@ public:
     TownExchangeRecord records[3];
 };
 
+static_assert(sizeof(ConstellationRecord) <= sizeof(((TownExchangeRecord *)0)->constellation), "ConstellationRecord");
+
 TownExchangeRemoteRecords sTownExchangeRemoteRecords;
 
 
 TownExchangeRecord::TownExchangeRecord() {
     new (this) Letter();
-    new (&unk_0f4) ConstellationRecord();
+    new (constellation) ConstellationRecord();
     VillagerTransfer_ConstructVillager(villager);
     LostChildRecord_Construct(lostChild);
 }
@@ -42,7 +44,7 @@ TownExchangeRecord::TownExchangeRecord() {
 TownExchangeRecord::~TownExchangeRecord() {
     LostChildRecord_Destruct(lostChild);
     VillagerTransfer_DestructVillager(villager);
-    ((ConstellationRecord *)&unk_0f4)->~ConstellationRecord();
+    ((ConstellationRecord *)constellation)->~ConstellationRecord();
     ((Letter *)(this))->Letter::~Letter();
 }
 
@@ -52,7 +54,7 @@ extern "C" void TownExchange_Clear(void *p) {
     TownExchangeRecord *r = (TownExchangeRecord *)p;
     MI_CpuFill8(r, 0, sizeof(TownExchangeRecord));
     Letter_Clear((LetterView *)r);
-    ConstellationRecord_Clear((ConstellationRecord *)&r->unk_0f4);  // (the save record keeps its bytes)
+    ConstellationRecord_Clear((ConstellationRecord *)r->constellation);  // (the save record keeps its bytes)
 }
 
 void TownExchangeRecord::setChecksum(u32 v) { checksum = v; }
@@ -81,7 +83,7 @@ u32 TownExchangeRecord::getCounter() { return counter; }
 
 extern "C" void *TownExchange_GetLetter(void *p) { return p; }
 
-void *TownExchangeRecord::getConstellation() { return &unk_0f4; }
+void *TownExchangeRecord::getConstellation() { return constellation; }
 
 void *TownExchangeRecord::getVillager() { return villager; }
 

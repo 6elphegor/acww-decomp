@@ -27,9 +27,9 @@ extern "C" BOOL ReceivedLetter_HasLetter(void *p) {
     return FALSE;
 }
 
-void TownExchangeRecord::setChecksumByte(u32 v) { unk_0f4 = v; }
+void TownExchangeRecord::setChecksumByte(u32 v) { constellation[0] = v; }
 
-u8 TownExchangeRecord::getChecksumByte() { return unk_0f4; }
+u8 TownExchangeRecord::getChecksumByte() { return constellation[0]; }
 
 extern "C" void *ReceivedLetter_GetLetter(void *p) { return p; }
 

@@ -25,8 +25,8 @@ public:
     void setChecksum(u32 v);
 
     /* 0x000 */ u8 unk_000[0xf4]; // Letter
-    /* 0x0f4 */ u8 unk_0f4; // constellation record starts here
-    /* 0x0f5 */ u8 unk_0f5[0x47];
+    /* 0x0f4 */ u8 constellation[0x48]; // ConstellationRecord (its first byte is also the checksum byte:
+                                        // set/getChecksumByte; it was declared as that byte, and the record past it)
     /* 0x13c */ u8 villager[0x700];
     /* 0x83c */ u8 counter;
     /* 0x83d */ u8 flags;
