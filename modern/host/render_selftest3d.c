@@ -13,6 +13,7 @@
 #include <string.h>
 
 #include "gpu3d/gpu3d.h"
+int g3_raster_pixel_polygon(int x, int y);
 #include "host_mem.h"
 #include "render.h"
 
@@ -156,7 +157,7 @@ void render_selftest3d(long scenes) {
         render_frame();
         int d = render_compare_3d("self-test scene", (u64)n);
         bad += d;
-        if (getenv("ACWW_RENDER_SELFTEST3D_DUMP")) {  // <prefix>-<scene>.bin: the own picture, then melonDS's
+        if (getenv("ACWW_RENDER_SELFTEST3D_DUMP")) {  // <prefix>-<scene>.bin: the own picture, then melonDS's, then the polygons
             void melon_3d_lines(u32 *out);
             static u32 l[256 * 192];
             char name[512];
@@ -166,6 +167,11 @@ void render_selftest3d(long scenes) {
                 fwrite(gpu3d_lines(), 4, 256 * 192, f);
                 melon_3d_lines(l);
                 fwrite(l, 4, 256 * 192, f);
+                for (int y = 0; y < 192; y++)  // (then the own engine's polygon per pixel, 16 bits, -1 none)
+                    for (int x = 0; x < 256; x++) {
+                        int16_t i = (int16_t)g3_raster_pixel_polygon(x, y);
+                        fwrite(&i, 2, 1, f);
+                    }
                 fclose(f);
             }
             snprintf(name, sizeof name, "%s-%ld.txt", getenv("ACWW_RENDER_SELFTEST3D_DUMP"), n);

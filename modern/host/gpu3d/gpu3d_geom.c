@@ -473,12 +473,17 @@ static void clip_interp(G3Vertex *o, const G3Vertex *in, const G3Vertex *out, in
 #define LERP(a, b) ((s32)((b) + (((s64)(a) - (b)) * -dout) / den))
     for (int i = 0; i < 4; i++) o->pos[i] = LERP(in->pos[i], out->pos[i]);
     o->pos[comp] = sign * o->pos[3];
-    for (int i = 0; i < 3; i++) {  // (in 9 bits from the vertex inside, then back to a 5-bit colour)
-        s32 c = (s32)(in->color[i] + ((s64)out->color[i] - in->color[i]) * din / den) >> 4;
+    for (int i = 0; i < 3; i++) {  // (the 5-bit colours from the vertex inside, rounded up: fitted to melonDS)
+        s64 a = in->color[i] >> 4, d = (s64)((out->color[i] >> 4) - a) * din;
+        s32 c = (s32)(a + (d >= 0 ? (d + den - 1) / den : -(-d / den)));
         o->color[i] = c ? c << 4 | 0xf : 0;
     }
     for (int i = 0; i < 2; i++) o->tex[i] = (s16)LERP(in->tex[i], out->tex[i]);
 #undef LERP
+    o->dbgClips = (u8)(in->dbgClips + out->dbgClips + 1);
+    for (int i = 0; i < 3; i++) o->dbgClip[i] = in->color[i], o->dbgClip[3 + i] = out->color[i];
+    o->dbgClip[6] = (s32)din;
+    o->dbgClip[7] = (s32)dout;
     o->clipped = 1;
     o->screenDone = 0;
 }
@@ -715,6 +720,7 @@ static void submit_vertex(void) {
         v->tex[1] = sTexCoord[1];
     }
     v->clipped = 0;
+    v->dbgClips = 0;
     v->screenDone = 0;
     sVtxInPoly++;
     sVtxCount++;
@@ -1182,6 +1188,8 @@ void gpu3d_debug_vertex(int i, int k, FILE *f) {
         for (int l = 0; l < 4; l++) { fprintf(f, " lp %u", r->lparam[l]); for (int i = 0; i < 9; i++) fprintf(f, " %d", r->lvec[l][i]); }
     }
     if (v->clipped) {
+        fprintf(f, " cl %d", v->dbgClips);
+        for (int j = 0; j < 8; j++) fprintf(f, " %d", v->dbgClip[j]);
         fprintf(f, " orig %d", p->norig);
         for (int j = 0; j < p->norig; j++)
             fprintf(f, " %d %d %d %d %d %d %d %d %d", p->orig[j].pos[0], p->orig[j].pos[1], p->orig[j].pos[2],

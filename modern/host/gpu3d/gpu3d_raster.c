@@ -22,7 +22,7 @@ static u8 sFlags[W * H];      // 1 fog, 2 edge, 4 translucent written
 static s16 sPoly[W * H];      // (diagnostics: the polygon that wrote the pixel last, -1 none)
 
 // ---- interpolation (perspective-correct, from the normalised W of the two ends)
-typedef struct { s32 num, den; int shift; s64 factor; int linear; } Interp;
+typedef struct { int shift; s64 factor; } Interp;
 static void interp_setup(Interp *ip, s32 x, s32 x0, s32 x1, s32 w0, s32 w1, int shift) {
     ip->shift = shift;
     s32 span = x1 - x0, pos = x - x0;
@@ -82,6 +82,28 @@ static s32 edge_right(const Edge *e, s32 y) {
     s32 dy = e->y1 - e->y0, adx = e->x1 > e->x0 ? e->x1 - e->x0 : e->x0 - e->x1;
     if (!e->xmajor) return (s32)(edge_x(e, y, 0) >> 18) - 1;
     return (s32)((edge_x(e, y, e->sign < 0 && y + 1 == e->y1 && e->bottom ? 0 : 1) + (1 << 17)) >> 18) - 1;
+}
+
+// ---- colours (fitted to melonDS with equal W; ACWW_RENDER_SELFTEST3D_MASK=2): along an edge at the line where the
+// edge is furthest out (y + 1 for a left edge going left or a right edge going right, else y), exact and rounded down;
+// along the span between the two edges' x at that line, not between the first and last pixel drawn
+static s32 lerp_floor(s32 a0, s32 a1, s32 pos, s32 span) {
+    if (span <= 0) return a0;
+    s64 d = (s64)(a1 - a0) * pos;
+    return a0 + (s32)(d >= 0 ? d / span : -((-d + span - 1) / span));
+}
+// side 0 left, 1 right: returns the line offset (0 or 1) and sets *x: an x-major edge (45 degrees included) rounded at
+// that line; a y-major one at line y, rounded down on the left and up on the right
+static int span_end(const Edge *e, int side, s32 y, s32 *x) {
+    s32 dx = e->x1 - e->x0, dy = e->y1 - e->y0;
+    int out = side ? dx > 0 : dx < 0;
+    if ((dx < 0 ? -dx : dx) >= dy && dx) {
+        *x = (s32)((edge_x(e, y, out) + (1 << 17)) >> 18);
+        return out;
+    }
+    s64 v = edge_x(e, y, 0);
+    *x = (s32)(side ? -((-v) >> 18) : v >> 18);
+    return 0;
 }
 
 // ---- the rendering state of one polygon
@@ -162,6 +184,7 @@ static void draw_polygon(const G3Polygon *p, int idx) {
         const Edge *el = &L, *er = &R;
         // the attributes at the two ends of the span, interpolated along the edges
         s32 ends[2][6];  // z, w, r, g, b (s, t later)
+        s32 cx[2];       // the x the colours are interpolated between (span_end)
         const Edge *es[2] = {el, er};
         for (int k = 0; k < 2; k++) {
             const Edge *e = es[k];
@@ -171,17 +194,19 @@ static void draw_polygon(const G3Polygon *p, int idx) {
             ends[k][0] = p->wbuffer ? interp(&ip, p->z[e->v0], p->z[e->v1])
                                     : interp_z_linear(y, e->y0, e->y1, p->z[e->v0], p->z[e->v1]);
             ends[k][1] = interp(&ip, p->w[e->v0], p->w[e->v1]);
-            for (int c = 0; c < 3; c++) ends[k][2 + c] = interp(&ip, a->color[c], b->color[c]);
+            s32 yc = y + span_end(e, k, y, &cx[k]);
+            for (int c = 0; c < 3; c++) ends[k][2 + c] = lerp_floor(a->color[c], b->color[c], yc - e->y0, e->y1 - e->y0);
         }
         s32 xl = lmin, xr = rmax;
         for (s32 x = xl; x <= xr; x++) {
             if (x < 0 || x >= W) continue;
             Interp ip;
-            interp_setup(&ip, x, xl, xr, ends[0][1], ends[1][1], 8);
+            interp_setup(&ip, x, xl, xr + 1, ends[0][1], ends[1][1], 8);
             s32 z = p->wbuffer ? interp(&ip, ends[0][0], ends[1][0]) : interp_z_linear(x, xl, xr, ends[0][0], ends[1][0]);
-            s32 r = interp(&ip, ends[0][2], ends[1][2]);
-            s32 g = interp(&ip, ends[0][3], ends[1][3]);
-            s32 b = interp(&ip, ends[0][4], ends[1][4]);
+            s32 col[3];
+            for (int c = 0; c < 3; c++)
+                col[c] = cx[1] == cx[0] ? ends[0][2 + c] : lerp_floor(ends[0][2 + c], ends[1][2 + c], x - cx[0], cx[1] - cx[0]);
+            s32 r = col[0], g = col[1], b = col[2];
             put_pixel(p, x, y, z, r, g, b, idx);
         }
     }
