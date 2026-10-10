@@ -485,7 +485,23 @@ static void fog_pass(void) {
     }
 }
 
+// (diagnostics: ACWW_GPU3D_TIMING=1: the rasteriser's time per frame, printed every 1000 frames)
+#include <time.h>
+static double sRenderNs, sRenderMax;
+static long sRenderFrames;
+static void timing_report(void) {
+    if (sRenderFrames)
+        fprintf(stderr, "gpu3d: rasteriser %.3f ms a frame on average, %.3f ms at most, %ld frames\n",
+                sRenderNs / sRenderFrames / 1e6, sRenderMax / 1e6, sRenderFrames);
+}
 void g3_render(void) {
+    static int timing = -1;
+    struct timespec t0, t1;
+    if (timing < 0) {
+        timing = getenv("ACWW_GPU3D_TIMING") != 0;
+        (void)timing_report;
+    }
+    if (timing) clock_gettime(CLOCK_MONOTONIC, &t0);
     sR = &gG3Render;
     g3_tex_setup();
     clear_buffers();
@@ -494,6 +510,14 @@ void g3_render(void) {
     aa_pass();
     sShown ^= 1;
     memcpy(sFrameBuf[sShown], sColor, sizeof sColor);
+    if (timing) {
+        clock_gettime(CLOCK_MONOTONIC, &t1);
+        double ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
+        sRenderNs += ns;
+        if (ns > sRenderMax) sRenderMax = ns;
+        sRenderFrames++;
+        if (sRenderFrames % 1000 == 0) timing_report();  // (exits with _exit skip atexit handlers)
+    }
 }
 
 const u32 *g3_frame_lines(void) { return sFrameBuf[sShown]; }
