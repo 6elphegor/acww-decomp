@@ -473,11 +473,24 @@ static void clip_interp(G3Vertex *o, const G3Vertex *in, const G3Vertex *out, in
 #define LERP(a, b) ((s32)((b) + (((s64)(a) - (b)) * -dout) / den))
     for (int i = 0; i < 4; i++) o->pos[i] = LERP(in->pos[i], out->pos[i]);
     o->pos[comp] = sign * o->pos[3];
-    for (int i = 0; i < 3; i++) {  // (the 5-bit colours from the vertex inside, rounded up: fitted to melonDS)
-        s64 a = in->color[i] >> 4, d = (s64)((out->color[i] >> 4) - a) * din;
-        s32 c = (s32)(a + (d >= 0 ? (d + den - 1) / den : -(-d / den)));
-        o->color[i] = c ? c << 4 | 0xf : 0;
+    {   // (the 5-bit colours from the vertex inside, rounded up; when that vertex is the crossing of the same edge
+        // with this axis's other plane, from the edge's far end instead: fitted to melonDS)
+        const s32 *ic = in->color;
+        s64 cdin = din, cden = den;
+        if (in->farAxis == comp + 1) {
+            ic = in->farColor;
+            cdin = (s64)in->farPos[3] - sign * (s64)in->farPos[comp];
+            cden = cdin - dout;
+        }
+        for (int i = 0; i < 3; i++) {
+            s64 a = ic[i] >> 4, d = (s64)((out->color[i] >> 4) - a) * cdin;
+            s32 c = (s32)(a + (d >= 0 ? (d + cden - 1) / cden : -(-d / cden)));
+            o->color[i] = c ? c << 4 | 0xf : 0;
+        }
     }
+    o->farAxis = (u8)(comp + 1);
+    memcpy(o->farPos, out->pos, sizeof o->farPos);
+    memcpy(o->farColor, out->color, sizeof o->farColor);
     for (int i = 0; i < 2; i++) o->tex[i] = (s16)LERP(in->tex[i], out->tex[i]);
 #undef LERP
     o->dbgClips = (u8)(in->dbgClips + out->dbgClips + 1);
@@ -720,6 +733,7 @@ static void submit_vertex(void) {
         v->tex[1] = sTexCoord[1];
     }
     v->clipped = 0;
+    v->farAxis = 0;
     v->dbgClips = 0;
     v->screenDone = 0;
     sVtxInPoly++;

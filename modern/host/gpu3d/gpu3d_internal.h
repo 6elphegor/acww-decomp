@@ -25,6 +25,8 @@ typedef struct G3Vertex {
     s32 x, y;         // screen position (9 and 8 bits)
     s32 hx, hy;       // the same with 4 fractional bits
     int dbgLight;     // (diagnostics: the lighting record of its colour, -1 none)
+    u8 farAxis;       // made by clipping against a plane of this axis + 1 (0 none), from outside vertex far:
+    s32 farPos[4], farColor[3];  // (an edge crossing both planes of an axis: the second crossing from there)
     u8 dbgClips;      // (diagnostics: the interpolations behind it; for the last one the inside and outside
     s32 dbgClip[8];   // colours, din, dout)
 } G3Vertex;
