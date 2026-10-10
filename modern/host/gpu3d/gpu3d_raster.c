@@ -87,6 +87,8 @@ static s32 edge_right(const Edge *e, s32 y) {
 // ---- colours (fitted to melonDS with equal W; ACWW_RENDER_SELFTEST3D_MASK=2): along an edge at the line where the
 // edge is furthest out (y + 1 for a left edge going left or a right edge going right, else y), exact and rounded down;
 // along the span between the two edges' x at that line, not between the first and last pixel drawn
+// exact only between equal W with its low 7 bits clear; otherwise a factor (9 bits along edges, 8 along spans)
+static int exact_ok(s32 w0, s32 w1) { return w0 == w1 && !(w0 & 0x7f); }
 static s32 lerp_floor(s32 a0, s32 a1, s32 pos, s32 span) {
     if (span <= 0) return a0;
     s64 d = (s64)(a1 - a0) * pos;
@@ -195,7 +197,12 @@ static void draw_polygon(const G3Polygon *p, int idx) {
                                     : interp_z_linear(y, e->y0, e->y1, p->z[e->v0], p->z[e->v1]);
             ends[k][1] = interp(&ip, p->w[e->v0], p->w[e->v1]);
             s32 yc = y + span_end(e, k, y, &cx[k]);
-            for (int c = 0; c < 3; c++) ends[k][2 + c] = lerp_floor(a->color[c], b->color[c], yc - e->y0, e->y1 - e->y0);
+            s32 w0 = p->w[e->v0], w1 = p->w[e->v1];
+            Interp ic;
+            if (!exact_ok(w0, w1)) interp_setup(&ic, yc, e->y0, e->y1, w0, w1, 9);
+            for (int c = 0; c < 3; c++)
+                ends[k][2 + c] = exact_ok(w0, w1) ? lerp_floor(a->color[c], b->color[c], yc - e->y0, e->y1 - e->y0)
+                                                  : interp(&ic, a->color[c], b->color[c]);
         }
         s32 xl = lmin, xr = rmax;
         for (s32 x = xl; x <= xr; x++) {
@@ -204,8 +211,13 @@ static void draw_polygon(const G3Polygon *p, int idx) {
             interp_setup(&ip, x, xl, xr + 1, ends[0][1], ends[1][1], 8);
             s32 z = p->wbuffer ? interp(&ip, ends[0][0], ends[1][0]) : interp_z_linear(x, xl, xr, ends[0][0], ends[1][0]);
             s32 col[3];
+            int ex = exact_ok(ends[0][1], ends[1][1]);
+            Interp ic;
+            if (!ex) interp_setup(&ic, x, cx[0], cx[1], ends[0][1], ends[1][1], 8);
             for (int c = 0; c < 3; c++)
-                col[c] = cx[1] == cx[0] ? ends[0][2 + c] : lerp_floor(ends[0][2 + c], ends[1][2 + c], x - cx[0], cx[1] - cx[0]);
+                col[c] = cx[1] == cx[0] ? ends[0][2 + c]
+                         : ex           ? lerp_floor(ends[0][2 + c], ends[1][2 + c], x - cx[0], cx[1] - cx[0])
+                                        : interp(&ic, ends[0][2 + c], ends[1][2 + c]);
             s32 r = col[0], g = col[1], b = col[2];
             put_pixel(p, x, y, z, r, g, b, idx);
         }

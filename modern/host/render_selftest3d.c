@@ -40,7 +40,8 @@ static void vertex_at(s32 sx, s32 sy, s32 w, s32 z) {
     cmd(0x23, (u32)(u16)z);
 }
 
-// ACWW_RENDER_SELFTEST3D_QUAD="x0 y0 x1 y1 x2 y2 x3 y3 c0 c1 c2 c3" (quarter pixels, BGR555 colours): one fixed quad
+// ACWW_RENDER_SELFTEST3D_QUAD="x0 y0 x1 y1 x2 y2 x3 y3 c0 c1 c2 c3" (quarter pixels, BGR555 colours): one fixed quad;
+// ACWW_RENDER_SELFTEST3D_W its W (default 0x1000)
 static int fixed_scene(void) {
     const char *q = getenv("ACWW_RENDER_SELFTEST3D_QUAD");
     if (!q) return 0;
@@ -57,6 +58,13 @@ static int fixed_scene(void) {
     cmd(0x15, 0);
     cmd(0x10, 2);
     cmd(0x15, 0);
+    if (getenv("ACWW_RENDER_SELFTEST3D_W")) {  // (W = this scale: x, y, z and w scaled alike)
+        u32 sc = (u32)strtoul(getenv("ACWW_RENDER_SELFTEST3D_W"), 0, 0);
+        cmd(0x10, 0);
+        u32 m[16] = {sc, 0, 0, 0, 0, sc, 0, 0, 0, 0, sc, 0, 0, 0, 0, sc};
+        for (int i = 0; i < 16; i++) cmd(0x16, m[i]);
+        cmd(0x10, 2);
+    }
     cmd(0x60, 0xbfff0000);
     cmd(0x29, 0x001f00c0);
     cmd(0x2a, 0);
