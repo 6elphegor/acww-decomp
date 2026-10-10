@@ -95,7 +95,7 @@ static s32 lerp_floor(s32 a0, s32 a1, s32 pos, s32 span) {
     return a0 + (s32)(d >= 0 ? d / span : -((-d + span - 1) / span));
 }
 // side 0 left, 1 right: returns the line offset (0 or 1) and sets *x: an x-major edge (45 degrees included) rounded at
-// that line; a y-major one at line y, rounded down on the left and up on the right
+// that line; a y-major one at line y: on the left rounded down, on the right the next integer above
 static int span_end(const Edge *e, int side, s32 y, s32 *x) {
     s32 dx = e->x1 - e->x0, dy = e->y1 - e->y0;
     int out = side ? dx > 0 : dx < 0;
@@ -104,7 +104,7 @@ static int span_end(const Edge *e, int side, s32 y, s32 *x) {
         return out;
     }
     s64 v = edge_x(e, y, 0);
-    *x = (s32)(side ? -((-v) >> 18) : v >> 18);
+    *x = (s32)(v >> 18) + (side && dx);  // (on the right the first x past the edge; a vertical edge's own x)
     return 0;
 }
 
