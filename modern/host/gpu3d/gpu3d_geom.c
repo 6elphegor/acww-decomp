@@ -556,6 +556,16 @@ static int clip_polygon(G3Vertex *in, int n, G3Vertex **out, int farClip, int *c
     return n;
 }
 
+// (diagnostics: ACWW_GPU3D_DEBUGTEX=<texparam hex>: every polygon with that texture, its outcome and vertices)
+static void debug_tex_poly(const char *what, const G3Vertex *v, int nv, int n) {
+    static long want = -2;
+    if (want == -2) want = getenv("ACWW_GPU3D_DEBUGTEX") ? (long)strtoul(getenv("ACWW_GPU3D_DEBUGTEX"), 0, 16) : -1;
+    if (want < 0 || (u32)want != sTexParam) return;
+    fprintf(stderr, "debugtex frame %llu %s type %d n %d -> %d:", (unsigned long long)sFrame, what, sPolyType, nv, n);
+    for (int i = 0; i < nv; i++) fprintf(stderr, " (%d %d %d %d)", v[i].pos[0], v[i].pos[1], v[i].pos[2], v[i].pos[3]);
+    fprintf(stderr, "\n");
+}
+
 static void submit_polygon(void) {
     sPolyDone = 1;
     sPolySerial++;
@@ -577,6 +587,7 @@ static void submit_polygon(void) {
     sPolyOutcome = 0;
     sPolyNOut = 0;
     if (culled) {
+        debug_tex_poly("culled", v, nv, 0);
         g3_feature(F_CULLED);
         sStripValid = 0;
         sPolyOutcome = 1;
@@ -588,17 +599,27 @@ static void submit_polygon(void) {
     sFarHidden = 0;
     int n = clip_polygon(v, nv, &cv, attr >> 12 & 1, &clipped);
     sPolyOutcome = n == 0 ? (sFarHidden ? 3 : 2) : 0;
+    debug_tex_poly(n ? "kept" : "clipped away", v, nv, n);
     sPolyNOut = n;
     sPolyClipped = clipped;
     { static int dbg = -1; if (dbg < 0) dbg = getenv("ACWW_GPU3D_DEBUGPOLY") ? atoi(getenv("ACWW_GPU3D_DEBUGPOLY")) : 0; if (dbg > 0) { dbg--; fprintf(stderr, "poly attr %08x n %d -> %d clipped %d:", attr, nv, n, clipped); for (int i = 0; i < nv; i++) fprintf(stderr, " (%d %d %d %d)", v[i].pos[0], v[i].pos[1], v[i].pos[2], v[i].pos[3]); fprintf(stderr, "\n"); } }
     if (clipped) g3_feature(F_CLIP);
+    // a strip's polygon hidden by the far plane still leaves a polygon of the two vertices it shares with the
+    // previous one (fitted to melonDS)
+    int phantom = 0;
+    if (n == 0 && sFarHidden && (sPolyType == 2 || sPolyType == 3) && sStripValid) {
+        phantom = 1;
+        n = 2;
+        sPolyOutcome = 0;
+        sPolyNOut = 2;
+    }
     if (n == 0) { sStripValid = 0; return; }
 
     // vertex RAM: a strip's polygon shares the two vertices it has in common with the previous one, when neither
     // was clipped (or culled)
     int strip = sPolyType == 2 || sPolyType == 3;
     int shared = !clipped && strip && sStripValid ? 2 : 0;
-    int need = n - shared;
+    int need = phantom ? 0 : n - shared;
     if (sNumPolys >= MAX_POLYGONS || sNumVerts + need > MAX_VERTICES) {
         sRamOverflow = 1;
         g3_feature(F_RAM_OVERFLOW);
@@ -610,7 +631,12 @@ static void submit_polygon(void) {
     memset(poly, 0, sizeof *poly);
     poly->index = sNumPolys;
     G3Vertex *ram = sVertexRam[sBank];
-    if (!clipped) {
+    if (phantom) {  // (the two in the order the polygon has them: odd triangles newer first)
+        int rev = sPolyType == 2 && (sStripPolys & 1);
+        poly->v[0] = sStripRam[rev ? 1 : 0];
+        poly->v[1] = sStripRam[rev ? 0 : 1];
+        sStripValid = 0;
+    } else if (!clipped) {
         // the polygon's vertices by their place in the strip (or the triangle / quad)
         static const u8 kOrder[5][4] = {{0, 1, 2}, {0, 1, 2, 3}, {0, 1, 2}, {0, 1, 3, 2}, {1, 0, 2}};
         const u8 *ord = kOrder[sPolyType == 2 && (sStripPolys & 1) ? 4 : sPolyType];
@@ -823,6 +849,11 @@ void gpu3d_debug_history(void) {
     fprintf(stderr, "\n");
 }
 static void execute(u8 cmd, const u32 *p) {
+    {   // (diagnostics: ACWW_GPU3D_CMDLOG=<frame>: every command executed in that frame, with the texture param)
+        static long f = -2;
+        if (f == -2) f = getenv("ACWW_GPU3D_CMDLOG") ? atol(getenv("ACWW_GPU3D_CMDLOG")) : -1;
+        if (f >= 0 && sFrame == (u64)f) fprintf(stderr, "cmdlog %02x %08x tex %08x vin %d\n", cmd, p[0], sTexParam, sVtxInPoly);
+    }
     sHist[sHistPos & 63].cmd = cmd; sHist[sHistPos & 63].p0 = p[0]; sHist[sHistPos & 63].mode = sMtxMode; sHist[sHistPos++ & 63].sp = sPosSP;
     g3_feature(F_CMD + (cmd & 0x7f));
     Mtx a;
