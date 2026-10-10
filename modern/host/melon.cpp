@@ -156,7 +156,7 @@ extern "C" int melon_3d_poly_count(void) { return (int)sNds->GPU.GPU3D.RenderNum
 extern "C" int melon_3d_poly_get(int i, Gpu3dVertexOut *v, u32 *attr, u32 *texparam, u32 *texpal, int *flags) {
     GPU3D &g = sNds->GPU.GPU3D;
     if (i < 0 || (u32)i >= g.RenderNumPolygons) return 0;
-    const Polygon *p = g.RenderPolygonRAM[i];
+    const melonDS::Polygon *p = g.RenderPolygonRAM[i];
     for (u32 k = 0; k < p->NumVertices && k < 10; k++) {
         const Vertex *x = p->Vertices[k];
         for (int c = 0; c < 4; c++) v[k].clip[c] = x->Position[c];
