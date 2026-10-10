@@ -159,6 +159,7 @@ extern "C" int melon_3d_poly_get(int i, Gpu3dVertexOut *v, u32 *attr, u32 *texpa
     const Polygon *p = g.RenderPolygonRAM[i];
     for (u32 k = 0; k < p->NumVertices && k < 10; k++) {
         const Vertex *x = p->Vertices[k];
+        for (int c = 0; c < 4; c++) v[k].clip[c] = x->Position[c];
         v[k].x = x->FinalPosition[0];
         v[k].y = x->FinalPosition[1];
         v[k].z = p->FinalZ[k];

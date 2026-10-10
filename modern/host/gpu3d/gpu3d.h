@@ -65,6 +65,7 @@ typedef struct Gpu3dVertexOut {
     int32_t r, g, b;        // colour as given to the rasteriser
     int16_t s, t;           // texture coordinates (1/16 texels)
     int32_t clipped;        // made by clipping
+    int32_t clip[4];        // (diagnostics: the clip coordinates x, y, z, w)
 } Gpu3dVertexOut;
 int gpu3d_poly_count(void);
 // polygon i of the frame shown: its vertices (at most 10) and attributes; returns the vertex count

@@ -447,12 +447,11 @@ static s64 floor_div(s64 a, s64 b) {
     return (a % b != 0 && (a < 0) != (b < 0)) ? q - 1 : q;
 }
 // the viewport transform (GBATEK "DS 3D Viewport"): x = (x + w) * width / 2w + x1, y the same from the bottom; W and
-// the coordinate are first cut to 16 bits of W (a shift right until W fits)
+// the coordinate are first shifted right once when W has more than 16 bits
 static void screen_position(G3Vertex *v) {
     if (v->screenDone) return;
     s64 w = v->pos[3];
-    int s = 0;
-    while ((w >> s) >= 0x10000) s++;
+    int s = w >= 0x10000;  // (one shift, however large W is: fitted to melonDS)
     s64 ws = w >> s;
     if (ws == 0) ws = 1;  // (a point at the eye)
     s64 nx = ((s64)v->pos[0] + w) >> s, ny = (-(s64)v->pos[1] + w) >> s;
@@ -1225,6 +1224,7 @@ int gpu3d_poly_get(int i, Gpu3dVertexOut *v, uint32_t *attr, uint32_t *texparam,
     if (i < 0 || i >= gG3Render.npoly) return 0;
     const G3Polygon *p = gG3Render.poly[i];
     for (int k = 0; k < p->nv; k++) {
+        for (int c = 0; c < 4; c++) v[k].clip[c] = p->v[k]->pos[c];
         v[k].x = p->v[k]->x;
         v[k].y = p->v[k]->y;
         v[k].z = p->z[k];

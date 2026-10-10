@@ -325,6 +325,7 @@ static void census_polygons(u64 label) {
                 fprintf(dump, "own %d %d %d %d %d %d %d %d %d melon %d %d %d %d %d %d %d %d %d ", vo[k].x, vo[k].y,
                         vo[k].z, vo[k].w, vo[k].r, vo[k].g, vo[k].b, vo[k].s, vo[k].t, vm[k].x, vm[k].y, vm[k].z, vm[k].w,
                         vm[k].r, vm[k].g, vm[k].b, vm[k].s, vm[k].t);
+                fprintf(dump, "mclip %d %d %d %d ", vm[k].clip[0], vm[k].clip[1], vm[k].clip[2], vm[k].clip[3]);
                 void gpu3d_debug_vertex(int i, int k, FILE *f);
                 gpu3d_debug_vertex(i, k, dump);
                 fprintf(dump, "\n");
