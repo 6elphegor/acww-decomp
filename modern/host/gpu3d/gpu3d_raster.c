@@ -113,13 +113,65 @@ static const G3RenderState *sR;
 
 static u32 rgb5_to_6(u32 c) { return c ? c * 2 + 1 : 0; }
 
-static void put_pixel(const G3Polygon *p, int x, int y, s32 z, s32 r, s32 g, s32 b, int idx) {
+// depth test "equal" (attr bit 14): within a margin
+static int depth_pass(const G3Polygon *p, s32 z, u32 d) {
+    if (p->attr & 0x4000) {
+        s32 m = 0x200;
+        return z >= (s32)d - m && z <= (s32)d + m;
+    }
+    return z < (s32)d;
+}
+
+// one pixel of a polygon: a[] the interpolated vertex colour (9 bits each) and texture coordinates (1/16 texels)
+static void put_pixel(const G3Polygon *p, int x, int y, s32 z, const s32 *a, int idx) {
     int i = y * W + x;
-    if (z >= (s32)sDepth[i]) return;  // (depth test: less)
-    u32 a = p->attr >> 16 & 31;
-    if (a == 0) a = 31;  // (wireframe: drawn opaque at the edges; to do)
-    sColor[i] = (u32)(r >> 3) | (u32)(g >> 3) << 8 | (u32)(b >> 3) << 16 | a << 24;
-    sDepth[i] = (u32)z;
+    if (!depth_pass(p, z, sDepth[i])) return;
+    u32 vr = (u32)a[0] >> 3, vg = (u32)a[1] >> 3, vb = (u32)a[2] >> 3;  // (6 bits)
+    u32 pa = p->attr >> 16 & 31;
+    if (!pa) pa = 31;  // (wireframe: drawn opaque at the edges; to do)
+    u32 r = vr, g = vg, b = vb, al = pa;
+    int mode = p->attr >> 4 & 3;
+    if ((p->texparam >> 26 & 7) && (sR->dispcnt & 1)) {
+        u32 tx = g3_texel(p->texparam, p->texpal, a[3] >> 4, a[4] >> 4);
+        u32 ta = tx >> 16 & 31;
+        u32 tr = rgb5_to_6(tx & 31), tg = rgb5_to_6(tx >> 5 & 31), tb = rgb5_to_6(tx >> 10 & 31);
+        if (mode == 1) {  // decal
+            if (ta == 31) r = tr, g = tg, b = tb;
+            else if (ta) {
+                r = (tr * ta + vr * (31 - ta)) >> 5;
+                g = (tg * ta + vg * (31 - ta)) >> 5;
+                b = (tb * ta + vb * (31 - ta)) >> 5;
+            }
+        } else {  // modulation
+            r = ((tr + 1) * (vr + 1) - 1) >> 6;
+            g = ((tg + 1) * (vg + 1) - 1) >> 6;
+            b = ((tb + 1) * (vb + 1) - 1) >> 6;
+            al = ((ta + 1) * (pa + 1) - 1) >> 5;
+        }
+    }
+    if (!al) return;
+    if ((sR->dispcnt & 4) && al <= sR->alphaRef) return;  // (alpha test)
+    u32 fog = p->attr >> 15 & 1;
+    if (al == 31) {
+        sColor[i] = r | g << 8 | b << 16 | 31u << 24;
+        sDepth[i] = (u32)z;
+        sOpaqueId[i] = (u8)(p->attr >> 24 & 63);
+        sFlags[i] = (u8)((sFlags[i] & ~5) | fog);
+    } else {
+        u8 id = (u8)(p->attr >> 24 & 63);
+        if (sTransId[i] == id) return;  // (one translucent polygon ID draws a pixel once)
+        u32 dst = sColor[i], da = dst >> 24;
+        if ((sR->dispcnt & 8) && da) {  // (alpha blending)
+            r = (r * (al + 1) + (dst & 63) * (31 - al)) >> 5;
+            g = (g * (al + 1) + (dst >> 8 & 63) * (31 - al)) >> 5;
+            b = (b * (al + 1) + (dst >> 16 & 63) * (31 - al)) >> 5;
+            if (da > al) al = da;
+        }
+        sColor[i] = r | g << 8 | b << 16 | al << 24;
+        if (p->attr & 0x800) sDepth[i] = (u32)z;  // (translucent depth update)
+        sTransId[i] = id;
+        sFlags[i] = (u8)((sFlags[i] & fog) | 4);
+    }
     sPoly[i] = (s16)idx;
 }
 
@@ -185,7 +237,7 @@ static void draw_polygon(const G3Polygon *p, int idx) {
         s32 lmin = a, rmax = b;
         const Edge *el = &L, *er = &R;
         // the attributes at the two ends of the span, interpolated along the edges
-        s32 ends[2][6];  // z, w, r, g, b (s, t later)
+        s32 ends[2][7];  // z, w, r, g, b, s, t
         s32 cx[2];       // the x the colours are interpolated between (span_end)
         const Edge *es[2] = {el, er};
         for (int k = 0; k < 2; k++) {
@@ -200,9 +252,11 @@ static void draw_polygon(const G3Polygon *p, int idx) {
             s32 w0 = p->w[e->v0], w1 = p->w[e->v1];
             Interp ic;
             if (!exact_ok(w0, w1)) interp_setup(&ic, yc, e->y0, e->y1, w0, w1, 9);
-            for (int c = 0; c < 3; c++)
-                ends[k][2 + c] = exact_ok(w0, w1) ? lerp_floor(a->color[c], b->color[c], yc - e->y0, e->y1 - e->y0)
-                                                  : interp(&ic, a->color[c], b->color[c]);
+            const s32 va[5] = {a->color[0], a->color[1], a->color[2], a->tex[0], a->tex[1]};
+            const s32 vb[5] = {b->color[0], b->color[1], b->color[2], b->tex[0], b->tex[1]};
+            for (int c = 0; c < 5; c++)
+                ends[k][2 + c] = exact_ok(w0, w1) ? lerp_floor(va[c], vb[c], yc - e->y0, e->y1 - e->y0)
+                                                  : interp(&ic, va[c], vb[c]);
         }
         s32 xl = lmin, xr = rmax;
         for (s32 x = xl; x <= xr; x++) {
@@ -210,16 +264,15 @@ static void draw_polygon(const G3Polygon *p, int idx) {
             Interp ip;
             interp_setup(&ip, x, xl, xr + 1, ends[0][1], ends[1][1], 8);
             s32 z = p->wbuffer ? interp(&ip, ends[0][0], ends[1][0]) : interp_z_linear(x, xl, xr, ends[0][0], ends[1][0]);
-            s32 col[3];
+            s32 col[5];
             int ex = exact_ok(ends[0][1], ends[1][1]);
             Interp ic;
             if (!ex) interp_setup(&ic, x, cx[0], cx[1], ends[0][1], ends[1][1], 8);
-            for (int c = 0; c < 3; c++)
+            for (int c = 0; c < 5; c++)
                 col[c] = cx[1] == cx[0] ? ends[0][2 + c]
                          : ex           ? lerp_floor(ends[0][2 + c], ends[1][2 + c], x - cx[0], cx[1] - cx[0])
                                         : interp(&ic, ends[0][2 + c], ends[1][2 + c]);
-            s32 r = col[0], g = col[1], b = col[2];
-            put_pixel(p, x, y, z, r, g, b, idx);
+            put_pixel(p, x, y, z, col, idx);
         }
     }
 }
@@ -242,6 +295,7 @@ static void clear_buffers(void) {
 
 void g3_render(void) {
     sR = &gG3Render;
+    g3_tex_setup();
     clear_buffers();
     for (int i = 0; i < sR->npoly; i++) draw_polygon(sR->poly[i], i);
     sShown ^= 1;

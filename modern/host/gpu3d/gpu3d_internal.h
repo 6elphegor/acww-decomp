@@ -64,6 +64,10 @@ extern G3RenderState gG3Render;
 extern const uint8_t *const *gG3Banks;  // VRAM banks A-I (gpu3d_frame)
 extern u8 gG3VramCnt[9];
 
+// gpu3d_tex.c
+void g3_tex_setup(void);                 // the texture slots as VRAMCNT maps them now
+u32 g3_texel(u32 texparam, u32 texpal, int s, int t);  // BGR555 | alpha (0-31) << 16
+
 // gpu3d_raster.c
 void g3_render(void);                    // gG3Render into the frame buffer
 const u32 *g3_frame_lines(void);
