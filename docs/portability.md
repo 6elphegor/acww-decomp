@@ -992,8 +992,8 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     **In progress (branch port-p52-gpu3d, 2026-10-10).** `modern/host/gpu3d/` behind `ACWW_RENDERER3D=own|melon`
     (gpu3d_geom.c the geometry engine, gpu3d_raster.c the rasteriser, gpu3d_tex.c texture slots and the 7 formats).
     With `ACWW_RENDERER3D=own` the game renders without melonDS (town, Kapp'n's taxi: visually identical). Fitted to
-    melonDS's output by experiments (the rules are in the code's comments): clipped vertex colours (5 bits, rounded
-    up; an edge crossing both planes of an axis gets its second crossing from its far end); the viewport transform
+    melonDS's output by experiments (the rules are in the code's comments): clipped vertex colours (5 bits, from the larger colour
+    by a factor rounded up to 16 bits, the result rounded up; an edge crossing both planes of an axis gets its second crossing from its far end); the viewport transform
     shifts W right once when it has more than 16 bits; lighting (diffuse: per-component products of the reversed light and the normal, 9-bit level, no upper
     limit; all terms summed with 14 fractional bits); texture coordinates from the normal (>> 24 with the 12-bit
     normal); spans between the edges' x at the edge's outermost line (x-major edges rounded, y-major left rounded
@@ -1010,8 +1010,8 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     (render_selftest3d.c; new: 256 fog, 4096 lighting, 8192 a W per vertex, 32 a texture naming its texels) and
     `_POLYS`; at 300 scenes: masks 0, 1, 4, 8, 16, 17, 24, 32, 264 (fog, W-buffer) match, 2 / 6 about 1%, multi-polygon
     Z-buffer and 8192 + 2 / 32 differ by ±1 precision; ACWW_RENDER_COMPARE=1 on the play script to frame 8000: every
-    3D read and every unclipped polygon's colours and texture coordinates equal, polygon lists differ in 177 frames
-    (positions within 0.002 of a pixel boundary, clipped colours), pictures differ along polygon seams (texture
+    3D read and every unclipped polygon's colours and texture coordinates equal, polygon lists differ in 6 of 25002 frames
+    (12 clipped colours next to a saturated colour), pictures differ along polygon seams (texture
     coordinates / W mid-span ±1 in the 8-bit span factor). Tools: `ACWW_RENDER_SELFTEST3D_CMDS` (raw command scenes;
     `_DISP`, `_CLEAR`), `_QUAD`, `_W`, `_DUMP` (both pictures, the polygon per pixel, both depth buffers, the
     rendering registers), `ACWW_RENDER_DUMP3D=<frame>:<prefix>` (the same for a game frame), `ACWW_RENDER_POLYDUMP`,
