@@ -143,9 +143,23 @@ static void scene(void) {
     u16 disp = 0;
     if (sMask & M_TRANS) disp |= 8;
     if (sMask & M_TEX) disp |= 1;
+    if (sMask & M_FOG) {  // (fog on, alpha only at times, a random shift, colour, offset and table)
+        disp |= (u16)(0x80 | (rnd_below(4) ? 0 : 0x40) | rnd_below(11) << 8);
+        render_write16(0x04000358, (u16)(rnd() & 0x7fff));
+        render_write16(0x0400035a, (u16)(rnd() & 31));
+        render_write16(0x0400035c, (u16)(rnd() & 0x7fff));
+        u8 t = (u8)rnd_below(16);
+        for (int i = 0; i < 32; i += 2) {
+            u8 a = t, b;
+            t = (u8)(t + rnd_below(9)); if (t > 127) t = 127;
+            b = t;
+            t = (u8)(t + rnd_below(9)); if (t > 127) t = 127;
+            render_write16(0x04000360 + (u32)i, (u16)(a | b << 8));
+        }
+    }
     if (sMask & M_AA && rnd() & 1) disp |= 16;
     render_write16(0x04000060, disp);
-    render_write16(0x04000350, (u16)(rnd() & 0x7fff));
+    render_write16(0x04000350, (u16)(rnd() & 0x7fff) | ((sMask & M_FOG) && rnd_below(2) ? 0x8000 : 0));
     render_write16(0x04000352, (u16)(rnd_below(2) ? 0x001f : 0x0000) | (u16)(rnd_below(64) << 8));
     render_write16(0x04000354, 0x7fff);
     cmd(0x10, 0);
@@ -177,7 +191,7 @@ static void scene(void) {
             cmd(0x30, rnd() & 0x7fff7fff & ~0x8000u);  // (diffuse, ambient; bit 15 clear: no vertex colour)
             cmd(0x31, rnd() & 0x7fff7fff & ~0x8000u);  // (specular, emission; no shininess table)
         }
-        cmd(0x29, 0x000000c0 | lights | alpha << 16 | rnd_below(64) << 24);
+        cmd(0x29, 0x000000c0 | lights | alpha << 16 | rnd_below(64) << 24 | ((sMask & M_FOG) && rnd_below(4) ? 0x8000 : 0));
         cmd(0x2a, (sMask & M_TEX) ? 7u << 26 | 4u << 23 | 4u << 20 | 3u << 16 : 0);
         int quad = (sMask & M_QUADS) && rnd_below(2);
         cmd(0x40, quad ? 1 : 0);
@@ -273,7 +287,8 @@ void render_selftest3d(long scenes) {
             }
             snprintf(name, sizeof name, "%s-%ld.txt", getenv("ACWW_RENDER_SELFTEST3D_DUMP"), n);
             f = fopen(name, "w");
-            if (f) {  // the polygons: per line, the attributes and the vertices (x y z w r g b s t)
+            if (f) {  // the polygons: per line, the attributes and the vertices (x y z w r g b s t); then the registers
+                void gpu3d_debug_regs(FILE *f);
                 for (int i = 0; i < gpu3d_poly_count(); i++) {
                     Gpu3dVertexOut v[10];
                     u32 a, t, p;
@@ -284,6 +299,7 @@ void render_selftest3d(long scenes) {
                                 v[j].s, v[j].t);
                     fprintf(f, "\n");
                 }
+                gpu3d_debug_regs(f);
                 fclose(f);
             }
         }

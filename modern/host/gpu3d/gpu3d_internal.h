@@ -92,6 +92,7 @@ enum {
     F_DEPTH_EQUAL,
     F_FOG_POLY,
     F_WBUFFER,
+    F_ZBUFFER_POLYS,
     F_MANUAL_SORT,
     F_STACK_ERROR,
     F_RAM_OVERFLOW,

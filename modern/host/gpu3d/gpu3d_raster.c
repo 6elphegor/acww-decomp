@@ -318,11 +318,49 @@ static void clear_buffers(void) {
     }
 }
 
+// fog (DISP3DCNT bit 7; GBATEK "Fog"): pixels with the fog flag move towards FOG_COLOR by a density from the depth
+// (FOG_TABLE between the boundaries FOG_OFFSET + FOG_STEP * (n + 1)); bit 6: alpha only
+static void fog_pass(void) {
+    const G3RenderState *r = sR;
+    if (!(r->dispcnt & 0x80) || getenv("ACWW_GPU3D_NOFOG")) return;  // (NOFOG: diagnostics)
+    int shift = r->dispcnt >> 8 & 15;
+    s32 step = shift <= 10 ? 0x400 >> shift : 0;
+    u32 fc = r->fogColor;
+    u32 fr = rgb5_to_6(fc & 31), fgc = rgb5_to_6(fc >> 5 & 31), fb = rgb5_to_6(fc >> 10 & 31), fa = fc >> 16 & 31;
+    for (int i = 0; i < W * H; i++) {
+        if (!(sFlags[i] & 1)) continue;
+        s32 z = (s32)(sDepth[i] >> 9);
+        s32 d;
+        s32 b0 = r->fogOffset + step;
+        if (z < b0 || !step) d = z < b0 ? r->fogTable[0] : r->fogTable[31];
+        else {
+            s32 n = (z - b0) / step;
+            if (n >= 31) d = r->fogTable[31];
+            else {
+                s32 frac = (z - b0) - n * step;
+                d = r->fogTable[n] + (r->fogTable[n + 1] - r->fogTable[n]) * frac / step;
+            }
+        }
+        if (d >= 127) d = 128;
+        u32 c = sColor[i];
+        u32 a = c >> 24 & 31;
+        a = (fa * d + a * (128 - d)) >> 7;
+        if (r->dispcnt & 0x40) c = (c & 0xffffff) | a << 24;
+        else {
+            u32 cr = (fr * d + (c & 63) * (128 - d)) >> 7, cg = (fgc * d + (c >> 8 & 63) * (128 - d)) >> 7,
+                cb = (fb * d + (c >> 16 & 63) * (128 - d)) >> 7;
+            c = cr | cg << 8 | cb << 16 | a << 24;
+        }
+        sColor[i] = c;
+    }
+}
+
 void g3_render(void) {
     sR = &gG3Render;
     g3_tex_setup();
     clear_buffers();
     for (int i = 0; i < sR->npoly; i++) draw_polygon(sR->poly[i], i);
+    fog_pass();
     sShown ^= 1;
     memcpy(sFrameBuf[sShown], sColor, sizeof sColor);
 }

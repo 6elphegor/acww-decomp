@@ -1010,6 +1010,7 @@ static void do_swap(void) {
     r->wbuffer = sFlushParam >> 1 & 1;
     r->manualSort = sFlushParam & 1;
     if (r->wbuffer) g3_feature(F_WBUFFER);
+    else if (r->npoly) g3_feature(F_ZBUFFER_POLYS);
     if (r->manualSort) g3_feature(F_MANUAL_SORT);
     for (int i = 0; i < sNumPolys; i++) {
         G3Polygon *p = &sPolyRam[sBank][i];
@@ -1062,7 +1063,8 @@ void gpu3d_write8(uint32_t addr, uint8_t v) {
     }
 }
 void gpu3d_write16(uint32_t addr, uint16_t v) {
-    if (addr == 0x04000060) sDispCnt = (sDispCnt & ~0x3000u & 0xffff) | (v & 0x4fff);  // (bits 12-13: acknowledge)
+    if (addr == 0x04000060)  // (bits 12-13: status, cleared by writing 1; the rest replaced)
+        sDispCnt = (sDispCnt & 0x3000u & ~(u32)(v & 0x3000)) | (v & 0x4fff);
     else if (addr == 0x04000304) { sRenderOn = v >> 2 & 1; sGeomOn = v >> 3 & 1; drain(); }
     else if (addr >= 0x04000320 && addr < 0x040003c0) sRegs[(addr - 0x04000320) / 2] = v;
     else if (addr == 0x04000610) sDot1Depth = v & 0x7fff;
@@ -1247,7 +1249,7 @@ void gpu3d_print_features(void) {
         [F_FARCLIP_HIDE] = "far-plane polygons hidden", [F_CULLED] = "culled polygons",
         [F_ONEDOT_HIDE] = "1-dot polygons hidden", [F_TRANSLUCENT] = "translucent polygons",
         [F_WIREFRAME] = "wireframe (alpha 0)", [F_DEPTH_EQUAL] = "depth test equal", [F_FOG_POLY] = "fog per polygon",
-        [F_WBUFFER] = "W-buffering", [F_MANUAL_SORT] = "manual translucent sort", [F_STACK_ERROR] = "matrix stack error",
+        [F_WBUFFER] = "W-buffering", [F_ZBUFFER_POLYS] = "Z-buffering with polygons", [F_MANUAL_SORT] = "manual translucent sort", [F_STACK_ERROR] = "matrix stack error",
         [F_RAM_OVERFLOW] = "polygon/vertex RAM overflow", [F_FIFO_QUEUED] = "commands queued behind a swap",
         [F_SWAP_QUEUED] = "a swap queued behind a swap", [F_FIFO_FULL] = "command FIFO full (writes dropped)", [F_TEX_REPEAT] = "texture repeat", [F_TEX_FLIP] = "texture flip",
         [F_TEX_CLAMP] = "texture clamp", [F_COLOR0_TRANSPARENT] = "palette colour 0 transparent",
@@ -1276,4 +1278,14 @@ void gpu3d_print_features(void) {
         else n = kNames[i] ? kNames[i] : "?";
         fprintf(stderr, "  %-44s frame %llu\n", n, (unsigned long long)sFeatureFrame[i] - 1);
     }
+}
+
+// (diagnostics: the rendering registers latched for the frame shown, one line: DISP3DCNT, CLEAR_COLOR, CLEAR_DEPTH,
+// ALPHA_TEST_REF, FOG_COLOR, FOG_OFFSET, the fog table)
+void gpu3d_debug_regs(FILE *f) {
+    const G3RenderState *r = &gG3Render;
+    fprintf(f, "regs %x %x %x %x %x %x %x", r->dispcnt, r->clearColor | (u32)r->clearAttrHi << 16, r->clearDepth, r->alphaRef,
+            r->fogColor, r->fogOffset, r->wbuffer);
+    for (int i = 0; i < 32; i++) fprintf(f, " %d", r->fogTable[i]);
+    fprintf(f, "\n");
 }
