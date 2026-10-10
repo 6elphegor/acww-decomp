@@ -260,7 +260,7 @@ static int edges_at(const G3Polygon *p, s32 y, Edge *l, Edge *r) {
 // cut the pixel. Fitted to melonDS: y-major: the pixel at the edge's x, its area inside the edge (the slope cut to
 // 8 fractional bits); x-major: the pixels whose
 // centres lie in the edge's run on the line, the exact edge's height there (left edges strictly below)
-static int edge_coverage(const Edge *e, int side, s32 x, s32 y) {
+static int edge_coverage(const Edge *e, int side, s32 x, s32 y, s32 snum, s32 sden) {
     s32 dx = e->x1 - e->x0, dy = e->y1 - e->y0, adx = dx < 0 ? -dx : dx;
     if (!dx || dy <= 0) return 31;
     if (adx < dy) {
@@ -271,12 +271,13 @@ static int edge_coverage(const Edge *e, int side, s32 x, s32 y) {
         s64 v = side ? (fr + half) >> 13 : ((1 << 18) - fr - half) >> 13;
         return v > 31 ? 31 : v < 0 ? 0 : (int)v;
     }
-    // x-major: D = 2 * (pixel centre - exact edge x at line y) * dy
-    s64 d = (s64)(2 * x + 1) * dy - 2 * ((s64)e->x0 * dy + (s64)dx * (y - e->y0));
-    if ((dx > 0 ? d < 0 : d > 0) || (d < 0 ? -d : d) > 2 * (s64)adx) return 31;
+    // x-major: D = 2 * (pixel centre - exact edge x at line y) * dy * sden, the run's start moved by snum / sden
+    s64 d = ((s64)(2 * x + 1) * dy - 2 * ((s64)e->x0 * dy + (s64)dx * (y - e->y0))) * sden - 2 * (s64)dy * snum;
+    s64 lim = 2 * (s64)adx * sden;
+    if ((dx > 0 ? d < 0 : d > 0) || (d < 0 ? -d : d) > lim) return 31;
     s64 ad = d < 0 ? -d : d;
     int gt = side ? dx < 0 : dx > 0;  // (coverage grows along the run: t, else 1 - t)
-    s64 num = gt ? 16 * ad : 32 * (s64)adx - 16 * ad, den = adx;
+    s64 num = gt ? 16 * ad : 32 * (s64)adx * sden - 16 * ad, den = (s64)adx * sden;
     s64 v = side ? num / den : (num + den - 1) / den - 1;
     return v > 31 ? 31 : v < 0 ? 0 : (int)v;
 }
@@ -345,6 +346,16 @@ static void draw_polygon(const G3Polygon *p, int idx) {
                                                   : interp(&ic, va[c], vb[c]);
         }
         s32 xl = lmin, xr = rmax;
+        // (anti-aliasing on a line where both edges start: the right edge's run begins where the left one, going
+        // right, leaves the line (x-major) or after its pixel (y-major): fitted)
+        s32 rsn = 0, rsd = 1;
+        if (aa && y == R.y0 && y == L.y0 && R.xmajor && L.sign > 0) {
+            if (L.xmajor) {
+                rsn = (L.x0 - R.x0) * (L.y1 - L.y0) + (L.x1 - L.x0);
+                rsd = L.y1 - L.y0;
+            } else  // (after the left edge's pixel)
+                rsn = (s32)(edge_x(&L, y, 0) >> 18) + 1 - R.x0;
+        }
         for (s32 x = xl; x <= xr; x++) {
             if (x < 0 || x >= W) continue;
             Interp ip;
@@ -366,8 +377,9 @@ static void draw_polygon(const G3Polygon *p, int idx) {
                                         : interp(&ic, ends[0][2 + c], ends[1][2 + c]);
             int cov = 31;
             if (aa) {
-                int cl = edge_coverage(&L, 0, x, y), cr = edge_coverage(&R, 1, x, y);
-                cov = cl < cr ? cl : cr;
+                // (where the left edge cuts the pixel its coverage counts, else the right edge's: fitted)
+                int cl = edge_coverage(&L, 0, x, y, 0, 1);
+                cov = cl < 31 ? cl : edge_coverage(&R, 1, x, y, rsn, rsd);
                 if (!cov) continue;
             }
             put_pixel(p, x, y, z, col, idx, cov);
