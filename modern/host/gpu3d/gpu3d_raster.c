@@ -230,13 +230,13 @@ static void draw_polygon(const G3Polygon *p, int idx) {
         s32 a = edge_left(&L, y), b = edge_right(&R, y);
         if (full) {  // (and the x-major edges' runs on the line are the polygon's too)
             if (R.sign && !R.xmajor) b++;
+            if (R.xmajor && R.sign < 0) {
+                s32 v = (s32)((edge_x(&R, y, 0) + (1 << 17)) >> 18) - 1;
+                if (v > b) b = v;
+            }
             if (L.xmajor && L.sign > 0) {
                 s32 v = (s32)((edge_x(&L, y, 0) + (1 << 17)) >> 18);
                 if (v < a) a = v;
-            }
-            if (R.xmajor && R.sign < 0) {
-                s32 v = (s32)((edge_x(&R, y, 0) + (1 << 17)) >> 18);
-                if (v > b) b = v;
             }
         }
         // the left edge's own pixels are drawn even where the right edge is already left of them
