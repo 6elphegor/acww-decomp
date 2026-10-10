@@ -412,9 +412,9 @@ static void lighting(void) {
         memcpy(r->lvec, sLightVec, sizeof r->lvec);
     }
     // levels from the dot products of 9-bit-fraction vectors (diffuse 9 bits, shininess 8); the colour sums kept with
-    // 8 fractional bits (each term colour * light colour / 32 * level), then cut to 5 bits
+    // 14 fractional bits (each term colour * light colour / 32 * level), then cut to 5 bits
     s32 n9[3] = {n[0] >> 3, n[1] >> 3, n[2] >> 3};
-    s32 c[3] = {sEmission[0] << 8, sEmission[1] << 8, sEmission[2] << 8};
+    s32 c[3] = {sEmission[0] << 14, sEmission[1] << 14, sEmission[2] << 14};
     g3_feature(F_LIGHT);
     for (int l = 0; l < 4; l++) {
         if (!(sCurPolyAttr & (1u << l))) continue;
@@ -429,14 +429,14 @@ static void lighting(void) {
         if (shine > 255) shine = 255;
         shine = (shine * shine) >> 8;
         if (sShininessOn) { shine = sShininess[shine >> 1]; g3_feature(F_SHININESS_TABLE); }
-        for (int k = 0; k < 3; k++) {
+        for (int k = 0; k < 3; k++) {  // (the sums keep 14 fractional bits: fitted to melonDS)
             s32 lc = sLightColor[l][k];
-            c[k] += (sSpecular[k] * lc * shine) >> 5;
-            c[k] += (sDiffuse[k] * lc * diffuse) >> 6;
-            c[k] += (sAmbient[k] * lc << 8) >> 5;
+            c[k] += sSpecular[k] * lc * shine << 1;
+            c[k] += sDiffuse[k] * lc * diffuse;
+            c[k] += sAmbient[k] * lc << 9;
         }
     }
-    for (int k = 0; k < 3; k++) c[k] >>= 8;
+    for (int k = 0; k < 3; k++) c[k] >>= 14;
     for (int k = 0; k < 3; k++) sVtxColor[k] = (u8)(c[k] > 31 ? 31 : c[k]);
     if (sLightRecs && sCurLightRec >= 0) memcpy(sLightRecs[sCurLightRec].out, sVtxColor, 3);
 }
@@ -864,10 +864,10 @@ static void execute(u8 cmd, const u32 *p) {
         sNormal[0] = sx10(p[0]);
         sNormal[1] = sx10(p[0] >> 10);
         sNormal[2] = sx10(p[0] >> 20);
-        if ((sTexParam >> 30) == 2) {  // texture coordinates from the normal
+        if ((sTexParam >> 30) == 2) {  // texture coordinates from the normal (its 9 fractional bits * the matrix >> 21)
             for (int i = 0; i < 2; i++)
                 sTexCoord[i] = (s16)((((s64)sNormal[0] * sTex.m[i] + (s64)sNormal[1] * sTex.m[4 + i] +
-                                       (s64)sNormal[2] * sTex.m[8 + i]) >> 21) + sTexRaw[i]);
+                                       (s64)sNormal[2] * sTex.m[8 + i]) >> 24) + sTexRaw[i]);
         }
         lighting();
         break;

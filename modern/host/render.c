@@ -358,7 +358,8 @@ static int compare_polygons(const char *kind, u64 label) {
                 int k = w ? melon_3d_poly_get(i, v, &a, &t, &p, &f) : gpu3d_poly_get(i, v, &a, &t, &p, &f);
                 fprintf(stderr, "%s %4d %08x %08x f%d:", w ? " | melon" : "polydump own", i, a, t, f);
                 for (int j = 0; j < k; j++)
-                    fprintf(stderr, " %d,%d,%x c%d,%d,%d", v[j].x, v[j].y, v[j].z, v[j].r >> 4, v[j].g >> 4, v[j].b >> 4);
+                    fprintf(stderr, " %d,%d,%x c%d,%d,%d t%d,%d", v[j].x, v[j].y, v[j].z, v[j].r >> 4, v[j].g >> 4, v[j].b >> 4,
+                            v[j].s, v[j].t);
             }
             fprintf(stderr, "\n");
         }
