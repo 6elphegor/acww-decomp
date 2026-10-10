@@ -1001,7 +1001,10 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     W (z) interpolated the same way; equal depth lets a facing-1 polygon over a facing-0 pixel; GBATEK's "Polygon
     Size" (right edges and x-major edge runs drawn for translucent polygons with blending and for opaque ones with
     edge marking or anti-aliasing); textures (modulation, decal), alpha test, translucent blending once per polygon
-    ID (the larger alpha kept); fog (GBATEK's formula, density from depth >> 9). DISP3DCNT writes now replace its
+    ID (the larger alpha kept); fog (GBATEK's formula, density from depth >> 9); anti-aliasing (coverage per edge pixel:
+    y-major edges by the pixel's area inside the edge, x-major edges by the exact edge's height at the pixel centre,
+    the left edge first; the opaque top pixel keeps its coverage and the pixel below it and is blended with it at
+    the end; translucent pixels in front resolve the edge first, behind ones go onto the layer below). DISP3DCNT writes now replace its
     bits (they were ORed in). **Checks:** `ACWW_RENDER_SELFTEST3D=<n>` with `ACWW_RENDER_SELFTEST3D_MASK`
     (render_selftest3d.c; new: 256 fog, 4096 lighting, 8192 a W per vertex, 32 a texture naming its texels) and
     `_POLYS`; at 300 scenes: masks 0, 1, 4, 8, 16, 17, 24, 32, 264 (fog, W-buffer) match, 2 / 6 about 1%, multi-polygon
@@ -1013,8 +1016,9 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     rendering registers), `ACWW_RENDER_DUMP3D=<frame>:<prefix>` (the same for a game frame), `ACWW_RENDER_POLYDUMP`,
     `ACWW_RENDER_FITDUMP` (+ `ACWW_GPU3D_FEATURES=2` for lighting records), `ACWW_RENDER_COMPARE=2` (lights,
     material, normal and vertex colour after every command), `ACWW_GPU3D_NOFOG`; melon_3d_buffers reads melonDS's
-    depth and attribute buffers (an oracle only). **Open:** anti-aliasing (the game enables it: edge coverage alphas,
-    not yet fitted), span-factor precision at seams, Z-buffer depth (15-bit steps along edges; the game uses
+    depth and attribute buffers (an oracle only). Anti-aliasing: self-test mask 64 (100 scenes) 15400 differing
+    pixels to 681; play script median per frame 2618 to 1286. **Open:** anti-aliasing residuals (±1 coverage on long
+    x-major runs, some vertex rows, slivers), span-factor precision at seams, Z-buffer depth (15-bit steps along edges; the game uses
     W-buffering), specular lighting, multi-plane clipping colours (13 in 15480), sliver left/right choice, toon /
     highlight, shadows, edge marking, wireframe, 1-dot polygons, the rear plane bitmap.
 30. **5.3** Drop melonDS (and the GPL obligation), then HBlank effects (`Sky_HBlank*` stubs).
