@@ -482,9 +482,9 @@ static void clip_interp(G3Vertex *o, const G3Vertex *in, const G3Vertex *out, in
             cdin = (s64)in->farPos[3] - sign * (s64)in->farPos[comp];
             cden = cdin - dout;
         }
-        for (int i = 0; i < 3; i++) {
-            s64 a = ic[i] >> 4, d = (s64)((out->color[i] >> 4) - a) * cdin;
-            s32 c = (s32)(a + (d >= 0 ? (d + cden - 1) / cden : -(-d / cden)));
+        for (int i = 0; i < 3; i++) {  // (the exact value cut to 12 fractional bits, then rounded up)
+            s64 a = ic[i] >> 4, num = (a * cden + (s64)((out->color[i] >> 4) - a) * cdin) * 4096;
+            s32 c = (s32)((floor_div(num, cden) + 4095) >> 12);
             o->color[i] = c ? c << 4 | 0xf : 0;
         }
     }

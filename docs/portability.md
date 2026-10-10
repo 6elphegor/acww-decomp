@@ -993,7 +993,8 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     (gpu3d_geom.c the geometry engine, gpu3d_raster.c the rasteriser, gpu3d_tex.c texture slots and the 7 formats).
     With `ACWW_RENDERER3D=own` the game renders without melonDS (town, Kapp'n's taxi: visually identical). Fitted to
     melonDS's output by experiments (the rules are in the code's comments): clipped vertex colours (5 bits, rounded
-    up); lighting (diffuse: per-component products of the reversed light and the normal, 9-bit level, no upper
+    up; an edge crossing both planes of an axis gets its second crossing from its far end); the viewport transform
+    shifts W right once when it has more than 16 bits; lighting (diffuse: per-component products of the reversed light and the normal, 9-bit level, no upper
     limit; all terms summed with 14 fractional bits); texture coordinates from the normal (>> 24 with the 12-bit
     normal); spans between the edges' x at the edge's outermost line (x-major edges rounded, y-major left rounded
     down, right the next integer above); colours / texture coordinates / W exact between equal W with bits 0-6
@@ -1019,7 +1020,7 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     depth and attribute buffers (an oracle only). Anti-aliasing: self-test mask 64 (100 scenes) 15400 differing
     pixels to 681; play script median per frame 2618 to 1286. **Open:** anti-aliasing residuals (±1 coverage on long
     x-major runs, some vertex rows, slivers), span-factor precision at seams, Z-buffer depth (15-bit steps along edges; the game uses
-    W-buffering), specular lighting, multi-plane clipping colours (13 in 15480), sliver left/right choice, toon /
+    W-buffering), specular lighting, sliver left/right choice, toon /
     highlight, shadows, edge marking, wireframe, 1-dot polygons, the rear plane bitmap.
 30. **5.3** Drop melonDS (and the GPL obligation), then HBlank effects (`Sky_HBlank*` stubs).
 
