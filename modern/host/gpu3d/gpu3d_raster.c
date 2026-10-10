@@ -251,12 +251,12 @@ static void draw_polygon(const G3Polygon *p, int idx) {
             s32 yc = y + span_end(e, k, y, &cx[k]);
             {   // (the W the span interpolates with: at the colours' line)
                 Interp iw;
-                interp_setup(&iw, yc, e->y0, e->y1, p->w[e->v0], p->w[e->v1], 9);
+                interp_setup(&iw, yc, e->y0, e->y1, p->w[e->v0] & ~1, p->w[e->v1] & ~1, 9);
                 ends[k][1] = interp(&iw, p->w[e->v0], p->w[e->v1]);
             }
             s32 w0 = p->w[e->v0], w1 = p->w[e->v1];
             Interp ic;
-            if (!exact_ok(w0, w1)) interp_setup(&ic, yc, e->y0, e->y1, w0, w1, 9);
+            if (!exact_ok(w0, w1)) interp_setup(&ic, yc, e->y0, e->y1, w0 & ~1, w1 & ~1, 9);  // (W's bit 0 unused)
             const s32 va[5] = {a->color[0], a->color[1], a->color[2], a->tex[0], a->tex[1]};
             const s32 vb[5] = {b->color[0], b->color[1], b->color[2], b->tex[0], b->tex[1]};
             for (int c = 0; c < 5; c++)
