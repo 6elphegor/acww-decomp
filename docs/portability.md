@@ -991,27 +991,32 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
 29. **5.2** Own 3D geometry engine (matrix stacks, lighting, polygon setup, the synchronous read-backs: GXSTAT, position/vector tests, RAM counts), then a software rasteriser matching melonDS's output; later a GPU (WebGPU-class) backend.
     **In progress (branch port-p52-gpu3d, 2026-10-10).** `modern/host/gpu3d/` behind `ACWW_RENDERER3D=own|melon`
     (gpu3d_geom.c the geometry engine, gpu3d_raster.c the rasteriser, gpu3d_tex.c texture slots and the 7 formats).
-    With `ACWW_RENDERER3D=own` the quick script's town renders without melonDS. Fitted to melonDS's output (the
-    rules found are in the code's comments): clipped vertex colours (5 bits, rounded up); diffuse lighting
-    (per-component products of the reversed light and the normal, 9-bit level, no upper limit); spans between the
-    edges' x at the edge's outermost line (x-major edges rounded, y-major left rounded down, right the next integer
-    above); colours / texture coordinates / W exact between equal W with bits 0-6 clear, else factors of 9 bits
-    along edges (W's bit 0 dropped) and 8 along spans; the W-buffer depth is the scaled W (z) interpolated the same
-    way; equal depth lets a facing-1 polygon over a facing-0 pixel; textures with modulation / decal, alpha test,
-    translucent blending once per polygon ID. **Checks:** `ACWW_RENDER_SELFTEST3D=<n>` with
-    `ACWW_RENDER_SELFTEST3D_MASK` (render_selftest3d.c; new: 4096 lighting, 8192 a W per vertex, 32 a texture naming
-    its texels) and `_POLYS`; at 1000 scenes: masks 0, 1, 4, 8 match (one bottom-line coverage case), 2 / 3 / 6 / 7
-    about 1%, 4096 (specular) and 8192 + 2 / 32 not yet; quick script `ACWW_RENDER_COMPARE=1`: every 3D read and
-    unclipped polygon colour equal, the pictures differ along polygon seams (about 1600 pixels a frame at frame 2500).
-    Tools: `ACWW_RENDER_SELFTEST3D_CMDS` (raw command scenes), `_QUAD`, `_W`, `_DUMP` (both pictures, the polygon per
-    pixel, both depth buffers), `ACWW_RENDER_DUMP3D=<frame>:<prefix>` (the same for a game frame),
-    `ACWW_RENDER_POLYDUMP`, `ACWW_RENDER_FITDUMP` (+ `ACWW_GPU3D_FEATURES=2` for lighting records), and
-    `ACWW_RENDER_COMPARE=2` comparing lights, material, normal and vertex colour after every command;
-    melon_3d_buffers reads melonDS's depth and attribute buffers (an oracle only). **Open:** span-factor precision
-    (texture coordinates and W along seams; the residual is mid-span, ±1), Z-buffer depth (interpolated in 15-bit
-    steps along edges; not fitted), specular lighting (the game uses none), multi-plane clipping colours (13 in
-    15480), sliver left/right choice, toon / highlight, shadows, fog, edge marking, anti-aliasing, wireframe, 1-dot
-    polygons, the rear plane bitmap.
+    With `ACWW_RENDERER3D=own` the game renders without melonDS (town, Kapp'n's taxi: visually identical). Fitted to
+    melonDS's output by experiments (the rules are in the code's comments): clipped vertex colours (5 bits, rounded
+    up); lighting (diffuse: per-component products of the reversed light and the normal, 9-bit level, no upper
+    limit; all terms summed with 14 fractional bits); texture coordinates from the normal (>> 24 with the 12-bit
+    normal); spans between the edges' x at the edge's outermost line (x-major edges rounded, y-major left rounded
+    down, right the next integer above); colours / texture coordinates / W exact between equal W with bits 0-6
+    clear, else factors of 9 bits along edges (W's bit 0 dropped) and 8 along spans; the W-buffer depth is the scaled
+    W (z) interpolated the same way; equal depth lets a facing-1 polygon over a facing-0 pixel; GBATEK's "Polygon
+    Size" (right edges and x-major edge runs drawn for translucent polygons with blending and for opaque ones with
+    edge marking or anti-aliasing); textures (modulation, decal), alpha test, translucent blending once per polygon
+    ID (the larger alpha kept); fog (GBATEK's formula, density from depth >> 9). DISP3DCNT writes now replace its
+    bits (they were ORed in). **Checks:** `ACWW_RENDER_SELFTEST3D=<n>` with `ACWW_RENDER_SELFTEST3D_MASK`
+    (render_selftest3d.c; new: 256 fog, 4096 lighting, 8192 a W per vertex, 32 a texture naming its texels) and
+    `_POLYS`; at 300 scenes: masks 0, 1, 4, 8, 16, 17, 24, 32, 264 (fog, W-buffer) match, 2 / 6 about 1%, multi-polygon
+    Z-buffer and 8192 + 2 / 32 differ by ±1 precision; ACWW_RENDER_COMPARE=1 on the play script to frame 8000: every
+    3D read and every unclipped polygon's colours and texture coordinates equal, polygon lists differ in 177 frames
+    (positions within 0.002 of a pixel boundary, clipped colours), pictures differ along polygon seams (texture
+    coordinates / W mid-span ±1 in the 8-bit span factor). Tools: `ACWW_RENDER_SELFTEST3D_CMDS` (raw command scenes;
+    `_DISP`, `_CLEAR`), `_QUAD`, `_W`, `_DUMP` (both pictures, the polygon per pixel, both depth buffers, the
+    rendering registers), `ACWW_RENDER_DUMP3D=<frame>:<prefix>` (the same for a game frame), `ACWW_RENDER_POLYDUMP`,
+    `ACWW_RENDER_FITDUMP` (+ `ACWW_GPU3D_FEATURES=2` for lighting records), `ACWW_RENDER_COMPARE=2` (lights,
+    material, normal and vertex colour after every command), `ACWW_GPU3D_NOFOG`; melon_3d_buffers reads melonDS's
+    depth and attribute buffers (an oracle only). **Open:** anti-aliasing (the game enables it: edge coverage alphas,
+    not yet fitted), span-factor precision at seams, Z-buffer depth (15-bit steps along edges; the game uses
+    W-buffering), specular lighting, multi-plane clipping colours (13 in 15480), sliver left/right choice, toon /
+    highlight, shadows, edge marking, wireframe, 1-dot polygons, the rear plane bitmap.
 30. **5.3** Drop melonDS (and the GPL obligation), then HBlank effects (`Sky_HBlank*` stubs).
 
 ---
