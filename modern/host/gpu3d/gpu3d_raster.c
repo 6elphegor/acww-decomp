@@ -20,6 +20,9 @@ static u8 sOpaqueId[W * H];   // the polygon id of the opaque polygon there (edg
 static u8 sTransId[W * H];    // the polygon id of the last translucent polygon there, 0xff none
 static u8 sFlags[W * H];      // 1 fog, 2 edge, 4 translucent written, 8 drawn by a polygon of facing 0
 static s16 sPoly[W * H];      // (diagnostics: the polygon that wrote the pixel last, -1 none)
+// anti-aliasing: the coverage (0-31) of the opaque pixel on top, and the layer below it (what an edge pixel blends with)
+static u8 sCov[W * H];
+static u32 sColor2[W * H], sDepth2[W * H];
 
 // ---- interpolation (perspective-correct, from the normalised W of the two ends)
 typedef struct { int shift; s64 factor; } Interp;
@@ -123,9 +126,13 @@ static int depth_pass(const G3Polygon *p, s32 z, u32 d, u8 flags) {
 }
 
 // one pixel of a polygon: a[] the interpolated vertex colour (9 bits each) and texture coordinates (1/16 texels)
-static void put_pixel(const G3Polygon *p, int x, int y, s32 z, const s32 *a, int idx) {
+static void put_pixel(const G3Polygon *p, int x, int y, s32 z, const s32 *a, int idx, int cov) {
     int i = y * W + x;
-    if (!depth_pass(p, z, sDepth[i], sFlags[i])) return;
+    int below = 0;  // (behind an anti-aliased edge pixel: drawn into the layer below it)
+    if (!depth_pass(p, z, sDepth[i], sFlags[i])) {
+        if (sCov[i] == 31 || p->translucent || z >= (s32)sDepth2[i]) return;
+        below = 1;
+    }
     u32 vr = (u32)a[0] >> 3, vg = (u32)a[1] >> 3, vb = (u32)a[2] >> 3;  // (6 bits)
     u32 pa = p->attr >> 16 & 31;
     if (!pa) pa = 31;  // (wireframe: drawn opaque at the edges; to do)
@@ -152,7 +159,14 @@ static void put_pixel(const G3Polygon *p, int x, int y, s32 z, const s32 *a, int
     if (!al) return;
     if ((sR->dispcnt & 4) && al <= sR->alphaRef) return;  // (alpha test)
     u32 fog = p->attr >> 15 & 1;
+    if (below) {
+        if (al == 31) sColor2[i] = r | g << 8 | b << 16 | 31u << 24, sDepth2[i] = (u32)z;
+        return;
+    }
     if (al == 31) {
+        sColor2[i] = sColor[i];
+        sDepth2[i] = sDepth[i];
+        sCov[i] = (u8)cov;
         sColor[i] = r | g << 8 | b << 16 | 31u << 24;
         sDepth[i] = (u32)z;
         sOpaqueId[i] = (u8)(p->attr >> 24 & 63);
@@ -215,6 +229,31 @@ static int edges_at(const G3Polygon *p, s32 y, Edge *l, Edge *r) {
     return 1;
 }
 
+// anti-aliasing coverage (0-31) of pixel x of line y by an edge (side 0 left, 1 right); 31 where the edge doesn't
+// cut the pixel. Fitted to melonDS: y-major: the pixel at the edge's x, its area inside the edge (the slope cut to
+// 8 fractional bits); x-major: the pixels whose
+// centres lie in the edge's run on the line, the exact edge's height there (left edges strictly below)
+static int edge_coverage(const Edge *e, int side, s32 x, s32 y) {
+    s32 dx = e->x1 - e->x0, dy = e->y1 - e->y0, adx = dx < 0 ? -dx : dx;
+    if (!dx || dy <= 0) return 31;
+    if (adx < dy) {
+        s64 xs = edge_x(e, y, 0);
+        if (x != (s32)(xs >> 18)) return 31;
+        s64 fr = xs & 0x3ffff, half = (e->step >> 10) << 9;
+        if (dx < 0) half = -half;  // (the slope with its sign: the edge's mean x on the line)
+        s64 v = side ? (fr + half) >> 13 : ((1 << 18) - fr - half) >> 13;
+        return v > 31 ? 31 : v < 0 ? 0 : (int)v;
+    }
+    // x-major: D = 2 * (pixel centre - exact edge x at line y) * dy
+    s64 d = (s64)(2 * x + 1) * dy - 2 * ((s64)e->x0 * dy + (s64)dx * (y - e->y0));
+    if ((dx > 0 ? d < 0 : d > 0) || (d < 0 ? -d : d) > 2 * (s64)adx) return 31;
+    s64 ad = d < 0 ? -d : d;
+    int gt = side ? dx < 0 : dx > 0;  // (coverage grows along the run: t, else 1 - t)
+    s64 num = gt ? 16 * ad : 32 * (s64)adx - 16 * ad, den = adx;
+    s64 v = side ? num / den : (num + den - 1) / den - 1;
+    return v > 31 ? 31 : v < 0 ? 0 : (int)v;
+}
+
 static void draw_polygon(const G3Polygon *p, int idx) {
     int n = p->nv;
     if (n < 3) return;
@@ -223,6 +262,7 @@ static void draw_polygon(const G3Polygon *p, int idx) {
     // GBATEK "Polygon Size": the right edges (but vertical ones) are drawn too, except for opaque polygons without
     // edge marking and anti-aliasing and for translucent ones while alpha blending is off
     int full = p->translucent ? (sR->dispcnt & 8) != 0 : (sR->dispcnt & 0x30) != 0;
+    int aa = (sR->dispcnt & 0x10) && !p->translucent && (p->attr >> 16 & 31) == 31;  // (opaque polygons only)
     for (s32 y = ytop; y < ybot; y++) {
         if (y < 0 || y >= H) continue;
         Edge L, R;
@@ -297,7 +337,13 @@ static void draw_polygon(const G3Polygon *p, int idx) {
                 col[c] = cx[1] == cx[0] ? ends[0][2 + c]
                          : ex           ? lerp_floor(ends[0][2 + c], ends[1][2 + c], x - cx[0], cx[1] - cx[0])
                                         : interp(&ic, ends[0][2 + c], ends[1][2 + c]);
-            put_pixel(p, x, y, z, col, idx);
+            int cov = 31;
+            if (aa) {
+                int cl = edge_coverage(&L, 0, x, y), cr = edge_coverage(&R, 1, x, y);
+                cov = cl < cr ? cl : cr;
+                if (!cov) continue;
+            }
+            put_pixel(p, x, y, z, col, idx, cov);
         }
     }
 }
@@ -315,11 +361,31 @@ static void clear_buffers(void) {
         sTransId[i] = 0xff;
         sFlags[i] = c & 0x8000 ? 1 : 0;
         sPoly[i] = -1;
+        sCov[i] = 31;
+        sColor2[i] = col;
+        sDepth2[i] = depth;
     }
 }
 
 // fog (DISP3DCNT bit 7; GBATEK "Fog"): pixels with the fog flag move towards FOG_COLOR by a density from the depth
 // (FOG_TABLE between the boundaries FOG_OFFSET + FOG_STEP * (n + 1)); bit 6: alpha only
+// anti-aliasing (DISP3DCNT bit 4): an edge pixel is blended with the layer below by its coverage, like alpha
+// blending (fitted: below a transparent layer it keeps its colour and takes the coverage as alpha)
+static void aa_pass(void) {
+    if (!(sR->dispcnt & 0x10)) return;
+    for (int i = 0; i < W * H; i++) {
+        u32 c = sCov[i];
+        if (c >= 31) continue;
+        u32 t = sColor[i], b = sColor2[i], ab = b >> 24 & 31;
+        if (!ab) { sColor[i] = (t & 0xffffff) | c << 24; continue; }
+        u32 r = ((t & 63) * (c + 1) + (b & 63) * (31 - c)) >> 5;
+        u32 g = ((t >> 8 & 63) * (c + 1) + (b >> 8 & 63) * (31 - c)) >> 5;
+        u32 bb = ((t >> 16 & 63) * (c + 1) + (b >> 16 & 63) * (31 - c)) >> 5;
+        u32 a = (31 * (c + 1) + ab * (31 - c)) >> 5;
+        sColor[i] = r | g << 8 | bb << 16 | a << 24;
+    }
+}
+
 static void fog_pass(void) {
     const G3RenderState *r = sR;
     if (!(r->dispcnt & 0x80) || getenv("ACWW_GPU3D_NOFOG")) return;  // (NOFOG: diagnostics)
@@ -361,6 +427,7 @@ void g3_render(void) {
     clear_buffers();
     for (int i = 0; i < sR->npoly; i++) draw_polygon(sR->poly[i], i);
     fog_pass();
+    aa_pass();
     sShown ^= 1;
     memcpy(sFrameBuf[sShown], sColor, sizeof sColor);
 }
