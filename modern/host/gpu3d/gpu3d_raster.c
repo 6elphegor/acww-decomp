@@ -253,6 +253,7 @@ static void draw_polygon(const G3Polygon *p, int idx) {
                 Interp iw;
                 interp_setup(&iw, yc, e->y0, e->y1, p->w[e->v0] & ~1, p->w[e->v1] & ~1, 9);
                 ends[k][1] = interp(&iw, p->w[e->v0], p->w[e->v1]);
+                if (p->wbuffer) ends[k][0] = interp(&iw, p->z[e->v0], p->z[e->v1]);  // (the depth: W scaled)
             }
             s32 w0 = p->w[e->v0], w1 = p->w[e->v1];
             Interp ic;
@@ -272,7 +273,7 @@ static void draw_polygon(const G3Polygon *p, int idx) {
             if (p->wbuffer) {  // (W, interpolated as the colours are: fitted to melonDS)
                 Interp iz;
                 interp_setup(&iz, x, cx[0], cx[1], ends[0][1], ends[1][1], 8);
-                z = cx[1] == cx[0] ? ends[0][1] : interp(&iz, ends[0][1], ends[1][1]);
+                z = cx[1] == cx[0] ? ends[0][0] : interp(&iz, ends[0][0], ends[1][0]);
             } else
                 z = interp_z_linear(x, xl, xr, ends[0][0], ends[1][0]);
             s32 col[5];

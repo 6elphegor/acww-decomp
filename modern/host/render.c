@@ -405,7 +405,7 @@ static int compare_3d(const char *kind, u64 label) {
     for (int i = 0; i < 256 * 192; i++)
         if ((o[i] ^ s3d[i]) & 0x1f3f3f3f) { if (first < 0) first = i; count++; }
     {   // ACWW_RENDER_DUMP3D=<frame>:<prefix>: that frame as the self-test dumps it (<prefix>.bin: the own picture,
-        // melonDS's, the own polygon per pixel; <prefix>.txt: the own polygon list)
+        // melonDS's, the own polygon per pixel, both depth buffers; <prefix>.txt: the own polygon list)
         const char *d = getenv("ACWW_RENDER_DUMP3D");
         char *colon;
         if (d && strtoull(d, &colon, 10) == label && *colon == ':') {
@@ -420,6 +420,13 @@ static int compare_3d(const char *kind, u64 label) {
                     int16_t v = (int16_t)g3_raster_pixel_polygon(i % 256, i / 256);
                     fwrite(&v, 2, 1, f);
                 }
+                u32 g3_raster_depth(int x, int y);  // (then both depth buffers)
+                int melon_3d_buffers(u32 *depth, u32 *attr);
+                static u32 dep[256 * 192];
+                for (int i = 0; i < 256 * 192; i++) dep[i] = g3_raster_depth(i % 256, i / 256);
+                fwrite(dep, 4, 256 * 192, f);
+                if (!melon_3d_buffers(dep, 0)) memset(dep, 0, sizeof dep);
+                fwrite(dep, 4, 256 * 192, f);
                 fclose(f);
             }
             snprintf(name, sizeof name, "%s.txt", colon + 1);

@@ -5,7 +5,8 @@
 // pictures are compared (render_compare_3d: the first differing pixel and the polygon that drew it). Then the run
 // ends. ACWW_RENDER_SELFTEST3D_SEED picks another random sequence; ACWW_RENDER_SELFTEST3D_POLYS the polygons per scene
 // (default 1); ACWW_RENDER_SELFTEST3D_MASK (default 0: flat, opaque, Z-buffered triangles): 1 quads and strips,
-// 2 colours per vertex, 4 W varies, 8 W-buffering, 16 translucency, 32 textures, 64 anti-aliasing, 128 alpha test,
+// 2 colours per vertex, 4 W varies, 8 W-buffering, 16 translucency, 32 textures (a texture naming its texels,
+// random texture coordinates, white), 64 anti-aliasing, 128 alpha test,
 // 256 fog, 512 edge marking, 1024 shadow polygons, 2048 toon / highlight, 4096 lighting (random lights, material
 // and a normal per vertex; compared through the polygon lists' colours), 8192 a random W per vertex (a projection
 // that makes W the vertex's z; the same screen positions).
@@ -18,6 +19,8 @@
 int g3_raster_pixel_polygon(int x, int y);
 #include "host_mem.h"
 #include "render.h"
+
+void host_vram_control(u32 addr, u8 value);  // vram.c
 
 static u32 sRng = 0x1234567, sMask, sPolys = 1;
 static u32 rnd(void) {
@@ -112,11 +115,31 @@ static int command_scene(void) {
     return 1;
 }
 
+// M_TEX: bank A as texture slot 0 holding a 128x128 direct-colour texture whose texels name themselves (red: s bits
+// 0-4, green: t bits 0-4, blue: s bits 5-6 | t bits 5-6 << 2), so a picture shows which texel each pixel sampled
+static void coordinate_texture(void) {
+    static int done;
+    if (done++) return;
+    host_vram_control(0x04000240, 0x80);
+    render_write8(0x04000240, 0x80);
+    u8 *v = HostVram_CpuPtr(0x06800000);
+    for (int t = 0; t < 128; t++)
+        for (int s = 0; s < 128; s++) {
+            u16 c = (u16)((s & 31) | (t & 31) << 5 | ((s >> 5) | (t >> 5) << 2) << 10 | 0x8000);
+            v[(t * 128 + s) * 2] = (u8)c;
+            v[(t * 128 + s) * 2 + 1] = (u8)(c >> 8);
+        }
+    host_vram_control(0x04000240, 0x83);
+    render_write8(0x04000240, 0x83);
+}
+
 static void scene(void) {
     if (command_scene() || fixed_scene()) return;
+    if (sMask & M_TEX) coordinate_texture();
     render_write16(0x04000304, 0x820f);
     u16 disp = 0;
     if (sMask & M_TRANS) disp |= 8;
+    if (sMask & M_TEX) disp |= 1;
     if (sMask & M_AA && rnd() & 1) disp |= 16;
     render_write16(0x04000060, disp);
     render_write16(0x04000350, (u16)(rnd() & 0x7fff));
@@ -152,7 +175,7 @@ static void scene(void) {
             cmd(0x31, rnd() & 0x7fff7fff & ~0x8000u);  // (specular, emission; no shininess table)
         }
         cmd(0x29, 0x000000c0 | lights | alpha << 16 | rnd_below(64) << 24);
-        cmd(0x2a, 0);
+        cmd(0x2a, (sMask & M_TEX) ? 7u << 26 | 4u << 23 | 4u << 20 | 3u << 16 : 0);
         int quad = (sMask & M_QUADS) && rnd_below(2);
         cmd(0x40, quad ? 1 : 0);
         int nv = quad ? 4 : 3;
@@ -174,7 +197,10 @@ static void scene(void) {
             }
         }
         for (int k = 0; k < nv; k++) {
-            if (sMask & M_LIGHT) cmd(0x21, rnd() & 0x3fffffff);
+            if (sMask & M_TEX) {  // (white, and random texture coordinates within +-256 texels)
+                cmd(0x20, 0x7fff);
+                cmd(0x22, (((rnd() & 0x1fff) - 0x1000) & 0xffff) | ((rnd() & 0x1fff) - 0x1000) << 16);
+            } else if (sMask & M_LIGHT) cmd(0x21, rnd() & 0x3fffffff);
             else if (k == 0 || (sMask & M_GOURAUD)) cmd(0x20, rnd() & 0x7fff);
             if (sMask & M_PERSP) vertex_at_w(xs[k], ys[k], 0x200 + (s32)rnd_below(0x6e00));
             else vertex_at(xs[k], ys[k], 0, z + (s32)rnd_below(0x200));
