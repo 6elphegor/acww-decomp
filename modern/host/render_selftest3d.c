@@ -7,7 +7,8 @@
 // (default 1); ACWW_RENDER_SELFTEST3D_MASK (default 0: flat, opaque, Z-buffered triangles): 1 quads and strips,
 // 2 colours per vertex, 4 W varies, 8 W-buffering, 16 translucency, 32 textures, 64 anti-aliasing, 128 alpha test,
 // 256 fog, 512 edge marking, 1024 shadow polygons, 2048 toon / highlight, 4096 lighting (random lights, material
-// and a normal per vertex; compared through the polygon lists' colours).
+// and a normal per vertex; compared through the polygon lists' colours), 8192 a random W per vertex (a projection
+// that makes W the vertex's z; the same screen positions).
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,11 +28,17 @@ static u32 rnd(void) {
 }
 static u32 rnd_below(u32 n) { return rnd() % n; }
 enum { M_QUADS = 1, M_GOURAUD = 2, M_W = 4, M_WBUF = 8, M_TRANS = 16, M_TEX = 32, M_AA = 64, M_ATEST = 128, M_FOG = 256,
-       M_EDGE = 512, M_SHADOW = 1024, M_TOON = 2048, M_LIGHT = 4096 };
+       M_EDGE = 512, M_SHADOW = 1024, M_TOON = 2048, M_LIGHT = 4096,
+       M_PERSP = 8192 };
 
 static void cmd(u32 c, u32 p) { render_write32(0x04000400 + (c - 0x10) * 4 + 0x40, p); }
 
 // a vertex at screen position (sx, sy) in 1/16 pixels... given as clip coordinates with W = w (4.12)
+static void vertex_at_w(s32 sx, s32 sy, s32 w) {  // (M_PERSP: W = w in 4.12, z 0)
+    s32 vx = (s32)(((int64_t)(sx * 8 - 4096) * w) >> 12), vy = (s32)(((int64_t)(4096 - sy * 32 / 3) * w) >> 12);
+    cmd(0x23, (u32)(u16)vx | (u32)(u16)vy << 16);
+    cmd(0x23, (u32)(u16)w);
+}
 static void vertex_at(s32 sx, s32 sy, s32 w, s32 z) {
     // with identity matrices and a scale of w: clip x = vx * w / 4096 ... VTX_16 is 4.12 in [-8, 8)
     // x_screen = (x + w) * 256 / 2w  ->  x = (sx / 128 - 1) * w; we pass vx = sx / 128 - 1 in 4.12 and scale by w
@@ -126,6 +133,12 @@ static void scene(void) {
         for (int i = 0; i < 16; i++) cmd(0x16, m[i]);
         cmd(0x10, 2);
     }
+    if (sMask & M_PERSP) {  // clip x, y as given, z 0, W the vertex's z
+        cmd(0x10, 0);
+        static const u32 m[16] = {0x1000, 0, 0, 0, 0, 0x1000, 0, 0, 0, 0, 0, 0x1000, 0, 0, 0, 0};
+        for (int i = 0; i < 16; i++) cmd(0x16, m[i]);
+        cmd(0x10, 2);
+    }
     cmd(0x60, 0xbfff0000);
     for (u32 n = 0; n < sPolys; n++) {
         u32 alpha = (sMask & M_TRANS) && rnd_below(2) ? 1 + rnd_below(30) : 31;
@@ -163,7 +176,8 @@ static void scene(void) {
         for (int k = 0; k < nv; k++) {
             if (sMask & M_LIGHT) cmd(0x21, rnd() & 0x3fffffff);
             else if (k == 0 || (sMask & M_GOURAUD)) cmd(0x20, rnd() & 0x7fff);
-            vertex_at(xs[k], ys[k], 0, z + (s32)rnd_below(0x200));
+            if (sMask & M_PERSP) vertex_at_w(xs[k], ys[k], 0x200 + (s32)rnd_below(0x6e00));
+            else vertex_at(xs[k], ys[k], 0, z + (s32)rnd_below(0x200));
         }
         cmd(0x41, 0);
     }

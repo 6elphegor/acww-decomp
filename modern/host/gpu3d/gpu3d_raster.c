@@ -248,8 +248,12 @@ static void draw_polygon(const G3Polygon *p, int idx) {
             const G3Vertex *a = p->v[e->v0], *b = p->v[e->v1];
             ends[k][0] = p->wbuffer ? interp(&ip, p->z[e->v0], p->z[e->v1])
                                     : interp_z_linear(y, e->y0, e->y1, p->z[e->v0], p->z[e->v1]);
-            ends[k][1] = interp(&ip, p->w[e->v0], p->w[e->v1]);
             s32 yc = y + span_end(e, k, y, &cx[k]);
+            {   // (the W the span interpolates with: at the colours' line)
+                Interp iw;
+                interp_setup(&iw, yc, e->y0, e->y1, p->w[e->v0], p->w[e->v1], 9);
+                ends[k][1] = interp(&iw, p->w[e->v0], p->w[e->v1]);
+            }
             s32 w0 = p->w[e->v0], w1 = p->w[e->v1];
             Interp ic;
             if (!exact_ok(w0, w1)) interp_setup(&ic, yc, e->y0, e->y1, w0, w1, 9);
@@ -264,7 +268,13 @@ static void draw_polygon(const G3Polygon *p, int idx) {
             if (x < 0 || x >= W) continue;
             Interp ip;
             interp_setup(&ip, x, xl, xr + 1, ends[0][1], ends[1][1], 8);
-            s32 z = p->wbuffer ? interp(&ip, ends[0][0], ends[1][0]) : interp_z_linear(x, xl, xr, ends[0][0], ends[1][0]);
+            s32 z;
+            if (p->wbuffer) {  // (W, interpolated as the colours are: fitted to melonDS)
+                Interp iz;
+                interp_setup(&iz, x, cx[0], cx[1], ends[0][1], ends[1][1], 8);
+                z = cx[1] == cx[0] ? ends[0][1] : interp(&iz, ends[0][1], ends[1][1]);
+            } else
+                z = interp_z_linear(x, xl, xr, ends[0][0], ends[1][0]);
             s32 col[5];
             int ex = exact_ok(ends[0][1], ends[1][1]);
             Interp ic;
