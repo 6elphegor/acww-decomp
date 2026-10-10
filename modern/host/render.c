@@ -404,6 +404,41 @@ static int compare_3d(const char *kind, u64 label) {
     int first = -1, count = 0;
     for (int i = 0; i < 256 * 192; i++)
         if ((o[i] ^ s3d[i]) & 0x1f3f3f3f) { if (first < 0) first = i; count++; }
+    {   // ACWW_RENDER_DUMP3D=<frame>:<prefix>: that frame as the self-test dumps it (<prefix>.bin: the own picture,
+        // melonDS's, the own polygon per pixel; <prefix>.txt: the own polygon list)
+        const char *d = getenv("ACWW_RENDER_DUMP3D");
+        char *colon;
+        if (d && strtoull(d, &colon, 10) == label && *colon == ':') {
+            char name[512];
+            snprintf(name, sizeof name, "%s.bin", colon + 1);
+            FILE *f = fopen(name, "wb");
+            if (f) {
+                fwrite(o, 4, 256 * 192, f);
+                fwrite(s3d, 4, 256 * 192, f);
+                int g3_raster_pixel_polygon(int x, int y);
+                for (int i = 0; i < 256 * 192; i++) {
+                    int16_t v = (int16_t)g3_raster_pixel_polygon(i % 256, i / 256);
+                    fwrite(&v, 2, 1, f);
+                }
+                fclose(f);
+            }
+            snprintf(name, sizeof name, "%s.txt", colon + 1);
+            f = fopen(name, "w");
+            if (f) {
+                for (int i = 0; i < gpu3d_poly_count(); i++) {
+                    Gpu3dVertexOut v[10];
+                    u32 a, t, p;
+                    int fl, k = gpu3d_poly_get(i, v, &a, &t, &p, &fl);
+                    fprintf(f, "poly %08x %08x %04x %d %d", a, t, p, fl, k);
+                    for (int j = 0; j < k; j++)
+                        fprintf(f, " %d %d %d %d %d %d %d %d %d", v[j].x, v[j].y, v[j].z, v[j].w, v[j].r, v[j].g, v[j].b,
+                                v[j].s, v[j].t);
+                    fprintf(f, "\n");
+                }
+                fclose(f);
+            }
+        }
+    }
     if (first < 0) return 0;
     if (sFirstPix3dDiffering == ~0ull) sFirstPix3dDiffering = label;
     sPix3dDiffering++;

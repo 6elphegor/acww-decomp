@@ -18,7 +18,7 @@ static u32 sColor[W * H];     // r6 | g6 << 8 | b6 << 16 | a5 << 24
 static u32 sDepth[W * H];     // 24 bits
 static u8 sOpaqueId[W * H];   // the polygon id of the opaque polygon there (edge marking)
 static u8 sTransId[W * H];    // the polygon id of the last translucent polygon there, 0xff none
-static u8 sFlags[W * H];      // 1 fog, 2 edge, 4 translucent written
+static u8 sFlags[W * H];      // 1 fog, 2 edge, 4 translucent written, 8 drawn by a polygon of facing 0
 static s16 sPoly[W * H];      // (diagnostics: the polygon that wrote the pixel last, -1 none)
 
 // ---- interpolation (perspective-correct, from the normalised W of the two ends)
@@ -113,19 +113,20 @@ static const G3RenderState *sR;
 
 static u32 rgb5_to_6(u32 c) { return c ? c * 2 + 1 : 0; }
 
-// depth test "equal" (attr bit 14): within a margin
-static int depth_pass(const G3Polygon *p, s32 z, u32 d) {
+// depth test "equal" (attr bit 14): within a margin; "less", or less or equal for a polygon of facing 1 over a pixel
+// of a polygon of facing 0 (fitted to melonDS)
+static int depth_pass(const G3Polygon *p, s32 z, u32 d, u8 flags) {
     if (p->attr & 0x4000) {
         s32 m = 0x200;
         return z >= (s32)d - m && z <= (s32)d + m;
     }
-    return z < (s32)d;
+    return z < (s32)d || (z == (s32)d && p->facing && (flags & 8));
 }
 
 // one pixel of a polygon: a[] the interpolated vertex colour (9 bits each) and texture coordinates (1/16 texels)
 static void put_pixel(const G3Polygon *p, int x, int y, s32 z, const s32 *a, int idx) {
     int i = y * W + x;
-    if (!depth_pass(p, z, sDepth[i])) return;
+    if (!depth_pass(p, z, sDepth[i], sFlags[i])) return;
     u32 vr = (u32)a[0] >> 3, vg = (u32)a[1] >> 3, vb = (u32)a[2] >> 3;  // (6 bits)
     u32 pa = p->attr >> 16 & 31;
     if (!pa) pa = 31;  // (wireframe: drawn opaque at the edges; to do)
@@ -156,7 +157,7 @@ static void put_pixel(const G3Polygon *p, int x, int y, s32 z, const s32 *a, int
         sColor[i] = r | g << 8 | b << 16 | 31u << 24;
         sDepth[i] = (u32)z;
         sOpaqueId[i] = (u8)(p->attr >> 24 & 63);
-        sFlags[i] = (u8)((sFlags[i] & ~5) | fog);
+        sFlags[i] = (u8)((sFlags[i] & ~13) | fog | (p->facing ? 0 : 8));
     } else {
         u8 id = (u8)(p->attr >> 24 & 63);
         if (sTransId[i] == id) return;  // (one translucent polygon ID draws a pixel once)
@@ -304,6 +305,7 @@ void g3_render(void) {
 
 const u32 *g3_frame_lines(void) { return sFrameBuf[sShown]; }
 int g3_raster_pixel_polygon(int x, int y) { return sPoly[y * W + x]; }
+u32 g3_raster_depth(int x, int y) { return sDepth[y * W + x]; }
 void g3_raster_diagnostics(int on) { sDiag = on; }
 int gpu3d_pixel_polygon(int x, int y, Gpu3dPolyInfo *info) {
     int i = sPoly[y * W + x];

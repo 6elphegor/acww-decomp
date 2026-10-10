@@ -80,7 +80,7 @@ static int fixed_scene(void) {
 }
 
 // ACWW_RENDER_SELFTEST3D_CMDS="cc=pppppppp ...": these geometry commands (hex) after the usual setup (identity matrices,
-// viewport, clear), then a swap: for experiments on one feature
+// viewport, clear), then a swap (SWAP_BUFFERS 0 unless the commands end with one): for experiments on one feature
 static int command_scene(void) {
     const char *q = getenv("ACWW_RENDER_SELFTEST3D_CMDS");
     if (!q) return 0;
@@ -95,12 +95,13 @@ static int command_scene(void) {
     cmd(0x15, 0);
     cmd(0x60, 0xbfff0000);
     unsigned c, p;
-    int n;
+    int n, swapped = 0;
     while (sscanf(q, " %x=%x%n", &c, &p, &n) == 2) {
         cmd(c, p);
+        swapped |= c == 0x50;
         q += n;
     }
-    cmd(0x50, 0);
+    if (!swapped) cmd(0x50, 0);
     return 1;
 }
 
@@ -201,7 +202,7 @@ void render_selftest3d(long scenes) {
         render_frame();
         int d = render_compare_3d("self-test scene", (u64)n);
         bad += d;
-        if (getenv("ACWW_RENDER_SELFTEST3D_DUMP")) {  // <prefix>-<scene>.bin: the own picture, then melonDS's, then the polygons
+        if (getenv("ACWW_RENDER_SELFTEST3D_DUMP")) {  // <prefix>-<scene>.bin: the own picture, melonDS's, the polygons, the depths
             void melon_3d_lines(u32 *out);
             static u32 l[256 * 192];
             char name[512];
@@ -216,6 +217,15 @@ void render_selftest3d(long scenes) {
                         int16_t i = (int16_t)g3_raster_pixel_polygon(x, y);
                         fwrite(&i, 2, 1, f);
                     }
+                {   // (then both depth buffers, 32 bits a pixel: own, melonDS's)
+                    u32 g3_raster_depth(int x, int y);
+                    int melon_3d_buffers(u32 *depth, u32 *attr);
+                    for (int y = 0; y < 192; y++)
+                        for (int x = 0; x < 256; x++) l[y * 256 + x] = g3_raster_depth(x, y);
+                    fwrite(l, 4, 256 * 192, f);
+                    if (!melon_3d_buffers(l, 0)) memset(l, 0, sizeof l);
+                    fwrite(l, 4, 256 * 192, f);
+                }
                 fclose(f);
             }
             snprintf(name, sizeof name, "%s-%ld.txt", getenv("ACWW_RENDER_SELFTEST3D_DUMP"), n);

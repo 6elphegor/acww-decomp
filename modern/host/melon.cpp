@@ -8,6 +8,7 @@
 #include "NDS.h"
 #include "GPU.h"
 #include "GPU3D.h"
+#include "GPU3D_Soft.h"
 #include "gpu3d/gpu3d.h"
 
 #include <cstdio>
@@ -121,6 +122,32 @@ extern "C" void melon_3d_lines(u32 *out) {
     GPU3D &g = sNds->GPU.GPU3D;
     if (g.AbortFrame) { memset(out, 0, 256 * 192 * 4); return; }
     for (int line = 0; line < 192; line++) memcpy(out + line * 256, g.GetCurrentRenderer().GetLine(line), 256 * 4);
+}
+
+// melonDS's depth and attribute buffers of the frame it rendered last (the top layer), 256x192 each; 0 if its renderer
+// isn't the software one. (Diagnostics only, an oracle for the own rasteriser: the buffers are private members,
+// reached through an explicit instantiation, which may name them; the layout is SoftRenderer's: lines of 258
+// pixels, the first pixel at 259.)
+namespace {
+typedef u32 SoftBuffer[258 * 194 * 2];
+template <typename Tag, typename Tag::type M> struct Expose { friend typename Tag::type member(Tag) { return M; } };
+struct DepthTag { typedef SoftBuffer SoftRenderer::*type; friend type member(DepthTag); };
+struct AttrTag { typedef SoftBuffer SoftRenderer::*type; friend type member(AttrTag); };
+template struct Expose<DepthTag, &SoftRenderer::DepthBuffer>;
+template struct Expose<AttrTag, &SoftRenderer::AttrBuffer>;
+}
+extern "C" int melon_3d_buffers(u32 *depth, u32 *attr) {
+    if (!sNds) return 0;
+    SoftRenderer *r = dynamic_cast<SoftRenderer *>(&sNds->GPU.GPU3D.GetCurrentRenderer());
+    if (!r) return 0;
+    const u32 *d = r->*member(DepthTag()), *a = r->*member(AttrTag());
+    for (int y = 0; y < 192; y++)
+        for (int x = 0; x < 256; x++) {
+            int i = 259 + y * 258 + x;
+            if (depth) depth[y * 256 + x] = d[i];
+            if (attr) attr[y * 256 + x] = a[i];
+        }
+    return 1;
 }
 
 // melonDS's polygon list of the frame it rendered last, for comparing the own geometry engine with it (render.c):
