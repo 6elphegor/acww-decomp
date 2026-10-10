@@ -456,9 +456,9 @@ static void screen_position(G3Vertex *v) {
     if (ws == 0) ws = 1;  // (a point at the eye)
     s64 nx = ((s64)v->pos[0] + w) >> s, ny = (-(s64)v->pos[1] + w) >> s;
     v->x = (s32)(floor_div(nx * sViewport[4], ws * 2) + sViewport[0]) & 0x1ff;
-    v->y = (s32)(floor_div(ny * sViewport[5], ws * 2) + sViewport[3]) & 0xff;
+    v->y = (s32)(floor_div(ny * sViewport[5], ws * 2) + sViewport[3]) & 0x1ff;  // (192 for the bottom edge: no 8-bit wrap)
     v->hx = (s32)(floor_div(nx * sViewport[4] * 16, ws * 2) + sViewport[0] * 16) & 0x1fff;
-    v->hy = (s32)(floor_div(ny * sViewport[5] * 16, ws * 2) + sViewport[3] * 16) & 0xfff;
+    v->hy = (s32)(floor_div(ny * sViewport[5] * 16, ws * 2) + sViewport[3] * 16) & 0x1fff;
     v->screenDone = 1;
 }
 
@@ -469,12 +469,12 @@ static void clip_interp(G3Vertex *o, const G3Vertex *in, const G3Vertex *out, in
     s64 din = (s64)in->pos[3] - sign * (s64)in->pos[comp];
     s64 dout = (s64)out->pos[3] - sign * (s64)out->pos[comp];
     s64 den = din - dout;
-    s64 f = (din << 24) / den;  // the place of the crossing, 0..1 in 24 fractional bits
-#define LERP(a, b) ((s32)((a) + ((((s64)(b) - (a)) * f) >> 24)))
+    // from the vertex outside towards the one inside, truncated towards zero (dout <= 0 < din: -dout / den >= 0)
+#define LERP(a, b) ((s32)((b) + (((s64)(a) - (b)) * -dout) / den))
     for (int i = 0; i < 4; i++) o->pos[i] = LERP(in->pos[i], out->pos[i]);
     o->pos[comp] = sign * o->pos[3];
-    for (int i = 0; i < 3; i++) {  // (in 9 bits, then back to a 5-bit colour)
-        s32 c = LERP(in->color[i], out->color[i]) >> 4;
+    for (int i = 0; i < 3; i++) {  // (in 9 bits from the vertex inside, then back to a 5-bit colour)
+        s32 c = (s32)(in->color[i] + ((s64)out->color[i] - in->color[i]) * din / den) >> 4;
         o->color[i] = c ? c << 4 | 0xf : 0;
     }
     for (int i = 0; i < 2; i++) o->tex[i] = (s16)LERP(in->tex[i], out->tex[i]);
@@ -508,7 +508,17 @@ static int clip_polygon(G3Vertex *in, int n, G3Vertex **out, int farClip, int *c
             *clipped = 1;
             if (!farClip) { g3_feature(F_FARCLIP_HIDE); sFarHidden = 1; return 0; }
         }
-    static const int kPlanes[6][2] = {{2, 1}, {2, -1}, {0, 1}, {0, -1}, {1, 1}, {1, -1}};
+    static int kPlanes[6][2] = {{2, 1}, {2, -1}, {1, 1}, {1, -1}, {0, 1}, {0, -1}};  // (z, then y, then x)
+    {   // (experiment: ACWW_GPU3D_CLIPORDER=zZxXyY, lower case the far / right / top plane)
+        static int init;
+        const char *o = getenv("ACWW_GPU3D_CLIPORDER");
+        if (!init++ && o && strlen(o) == 6)
+            for (int i = 0; i < 6; i++) {
+                char c = o[i];
+                kPlanes[i][0] = (c | 0x20) == 'x' ? 0 : (c | 0x20) == 'y' ? 1 : 2;
+                kPlanes[i][1] = c >= 'a' ? 1 : -1;
+            }
+    }
     for (int p = 0; p < 6; p++) {
         int comp = kPlanes[p][0], sign = kPlanes[p][1];
         int all = 1;
@@ -596,7 +606,6 @@ static void submit_polygon(void) {
         for (int i = 0; i < n; i++) {
             G3Vertex *x = &ram[sNumVerts++];
             *x = cv[i];
-            x->clipped = 1;
             poly->v[i] = x;
         }
         sStripValid = 0;

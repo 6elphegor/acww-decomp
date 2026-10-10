@@ -39,7 +39,38 @@ static void vertex_at(s32 sx, s32 sy, s32 w, s32 z) {
     cmd(0x23, (u32)(u16)z);
 }
 
+// ACWW_RENDER_SELFTEST3D_QUAD="x0 y0 x1 y1 x2 y2 x3 y3 c0 c1 c2 c3" (quarter pixels, BGR555 colours): one fixed quad
+static int fixed_scene(void) {
+    const char *q = getenv("ACWW_RENDER_SELFTEST3D_QUAD");
+    if (!q) return 0;
+    int v[12] = {0};
+    if (sscanf(q, "%d %d %d %d %d %d %d %d %x %x %x %x", &v[0], &v[1], &v[2], &v[3], &v[4], &v[5], &v[6], &v[7], &v[8],
+               &v[9], &v[10], &v[11]) != 12)
+        return 0;
+    render_write16(0x04000304, 0x820f);
+    render_write16(0x04000060, 0);
+    render_write16(0x04000350, 0);
+    render_write16(0x04000352, 0x1f);
+    render_write16(0x04000354, 0x7fff);
+    cmd(0x10, 0);
+    cmd(0x15, 0);
+    cmd(0x10, 2);
+    cmd(0x15, 0);
+    cmd(0x60, 0xbfff0000);
+    cmd(0x29, 0x001f00c0);
+    cmd(0x2a, 0);
+    cmd(0x40, 1);
+    for (int k = 0; k < 4; k++) {
+        cmd(0x20, (u32)v[8 + k]);
+        vertex_at(v[2 * k], v[2 * k + 1], 0, 0);
+    }
+    cmd(0x41, 0);
+    cmd(0x50, 0);
+    return 1;
+}
+
 static void scene(void) {
+    if (fixed_scene()) return;
     render_write16(0x04000304, 0x820f);
     u16 disp = 0;
     if (sMask & M_TRANS) disp |= 8;
@@ -123,7 +154,36 @@ void render_selftest3d(long scenes) {
     for (long n = 0; n < scenes; n++) {
         scene();
         render_frame();
-        bad += render_compare_3d("self-test scene", (u64)n);
+        int d = render_compare_3d("self-test scene", (u64)n);
+        bad += d;
+        if (getenv("ACWW_RENDER_SELFTEST3D_DUMP")) {  // <prefix>-<scene>.bin: the own picture, then melonDS's
+            void melon_3d_lines(u32 *out);
+            static u32 l[256 * 192];
+            char name[512];
+            snprintf(name, sizeof name, "%s-%ld.bin", getenv("ACWW_RENDER_SELFTEST3D_DUMP"), n);
+            FILE *f = fopen(name, "wb");
+            if (f) {
+                fwrite(gpu3d_lines(), 4, 256 * 192, f);
+                melon_3d_lines(l);
+                fwrite(l, 4, 256 * 192, f);
+                fclose(f);
+            }
+            snprintf(name, sizeof name, "%s-%ld.txt", getenv("ACWW_RENDER_SELFTEST3D_DUMP"), n);
+            f = fopen(name, "w");
+            if (f) {  // the polygons: per line, the attributes and the vertices (x y z w r g b s t)
+                for (int i = 0; i < gpu3d_poly_count(); i++) {
+                    Gpu3dVertexOut v[10];
+                    u32 a, t, p;
+                    int fl, k = gpu3d_poly_get(i, v, &a, &t, &p, &fl);
+                    fprintf(f, "poly %08x %08x %04x %d %d", a, t, p, fl, k);
+                    for (int j = 0; j < k; j++)
+                        fprintf(f, " %d %d %d %d %d %d %d %d %d", v[j].x, v[j].y, v[j].z, v[j].w, v[j].r, v[j].g, v[j].b,
+                                v[j].s, v[j].t);
+                    fprintf(f, "\n");
+                }
+                fclose(f);
+            }
+        }
     }
     fprintf(stderr, "render-selftest3d: %ld scenes, %ld differ\n", scenes, bad);
     render_exit_report();

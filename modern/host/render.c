@@ -283,7 +283,8 @@ static void census_polygons(u64 label) {
             kinds[PK_TEX] |= vm[k].s != vo[k].s || vm[k].t != vo[k].t;
         }
         static FILE *dump;
-        static long dumped, dumpMax = 200000;
+        static long dumped, dumpMax = -1;
+        if (dumpMax < 0) dumpMax = getenv("ACWW_RENDER_FITDUMP_MAX") ? atol(getenv("ACWW_RENDER_FITDUMP_MAX")) : 200000;
         if (!dump && getenv("ACWW_RENDER_FITDUMP")) dump = fopen(getenv("ACWW_RENDER_FITDUMP"), "w");
         if (dump && km == ko && dumped < dumpMax) {  // every vertex: the own engine's inputs, both outputs
             for (int k = 0; k < km; k++, dumped++) {
@@ -312,6 +313,22 @@ static void census_polygons(u64 label) {
 static int compare_polygons(const char *kind, u64 label) {
     sPolyFrames++;
     census_polygons(label);
+    if (getenv("ACWW_RENDER_POLYDUMP") && label == strtoull(getenv("ACWW_RENDER_POLYDUMP"), 0, 10)) {
+        // (both polygon lists of that frame, one polygon a line: own | melon)
+        int nm = melon_3d_poly_count(), no = gpu3d_poly_count();
+        for (int i = 0; i < (nm > no ? nm : no); i++) {
+            Gpu3dVertexOut v[10];
+            u32 a, t, p;
+            int f;
+            for (int w = 0; w < 2; w++) {
+                memset(v, 0, sizeof v);
+                int k = w ? melon_3d_poly_get(i, v, &a, &t, &p, &f) : gpu3d_poly_get(i, v, &a, &t, &p, &f);
+                fprintf(stderr, "%s %4d %08x %08x f%d:", w ? " | melon" : "polydump own", i, a, t, f);
+                for (int j = 0; j < k; j++) fprintf(stderr, " %d,%d,%x", v[j].x, v[j].y, v[j].z);
+            }
+            fprintf(stderr, "\n");
+        }
+    }
     int nm = melon_3d_poly_count(), no = gpu3d_poly_count();
     int n = nm < no ? nm : no, bad = -1;
     Gpu3dVertexOut vm[10], vo[10];

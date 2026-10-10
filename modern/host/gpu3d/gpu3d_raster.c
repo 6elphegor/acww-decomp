@@ -43,12 +43,15 @@ static s32 interp_z_linear(s32 x, s32 x0, s32 x1, s32 z0, s32 z1) {
     return z0 + (s32)(((s64)(z1 - z0) * (x - x0)) / (x1 - x0));
 }
 
-// ---- an edge between two vertices, stepped per scanline: x in 18 fractional bits
+// ---- an edge between two vertices (y0 < y1), stepped per scanline: x in 18 fractional bits. The increment is
+// |dx| times the reciprocal of dy (18 bits; exactly one pixel for a diagonal). An edge is y-major (at most one pixel
+// per line) when |dx| <= dy.
 typedef struct {
     int v0, v1;          // vertex indices
     s32 x0, y0, x1, y1;
-    s32 step;            // per line, 18 fractional bits
-    int xmajor, negative;
+    s64 step;
+    int xmajor, sign;    // sign: +1 right, -1 left, 0 vertical
+    int bottom;          // it ends at the polygon's bottom
 } Edge;
 static void edge_setup(Edge *e, const G3Polygon *p, int a, int b) {
     e->v0 = a;
@@ -57,37 +60,28 @@ static void edge_setup(Edge *e, const G3Polygon *p, int a, int b) {
     e->y0 = p->v[a]->y;
     e->x1 = p->v[b]->x;
     e->y1 = p->v[b]->y;
-    s32 dx = e->x1 - e->x0, dy = e->y1 - e->y0;
-    e->negative = dx < 0;
-    if (dy > 0) e->step = (s32)(((s64)(dx < 0 ? -dx : dx) << 18) / dy);
-    else e->step = (dx < 0 ? -dx : dx) << 18;
-    e->xmajor = e->step > (1 << 18);
+    s32 dx = e->x1 - e->x0, dy = e->y1 - e->y0, adx = dx < 0 ? -dx : dx;
+    e->sign = dx > 0 ? 1 : dx < 0 ? -1 : 0;
+    e->step = dy <= 0 ? 0 : adx == dy ? 1 << 18 : (s64)adx * ((1 << 18) / dy);
+    e->xmajor = adx > dy;
 }
-// the pixels the edge covers on line y: [*xmin, *xmax]
-static void edge_span(const Edge *e, s32 y, s32 *xmin, s32 *xmax) {
-    s32 dy = y - e->y0;
-    s64 xs = (s64)e->x0 << 18;
-    if (!e->xmajor) {
-        s64 x = xs + (e->negative ? -(s64)e->step * dy : (s64)e->step * dy);
-        if (e->negative) x -= 1;  // (towards the left)
-        *xmin = *xmax = (s32)(x >> 18);
-        if (e->negative) { *xmin = *xmax = (s32)((x + (1 << 18)) >> 18); }
-        return;
-    }
-    // an x-major edge covers a run of pixels on each line, from where it enters the line to where it leaves
-    s64 a = xs + (s64)e->step * dy + (e->step >> 1) - (1 << 17);
-    s64 b = a + e->step;
-    if (!e->negative) {
-        *xmin = (s32)(a >> 18);
-        *xmax = (s32)((b >> 18) - 1);
-    } else {
-        s64 na = ((s64)e->x0 << 18) - (s64)e->step * dy - (e->step >> 1) + (1 << 17);
-        s64 nb = na - e->step;
-        *xmax = (s32)(na >> 18) - 0;
-        *xmin = (s32)(nb >> 18) + 1;
-    }
-    if (*xmin > *xmax) *xmin = *xmax;
-    if (y == e->y0 && !e->negative && *xmin < e->x0) *xmin = e->x0;
+// x at line y + k (k = 0 or 1), 18 fractional bits; edges going left are one unit further left
+static s64 edge_x(const Edge *e, s32 y, int k) {
+    s64 x = ((s64)e->x0 << 18) + e->sign * e->step * (y - e->y0 + k);
+    return e->sign < 0 ? x - 1 : x;
+}
+// the first pixel of a span with this edge on its left, and the last one with it on its right
+static s32 edge_left(const Edge *e, s32 y) {
+    if (!e->sign) return e->x0;
+    if (!e->xmajor) return (s32)(edge_x(e, y, 0) >> 18);
+    // (x-major: where the edge leaves the line; going right on its last line, where it enters)
+    return (s32)((edge_x(e, y, e->sign > 0 && y + 1 == e->y1 && e->bottom ? 0 : 1) + (1 << 17)) >> 18);
+}
+static s32 edge_right(const Edge *e, s32 y) {
+    if (!e->sign) return e->x0 - 1;
+    s32 dy = e->y1 - e->y0, adx = e->x1 > e->x0 ? e->x1 - e->x0 : e->x0 - e->x1;
+    if (!e->xmajor) return (s32)(edge_x(e, y, 0) >> 18) - 1;
+    return (s32)((edge_x(e, y, e->sign < 0 && y + 1 == e->y1 && e->bottom ? 0 : 1) + (1 << 17)) >> 18) - 1;
 }
 
 // ---- the rendering state of one polygon
@@ -105,35 +99,67 @@ static void put_pixel(const G3Polygon *p, int x, int y, s32 z, s32 r, s32 g, s32
     sPoly[i] = (s16)idx;
 }
 
+// the polygon's two edges that cross line y (the left one first); 0 if fewer than two do
+static int edges_at(const G3Polygon *p, s32 y, Edge *l, Edge *r) {
+    int n = p->nv, found = 0, flatbottom = 0;
+    s32 bx = -1;  // (a horizontal bottom edge: two bottom vertices at different x)
+    for (int i = 0; i < n; i++)
+        if (p->v[i]->y == p->ybottom) {
+            if (bx >= 0 && p->v[i]->x != bx) flatbottom = 1;
+            bx = p->v[i]->x;
+        }
+    // the winding on the screen decides which of the two chains down from the top vertex is the left one (the
+    // edges can cross near a vertex)
+    s64 area = 0;
+    for (int i = 0; i < n; i++) {
+        const G3Vertex *a = p->v[i], *b = p->v[(i + 1) % n];
+        area += (s64)a->x * b->y - (s64)b->x * a->y;
+    }
+    Edge e[2];
+    double mid[2];
+    int down[2];
+    for (int i = 0; i < n && found < 2; i++) {
+        int a = i, b = (i + 1) % n;
+        s32 ya = p->v[a]->y, yb = p->v[b]->y;
+        if (ya == yb) continue;
+        down[found] = ya < yb;  // (going down in the vertex order)
+        if (ya > yb) { int t = a; a = b; b = t; s32 u = ya; ya = yb; yb = u; }
+        if (y < ya || y >= yb) continue;
+        edge_setup(&e[found], p, a, b);
+        e[found].bottom = yb == p->ybottom && flatbottom;
+        s32 dx = p->v[b]->x - p->v[a]->x, dy = yb - ya;
+        mid[found] = p->v[a]->x + (double)dx * (2.0 * (y - ya) + 1) / (2.0 * dy);
+        found++;
+    }
+    if (found < 2) return 0;
+    // clockwise (area > 0, y down): the chain in the vertex order is the right one
+    int s = area == 0 || down[0] == down[1] ? mid[1] < mid[0] : (down[0] == (area > 0));
+    *l = e[s];
+    *r = e[!s];
+    return 1;
+}
+
 static void draw_polygon(const G3Polygon *p, int idx) {
     int n = p->nv;
     if (n < 3) return;
     s32 ytop = p->ytop, ybot = p->ybottom;
     if (ytop >= ybot) return;  // (to do: one-line polygons)
-    // the two chains from the top vertex: one each way round
-    int vt = p->vtop;
-    int la = vt, lb = (vt + n - 1) % n;  // one way
-    int ra = vt, rb = (vt + 1) % n;      // the other
-    // skip horizontal edges at the top
-    while (p->v[lb]->y <= p->v[la]->y && lb != vt) { la = lb; lb = (lb + n - 1) % n; if (p->v[la]->y > ytop) break; }
-    while (p->v[rb]->y <= p->v[ra]->y && rb != vt) { ra = rb; rb = (rb + 1) % n; if (p->v[ra]->y > ytop) break; }
-    Edge L, R;
-    edge_setup(&L, p, la, lb);
-    edge_setup(&R, p, ra, rb);
     for (s32 y = ytop; y < ybot; y++) {
-        while (y >= p->v[lb]->y && lb != p->vbottom) { la = lb; lb = (lb + n - 1) % n; edge_setup(&L, p, la, lb); }
-        while (y >= p->v[rb]->y && rb != p->vbottom) { ra = rb; rb = (rb + 1) % n; edge_setup(&R, p, ra, rb); }
         if (y < 0 || y >= H) continue;
-        s32 lmin, lmax, rmin, rmax;
-        edge_span(&L, y, &lmin, &lmax);
-        edge_span(&R, y, &rmin, &rmax);
-        const Edge *el = &L, *er = &R;
-        if (lmin > rmin || (lmin == rmin && lmax > rmax)) {  // (the chains the other way round)
-            s32 t;
-            t = lmin; lmin = rmin; rmin = t;
-            t = lmax; lmax = rmax; rmax = t;
-            el = &R; er = &L;
+        Edge L, R;
+        if (!edges_at(p, y, &L, &R)) continue;
+        s32 a = edge_left(&L, y), b = edge_right(&R, y);
+        // the left edge's own pixels are drawn even where the right edge is already left of them
+        if (!L.xmajor) {
+            if (b < a) b = a;
+        } else if (L.sign < 0) {
+            s32 run = (s32)((edge_x(&L, y, 0) + (1 << 17)) >> 18) - 1;
+            if (b < run) b = run;
+            if (b < a) b = a;
         }
+        if (b < a) continue;
+        s32 lmin = a, rmax = b;
+        const Edge *el = &L, *er = &R;
         // the attributes at the two ends of the span, interpolated along the edges
         s32 ends[2][6];  // z, w, r, g, b (s, t later)
         const Edge *es[2] = {el, er};
@@ -150,7 +176,6 @@ static void draw_polygon(const G3Polygon *p, int idx) {
         s32 xl = lmin, xr = rmax;
         for (s32 x = xl; x <= xr; x++) {
             if (x < 0 || x >= W) continue;
-            if (x == xr && !er->xmajor && er->x0 != er->x1) {}  // (right edge rule: to do)
             Interp ip;
             interp_setup(&ip, x, xl, xr, ends[0][1], ends[1][1], 8);
             s32 z = p->wbuffer ? interp(&ip, ends[0][0], ends[1][0]) : interp_z_linear(x, xl, xr, ends[0][0], ends[1][0]);
