@@ -125,12 +125,35 @@ static int depth_pass(const G3Polygon *p, s32 z, u32 d, u8 flags) {
     return z < (s32)d || (z == (s32)d && p->facing && (flags & 8));
 }
 
+// a translucent pixel over a framebuffer value: alpha blending (DISP3DCNT bit 3, over a non-transparent pixel); the
+// larger alpha stays, blending or not
+static u32 translucent_over(u32 dst, u32 r, u32 g, u32 b, u32 al) {
+    u32 da = dst >> 24 & 31;
+    if ((sR->dispcnt & 8) && da) {
+        r = (r * (al + 1) + (dst & 63) * (31 - al)) >> 5;
+        g = (g * (al + 1) + (dst >> 8 & 63) * (31 - al)) >> 5;
+        b = (b * (al + 1) + (dst >> 16 & 63) * (31 - al)) >> 5;
+    }
+    if (da > al) al = da;
+    return r | g << 8 | b << 16 | al << 24;
+}
+// an anti-aliased edge pixel (coverage c) blended with the layer below it (over a transparent layer: the coverage as
+// alpha)
+static u32 aa_resolve(u32 t, u32 b, u32 c) {
+    u32 ab = b >> 24 & 31;
+    if (!ab) return (t & 0xffffff) | c << 24;
+    u32 r = ((t & 63) * (c + 1) + (b & 63) * (31 - c)) >> 5;
+    u32 g = ((t >> 8 & 63) * (c + 1) + (b >> 8 & 63) * (31 - c)) >> 5;
+    u32 bb = ((t >> 16 & 63) * (c + 1) + (b >> 16 & 63) * (31 - c)) >> 5;
+    return r | g << 8 | bb << 16 | ((31 * (c + 1) + ab * (31 - c)) >> 5) << 24;
+}
+
 // one pixel of a polygon: a[] the interpolated vertex colour (9 bits each) and texture coordinates (1/16 texels)
 static void put_pixel(const G3Polygon *p, int x, int y, s32 z, const s32 *a, int idx, int cov) {
     int i = y * W + x;
     int below = 0;  // (behind an anti-aliased edge pixel: drawn into the layer below it)
     if (!depth_pass(p, z, sDepth[i], sFlags[i])) {
-        if (sCov[i] == 31 || p->translucent || z >= (s32)sDepth2[i]) return;
+        if (sCov[i] == 31 || z >= (s32)sDepth2[i]) return;
         below = 1;
     }
     u32 vr = (u32)a[0] >> 3, vg = (u32)a[1] >> 3, vb = (u32)a[2] >> 3;  // (6 bits)
@@ -161,7 +184,18 @@ static void put_pixel(const G3Polygon *p, int x, int y, s32 z, const s32 *a, int
     u32 fog = p->attr >> 15 & 1;
     if (below) {
         if (al == 31) sColor2[i] = r | g << 8 | b << 16 | 31u << 24, sDepth2[i] = (u32)z;
+        else {  // (translucent: onto the layer below, as it would be onto the top)
+            u8 id = (u8)(p->attr >> 24 & 63);
+            if (sTransId[i] == id) return;
+            sColor2[i] = translucent_over(sColor2[i], r, g, b, al);
+            if (p->attr & 0x800) sDepth2[i] = (u32)z;
+            sTransId[i] = id;
+        }
         return;
+    }
+    if (al < 31 && sCov[i] < 31) {  // (translucent over an anti-aliased edge pixel: the edge is resolved first)
+        sColor[i] = aa_resolve(sColor[i], sColor2[i], sCov[i]);
+        sCov[i] = 31;
     }
     if (al == 31) {
         sColor2[i] = sColor[i];
@@ -174,14 +208,7 @@ static void put_pixel(const G3Polygon *p, int x, int y, s32 z, const s32 *a, int
     } else {
         u8 id = (u8)(p->attr >> 24 & 63);
         if (sTransId[i] == id) return;  // (one translucent polygon ID draws a pixel once)
-        u32 dst = sColor[i], da = dst >> 24;
-        if ((sR->dispcnt & 8) && da) {  // (alpha blending)
-            r = (r * (al + 1) + (dst & 63) * (31 - al)) >> 5;
-            g = (g * (al + 1) + (dst >> 8 & 63) * (31 - al)) >> 5;
-            b = (b * (al + 1) + (dst >> 16 & 63) * (31 - al)) >> 5;
-        }
-        if (da > al) al = da;  // (the larger alpha stays, blending or not)
-        sColor[i] = r | g << 8 | b << 16 | al << 24;
+        sColor[i] = translucent_over(sColor[i], r, g, b, al);
         if (p->attr & 0x800) sDepth[i] = (u32)z;  // (translucent depth update)
         sTransId[i] = id;
         sFlags[i] = (u8)((sFlags[i] & fog) | 4);
@@ -373,17 +400,8 @@ static void clear_buffers(void) {
 // blending (fitted: below a transparent layer it keeps its colour and takes the coverage as alpha)
 static void aa_pass(void) {
     if (!(sR->dispcnt & 0x10)) return;
-    for (int i = 0; i < W * H; i++) {
-        u32 c = sCov[i];
-        if (c >= 31) continue;
-        u32 t = sColor[i], b = sColor2[i], ab = b >> 24 & 31;
-        if (!ab) { sColor[i] = (t & 0xffffff) | c << 24; continue; }
-        u32 r = ((t & 63) * (c + 1) + (b & 63) * (31 - c)) >> 5;
-        u32 g = ((t >> 8 & 63) * (c + 1) + (b >> 8 & 63) * (31 - c)) >> 5;
-        u32 bb = ((t >> 16 & 63) * (c + 1) + (b >> 16 & 63) * (31 - c)) >> 5;
-        u32 a = (31 * (c + 1) + ab * (31 - c)) >> 5;
-        sColor[i] = r | g << 8 | bb << 16 | a << 24;
-    }
+    for (int i = 0; i < W * H; i++)
+        if (sCov[i] < 31) sColor[i] = aa_resolve(sColor[i], sColor2[i], sCov[i]);
 }
 
 static void fog_pass(void) {
