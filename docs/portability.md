@@ -1011,7 +1011,11 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     `_POLYS`; at 300 scenes: masks 0, 1, 4, 8, 16, 17, 24, 32, 264 (fog, W-buffer) match, 2 / 6 about 1%, multi-polygon
     Z-buffer and 8192 + 2 / 32 differ by ±1 precision; ACWW_RENDER_COMPARE=1 on the play script to frame 8000: every
     3D read and every unclipped polygon's colours and texture coordinates equal, polygon lists differ in 6 of 25002 frames
-    (12 clipped colours next to a saturated colour), pictures differ along polygon seams (texture
+    (12 clipped colours next to a saturated colour); a strip polygon hidden by the far plane leaves a 2-vertex
+    polygon of its shared vertices (as melonDS). With `ACWW_RENDERER3D=own` the save script's save file is identical
+    to the melonDS run's, every 3D read equal in the town, save and continue scripts; the five builds (x86-64, i386,
+    clang, aarch64, Windows) give identical pictures and sound with the own renderers. Features the scripts use: no
+    toon / highlight, shadows, edge marking, wireframe, 1-dot polygons or rear bitmap, pictures differ along polygon seams (texture
     coordinates / W mid-span ±1 in the 8-bit span factor). Tools: `ACWW_RENDER_SELFTEST3D_CMDS` (raw command scenes;
     `_DISP`, `_CLEAR`), `_QUAD`, `_W`, `_DUMP` (both pictures, the polygon per pixel, both depth buffers, the
     rendering registers), `ACWW_RENDER_DUMP3D=<frame>:<prefix>` (the same for a game frame), `ACWW_RENDER_POLYDUMP`,
