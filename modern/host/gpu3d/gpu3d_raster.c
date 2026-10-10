@@ -282,14 +282,48 @@ static int edge_coverage(const Edge *e, int side, s32 x, s32 y, s32 snum, s32 sd
     return v > 31 ? 31 : v < 0 ? 0 : (int)v;
 }
 
+// a polygon whose vertices all lie on one line: the pixels from the leftmost vertex to the rightmost (that one
+// excluded, one pixel at least), its attributes interpolated linearly between those two vertices
+static void draw_one_line(const G3Polygon *p, int idx) {
+    int l = 0, r = 0;
+    for (int i = 1; i < p->nv; i++) {
+        if (p->v[i]->x < p->v[l]->x) l = i;
+        if (p->v[i]->x > p->v[r]->x) r = i;
+    }
+    s32 y = p->ytop, x0 = p->v[l]->x, x1 = p->v[r]->x;
+    if (y < 0 || y >= H) return;
+    s32 xe = x1 > x0 ? x1 - 1 : x0;
+    const G3Vertex *a = p->v[l], *b = p->v[r];
+    const s32 va[5] = {a->color[0], a->color[1], a->color[2], a->tex[0], a->tex[1]};
+    const s32 vb[5] = {b->color[0], b->color[1], b->color[2], b->tex[0], b->tex[1]};
+    for (s32 x = x0; x <= xe; x++) {
+        if (x < 0 || x >= W) continue;
+        s32 col[5];
+        for (int c = 0; c < 5; c++) col[c] = lerp_floor(va[c], vb[c], x - x0, x1 - x0);
+        s32 z = lerp_floor(p->z[l], p->z[r], x - x0, x1 - x0);
+        put_pixel(p, x, y, z, col, idx, 31);
+    }
+}
+
 static void draw_polygon(const G3Polygon *p, int idx) {
     int n = p->nv;
     if (n < 3) return;
     s32 ytop = p->ytop, ybot = p->ybottom;
-    if (ytop >= ybot) return;  // (to do: one-line polygons)
+    if (ytop >= ybot) {  // a polygon on one line: from its leftmost to its rightmost x (less one; one pixel at least)
+        draw_one_line(p, idx);
+        return;
+    }
     // GBATEK "Polygon Size": the right edges (but vertical ones) are drawn too, except for opaque polygons without
     // edge marking and anti-aliasing and for translucent ones while alpha blending is off
     int full = p->translucent ? (sR->dispcnt & 8) != 0 : (sR->dispcnt & 0x30) != 0;
+    {   // (a polygon without area, a line: its edges' runs are drawn as for full-size polygons)
+        s64 area = 0;
+        for (int i = 0; i < n; i++) {
+            const G3Vertex *a = p->v[i], *b = p->v[(i + 1) % n];
+            area += (s64)a->x * b->y - (s64)b->x * a->y;
+        }
+        if (!area) full = 1;
+    }
     int aa = (sR->dispcnt & 0x10) && !p->translucent && (p->attr >> 16 & 31) == 31;  // (opaque polygons only)
     for (s32 y = ytop; y < ybot; y++) {
         if (y < 0 || y >= H) continue;
