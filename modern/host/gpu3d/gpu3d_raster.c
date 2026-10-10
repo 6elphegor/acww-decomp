@@ -79,7 +79,6 @@ static s32 edge_left(const Edge *e, s32 y) {
 }
 static s32 edge_right(const Edge *e, s32 y) {
     if (!e->sign) return e->x0 - 1;
-    s32 dy = e->y1 - e->y0, adx = e->x1 > e->x0 ? e->x1 - e->x0 : e->x0 - e->x1;
     if (!e->xmajor) return (s32)(edge_x(e, y, 0) >> 18) - 1;
     return (s32)((edge_x(e, y, e->sign < 0 && y + 1 == e->y1 && e->bottom ? 0 : 1) + (1 << 17)) >> 18) - 1;
 }
@@ -256,7 +255,7 @@ static void draw_polygon(const G3Polygon *p, int idx) {
                 if (p->wbuffer) ends[k][0] = interp(&iw, p->z[e->v0], p->z[e->v1]);  // (the depth: W scaled)
             }
             s32 w0 = p->w[e->v0], w1 = p->w[e->v1];
-            Interp ic;
+            Interp ic = {0, 0};
             if (!exact_ok(w0, w1)) interp_setup(&ic, yc, e->y0, e->y1, w0 & ~1, w1 & ~1, 9);  // (W's bit 0 unused)
             const s32 va[5] = {a->color[0], a->color[1], a->color[2], a->tex[0], a->tex[1]};
             const s32 vb[5] = {b->color[0], b->color[1], b->color[2], b->tex[0], b->tex[1]};
@@ -278,7 +277,7 @@ static void draw_polygon(const G3Polygon *p, int idx) {
                 z = interp_z_linear(x, xl, xr, ends[0][0], ends[1][0]);
             s32 col[5];
             int ex = exact_ok(ends[0][1], ends[1][1]);
-            Interp ic;
+            Interp ic = {0, 0};
             if (!ex) interp_setup(&ic, x, cx[0], cx[1], ends[0][1], ends[1][1], 8);
             for (int c = 0; c < 5; c++)
                 col[c] = cx[1] == cx[0] ? ends[0][2 + c]
