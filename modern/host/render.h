@@ -20,6 +20,7 @@ void render_debug(void);           // ACWW_STATS diagnostics
 void render_exit_report(void);     // ACWW_RENDER_COMPARE's summary, ACWW_GPU2D_FEATURES
 // render.c / render_selftest.c internals: the comparison of the two renderers' last frame, the self-test
 int render_compare(const char *kind, u64 label);
+int render_compare_3d(const char *kind, u64 label);
 void render_selftest(long scenes) __attribute__((noreturn));
 
 #endif

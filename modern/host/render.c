@@ -1,16 +1,24 @@
 // Host build: the display interface (render.h) and the choice of renderer.
 //
-// melonDS (melon.cpp, GPL-3.0, temporary) renders the 3D engine and, by default, the 2D engines; the project's own
-// 2D renderer (gpu2d/) replaces its 2D part (docs/portability.md 5.1):
-//   ACWW_RENDERER=melon (default) | own   whose 2D pictures the screens show; with `own` melonDS still runs the 3D
-//                                         engine, and its 3D picture becomes BG0 of the own renderer's engine A
+// melonDS (melon.cpp, GPL-3.0, temporary) can render both 2D engines and the 3D engine; the project's own 2D renderer
+// (gpu2d/, docs/portability.md 5.1) and 3D engine (gpu3d/, 5.2) replace it:
+//   ACWW_RENDERER=melon (default) | own   whose 2D pictures the screens show
+//   ACWW_RENDERER3D=melon (default) | own whose 3D engine runs the game's 3D: answers its reads (GXSTAT, the test
+//                                         results, matrices, RAM counts), raises the GX FIFO interrupt and draws the
+//                                         3D layer. `own` needs the own 2D renderer too (melonDS's 2D would show its
+//                                         own 3D), so it implies ACWW_RENDERER=own. With both `own` melonDS isn't run
+//                                         at all.
 //   ACWW_RENDER_COMPARE=1                 render with both every frame and report the frames where they differ: the
 //                                         first differing pixel of each screen and what the own renderer put there
-//                                         (layers, effect); ACWW_RENDER_COMPARE_MAX lines at most (default 200), then
-//                                         only the counts, which are printed at exit
+//                                         (layers, effect); for the 3D engine also every read whose value differs,
+//                                         the polygon lists (count, first differing polygon) and the 3D pictures
+//                                         (first differing pixel, the polygon that drew it); ACWW_RENDER_COMPARE_MAX
+//                                         lines at most of each kind (default 200), then only the counts, which are
+//                                         printed at exit
 //   ACWW_RENDER_SELFTEST=<n>              before the game starts: n random scenes rendered by both, compared as above,
 //                                         then exit (render_selftest.c; ACWW_RENDER_SELFTEST_SEED)
 //   ACWW_GPU2D_FEATURES=1                 at exit, the 2D features the frames used (own renderer or comparison)
+//   ACWW_GPU3D_FEATURES=1                 at exit, the 3D features the frames used (own 3D engine or comparison)
 // Both renderers get the same register writes, VRAM banks, palettes and OAM.
 
 #include <stdio.h>
@@ -18,6 +26,7 @@
 #include <string.h>
 
 #include "gpu2d/gpu2d.h"
+#include "gpu3d/gpu3d.h"
 #include "host_mem.h"
 #include "render.h"
 
@@ -32,43 +41,181 @@ const u32 *melon_screen(int screen);
 int melon_gx_fifo_irq_level(void);
 void melon_debug(void);
 void melon_3d_lines(u32 *out);
+int melon_3d_poly_count(void);
+int melon_3d_poly_get(int i, Gpu3dVertexOut *v, u32 *attr, u32 *texparam, u32 *texpal, int *flags);
 // vram.c
 u8 *host_vram_bank(int i);
 void host_vram_flush(void);
 
-static int sOwn;          // the own renderer's pictures on the screens
-static int sGpu2d;        // the own renderer runs (sOwn or sCompare)
+static int sOwn;          // the own 2D renderer's pictures on the screens
+static int sOwn3d;        // the own 3D engine runs the game's 3D
+static int sGpu2d;        // the own 2D renderer runs (sOwn or sCompare)
+static int sGpu3d;        // the own 3D engine runs (sOwn3d or sCompare)
+static int sMelon;        // melonDS runs
 static int sCompare;
 static int sSelftest;      // ACWW_RENDER_SELFTEST (render_selftest.c compares itself)
 static long sCompareMax = 200, sCompareLines;
 static u64 sCompared, sDiffering, sFirstDiffering = ~0ull;
+static u64 sReads3d, sReadsDiffering, sFirstReadDiffering = ~0ull;
+static long sReadLines;
+static u64 sPolyFrames, sPolyDiffering, sFirstPolyDiffering = ~0ull;
+static long sPolyLines;
+static u64 sPix3dFrames, sPix3dDiffering, sFirstPix3dDiffering = ~0ull;
+static long sPix3dLines;
 static u32 s3d[256 * 192];
 
+static int env_is(const char *name, const char *value) {
+    const char *r = getenv(name);
+    return r && strcmp(r, value) == 0;
+}
+
 void render_init(void) {
-    const char *r = getenv("ACWW_RENDERER");
-    if (r && strcmp(r, "own") == 0) sOwn = 1;
-    else if (r && strcmp(r, "melon") != 0) fprintf(stderr, "render: ACWW_RENDERER=%s unknown (own, melon): melon\n", r);
-    sCompare = getenv("ACWW_RENDER_COMPARE") && atoi(getenv("ACWW_RENDER_COMPARE"));
+    sOwn = env_is("ACWW_RENDERER", "own");
+    if (getenv("ACWW_RENDERER") && !sOwn && !env_is("ACWW_RENDERER", "melon"))
+        fprintf(stderr, "render: ACWW_RENDERER=%s unknown (own, melon): melon\n", getenv("ACWW_RENDERER"));
+    sOwn3d = env_is("ACWW_RENDERER3D", "own");
+    if (getenv("ACWW_RENDERER3D") && !sOwn3d && !env_is("ACWW_RENDERER3D", "melon"))
+        fprintf(stderr, "render: ACWW_RENDERER3D=%s unknown (own, melon): melon\n", getenv("ACWW_RENDERER3D"));
+    if (sOwn3d) sOwn = 1;
+    sCompare = getenv("ACWW_RENDER_COMPARE") ? atoi(getenv("ACWW_RENDER_COMPARE")) : 0;
     if (getenv("ACWW_RENDER_COMPARE_MAX")) sCompareMax = strtol(getenv("ACWW_RENDER_COMPARE_MAX"), 0, 10);
+    if (getenv("ACWW_RENDER_SELFTEST") || getenv("ACWW_RENDER_SELFTEST3D")) sCompare = sCompare ? sCompare : 1;
     sGpu2d = sOwn || sCompare;
-    melon_init();
+    sGpu3d = sOwn3d || sCompare;
+    sMelon = !sOwn || !sOwn3d || sCompare;
+    if (sMelon) melon_init();
     gpu2d_reset();
-    gpu2d_set_diagnostics(sCompare || getenv("ACWW_RENDER_SELFTEST"));
+    gpu2d_set_diagnostics(sCompare);
+    gpu3d_reset();
+    gpu3d_set_diagnostics(sCompare);
     if (getenv("ACWW_RENDER_SELFTEST")) {  // (render_selftest.c)
-        sGpu2d = sCompare = sSelftest = 1;
+        sGpu2d = sGpu3d = sCompare = sSelftest = sMelon = 1;
         render_selftest(strtol(getenv("ACWW_RENDER_SELFTEST"), 0, 10));
+    }
+    if (getenv("ACWW_RENDER_SELFTEST3D")) {  // (render_selftest3d.c)
+        void render_selftest3d(long scenes) __attribute__((noreturn));
+        sGpu2d = sGpu3d = sSelftest = sMelon = 1;
+        render_selftest3d(strtol(getenv("ACWW_RENDER_SELFTEST3D"), 0, 10));
     }
 }
 
-void render_write8(u32 addr, u8 v) { melon_write8(addr, v); gpu2d_write8(addr, v); }
-void render_write16(u32 addr, u16 v) { melon_write16(addr, v); gpu2d_write16(addr, v); }
-void render_write32(u32 addr, u32 v) {
-    melon_write32(addr, v);
-    if (addr < 0x04000400 || addr > 0x04000600) gpu2d_write32(addr, v);  // (not the 3D command ports)
+static int is_3d(u32 addr) {
+    return addr == 0x04000060 || addr == 0x04000304 || (addr >= 0x04000240 && addr < 0x04000247) ||
+           (addr >= 0x04000320 && addr < 0x040006a4);
 }
-u32 render_read32(u32 addr) { return melon_read32(addr); }
-int render_gx_fifo_irq_level(void) { return melon_gx_fifo_irq_level(); }
-void render_debug(void) { melon_debug(); }
+void render_write8(u32 addr, u8 v) {
+    if (sMelon) melon_write8(addr, v);
+    if (sGpu2d) gpu2d_write8(addr, v);
+    if (sGpu3d && is_3d(addr)) gpu3d_write8(addr, v);
+}
+void render_write16(u32 addr, u16 v) {
+    if (sMelon) melon_write16(addr, v);
+    if (sGpu2d) gpu2d_write16(addr, v);
+    if (sGpu3d && is_3d(addr)) gpu3d_write16(addr, v);
+}
+// ACWW_RENDER_COMPARE=2: the geometry engines' state (FIFO levels, the swap, RAM counts, matrices and stacks)
+// compared after every command write; the first write after which they differ is reported, with the own engine's
+// last commands
+void melon_3d_state(Gpu3dState *s);
+static long sStateLines;
+static void compare_state(u32 addr, u32 v) {
+    Gpu3dState a, b;
+    memset(&a, 0, sizeof a);
+    memset(&b, 0, sizeof b);
+    gpu3d_state(&a);
+    melon_3d_state(&b);
+    a.pipe |= gpu3d_read32(0x04000600) & 0xff00ff00;
+    b.pipe |= melon_read32(0x04000600) & 0xff00ff00;
+    {   // (ACWW_RENDER_COMPARE=2: melonDS's polygon setup state by the kind of polygon, printed at exit)
+        int nout, clipped, type;
+        unsigned serial;
+        static unsigned last;
+        int outcome = gpu3d_debug_last_polygon(&nout, &clipped, &serial, &type);
+        if (serial != last) {
+            last = serial;
+            static struct { int key[4]; int pp, slots, ctr, pv; long n; } tab[512];
+            static int ntab;
+            int key[4] = {outcome, nout, clipped, type};
+            int i;
+            for (i = 0; i < ntab; i++)
+                if (!memcmp(tab[i].key, key, sizeof key) && tab[i].pp == b.pp && tab[i].slots == b.slots &&
+                    tab[i].ctr == b.slotctr)
+                    break;
+            if (i == ntab && ntab < 512) {
+                memcpy(tab[i].key, key, sizeof key);
+                tab[i].pp = b.pp, tab[i].slots = b.slots, tab[i].ctr = b.slotctr;
+                ntab++;
+                fprintf(stderr, "polysetup: outcome %d nout %d clipped %d type %d -> melon pp %d slots %x ctr %d (vp %d)\n",
+                        outcome, nout, clipped, type, b.pp, b.slots, b.slotctr, b.vp);
+            }
+        }
+    }
+    if (!memcmp(&a, &b, sizeof a) || sStateLines >= sCompareMax) return;
+    sStateLines++;
+    fprintf(stderr, "render-compare: frame %llu after write %08x = %08x the geometry state differs:\n",
+            (unsigned long long)host_frame(), addr, v);
+    fprintf(stderr, "  own   pipe %x fifo %u flush %u polys %u verts %u mode %u possp %u projsp %u\n", a.pipe, a.fifo,
+            a.flush, a.npolys, a.nverts, a.mtxmode, a.possp, a.projsp);
+    fprintf(stderr, "  melon pipe %x fifo %u flush %u polys %u verts %u mode %u possp %u projsp %u\n", b.pipe, b.fifo,
+            b.flush, b.npolys, b.nverts, b.mtxmode, b.possp, b.projsp);
+    fprintf(stderr, "  pipelines own vp %d np %d pp %d slots %x ctr %d, melon vp %d np %d pp %d slots %x ctr %d\n", a.vp, a.np,
+            a.pp, a.slots, a.slotctr, b.vp, b.np, b.pp, b.slots, b.slotctr);
+    const int32_t *ma[4] = {a.proj, a.pos, a.vec, a.tex}, *mb[4] = {b.proj, b.pos, b.vec, b.tex};
+    for (int m = 0; m < 4; m++)
+        if (memcmp(ma[m], mb[m], 64)) {
+            fprintf(stderr, "  %s matrix:", (const char *[]){"projection", "position", "vector", "texture"}[m]);
+            for (int i = 0; i < 16; i++) fprintf(stderr, " %x/%x", ma[m][i], mb[m][i]);
+            fprintf(stderr, "\n");
+        }
+    fprintf(stderr, "  own commands:");
+    gpu3d_debug_history();
+}
+void render_write32(u32 addr, u32 v) {
+    if (sMelon) melon_write32(addr, v);
+    if (sGpu2d && (addr < 0x04000400 || addr > 0x04000600)) gpu2d_write32(addr, v);  // (not the 3D command ports)
+    if (sGpu3d && is_3d(addr)) gpu3d_write32(addr, v);
+    if (sCompare > 1 && !sSelftest && addr >= 0x04000400 && addr <= 0x04000600) compare_state(addr, v);
+}
+
+u32 render_read32(u32 addr) {
+    if (!sOwn3d) {
+        u32 m = melon_read32(addr);
+        if (sCompare) {
+            u32 o = gpu3d_read32(addr);
+            sReads3d++;
+            if (o != m) {
+                if (sFirstReadDiffering == ~0ull) sFirstReadDiffering = host_frame();
+                sReadsDiffering++;
+                { void gpu3d_debug_history(void); if (sReadLines < 3) gpu3d_debug_history(); }
+                if (sReadLines++ < sCompareMax)
+                    fprintf(stderr, "render-compare: frame %llu read %08x: own %08x melon %08x\n",
+                            (unsigned long long)host_frame(), addr, o, m);
+            }
+        }
+        return m;
+    }
+    u32 o = gpu3d_read32(addr);
+    if (sCompare) {
+        u32 m = melon_read32(addr);
+        sReads3d++;
+        if (o != m) {
+            if (sFirstReadDiffering == ~0ull) sFirstReadDiffering = host_frame();
+            sReadsDiffering++;
+            if (sReadLines++ < sCompareMax)
+                fprintf(stderr, "render-compare: frame %llu read %08x: own %08x melon %08x\n",
+                        (unsigned long long)host_frame(), addr, o, m);
+        }
+    }
+    return o;
+}
+// the GX FIFO interrupt (IRQ 21) is level-triggered: GXSTAT bits 30-31 choose "less than half full" or "empty"; the
+// host runs commands as they are written, so the line is up whenever one of the two is chosen
+int render_gx_fifo_irq_level(void) {
+    if (!sOwn3d) return melon_gx_fifo_irq_level();
+    u32 mode = gpu3d_read32(0x04000600) >> 30;
+    return mode == 1 || mode == 2;
+}
+void render_debug(void) { if (sMelon) melon_debug(); }
 
 // the first pixel where the two renderers' pictures differ, per screen (`label`: the frame, or the self-test's
 // scene); 1 if they differ
@@ -98,19 +245,162 @@ int render_compare(const char *kind, u64 label) {
     return differs;
 }
 
+static void print_poly(const char *who, const Gpu3dVertexOut *v, int n, u32 attr, u32 tp, u32 pal, int flags) {
+    fprintf(stderr, "    %s: attr %08x tex %08x pal %04x flags %x, %d vertices:", who, attr, tp, pal, flags, n);
+    for (int k = 0; k < n; k++)
+        fprintf(stderr, " (%d,%d z%06x w%x c%d,%d,%d t%d,%d)", v[k].x, v[k].y, v[k].z, v[k].w, v[k].r, v[k].g, v[k].b,
+                v[k].s, v[k].t);
+    fprintf(stderr, "\n");
+}
+// the own geometry engine's polygon list against melonDS's (the frame both just set up for rendering)
+// every polygon of the two lists by what differs (vertex count, attributes, flags, position, depth, colour,
+// texture coordinates; clipped or not): counts at exit, the first example of each kind
+enum { PK_COUNT, PK_ATTR, PK_FLAGS, PK_POS, PK_DEPTH, PK_COLOR, PK_TEX, PK_N };
+static const char *const kPolyKinds[PK_N] = {"vertex count", "attributes", "flags", "position", "depth", "colour", "texcoord"};
+static u64 sPolyKind[PK_N][2], sPolysCompared;
+static void census_polygons(u64 label) {
+    int nm = melon_3d_poly_count(), no = gpu3d_poly_count();
+    int n = nm < no ? nm : no;
+    for (int i = 0; i < n; i++) {
+        Gpu3dVertexOut vm[10], vo[10];
+        u32 am, ao, tm, to, pm, po;
+        int fm, fo;
+        memset(vm, 0, sizeof vm);
+        memset(vo, 0, sizeof vo);
+        int km = melon_3d_poly_get(i, vm, &am, &tm, &pm, &fm);
+        int ko = gpu3d_poly_get(i, vo, &ao, &to, &po, &fo);
+        sPolysCompared++;
+        int clipped = 0;
+        for (int k = 0; k < km; k++) clipped |= vm[k].clipped;
+        int kinds[PK_N] = {0};
+        kinds[PK_COUNT] = km != ko;
+        kinds[PK_ATTR] = am != ao || tm != to || pm != po;
+        kinds[PK_FLAGS] = fm != fo;
+        for (int k = 0; k < km && k < ko; k++) {
+            kinds[PK_POS] |= vm[k].x != vo[k].x || vm[k].y != vo[k].y;
+            kinds[PK_DEPTH] |= vm[k].z != vo[k].z || vm[k].w != vo[k].w;
+            kinds[PK_COLOR] |= vm[k].r != vo[k].r || vm[k].g != vo[k].g || vm[k].b != vo[k].b;
+            kinds[PK_TEX] |= vm[k].s != vo[k].s || vm[k].t != vo[k].t;
+        }
+        static FILE *dump;
+        static long dumped, dumpMax = 200000;
+        if (!dump && getenv("ACWW_RENDER_FITDUMP")) dump = fopen(getenv("ACWW_RENDER_FITDUMP"), "w");
+        if (dump && km == ko && dumped < dumpMax) {  // every vertex: the own engine's inputs, both outputs
+            for (int k = 0; k < km; k++, dumped++) {
+                fprintf(dump, "V %llu %d %d %d ", (unsigned long long)label, i, k, vm[k].clipped);
+                fprintf(dump, "own %d %d %d %d %d %d %d %d %d melon %d %d %d %d %d %d %d %d %d ", vo[k].x, vo[k].y,
+                        vo[k].z, vo[k].w, vo[k].r, vo[k].g, vo[k].b, vo[k].s, vo[k].t, vm[k].x, vm[k].y, vm[k].z, vm[k].w,
+                        vm[k].r, vm[k].g, vm[k].b, vm[k].s, vm[k].t);
+                void gpu3d_debug_vertex(int i, int k, FILE *f);
+                gpu3d_debug_vertex(i, k, dump);
+                fprintf(dump, "\n");
+            }
+        }
+        for (int k = 0; k < PK_N; k++) {
+            if (!kinds[k]) continue;
+            if (!sPolyKind[k][clipped]++) {
+                fprintf(stderr, "render-compare: frame %llu polygon %d: %s differs (%s), the first such:\n",
+                        (unsigned long long)label, i, kPolyKinds[k], clipped ? "clipped" : "not clipped");
+                print_poly("own  ", vo, ko, ao, to, po, fo);
+                print_poly("melon", vm, km, am, tm, pm, fm);
+                gpu3d_debug_poly(i);
+            }
+            break;  // (the first kind only)
+        }
+    }
+}
+static int compare_polygons(const char *kind, u64 label) {
+    sPolyFrames++;
+    census_polygons(label);
+    int nm = melon_3d_poly_count(), no = gpu3d_poly_count();
+    int n = nm < no ? nm : no, bad = -1;
+    Gpu3dVertexOut vm[10], vo[10];
+    u32 am = 0, ao = 0, tm = 0, to = 0, pm = 0, po = 0;
+    int fm = 0, fo = 0, km = 0, ko = 0;
+    for (int i = 0; i < n && bad < 0; i++) {
+        memset(vm, 0, sizeof vm);
+        memset(vo, 0, sizeof vo);
+        km = melon_3d_poly_get(i, vm, &am, &tm, &pm, &fm);
+        ko = gpu3d_poly_get(i, vo, &ao, &to, &po, &fo);
+        if (km != ko || am != ao || tm != to || pm != po || fm != fo || memcmp(vm, vo, sizeof vm)) bad = i;
+    }
+    if (bad < 0 && nm == no) return 0;
+    if (bad < 0) {  // (one list is longer: its first extra polygon)
+        bad = n;
+        memset(vm, 0, sizeof vm);
+        memset(vo, 0, sizeof vo);
+        km = melon_3d_poly_get(n, vm, &am, &tm, &pm, &fm);
+        ko = gpu3d_poly_get(n, vo, &ao, &to, &po, &fo);
+    }
+    if (sFirstPolyDiffering == ~0ull) sFirstPolyDiffering = label;
+    sPolyDiffering++;
+    if (sPolyLines++ < sCompareMax) {
+        fprintf(stderr, "render-compare: %s %llu polygons: own %d melon %d", kind, (unsigned long long)label, no, nm);
+        if (bad >= 0) {
+            fprintf(stderr, ", the first differing: %d\n", bad);
+            print_poly("own  ", vo, ko, ao, to, po, fo);
+            print_poly("melon", vm, km, am, tm, pm, fm);
+            gpu3d_debug_poly(bad);
+        } else fprintf(stderr, "\n");
+    }
+    return 1;
+}
+// the own 3D picture against melonDS's
+static int compare_3d(const char *kind, u64 label) {
+    sPix3dFrames++;
+    melon_3d_lines(s3d);
+    const u32 *o = gpu3d_lines();
+    int first = -1, count = 0;
+    for (int i = 0; i < 256 * 192; i++)
+        if ((o[i] ^ s3d[i]) & 0x1f3f3f3f) { if (first < 0) first = i; count++; }
+    if (first < 0) return 0;
+    if (sFirstPix3dDiffering == ~0ull) sFirstPix3dDiffering = label;
+    sPix3dDiffering++;
+    if (sPix3dLines++ < sCompareMax) {
+        Gpu3dPolyInfo pi;
+        char what[160] = "the clear colour";
+        if (gpu3d_pixel_polygon(first % 256, first / 256, &pi))
+            snprintf(what, sizeof what, "polygon %d (attr %08x tex %08x pal %04x, %d vertices%s)", pi.index, pi.attr,
+                     pi.texparam, pi.texpal, pi.nverts, pi.translucent ? ", translucent" : "");
+        fprintf(stderr, "render-compare: %s %llu 3D: %d pixels differ, first (%d, %d) own %08x melon %08x: %s\n", kind,
+                (unsigned long long)label, count, first % 256, first / 256, o[first], s3d[first], what);
+    }
+    return 1;
+}
+int render_compare_3d(const char *kind, u64 label) {
+    int a = compare_polygons(kind, label);
+    int b = compare_3d(kind, label);
+    return a || b;
+}
+
+static void gpu3d_run_frame(void) {
+    const u8 *banks[9];
+    for (int i = 0; i < 9; i++) banks[i] = host_vram_bank(i);
+    gpu3d_frame(banks);
+}
+
 void render_frame(void) {
-    if (sGpu2d) melon_3d_lines(s3d);  // (the 3D picture this frame shows: melonDS renders the next one in the frame)
-    melon_frame();
+    // the 3D picture this frame shows (melonDS renders the next one in the frame)
+    const u32 *lines3d = s3d;
     if (sGpu2d) {
-        host_vram_flush();
+        if (sOwn3d) lines3d = gpu3d_lines();
+        else melon_3d_lines(s3d);
+    }
+    if (sMelon) melon_frame();
+    if (sGpu2d || sGpu3d) host_vram_flush();
+    if (sGpu2d) {
         Gpu2dFrameInput in;
         for (int i = 0; i < 9; i++) in.bank[i] = host_vram_bank(i);
         in.palette = gHostPltt;
         in.oam = gHostOam;
-        in.lines3d = s3d;
+        in.lines3d = lines3d;
         gpu2d_render_frame(&in);
     }
-    if (sCompare && !sSelftest) render_compare("frame", host_frame());
+    if (sGpu3d) gpu3d_run_frame();
+    if (sCompare && !sSelftest) {
+        render_compare("frame", host_frame());
+        render_compare_3d("frame", host_frame());
+    }
 }
 
 const u32 *render_screen(int screen) { return sOwn ? gpu2d_screen(screen) : melon_screen(screen); }
@@ -120,7 +410,22 @@ void render_exit_report(void) {
         fprintf(stderr, "render-compare: %llu frames compared, %llu differ", (unsigned long long)sCompared,
                 (unsigned long long)sDiffering);
         if (sDiffering) fprintf(stderr, " (the first: %llu)", (unsigned long long)sFirstDiffering);
+        fprintf(stderr, "\nrender-compare: 3D: %llu reads compared, %llu differ", (unsigned long long)sReads3d,
+                (unsigned long long)sReadsDiffering);
+        if (sReadsDiffering) fprintf(stderr, " (the first in frame %llu)", (unsigned long long)sFirstReadDiffering);
+        fprintf(stderr, "; %llu polygon lists compared, %llu differ", (unsigned long long)sPolyFrames,
+                (unsigned long long)sPolyDiffering);
+        if (sPolyDiffering) fprintf(stderr, " (the first: %llu)", (unsigned long long)sFirstPolyDiffering);
+        fprintf(stderr, "; %llu pictures compared, %llu differ", (unsigned long long)sPix3dFrames,
+                (unsigned long long)sPix3dDiffering);
+        if (sPix3dDiffering) fprintf(stderr, " (the first: %llu)", (unsigned long long)sFirstPix3dDiffering);
+        fprintf(stderr, "\nrender-compare: 3D: %llu polygons compared;", (unsigned long long)sPolysCompared);
+        for (int k = 0; k < PK_N; k++)
+            if (sPolyKind[k][0] || sPolyKind[k][1])
+                fprintf(stderr, " %s differs: %llu (+%llu clipped)", kPolyKinds[k], (unsigned long long)sPolyKind[k][0],
+                        (unsigned long long)sPolyKind[k][1]);
         fprintf(stderr, "\n");
     }
     if (sGpu2d && getenv("ACWW_GPU2D_FEATURES")) gpu2d_print_features();
+    if (sGpu3d && getenv("ACWW_GPU3D_FEATURES")) gpu3d_print_features();
 }

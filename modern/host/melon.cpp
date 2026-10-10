@@ -8,6 +8,7 @@
 #include "NDS.h"
 #include "GPU.h"
 #include "GPU3D.h"
+#include "gpu3d/gpu3d.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -43,10 +44,30 @@ extern "C" void melon_write16(u32 addr, u16 v) {
 }
 static void gx_fifo_irq(void);
 static u32 sGxFifo, sGxPort;
+static FILE *sPipeLog = (FILE *)-1;
+static void melon_pipelog_line(const char *what) {
+    if (sPipeLog == (FILE *)-1) sPipeLog = getenv("ACWW_MELON_PIPELOG") ? fopen(getenv("ACWW_MELON_PIPELOG"), "w") : NULL;
+    if (!sPipeLog || !what) return;
+    GPU3D &g = sNds->GPU.GPU3D;
+    fprintf(sPipeLog, "%s %d %d %d %x %d %d %u %u\n", what, g.VertexPipeline, g.NormalPipeline, g.PolygonPipeline,
+            g.VertexSlotsFree, g.VertexSlotCounter, g.CycleCount, g.CmdPIPE.Level(), g.FlushRequest);
+}
 extern "C" void melon_write32(u32 addr, u32 v) {
     if (addr == 0x04000400) sGxFifo++; else if (addr >= 0x04000440 && addr < 0x04000600) sGxPort++;
     sNds->ARM9IOWrite32(addr, v);
-    if (addr >= 0x04000400 && addr < 0x04000600) sNds->GPU.GPU3D.HostDrain();
+    melon_pipelog_line(NULL);
+    FILE *plog = sPipeLog;
+    if (plog == (FILE *)-1) plog = getenv("ACWW_MELON_PIPELOG") ? fopen(getenv("ACWW_MELON_PIPELOG"), "w") : NULL;
+    if (plog && addr >= 0x04000400 && addr < 0x04000600) {  // (diagnostics: the pipeline state entry by entry)
+        GPU3D &g = sNds->GPU.GPU3D;
+        while (g.GeometryEnabled && !g.FlushRequest && !g.CmdPIPE.IsEmpty()) {
+            auto e = g.CmdPIPE.Peek();
+            g.ExecuteCommand();
+            fprintf(plog, "%02x %08x %d %d %d %x %d %d\n", e.Command, e.Param, g.VertexPipeline, g.NormalPipeline,
+                    g.PolygonPipeline, g.VertexSlotsFree, g.VertexSlotCounter, g.CycleCount);
+        }
+    }
+    if (addr >= 0x04000400 && addr < 0x04000600) { sNds->GPU.GPU3D.HostDrain(); melon_pipelog_line("D"); }
     if (addr >= 0x04000400 && addr <= 0x04000600) gx_fifo_irq();
 }
 // the GX FIFO interrupt (IRQ 21) is level-triggered: GXSTAT bits 30-31 choose "less than half full" or "empty", and
@@ -87,16 +108,63 @@ static void sync_vram(void) {
 extern "C" void melon_frame(void) {
     sync_vram();
     sNds->GPU.GPU3D.HostDrain();
+    melon_pipelog_line("FB");
     sNds->RunFrame();
+    melon_pipelog_line("FA");
 }
 
 // the 3D picture the coming frame shows (melonDS renders the next one during the frame, at line 215): 192 lines of
 // 256 pixels, 6-bit red, green, blue in bits 0-5, 8-13, 16-21, alpha 0-31 in bits 24-28, before BG0HOFS's scroll -
 // the own 2D renderer's BG0 (render.c)
 extern "C" void melon_3d_lines(u32 *out) {
+    if (!sNds) { memset(out, 0, 256 * 192 * 4); return; }
     GPU3D &g = sNds->GPU.GPU3D;
     if (g.AbortFrame) { memset(out, 0, 256 * 192 * 4); return; }
     for (int line = 0; line < 192; line++) memcpy(out + line * 256, g.GetCurrentRenderer().GetLine(line), 256 * 4);
+}
+
+// melonDS's polygon list of the frame it rendered last, for comparing the own geometry engine with it (render.c):
+// the count, and polygon i's vertices (screen position, depth, colour, texture coordinates) and attributes
+extern "C" int melon_3d_poly_count(void) { return (int)sNds->GPU.GPU3D.RenderNumPolygons; }
+extern "C" int melon_3d_poly_get(int i, Gpu3dVertexOut *v, u32 *attr, u32 *texparam, u32 *texpal, int *flags) {
+    GPU3D &g = sNds->GPU.GPU3D;
+    if (i < 0 || (u32)i >= g.RenderNumPolygons) return 0;
+    const Polygon *p = g.RenderPolygonRAM[i];
+    for (u32 k = 0; k < p->NumVertices && k < 10; k++) {
+        const Vertex *x = p->Vertices[k];
+        v[k].x = x->FinalPosition[0];
+        v[k].y = x->FinalPosition[1];
+        v[k].z = p->FinalZ[k];
+        v[k].w = p->FinalW[k];
+        v[k].r = x->FinalColor[0];
+        v[k].g = x->FinalColor[1];
+        v[k].b = x->FinalColor[2];
+        v[k].s = x->TexCoords[0];
+        v[k].t = x->TexCoords[1];
+        v[k].clipped = x->Clipped;
+    }
+    *attr = p->Attr;
+    *texparam = p->TexParam;
+    *texpal = p->TexPalette;
+    *flags = p->FacingView | p->Translucent << 1 | p->IsShadowMask << 2 | p->IsShadow << 3;
+    return (int)p->NumVertices;
+}
+// the geometry engine's state (render.c compares it with the own engine's after every command write)
+extern "C" void melon_3d_state(Gpu3dState *s) {
+    GPU3D &g = sNds->GPU.GPU3D;
+    s->pipe = g.CmdPIPE.Level();
+    s->fifo = g.CmdFIFO.Level();
+    s->flush = g.FlushRequest;
+    s->npolys = g.NumPolygons;
+    s->nverts = g.NumVertices;
+    s->mtxmode = g.MatrixMode;
+    s->possp = (u32)g.PosMatrixStackPointer;
+    s->projsp = (u32)g.ProjMatrixStackPointer;
+    s->vp = g.VertexPipeline; s->np = g.NormalPipeline; s->pp = g.PolygonPipeline; s->slots = (s32)g.VertexSlotsFree; s->slotctr = g.VertexSlotCounter;
+    memcpy(s->proj, g.ProjMatrix, sizeof s->proj);
+    memcpy(s->pos, g.PosMatrix, sizeof s->pos);
+    memcpy(s->vec, g.VecMatrix, sizeof s->vec);
+    memcpy(s->tex, g.TexMatrix, sizeof s->tex);
 }
 
 // screen 0 top, 1 bottom: 256x192 pixels, 0x00RRGGBB

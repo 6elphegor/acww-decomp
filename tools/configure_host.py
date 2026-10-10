@@ -295,8 +295,8 @@ def main():
             o = str(build / s.with_suffix(".o"))
             rule = {".cpp": "hostcxx", ".S": "hostas_S"}.get(s.suffix, "hostcc")
             sdl = s.name == "frontend_sdl.c" and SDL_CFLAGS
-            # the 2D renderer's per-pixel loops: optimised further than the rest of the runtime (-O1)
-            fl = SDL_CFLAGS if sdl else "-O2" if "gpu2d" in s.parts else None
+            # the 2D and 3D renderers' per-pixel loops: optimised further than the rest of the runtime (-O1)
+            fl = SDL_CFLAGS if sdl else "-O2" if "gpu2d" in s.parts or "gpu3d" in s.parts else None
             n.build(o, rule, str(s), variables={"flags": fl} if fl else None)
             objs.append(o)
         # The data between the decomp's units (gap objects of the DS build's delinking): generated once from that

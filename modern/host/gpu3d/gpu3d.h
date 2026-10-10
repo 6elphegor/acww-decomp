@@ -1,0 +1,88 @@
+// The project's own 3D engine of the DS (docs/portability.md 5.2): the geometry engine (command FIFO, matrix stacks,
+// lighting, texture coordinate generation, polygon setup and clipping, the box / position / vector tests) and a
+// software rasteriser (depth buffering, perspective-correct texturing in all 7 formats, toon and highlight shading,
+// alpha blending and alpha test, fog, edge marking, anti-aliasing, the rear plane, translucent polygon IDs, shadow
+// polygons). Plain C, no host or emulator dependencies: it is given the 3D registers and command ports as the game
+// writes them, answers the synchronous reads (GXSTAT, RAM counts, test results, the clip and vector matrices) and at
+// each frame renders the polygons of the last swap from the texture image and palette VRAM.
+//
+// Written from the hardware's documented behaviour (GBATEK, "DS 3D Video").
+//
+// Timing as the host runs it: the game's code takes no time, so a command is executed when it is written - except
+// after SWAP_BUFFERS, when the engine waits for the frame's end (gpu3d_frame): commands written meanwhile wait in the
+// command FIFO (4-entry pipe, 256-entry FIFO), and GXSTAT shows them (busy, FIFO level) until the frame ends.
+
+#ifndef ACWW_GPU3D_H
+#define ACWW_GPU3D_H
+
+#include <stddef.h>
+#include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void gpu3d_reset(void);
+// register writes, addresses as on the DS: the GX FIFO and command ports (0x04000400-0x040005ff, 32-bit), GXSTAT
+// (0x04000600, 32-bit), DISP3DCNT (0x04000060), the rendering registers 0x04000320-0x040003bf and 0x04000610
+// (16-bit halves), POWCNT1 (0x04000304: the geometry and rendering engines' enables), VRAMCNT A-G (0x04000240-
+// 0x04000246, 8-bit: the texture image and palette slots); other addresses are ignored
+void gpu3d_write8(uint32_t addr, uint8_t value);
+void gpu3d_write16(uint32_t addr, uint16_t value);
+void gpu3d_write32(uint32_t addr, uint32_t value);
+// the 3D engine's status and results: RDLINES_COUNT (0x04000320), GXSTAT, RAM_COUNT, the position and vector test
+// results, CLIPMTX_RESULT and VECMTX_RESULT (0x04000600-0x040006a3); word addresses
+uint32_t gpu3d_read32(uint32_t addr);
+
+// the end of a frame (VBlank): the picture rendered at the previous call becomes the one shown (gpu3d_lines); a
+// swap requested since is carried out (the polygon list handed to the rasteriser, which renders it now) and the
+// commands that waited for it run. `bank`: VRAM banks A-I (the texture image slots are banks A-D, the palette
+// slots E-G as VRAMCNT maps them)
+void gpu3d_frame(const uint8_t *const bank[9]);
+// the picture the frame shows: 192 lines of 256 pixels, red bits 0-5, green 8-13, blue 16-21, alpha bits 24-28
+// (0-31; 0: no pixel), before BG0HOFS's scroll (the 2D renderer's BG0 input)
+const uint32_t *gpu3d_lines(void);
+
+// diagnostics
+typedef struct Gpu3dPolyInfo {
+    int index;          // in the polygon list of the frame shown
+    uint32_t attr, texparam, texpal;
+    int nverts;
+    int x[10], y[10];   // screen coordinates
+    int32_t z[10], w[10];
+    int translucent;
+} Gpu3dPolyInfo;
+// the polygon that drew pixel (x, y) of the frame shown (the last one written there, opaque or translucent); 0 if
+// none (the clear colour); only with gpu3d_set_diagnostics(1)
+int gpu3d_pixel_polygon(int x, int y, Gpu3dPolyInfo *info);
+void gpu3d_set_diagnostics(int on);
+void gpu3d_print_features(void);  // the features the frames used (ACWW_GPU3D_FEATURES)
+
+// the polygon list as set up for the rasteriser (for comparing the geometry engines): the list of the frame shown
+typedef struct Gpu3dVertexOut {
+    int32_t x, y;           // screen position (pixels)
+    int32_t z, w;           // depth value (24-bit Z or W), W
+    int32_t r, g, b;        // colour as given to the rasteriser
+    int16_t s, t;           // texture coordinates (1/16 texels)
+    int32_t clipped;        // made by clipping
+} Gpu3dVertexOut;
+int gpu3d_poly_count(void);
+// polygon i of the frame shown: its vertices (at most 10) and attributes; returns the vertex count
+int gpu3d_poly_get(int i, Gpu3dVertexOut *v, uint32_t *attr, uint32_t *texparam, uint32_t *texpal, int *flags);
+
+// the geometry engine's state, for comparing the engines command by command (render.c)
+typedef struct Gpu3dState {
+    uint32_t pipe, fifo, flush, npolys, nverts, mtxmode, possp, projsp;
+    int32_t vp, np, pp, slots, slotctr;  // (the pipelines behind the busy bit)
+    int32_t proj[16], pos[16], vec[16], tex[16];
+} Gpu3dState;
+void gpu3d_state(Gpu3dState *s);
+void gpu3d_debug_history(void);
+void gpu3d_debug_poly(int i);
+int gpu3d_debug_last_polygon(int *nout, int *clipped, unsigned *serial, int *type);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

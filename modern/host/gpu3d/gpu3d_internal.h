@@ -1,0 +1,117 @@
+// The own 3D engine's shared state (gpu3d.h): the geometry engine (gpu3d_geom.c) fills polygon lists, the
+// rasteriser (gpu3d_raster.c) draws them.
+#ifndef GPU3D_INTERNAL_H
+#define GPU3D_INTERNAL_H
+
+#include "gpu3d.h"
+
+typedef int8_t s8;
+typedef int16_t s16;
+typedef int32_t s32;
+typedef int64_t s64;
+typedef uint8_t u8;
+typedef uint16_t u16;
+typedef uint32_t u32;
+typedef uint64_t u64;
+
+enum { MAX_VERTICES = 6144, MAX_POLYGONS = 2048 };
+
+typedef struct G3Vertex {
+    s32 pos[4];       // clip coordinates x, y, z, w
+    s32 color[3];     // 5-bit colour << 4 | 0xf when non-zero (9 bits: clipping interpolates in that precision)
+    s16 tex[2];       // texture coordinates (1.11.4)
+    u8 clipped;       // made by clipping (or of a clipped polygon): not shared with the next polygon of a strip
+    u8 screenDone;
+    s32 x, y;         // screen position (9 and 8 bits)
+    s32 hx, hy;       // the same with 4 fractional bits
+    int dbgLight;     // (diagnostics: the lighting record of its colour, -1 none)
+} G3Vertex;
+
+typedef struct G3Polygon {
+    G3Vertex *v[10];
+    int nv;
+    s32 z[10];        // depth value per vertex (24-bit Z, or W)
+    s32 w[10];        // W per vertex
+    u32 attr, texparam, texpal;
+    u8 wbuffer, facing, translucent, shadowMask, shadow, line, degenerate;
+    int vtop, vbottom;  // vertex indices of the top and bottom
+    s32 ytop, ybottom, xtop, xbottom;
+    u32 sortKey;
+    int index;          // submission order
+    G3Vertex orig[4];   // (diagnostics: the vertices before clipping)
+    int norig;
+} G3Polygon;
+
+// the polygon list the rasteriser draws (handed over at the swap) and the rendering registers latched with it
+typedef struct G3RenderState {
+    G3Polygon *poly[MAX_POLYGONS];
+    int npoly;
+    int wbuffer, manualSort;
+    u32 dispcnt;
+    u16 clearColor, clearAttrHi;   // CLEAR_COLOR low half (colour, fog bit 15), high half (alpha, polygon id)
+    u16 clearDepth, clearOffset;
+    u8 alphaRef;
+    u16 toon[32];
+    u16 edge[8];
+    u32 fogColor;
+    u16 fogOffset;
+    u8 fogTable[32];
+} G3RenderState;
+
+extern G3RenderState gG3Render;
+extern const uint8_t *const *gG3Banks;  // VRAM banks A-I (gpu3d_frame)
+extern u8 gG3VramCnt[9];
+
+// gpu3d_raster.c
+void g3_render(void);                    // gG3Render into the frame buffer
+const u32 *g3_frame_lines(void);
+int g3_raster_pixel_polygon(int x, int y);  // index into gG3Render.poly, -1 none
+void g3_raster_diagnostics(int on);
+
+// feature census (gpu3d_geom.c)
+void g3_feature(int id);
+enum {
+    F_CMD = 0,          // + command 0..0x7f
+    F_POLYMODE = 0x80,  // + 0..3
+    F_TEXFMT = 0x84,    // + 0..7
+    F_TEXGEN = 0x8c,    // + 0..3
+    F_LIGHT = 0x90,
+    F_SHININESS_TABLE,
+    F_CLIP,
+    F_FARCLIP_HIDE,
+    F_CULLED,
+    F_ONEDOT_HIDE,
+    F_TRANSLUCENT,
+    F_WIREFRAME,
+    F_DEPTH_EQUAL,
+    F_FOG_POLY,
+    F_WBUFFER,
+    F_MANUAL_SORT,
+    F_STACK_ERROR,
+    F_RAM_OVERFLOW,
+    F_FIFO_QUEUED,
+    F_SWAP_QUEUED,
+    F_FIFO_FULL,
+    F_TEX_REPEAT,
+    F_TEX_FLIP,
+    F_TEX_CLAMP,
+    F_COLOR0_TRANSPARENT,
+    F_TRANS_DEPTH_UPDATE,
+    F_LINE_POLY,
+    F_TEXTURE_OFF,      // DISP3DCNT texture mapping off
+    F_TOON_HIGHLIGHT,   // DISP3DCNT bit 1
+    F_ALPHA_TEST,
+    F_ALPHA_BLEND,
+    F_ANTIALIAS,
+    F_EDGE_MARK,
+    F_FOG_ALPHA_ONLY,
+    F_FOG,
+    F_REAR_BITMAP,
+    F_BOX_TEST, F_POS_TEST, F_VEC_TEST,
+    F_READ_CLIPMTX, F_READ_VECMTX, F_READ_RAMCOUNT, F_READ_POSRESULT, F_READ_VECRESULT, F_READ_RDLINES,
+    F_GEOM_OFF_WRITE,
+    F_SHADOW_MASK, F_SHADOW,
+    F_COUNT
+};
+
+#endif
