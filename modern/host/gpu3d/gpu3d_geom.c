@@ -411,17 +411,18 @@ static void lighting(void) {
         memcpy(r->lparam, sLightParam, sizeof r->lparam);
         memcpy(r->lvec, sLightVec, sizeof r->lvec);
     }
-    // levels in 8 bits (0-255) from the dot products of 9-bit-fraction vectors; the colour sums kept with 8
-    // fractional bits (each term colour * light colour / 32 * level / 256), then cut to 5 bits
+    // levels from the dot products of 9-bit-fraction vectors (diffuse 9 bits, shininess 8); the colour sums kept with
+    // 8 fractional bits (each term colour * light colour / 32 * level), then cut to 5 bits
     s32 n9[3] = {n[0] >> 3, n[1] >> 3, n[2] >> 3};
     s32 c[3] = {sEmission[0] << 8, sEmission[1] << 8, sEmission[2] << 8};
     g3_feature(F_LIGHT);
     for (int l = 0; l < 4; l++) {
         if (!(sCurPolyAttr & (1u << l))) continue;
         const s16 *L = sLightDir[l];
-        s32 diffuse = -(L[0] * n9[0] + L[1] * n9[1] + L[2] * n9[2]) >> 10;
+        // (the diffuse level: the products of the reversed light vector and the normal each cut to 9 fractional
+        // bits, then added; not limited above: fitted to melonDS)
+        s32 diffuse = ((-L[0] * n9[0]) >> 9) + ((-L[1] * n9[1]) >> 9) + ((-L[2] * n9[2]) >> 9);
         if (diffuse < 0) diffuse = 0;
-        if (diffuse > 255) diffuse = 255;
         // the half vector between the light and the line of sight (0, 0, -1)
         s32 shine = -((L[0] >> 1) * n9[0] + (L[1] >> 1) * n9[1] + ((L[2] - 0x200) >> 1) * n9[2]) >> 10;
         if (shine < 0) shine = 0;
@@ -431,7 +432,7 @@ static void lighting(void) {
         for (int k = 0; k < 3; k++) {
             s32 lc = sLightColor[l][k];
             c[k] += (sSpecular[k] * lc * shine) >> 5;
-            c[k] += (sDiffuse[k] * lc * diffuse) >> 5;
+            c[k] += (sDiffuse[k] * lc * diffuse) >> 6;
             c[k] += (sAmbient[k] * lc << 8) >> 5;
         }
     }
@@ -1160,6 +1161,14 @@ void gpu3d_state(Gpu3dState *s) {
     memcpy(s->pos, sPos.m, sizeof s->pos);
     memcpy(s->vec, sVec.m, sizeof s->vec);
     memcpy(s->tex, sTex.m, sizeof s->tex);
+    memcpy(s->light, sLightDir, sizeof s->light);
+    memcpy(s->lightColor, sLightColor, sizeof s->lightColor);
+    memcpy(s->material[0], sDiffuse, 3);
+    memcpy(s->material[1], sAmbient, 3);
+    memcpy(s->material[2], sSpecular, 3);
+    memcpy(s->material[3], sEmission, 3);
+    memcpy(s->normal, sNormal, sizeof s->normal);
+    memcpy(s->vtxColor, sVtxColor, 3);
 }
 
 int gpu3d_poly_count(void) { return gG3Render.npoly; }

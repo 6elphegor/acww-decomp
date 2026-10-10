@@ -6,7 +6,8 @@
 // ends. ACWW_RENDER_SELFTEST3D_SEED picks another random sequence; ACWW_RENDER_SELFTEST3D_POLYS the polygons per scene
 // (default 1); ACWW_RENDER_SELFTEST3D_MASK (default 0: flat, opaque, Z-buffered triangles): 1 quads and strips,
 // 2 colours per vertex, 4 W varies, 8 W-buffering, 16 translucency, 32 textures, 64 anti-aliasing, 128 alpha test,
-// 256 fog, 512 edge marking, 1024 shadow polygons, 2048 toon / highlight.
+// 256 fog, 512 edge marking, 1024 shadow polygons, 2048 toon / highlight, 4096 lighting (random lights, material
+// and a normal per vertex; compared through the polygon lists' colours).
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,7 +27,7 @@ static u32 rnd(void) {
 }
 static u32 rnd_below(u32 n) { return rnd() % n; }
 enum { M_QUADS = 1, M_GOURAUD = 2, M_W = 4, M_WBUF = 8, M_TRANS = 16, M_TEX = 32, M_AA = 64, M_ATEST = 128, M_FOG = 256,
-       M_EDGE = 512, M_SHADOW = 1024, M_TOON = 2048 };
+       M_EDGE = 512, M_SHADOW = 1024, M_TOON = 2048, M_LIGHT = 4096 };
 
 static void cmd(u32 c, u32 p) { render_write32(0x04000400 + (c - 0x10) * 4 + 0x40, p); }
 
@@ -78,8 +79,33 @@ static int fixed_scene(void) {
     return 1;
 }
 
+// ACWW_RENDER_SELFTEST3D_CMDS="cc=pppppppp ...": these geometry commands (hex) after the usual setup (identity matrices,
+// viewport, clear), then a swap: for experiments on one feature
+static int command_scene(void) {
+    const char *q = getenv("ACWW_RENDER_SELFTEST3D_CMDS");
+    if (!q) return 0;
+    render_write16(0x04000304, 0x820f);
+    render_write16(0x04000060, 0);
+    render_write16(0x04000350, 0);
+    render_write16(0x04000352, 0x1f);
+    render_write16(0x04000354, 0x7fff);
+    cmd(0x10, 0);
+    cmd(0x15, 0);
+    cmd(0x10, 2);
+    cmd(0x15, 0);
+    cmd(0x60, 0xbfff0000);
+    unsigned c, p;
+    int n;
+    while (sscanf(q, " %x=%x%n", &c, &p, &n) == 2) {
+        cmd(c, p);
+        q += n;
+    }
+    cmd(0x50, 0);
+    return 1;
+}
+
 static void scene(void) {
-    if (fixed_scene()) return;
+    if (command_scene() || fixed_scene()) return;
     render_write16(0x04000304, 0x820f);
     u16 disp = 0;
     if (sMask & M_TRANS) disp |= 8;
@@ -102,7 +128,16 @@ static void scene(void) {
     cmd(0x60, 0xbfff0000);
     for (u32 n = 0; n < sPolys; n++) {
         u32 alpha = (sMask & M_TRANS) && rnd_below(2) ? 1 + rnd_below(30) : 31;
-        cmd(0x29, 0x000000c0 | alpha << 16 | rnd_below(64) << 24);
+        u32 lights = (sMask & M_LIGHT) ? rnd() & 15 : 0;
+        if (sMask & M_LIGHT) {
+            for (int l = 0; l < 4; l++) {
+                cmd(0x32, (rnd() & 0x3fffffff) | (u32)l << 30);
+                cmd(0x33, (rnd() & 0x7fff) | (u32)l << 30);
+            }
+            cmd(0x30, rnd() & 0x7fff7fff & ~0x8000u);  // (diffuse, ambient; bit 15 clear: no vertex colour)
+            cmd(0x31, rnd() & 0x7fff7fff & ~0x8000u);  // (specular, emission; no shininess table)
+        }
+        cmd(0x29, 0x000000c0 | lights | alpha << 16 | rnd_below(64) << 24);
         cmd(0x2a, 0);
         int quad = (sMask & M_QUADS) && rnd_below(2);
         cmd(0x40, quad ? 1 : 0);
@@ -125,7 +160,8 @@ static void scene(void) {
             }
         }
         for (int k = 0; k < nv; k++) {
-            if (k == 0 || (sMask & M_GOURAUD)) cmd(0x20, rnd() & 0x7fff);
+            if (sMask & M_LIGHT) cmd(0x21, rnd() & 0x3fffffff);
+            else if (k == 0 || (sMask & M_GOURAUD)) cmd(0x20, rnd() & 0x7fff);
             vertex_at(xs[k], ys[k], 0, z + (s32)rnd_below(0x200));
         }
         cmd(0x41, 0);

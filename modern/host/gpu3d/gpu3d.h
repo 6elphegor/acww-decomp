@@ -75,6 +75,10 @@ typedef struct Gpu3dState {
     uint32_t pipe, fifo, flush, npolys, nverts, mtxmode, possp, projsp;
     int32_t vp, np, pp, slots, slotctr;  // (the pipelines behind the busy bit)
     int32_t proj[16], pos[16], vec[16], tex[16];
+    int16_t light[4][3];  // the light directions (9 fractional bits, in the vector matrix's space)
+    uint8_t lightColor[4][3], material[4][3];  // (material: diffuse, ambient, specular, emission)
+    int16_t normal[3];                         // the last normal (as given) and the vertex colour (5 bits)
+    uint8_t vtxColor[3];
 } Gpu3dState;
 void gpu3d_state(Gpu3dState *s);
 void gpu3d_debug_history(void);

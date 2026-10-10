@@ -113,7 +113,7 @@ void render_write16(u32 addr, u16 v) {
     if (sGpu2d) gpu2d_write16(addr, v);
     if (sGpu3d && is_3d(addr)) gpu3d_write16(addr, v);
 }
-// ACWW_RENDER_COMPARE=2: the geometry engines' state (FIFO levels, the swap, RAM counts, matrices and stacks)
+// ACWW_RENDER_COMPARE=2: the geometry engines' state (FIFO levels, the swap, RAM counts, matrices and stacks, lights)
 // compared after every command write; the first write after which they differ is reported, with the own engine's
 // last commands
 void melon_3d_state(Gpu3dState *s);
@@ -167,6 +167,39 @@ static void compare_state(u32 addr, u32 v) {
             for (int i = 0; i < 16; i++) fprintf(stderr, " %x/%x", ma[m][i], mb[m][i]);
             fprintf(stderr, "\n");
         }
+    if (memcmp(a.light, b.light, sizeof a.light)) {
+        fprintf(stderr, "  lights:");
+        for (int l = 0; l < 4; l++)
+            fprintf(stderr, " %d,%d,%d/%d,%d,%d", a.light[l][0], a.light[l][1], a.light[l][2], b.light[l][0], b.light[l][1],
+                    b.light[l][2]);
+        fprintf(stderr, "\n");
+    }
+    if (memcmp(a.lightColor, b.lightColor, sizeof a.lightColor) || memcmp(a.material, b.material, sizeof a.material)) {
+        fprintf(stderr, "  light colours / material (diffuse, ambient, specular, emission), own/melon:");
+        for (int l = 0; l < 4; l++)
+            fprintf(stderr, " %d,%d,%d/%d,%d,%d", a.lightColor[l][0], a.lightColor[l][1], a.lightColor[l][2],
+                    b.lightColor[l][0], b.lightColor[l][1], b.lightColor[l][2]);
+        fprintf(stderr, " |");
+        for (int m = 0; m < 4; m++)
+            fprintf(stderr, " %d,%d,%d/%d,%d,%d", a.material[m][0], a.material[m][1], a.material[m][2], b.material[m][0],
+                    b.material[m][1], b.material[m][2]);
+        fprintf(stderr, "\n");
+    }
+    if (memcmp(a.normal, b.normal, sizeof a.normal) || memcmp(a.vtxColor, b.vtxColor, 3))
+        fprintf(stderr, "  normal %d,%d,%d / %d,%d,%d  vertex colour %d,%d,%d / %d,%d,%d\n", a.normal[0], a.normal[1],
+                a.normal[2], b.normal[0], b.normal[1], b.normal[2], a.vtxColor[0], a.vtxColor[1], a.vtxColor[2],
+                b.vtxColor[0], b.vtxColor[1], b.vtxColor[2]);
+    if (memcmp(a.vtxColor, b.vtxColor, 3)) {
+        fprintf(stderr, "  vector matrix:");
+        for (int i = 0; i < 16; i++) fprintf(stderr, " %d", a.vec[i]);
+        fprintf(stderr, "\n  lights:");
+        for (int l = 0; l < 4; l++)
+            fprintf(stderr, " %d,%d,%d c%d,%d,%d", a.light[l][0], a.light[l][1], a.light[l][2], a.lightColor[l][0],
+                    a.lightColor[l][1], a.lightColor[l][2]);
+        fprintf(stderr, "\n  material:");
+        for (int m = 0; m < 4; m++) fprintf(stderr, " %d,%d,%d", a.material[m][0], a.material[m][1], a.material[m][2]);
+        fprintf(stderr, "\n");
+    }
     fprintf(stderr, "  own commands:");
     gpu3d_debug_history();
 }
@@ -324,7 +357,8 @@ static int compare_polygons(const char *kind, u64 label) {
                 memset(v, 0, sizeof v);
                 int k = w ? melon_3d_poly_get(i, v, &a, &t, &p, &f) : gpu3d_poly_get(i, v, &a, &t, &p, &f);
                 fprintf(stderr, "%s %4d %08x %08x f%d:", w ? " | melon" : "polydump own", i, a, t, f);
-                for (int j = 0; j < k; j++) fprintf(stderr, " %d,%d,%x", v[j].x, v[j].y, v[j].z);
+                for (int j = 0; j < k; j++)
+                    fprintf(stderr, " %d,%d,%x c%d,%d,%d", v[j].x, v[j].y, v[j].z, v[j].r >> 4, v[j].g >> 4, v[j].b >> 4);
             }
             fprintf(stderr, "\n");
         }

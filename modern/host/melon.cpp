@@ -165,6 +165,15 @@ extern "C" void melon_3d_state(Gpu3dState *s) {
     memcpy(s->pos, g.PosMatrix, sizeof s->pos);
     memcpy(s->vec, g.VecMatrix, sizeof s->vec);
     memcpy(s->tex, g.TexMatrix, sizeof s->tex);
+    for (int l = 0; l < 4; l++)  // (melonDS keeps them negated)
+        for (int i = 0; i < 3; i++) s->light[l][i] = (int16_t)-g.LightDirection[l][i];
+    memcpy(s->lightColor, g.LightColor, sizeof s->lightColor);
+    memcpy(s->material[0], g.MatDiffuse, 3);
+    memcpy(s->material[1], g.MatAmbient, 3);
+    memcpy(s->material[2], g.MatSpecular, 3);
+    memcpy(s->material[3], g.MatEmission, 3);
+    for (int i = 0; i < 3; i++) s->normal[i] = (int16_t)(g.Normal[i] * 8);  // (melonDS: 9 fractional bits)
+    memcpy(s->vtxColor, g.VertexColor, 3);
 }
 
 // screen 0 top, 1 bottom: 256x192 pixels, 0x00RRGGBB
