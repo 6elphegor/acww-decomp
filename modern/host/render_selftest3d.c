@@ -189,7 +189,9 @@ static void scene(void) {
                 cmd(0x33, (rnd() & 0x7fff) | (u32)l << 30);
             }
             cmd(0x30, rnd() & 0x7fff7fff & ~0x8000u);  // (diffuse, ambient; bit 15 clear: no vertex colour)
-            cmd(0x31, rnd() & 0x7fff7fff & ~0x8000u);  // (specular, emission; no shininess table)
+            u32 se = rnd() & 0x7fff7fff & ~0x8000u;  // (specular, emission; no shininess table)
+            if (getenv("ACWW_RENDER_SELFTEST3D_NOSPEC")) se &= 0x7fff0000;  // (no specular)
+            cmd(0x31, se);
         }
         cmd(0x29, 0x000000c0 | lights | alpha << 16 | rnd_below(64) << 24 | ((sMask & M_FOG) && rnd_below(4) ? 0x8000 : 0));
         cmd(0x2a, (sMask & M_TEX) ? 7u << 26 | 4u << 23 | 4u << 20 | 3u << 16 : 0);
