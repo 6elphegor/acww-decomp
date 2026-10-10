@@ -165,8 +165,8 @@ static void put_pixel(const G3Polygon *p, int x, int y, s32 z, const s32 *a, int
             r = (r * (al + 1) + (dst & 63) * (31 - al)) >> 5;
             g = (g * (al + 1) + (dst >> 8 & 63) * (31 - al)) >> 5;
             b = (b * (al + 1) + (dst >> 16 & 63) * (31 - al)) >> 5;
-            if (da > al) al = da;
         }
+        if (da > al) al = da;  // (the larger alpha stays, blending or not)
         sColor[i] = r | g << 8 | b << 16 | al << 24;
         if (p->attr & 0x800) sDepth[i] = (u32)z;  // (translucent depth update)
         sTransId[i] = id;
@@ -220,11 +220,25 @@ static void draw_polygon(const G3Polygon *p, int idx) {
     if (n < 3) return;
     s32 ytop = p->ytop, ybot = p->ybottom;
     if (ytop >= ybot) return;  // (to do: one-line polygons)
+    // GBATEK "Polygon Size": the right edges (but vertical ones) are drawn too, except for opaque polygons without
+    // edge marking and anti-aliasing and for translucent ones while alpha blending is off
+    int full = p->translucent ? (sR->dispcnt & 8) != 0 : (sR->dispcnt & 0x30) != 0;
     for (s32 y = ytop; y < ybot; y++) {
         if (y < 0 || y >= H) continue;
         Edge L, R;
         if (!edges_at(p, y, &L, &R)) continue;
         s32 a = edge_left(&L, y), b = edge_right(&R, y);
+        if (full) {  // (and the x-major edges' runs on the line are the polygon's too)
+            if (R.sign && !R.xmajor) b++;
+            if (L.xmajor && L.sign > 0) {
+                s32 v = (s32)((edge_x(&L, y, 0) + (1 << 17)) >> 18);
+                if (v < a) a = v;
+            }
+            if (R.xmajor && R.sign < 0) {
+                s32 v = (s32)((edge_x(&R, y, 0) + (1 << 17)) >> 18);
+                if (v > b) b = v;
+            }
+        }
         // the left edge's own pixels are drawn even where the right edge is already left of them
         if (!L.xmajor) {
             if (b < a) b = a;

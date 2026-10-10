@@ -90,14 +90,17 @@ static int fixed_scene(void) {
 }
 
 // ACWW_RENDER_SELFTEST3D_CMDS="cc=pppppppp ...": these geometry commands (hex) after the usual setup (identity matrices,
-// viewport, clear), then a swap (SWAP_BUFFERS 0 unless the commands end with one): for experiments on one feature
+// viewport, clear), then a swap (SWAP_BUFFERS 0 unless the commands end with one): for experiments on one feature;
+// ACWW_RENDER_SELFTEST3D_DISP (DISP3DCNT, hex, default 0), _CLEAR (CLEAR_COLOR, hex, default 001f0000)
 static int command_scene(void) {
     const char *q = getenv("ACWW_RENDER_SELFTEST3D_CMDS");
     if (!q) return 0;
+    const char *disp = getenv("ACWW_RENDER_SELFTEST3D_DISP"), *clear = getenv("ACWW_RENDER_SELFTEST3D_CLEAR");
+    u32 cc = clear ? (u32)strtoul(clear, 0, 16) : 0x001f0000;
     render_write16(0x04000304, 0x820f);
-    render_write16(0x04000060, 0);
-    render_write16(0x04000350, 0);
-    render_write16(0x04000352, 0x1f);
+    render_write16(0x04000060, disp ? (u16)strtoul(disp, 0, 16) : 0);
+    render_write16(0x04000350, (u16)cc);
+    render_write16(0x04000352, (u16)(cc >> 16));
     render_write16(0x04000354, 0x7fff);
     cmd(0x10, 0);
     cmd(0x15, 0);
