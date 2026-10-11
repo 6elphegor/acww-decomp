@@ -1071,8 +1071,24 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     a frame on the RTX 3060 (the software rasteriser: about 6) with a synchronous readback and the texture slots
     uploaded every frame; not pixel-exact (12% of the 3D pixels differ, 5% visibly: texel boundaries from the GPU's
     float interpolation, edges without anti-aliasing), the pictures look the same; the save script's save file is
-    identical (the 3D picture doesn't reach the game logic); the default renderer's output unchanged. **Next (phase
-    2):** the 2D compositing on the GPU and presenting from there (no readback), then upscaled 3D.
+    identical (the 3D picture doesn't reach the game logic); the default renderer's output unchanged.
+    **Phase 2 done (2026-10-11):** the screens composited and shown by the GPU (modern/host/wgpu_display.c, which
+    owns the device gpu3d_wgpu.c draws with). The 2D renderer still draws its layers on the CPU, line by line (the
+    H-blank effects stay exact), but leaves the 3D layer out (`Gpu2dFrameInput.defer3d`): per pixel it gives the
+    colour where the 3D pixel is transparent, and how the pixel comes out where it is opaque - a colour in front of
+    it, a blend with a layer in front of it, or the 3D layer on top with its effect (blend with the 2nd target,
+    brightness up / down) - plus per line the master brightness and BG0HOFS (gpu2d.h `gpu2d_deferred`). A fragment
+    shader applies that to the 3D picture, which never leaves the GPU (two textures, as the software rasteriser's
+    two frame buffers), at the window's resolution, straight into its surface; the SDL frontend hands over the
+    window's X11 or Wayland handles (SDL_syswm.h; modern/host/x11shim stands in for the X11 headers) and maps the
+    mouse through the letterbox, falling back to an SDL renderer and read-back screens if the GPU can't draw into
+    the window. Screenshots (`ACWW_SHOT`, `ACWW_WINSHOT`) read the composited picture back. `ACWW_SCALE3D=<n>`: the 3D
+    picture at n times the DS's resolution (the polygons' positions have 4 fractional bits). **Checks:** the GPU's
+    compositing gives the same screenshots, bit for bit, as the CPU's compositing of the same 3D picture
+    (`ACWW_WGPU_READBACK=1`, frames 2500 and 8000); presented into a real window (X11 through XWayland, the RTX 3060)
+    at scales 1 and 2; the 3D engine's time a frame (the CPU's side: texture slots, vertices, the commands) 0.82 ms
+    against 2.0 with the read-back, a fast headless run of 6000 frames 39.6 s against 43.5. **Next:** edge anti-aliasing (or MSAA, which upscaling partly stands in for), the texture
+    slots uploaded only when VRAM changed; the 2D layers on the GPU too if the CPU's share matters on slow machines.
 
 ---
 

@@ -554,13 +554,15 @@ static void timing_report(void) {
         fprintf(stderr, "gpu3d: rasteriser %.3f ms a frame on average, %.3f ms at most, %ld frames\n",
                 sRenderNs / sRenderFrames / 1e6, sRenderMax / 1e6, sRenderFrames);
 }
-// ACWW_RENDERER3D=wgpu: the polygons drawn by the GPU (gpu3d_wgpu.c) into the same frame buffer
-static int sWgpu;
-int gpu3d_use_wgpu(void) {
-    if (!g3w_init()) return 0;
+// ACWW_RENDERER3D=wgpu: the polygons drawn by the GPU (gpu3d_wgpu.c), read back into the same frame buffer or not
+static int sWgpu, sWgpuReadback;
+int gpu3d_use_wgpu(void *device, void *queue, int scale, int readback) {
+    if (!g3w_init(device, queue, readback ? 1 : scale)) return 0;
     sWgpu = 1;
+    sWgpuReadback = readback;
     return 1;
 }
+void *gpu3d_wgpu_picture(void) { return g3w_picture(); }
 void g3_render(void) {
     static int timing = -1;
     struct timespec t0, t1;
@@ -572,7 +574,7 @@ void g3_render(void) {
     sR = &gG3Render;
     g3_tex_setup();
     if (sWgpu)  // (the GPU's rasteriser: gpu3d_wgpu.c)
-        g3w_render(sR, sImgFlat, sPalFlat, sColor);
+        g3w_render(sR, sImgFlat, sPalFlat, sWgpuReadback ? sColor : NULL);
     else {
         clear_buffers();
         sPE.p = 0;
@@ -581,7 +583,7 @@ void g3_render(void) {
         aa_pass();
     }
     sShown ^= 1;
-    memcpy(sFrameBuf[sShown], sColor, sizeof sColor);
+    if (!sWgpu || sWgpuReadback) memcpy(sFrameBuf[sShown], sColor, sizeof sColor);
     if (timing) {
         timespec_get(&t1, TIME_UTC);
         double ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);

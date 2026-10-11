@@ -11,8 +11,8 @@
 // implemented (the game doesn't use it: a capture request is reported once).
 //
 // The registers are kept per engine as the 0x70 bytes from 0x04000000 (engine A) and 0x04001000 (engine B), plus
-// POWCNT1 (0x04000304) and VRAMCNT (0x04000240-0x04000249); other addresses are ignored. Nothing changes during a
-// frame (the game's writes come between frames: there are no per-line effects), so a frame is rendered at once.
+// POWCNT1 (0x04000304) and VRAMCNT (0x04000240-0x04000249); other addresses are ignored. The frame is rendered line
+// by line, with an H-blank callback between lines (Gpu2dFrameInput.hblank) for the game's per-line effects.
 
 #ifndef GPU2D_H
 #define GPU2D_H
@@ -35,6 +35,8 @@ typedef struct Gpu2dFrameInput {
     // palette changes made there show from the next line on (NULL: none)
     void (*hblank)(int line, void *context);
     void *hblankContext;
+    // 1: the 3D layer is composited by the caller (lines3d NULL; the GPU: gpu2d_deferred), not here
+    int defer3d;
 } Gpu2dFrameInput;
 
 void gpu2d_reset(void);
@@ -47,6 +49,20 @@ uint32_t gpu2d_read32(uint32_t addr);  // what was written (diagnostics)
 void gpu2d_render_frame(const Gpu2dFrameInput *in);
 // screen 0 top, 1 bottom (POWCNT1 bit 15 decides which engine shows where): 256x192 pixels, 0xffRRGGBB
 const uint32_t *gpu2d_screen(int screen);
+
+// with defer3d: per pixel of a screen (256x192) two words that say how its picture comes from the 3D layer's pixel P
+// there (which the caller has): word 0 bits 0-17 the colour A (6 bits a channel: r | g << 6 | b << 12) where P is
+// transparent; word 1 bits 30-31 the kind, 0-29 by the kind (colour C as A, bits 18-22 p1, 23-27 p2, 28-29 e):
+//   0: A whatever P is (A is final)
+//   1: C where P is opaque (something in front of the 3D layer, effects done)
+//   2: where P is opaque, blend(C, P, p1, p2): min(63, (C * p1 + P * p2 + 8) >> 4) (C in front of the 3D layer)
+//   3: where P is opaque, the 3D layer on top, C below it: e = 0 P; 1 (P * (Pa + 1) + C * (31 - Pa) + 16) >> 5;
+//      2 brightness up by p1 (P + ((63 - P) * p1 + 8) >> 4); 3 down (P - (P * p1 + 7) >> 4)
+// For kinds 1-3 the master brightness (gpu2d_deferred_lines: MASTER_BRIGHT, bits 0-15) is the caller's to apply
+// (brightness up by f: c + ((63 - c) * f) >> 4, down: c - (c * f + 15) >> 4, f = min(16, bits 0-4)); A already has
+// it for kind 0 only. P is the 3D picture's pixel at x + the line's BG0HOFS (bits 16-24, 9-bit signed).
+const uint32_t *gpu2d_deferred(int screen);
+const uint32_t *gpu2d_deferred_lines(int screen);
 
 // diagnostics: what made pixel (x, y) of a screen in the last frame, as text ("engine A: OBJ#12 over BG2, alpha");
 // only with gpu2d_set_diagnostics(1) (it costs time)

@@ -9,10 +9,11 @@
 //     translucent polygon ID rule (the stencil buffer), translucent depth update (attr bit 11), depth test less or
 //     equal (attr bit 14), the Z-buffer (linear in screen space) and the W-buffer (perspective-correct, per pixel)
 //   - the fog flag (translucent pixels AND theirs in: a min blend), then a resolve pass: fog from the depth buffer
-//     (as gpu3d_raster.c fog_pass) and the packing into the frame buffer format, read back
+//     (as gpu3d_raster.c fog_pass) and the packing into the frame buffer format - a texture, which the display
+//     composites (modern/host/wgpu_display.c), or read back into the software rasteriser's frame buffer
+// At `scale` times the DS's resolution (the polygons' positions have 4 fractional bits; the textures stay sharp).
 // Not done: edge anti-aliasing, edge marking, toon / highlight, shadows, wireframe, lines and points, the rear plane
 // bitmap (the game uses the first only).
-//   ACWW_WGPU_ADAPTER=gpu (default) | cpu   the adapter: the GPU, or the software one (llvmpipe: headless tests)
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,10 +23,14 @@
 
 #ifndef HOST_WGPU
 
-int g3w_init(void) { return 0; }
+int g3w_init(void *device, void *queue, int scale) {
+    (void)device, (void)queue, (void)scale;
+    return 0;
+}
 void g3w_render(const G3RenderState *r, const u8 *img, const u8 *pal, u32 *out) {
     (void)r, (void)img, (void)pal, (void)out;
 }
+void *g3w_picture(void) { return 0; }
 
 #else
 
@@ -34,13 +39,14 @@ void g3w_render(const G3RenderState *r, const u8 *img, const u8 *pal, u32 *out) 
 
 enum { W = 256, H = 192, IMG_SIZE = 0x80000, PAL_SIZE = 0x20000 };
 
-static WGPUInstance sInst;
-static WGPUAdapter sAdapter;
 static WGPUDevice sDev;
 static WGPUQueue sQueue;
 static WGPUShaderModule sShader;
-static WGPUTexture sColorTex, sFogTex, sDepthTex, sOutTex;
-static WGPUTextureView sColorView, sFogView, sDepthView, sDepthOnlyView, sOutView;
+static int sScale = 1;
+// the pictures: rendered into sOut[sShown ^ 1], which then becomes the one shown (as gpu3d_raster.c's frame buffers)
+static WGPUTexture sColorTex, sFogTex, sDepthTex, sOutTex[2];
+static WGPUTextureView sColorView, sFogView, sDepthView, sDepthOnlyView, sOutView[2];
+static int sShown;
 static WGPUBuffer sState, sImg, sPal, sVerts, sIndices, sReadback;
 static WGPUBindGroupLayout sDrawLayout, sResolveLayout;
 static WGPUBindGroup sDrawGroup, sResolveGroup;
@@ -53,13 +59,6 @@ static void fatal(const char *what) {
     fprintf(stderr, "gpu3d-wgpu: %s\n", what);
     exit(1);
 }
-static void on_error(const WGPUDevice *d, WGPUErrorType type, WGPUStringView msg, void *u1, void *u2) {
-    (void)d, (void)u1, (void)u2;
-    fprintf(stderr, "gpu3d-wgpu: error %d: %.*s\n", (int)type, (int)(msg.length == WGPU_STRLEN ? 4096 : msg.length),
-            msg.data ? msg.data : "");
-    exit(1);
-}
-
 // ---- the shaders
 static const char kShader[] =
     "struct State {\n"
@@ -195,20 +194,9 @@ static const char kShader[] =
     "}\n";
 
 // ---- set-up
-static void on_adapter(WGPURequestAdapterStatus status, WGPUAdapter a, WGPUStringView msg, void *u1, void *u2) {
-    (void)msg, (void)u2;
-    if (status == WGPURequestAdapterStatus_Success) *(WGPUAdapter *)u1 = a;
-}
-static void on_device(WGPURequestDeviceStatus status, WGPUDevice d, WGPUStringView msg, void *u1, void *u2) {
-    (void)u2;
-    if (status == WGPURequestDeviceStatus_Success) *(WGPUDevice *)u1 = d;
-    else fprintf(stderr, "gpu3d-wgpu: no device: %.*s\n", (int)(msg.length == WGPU_STRLEN ? 4096 : msg.length),
-                 msg.data ? msg.data : "");
-}
-
 static WGPUTexture texture(WGPUTextureFormat fmt, WGPUTextureUsage usage) {
     WGPUTextureDescriptor d = WGPU_TEXTURE_DESCRIPTOR_INIT;
-    d.size = (WGPUExtent3D){W, H, 1};
+    d.size = (WGPUExtent3D){W * (u32)sScale, H * (u32)sScale, 1};
     d.format = fmt;
     d.usage = usage;
     return wgpuDeviceCreateTexture(sDev, &d);
@@ -227,40 +215,12 @@ typedef struct {
     u32 poly[4];     // attr, texparam, texpal, 0
 } GVertex;
 
-int g3w_init(void) {
+int g3w_init(void *device, void *queue, int scale) {
     if (sDev) return 1;
-    sInst = wgpuCreateInstance(NULL);
-    if (!sInst) return 0;
-    const char *want = getenv("ACWW_WGPU_ADAPTER");
-    WGPURequestAdapterOptions ao = WGPU_REQUEST_ADAPTER_OPTIONS_INIT;
-    ao.powerPreference = WGPUPowerPreference_HighPerformance;
-    ao.forceFallbackAdapter = want && strcmp(want, "cpu") == 0;
-    WGPURequestAdapterCallbackInfo ac = WGPU_REQUEST_ADAPTER_CALLBACK_INFO_INIT;
-    ac.mode = WGPUCallbackMode_AllowSpontaneous;
-    ac.callback = on_adapter;
-    ac.userdata1 = &sAdapter;
-    wgpuInstanceRequestAdapter(sInst, &ao, ac);
-    for (int i = 0; !sAdapter && i < 1000; i++) wgpuInstanceProcessEvents(sInst);
-    if (!sAdapter) {
-        fprintf(stderr, "gpu3d-wgpu: no adapter\n");
-        return 0;
-    }
-    WGPUAdapterInfo info = WGPU_ADAPTER_INFO_INIT;
-    wgpuAdapterGetInfo(sAdapter, &info);
-    fprintf(stderr, "gpu3d-wgpu: %.*s (backend %d)\n", (int)(info.device.length == WGPU_STRLEN ? 200 : info.device.length),
-            info.device.data ? info.device.data : "", (int)info.backendType);
-    wgpuAdapterInfoFreeMembers(info);
-    WGPUDeviceDescriptor dd = WGPU_DEVICE_DESCRIPTOR_INIT;
-    dd.uncapturedErrorCallbackInfo.callback = on_error;
-    WGPURequestDeviceCallbackInfo dc = WGPU_REQUEST_DEVICE_CALLBACK_INFO_INIT;
-    dc.mode = WGPUCallbackMode_AllowSpontaneous;
-    dc.callback = on_device;
-    dc.userdata1 = &sDev;
-    wgpuAdapterRequestDevice(sAdapter, &dd, dc);
-    for (int i = 0; !sDev && i < 1000; i++) wgpuInstanceProcessEvents(sInst);
-    if (!sDev) return 0;
-    sQueue = wgpuDeviceGetQueue(sDev);
-
+    if (!device) return 0;
+    sDev = device;
+    sQueue = queue;
+    sScale = scale < 1 ? 1 : scale > 8 ? 8 : scale;
     WGPUShaderSourceWGSL src = WGPU_SHADER_SOURCE_WGSL_INIT;
     src.code = sv(kShader);
     WGPUShaderModuleDescriptor md = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
@@ -271,14 +231,17 @@ int g3w_init(void) {
     sFogTex = texture(WGPUTextureFormat_R8Unorm, WGPUTextureUsage_RenderAttachment | WGPUTextureUsage_TextureBinding);
     sDepthTex = texture(WGPUTextureFormat_Depth24PlusStencil8,
                         WGPUTextureUsage_RenderAttachment | WGPUTextureUsage_TextureBinding);
-    sOutTex = texture(WGPUTextureFormat_R32Uint, WGPUTextureUsage_RenderAttachment | WGPUTextureUsage_CopySrc);
+    for (int i = 0; i < 2; i++) {
+        sOutTex[i] = texture(WGPUTextureFormat_R32Uint, WGPUTextureUsage_RenderAttachment | WGPUTextureUsage_CopySrc |
+                                                            WGPUTextureUsage_TextureBinding);
+        sOutView[i] = wgpuTextureCreateView(sOutTex[i], NULL);
+    }
     sColorView = wgpuTextureCreateView(sColorTex, NULL);
     sFogView = wgpuTextureCreateView(sFogTex, NULL);
     sDepthView = wgpuTextureCreateView(sDepthTex, NULL);
     WGPUTextureViewDescriptor dv = WGPU_TEXTURE_VIEW_DESCRIPTOR_INIT;
     dv.aspect = WGPUTextureAspect_DepthOnly;
     sDepthOnlyView = wgpuTextureCreateView(sDepthTex, &dv);
-    sOutView = wgpuTextureCreateView(sOutTex, NULL);
 
     sState = buffer(256, WGPUBufferUsage_Uniform | WGPUBufferUsage_CopyDst);
     sImg = buffer(IMG_SIZE, WGPUBufferUsage_Storage | WGPUBufferUsage_CopyDst);
@@ -426,8 +389,12 @@ static void on_mapped(WGPUMapAsyncStatus status, WGPUStringView msg, void *u1, v
     *(int *)u1 = status == WGPUMapAsyncStatus_Success ? 1 : -1;
 }
 
+void *g3w_picture(void) { return sDev ? sOutView[sShown] : NULL; }
+
+// `out`: the picture read back into it too (at scale 1 only), else NULL
 void g3w_render(const G3RenderState *r, const u8 *img, const u8 *pal, u32 *out) {
-    if (!sDev && !g3w_init()) fatal("no WebGPU device");
+    if (!sDev) fatal("no WebGPU device");
+    int next = sShown ^ 1;
     // the state
     u32 st[64] = {0};
     u32 cc = r->clearColor;
@@ -515,7 +482,7 @@ void g3w_render(const G3RenderState *r, const u8 *img, const u8 *pal, u32 *out) 
     wgpuRenderPassEncoderRelease(pass);
     // the resolve
     WGPURenderPassColorAttachment oa = WGPU_RENDER_PASS_COLOR_ATTACHMENT_INIT;
-    oa.view = sOutView;
+    oa.view = sOutView[next];
     oa.loadOp = WGPULoadOp_Clear;
     oa.storeOp = WGPUStoreOp_Store;
     WGPURenderPassDescriptor od = WGPU_RENDER_PASS_DESCRIPTOR_INIT;
@@ -528,9 +495,17 @@ void g3w_render(const G3RenderState *r, const u8 *img, const u8 *pal, u32 *out) 
     wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
     wgpuRenderPassEncoderEnd(pass);
     wgpuRenderPassEncoderRelease(pass);
+    sShown = next;
+    if (!out || sScale != 1) {
+        WGPUCommandBuffer cmd = wgpuCommandEncoderFinish(enc, NULL);
+        wgpuQueueSubmit(sQueue, 1, &cmd);
+        wgpuCommandBufferRelease(cmd);
+        wgpuCommandEncoderRelease(enc);
+        return;
+    }
     // back to the frame buffer
     WGPUTexelCopyTextureInfo src = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
-    src.texture = sOutTex;
+    src.texture = sOutTex[next];
     WGPUTexelCopyBufferInfo dst = WGPU_TEXEL_COPY_BUFFER_INFO_INIT;
     dst.buffer = sReadback;
     dst.layout.bytesPerRow = W * 4;

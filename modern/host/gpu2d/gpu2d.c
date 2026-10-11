@@ -14,6 +14,8 @@ static u16 sPowCnt;       // POWCNT1
 static u8 sVramCnt[9];    // VRAMCNT_A-I
 static u32 sScreen[2][SCREEN_W * SCREEN_H];
 static u32 sFrame;        // frames rendered
+static int sDefer3d;      // the 3D layer left to the caller (Gpu2dFrameInput.defer3d)
+static u32 sDeferred[2][SCREEN_W * SCREEN_H * 2], sDeferredLines[2][SCREEN_H];  // (gpu2d_deferred)
 static int sDiagnostics;  // keep what gpu2d_describe_pixel reports
 
 void gpu2d_set_diagnostics(int on) { sDiagnostics = on; }
@@ -313,6 +315,32 @@ static u16 obj_color(const Engine *e, u32 dispcnt, const ObjLine *obj, int x) {
 enum { DBG_3D = 6 };  // (dbgTop / dbgBelow: LAYER_* or the 3D layer)
 enum { EFF_NONE, EFF_ALPHA, EFF_UP, EFF_DOWN, EFF_SEMI_OBJ, EFF_BITMAP_OBJ, EFF_3D };
 
+// gpu2d.h gpu2d_deferred's word 1 for a pixel where the 3D layer could show: `at` 0 if it would be the top layer, 1
+// if one is in front of it (col0 / lay0: the front layer, else the layer below it - the top layer when the 3D layer's
+// pixel is transparent)
+static inline u32 pack18(u32 c) { return (c & 0x3f) | (c >> 8 & 0x3f) << 6 | (c >> 16 & 0x3f) << 12; }
+static u32 deferred_3d(const ObjLine *obj, int x, int at, u32 col0, u8 lay0, int effOk, u32 first, u32 second,
+                       u32 effect, u32 eva, u32 evb, u32 evy) {
+    enum { KIND_C = 1u << 30, KIND_BLEND = 2u << 30, KIND_TOP = 3u << 30 };
+    int below3d = second & 1;  // (the 3D layer is BG0)
+    if (at == 1) {
+        if (lay0 == LAYER_OBJ && obj->kind[x] != OBJ_NORMAL) {
+            if (!below3d) return KIND_C | pack18(col0);
+            u32 a = obj->kind[x] == OBJ_BITMAP ? obj->alpha[x] + 1u : eva, b = obj->kind[x] == OBJ_BITMAP ? 15u - obj->alpha[x] : evb;
+            return KIND_BLEND | pack18(col0) | a << 18 | b << 23;
+        }
+        if (effOk && ((first >> lay0) & 1)) {
+            if (effect == 1 && below3d) return KIND_BLEND | pack18(col0) | eva << 18 | evb << 23;
+            if (effect == 2) return KIND_C | pack18(brighten(col0, evy, 8));
+            if (effect == 3) return KIND_C | pack18(darken(col0, evy, 7));
+        }
+        return KIND_C | pack18(col0);
+    }
+    if ((second >> lay0) & 1) return KIND_TOP | pack18(col0) | 1u << 28;
+    if (effOk && (first & 1) && (effect == 2 || effect == 3)) return KIND_TOP | evy << 18 | effect << 28;
+    return KIND_TOP;
+}
+
 static void compose_line(Engine *e, int line, const u32 *line3d, u32 *dst) {
     u32 dispcnt = reg32(e, REG_DISPCNT);
     const ObjLine *obj = &e->obj;
@@ -320,7 +348,10 @@ static void compose_line(Engine *e, int line, const u32 *line3d, u32 *dst) {
     window_line(e, obj, mask);
     obj_mosaic_x(e, &e->obj);
     int has3d = e->num == 0 && (dispcnt & 8) && (dispcnt & 0x100) && line3d;
-    if (has3d) gpu2d_feature(e, F_3D);
+    // the 3D layer deferred: composited as if its pixels were transparent, and where one could show, how it would
+    int defer3d = e->num == 0 && (dispcnt & 8) && (dispcnt & 0x100) && sDefer3d;
+    if (has3d || defer3d) gpu2d_feature(e, F_3D);
+    u32 *defer = e->defer + line * SCREEN_W;
     s32 hofs3d = reg16(e, REG_BGHOFS) & 0x1ff;
     if (hofs3d & 0x100) hofs3d -= 0x200;
     // the layers front to back: at each priority the OBJs, then BG0-3 (OBJ_ORDER stands for the OBJs, whose
@@ -345,7 +376,7 @@ static void compose_line(Engine *e, int line, const u32 *line3d, u32 *dst) {
         // the two front layers at x (the backdrop behind all)
         u32 col[2] = {backdrop, backdrop};
         u8 lay[2] = {LAYER_BACKDROP, LAYER_BACKDROP};  // (the 3D layer: LAYER_BG0 with is3d)
-        int is3d[2] = {0, 0}, found = 0;
+        int is3d[2] = {0, 0}, found = 0, at3d = -1;
         u32 alpha3d = 0;
         u8 m = mask[x];
         for (int k = 0; k < layers && found < 2; k++) {
@@ -357,6 +388,9 @@ static void compose_line(Engine *e, int line, const u32 *line3d, u32 *dst) {
                 }
             } else if (!(m & 1 << n)) {
                 continue;
+            } else if (n == 0 && defer3d) {
+                s32 sx = x + hofs3d;
+                if (sx >= 0 && sx < SCREEN_W && at3d < 0) at3d = found;
             } else if (n == 0 && has3d) {
                 s32 sx = x + hofs3d;
                 if (sx < 0 || sx >= SCREEN_W) continue;
@@ -394,6 +428,8 @@ static void compose_line(Engine *e, int line, const u32 *line3d, u32 *dst) {
         }
         effectsUsed |= 1u << eff;
         dst[x] = out;
+        if (defer3d) defer[x] = at3d < 0 ? 0 : deferred_3d(obj, x, at3d, col[0], lay[0], effOk, first, second, effect,
+                                                         eva, evb, evy);
         if (sDiagnostics) {
             int at = line * SCREEN_W + x;
             e->dbgTop[at] = is3d[0] ? DBG_3D : lay[0];
@@ -417,6 +453,11 @@ static void render_line(Engine *e, const Gpu2dFrameInput *in, int line) {
         memset(e->dbgTop + line * SCREEN_W, LAYER_NONE, SCREEN_W);
         memset(e->dbgEffect + line * SCREEN_W, EFF_NONE, SCREEN_W);
     }
+    u32 *defer = e->defer + line * SCREEN_W;
+    if (sDefer3d) {  // (compose_line sets them where the 3D layer can show)
+        memset(defer, 0, SCREEN_W * sizeof *defer);
+        e->lineInfo[line] = 0;
+    }
     if (e->num == 1 && !(sPowCnt & 0x200)) {  // engine B switched off (POWCNT1 bit 9): white, no brightness
         gpu2d_feature(e, F_ENGINE_B_OFF);
         for (int x = 0; x < SCREEN_W; x++) dst[x] = 0x3f3f3f;
@@ -436,6 +477,7 @@ static void render_line(Engine *e, const Gpu2dFrameInput *in, int line) {
     }
     obj_mosaic_y(e, line);
     u32 mode = dispcnt >> 16 & (e->num ? 1 : 3);
+    if (sDefer3d && mode != 1) memset(defer, 0, SCREEN_W * sizeof *defer);
     if (mode == 1) {
         memcpy(dst, composed, sizeof composed);
     } else if (mode == 0) {  // display off: white, no brightness
@@ -453,6 +495,12 @@ static void render_line(Engine *e, const Gpu2dFrameInput *in, int line) {
     u16 mb = reg16(e, REG_MASTER_BRIGHT);
     u32 f = mb & 0x1f;
     if (f > 16) f = 16;
+    if (sDefer3d) {  // the pixels the 3D layer can show at: their colour before master brightness, which the caller applies
+        s32 hofs3d = reg16(e, REG_BGHOFS) & 0x1ff;
+        e->lineInfo[line] = mb | (u32)hofs3d << 16;
+        for (int x = 0; x < SCREEN_W; x++)
+            if (defer[x]) composed[x] = dst[x];
+    }
     if ((mb >> 14) == 1 && f) {
         gpu2d_feature(e, F_MASTER_UP);
         for (int x = 0; x < SCREEN_W; x++) dst[x] = brighten(dst[x], f, 0);
@@ -460,12 +508,16 @@ static void render_line(Engine *e, const Gpu2dFrameInput *in, int line) {
         gpu2d_feature(e, F_MASTER_DOWN);
         for (int x = 0; x < SCREEN_W; x++) dst[x] = darken(dst[x], f, 15);
     }
+    if (sDefer3d)
+        for (int x = 0; x < SCREEN_W; x++)
+            if (defer[x]) dst[x] = composed[x];
 }
 
 // a BGxX / BGxY reference point: 28-bit signed
 static s32 ref28(const Engine *e, u32 off) { return (s32)(reg32(e, off) << 4) >> 4; }
 
 void gpu2d_render_frame(const Gpu2dFrameInput *in) {
+    sDefer3d = in->defer3d;
     map_vram(in);
     for (int n = 0; n < 2; n++) {
         Engine *e = &sEngine[n];
@@ -513,7 +565,15 @@ void gpu2d_render_frame(const Gpu2dFrameInput *in) {
     }
     // to the screens: engine A on the top screen if POWCNT1 bit 15 is set
     for (int n = 0; n < 2; n++) {
-        u32 *s = sScreen[(sPowCnt & 0x8000) ? n : 1 - n];
+        int screen = (sPowCnt & 0x8000) ? n : 1 - n;
+        if (sDefer3d) {
+            const Engine *e = &sEngine[n];
+            u32 *d = sDeferred[screen];
+            for (int i = 0; i < SCREEN_W * SCREEN_H; i++) d[2 * i] = pack18(e->out[i]), d[2 * i + 1] = e->defer[i];
+            memcpy(sDeferredLines[screen], e->lineInfo, sizeof e->lineInfo);
+            continue;
+        }
+        u32 *s = sScreen[screen];
         const u32 *src = sEngine[n].out;
         for (int i = 0; i < SCREEN_W * SCREEN_H; i++) {
             u32 c = src[i], r = c & 0x3f, g = c >> 8 & 0x3f, b = c >> 16 & 0x3f;
@@ -525,6 +585,8 @@ void gpu2d_render_frame(const Gpu2dFrameInput *in) {
 }
 
 const uint32_t *gpu2d_screen(int screen) { return sScreen[screen & 1]; }
+const uint32_t *gpu2d_deferred(int screen) { return sDeferred[screen & 1]; }
+const uint32_t *gpu2d_deferred_lines(int screen) { return sDeferredLines[screen & 1]; }
 
 void gpu2d_describe_pixel(int screen, int x, int y, char *buf, size_t size) {
     int n = (sPowCnt & 0x8000) ? screen : 1 - screen;

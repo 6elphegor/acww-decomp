@@ -11,6 +11,9 @@
 // it) runs on a stack of its own instead (8 MB, a coroutine: frontend_backend_frame switches to it and back), so the
 // game's 512 KB thread stacks needn't fit a GL driver's needs.
 //
+// With the screens on the GPU (ACWW_RENDERER3D=wgpu: render_on_gpu) the window is drawn by wgpu_display.c, through
+// its native handles (X11 or Wayland), at the window's resolution; else by an SDL renderer from the AcwwShm pixels.
+//
 // Pacing stays the runtime's (hw.c, 60 Hz on the host clock); ACWW_VSYNC=1 also waits for the display's vsync.
 // Testing without a display: SDL_VIDEODRIVER=dummy (or offscreen), SDL_AUDIODRIVER=dummy (or disk, with
 // SDL_DISKAUDIOFILE), and ACWW_WINSHOT="frame:file.ppm;..." writes what the window shows (its whole drawable, at
@@ -19,6 +22,7 @@
 
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
+#include <SDL_syswm.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,11 +31,14 @@
 #include "frontend.h"
 #include "host.h"
 #include "plat.h"
+#include "render.h"
+#include "wgpu_display.h"
 
 static AcwwShm *sShm;
 static SDL_Window *sWin;
 static SDL_Renderer *sRen;
 static SDL_Texture *sTex;
+static int sGpu;  // the window drawn by wgpu_display.c
 static SDL_AudioDeviceID sDev;
 static int sScale = 2, sMute;
 static SDL_GameController *sPads[4];
@@ -134,16 +141,27 @@ AcwwShm *frontend_backend_open(const char *argv0) {
     sFeSp = host_coro_prepare(stack, FE_STACK, fe_main, 0);
     sWin = SDL_CreateWindow("Animal Crossing: Wild World (native)", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                             256 * sScale, 384 * sScale, SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-    if (sWin) {
-        Uint32 flags = getenv("ACWW_VSYNC") && atoi(getenv("ACWW_VSYNC")) ? SDL_RENDERER_PRESENTVSYNC : 0;
-        sRen = SDL_CreateRenderer(sWin, -1, flags);
+    int vsync = getenv("ACWW_VSYNC") && atoi(getenv("ACWW_VSYNC"));
+    if (sWin && render_on_gpu()) {  // the GPU draws into the window
+        SDL_SysWMinfo wm;
+        SDL_VERSION(&wm.version);
+        if (SDL_GetWindowWMInfo(sWin, &wm)) {
+            if (wm.subsystem == SDL_SYSWM_X11)
+                sGpu = wdisp_attach(WDISP_X11, wm.info.x11.display, wm.info.x11.window, vsync);
+            else if (wm.subsystem == SDL_SYSWM_WAYLAND)
+                sGpu = wdisp_attach(WDISP_WAYLAND, wm.info.wl.display, (uintptr_t)wm.info.wl.surface, vsync);
+        }
+        if (!sGpu) fprintf(stderr, "frontend: the GPU can't draw into the window: the screens are read back\n");
+    }
+    if (sWin && !sGpu) {
+        sRen = SDL_CreateRenderer(sWin, -1, vsync ? SDL_RENDERER_PRESENTVSYNC : 0);
         if (!sRen) sRen = SDL_CreateRenderer(sWin, -1, SDL_RENDERER_SOFTWARE);
     }
     if (sRen) {
         SDL_RenderSetLogicalSize(sRen, 256, 384);  // letterboxed, the mouse in logical coordinates
         sTex = SDL_CreateTexture(sRen, SDL_PIXELFORMAT_XRGB8888, SDL_TEXTUREACCESS_STREAMING, 256, 384);
     }
-    if (!sTex) {
+    if (!sTex && !sGpu) {
         fprintf(stderr, "frontend: no window (%s): running headless\n", SDL_GetError());
         SDL_Quit();
         free(sShm);
@@ -231,9 +249,20 @@ static void pad_removed(SDL_JoystickID id) {
 // 0..383); the bottom screen is y 192..383
 static struct { int held, x, y; } sMouse, sFinger;
 static SDL_FingerID sFingerId;
+// a point of the window (its coordinates) in the screens' (256x384); the SDL renderer's mouse events have them already
+static void window_to_logical(int wx, int wy, int *x, int *y) {
+    if (!sGpu) { *x = wx, *y = wy; return; }
+    int w, h;
+    float r[4];
+    SDL_GetWindowSize(sWin, &w, &h);
+    wdisp_letterbox(w, h, r);
+    *x = (int)SDL_floorf(((float)wx - r[0]) * 256.0f / r[2]);
+    *y = (int)SDL_floorf(((float)wy - r[1]) * 384.0f / r[3]);
+}
 static void finger_to_logical(float fx, float fy, int *x, int *y) {
     int w, h;
     SDL_GetWindowSize(sWin, &w, &h);
+    if (sGpu) { window_to_logical((int)(fx * w), (int)(fy * h), x, y); return; }
     float lx, ly;
     SDL_RenderWindowToLogical(sRen, (int)(fx * w), (int)(fy * h), &lx, &ly);
     *x = (int)lx;
@@ -271,14 +300,12 @@ static void handle(const SDL_Event *e) {
     case SDL_MOUSEBUTTONUP:
         if (e->button.which == SDL_TOUCH_MOUSEID || e->button.button != SDL_BUTTON_LEFT) break;  // (fingers below)
         sMouse.held = e->type == SDL_MOUSEBUTTONDOWN;
-        sMouse.x = e->button.x;
-        sMouse.y = e->button.y;
+        window_to_logical(e->button.x, e->button.y, &sMouse.x, &sMouse.y);
         break;
     case SDL_MOUSEMOTION:
         if (e->motion.which == SDL_TOUCH_MOUSEID) break;
         sMouse.held = (e->motion.state & SDL_BUTTON_LMASK) != 0;
-        sMouse.x = e->motion.x;
-        sMouse.y = e->motion.y;
+        window_to_logical(e->motion.x, e->motion.y, &sMouse.x, &sMouse.y);
         break;
     case SDL_FINGERDOWN:
         if (sFinger.held) break;
@@ -301,6 +328,16 @@ static void handle(const SDL_Event *e) {
 
 // ---- ACWW_WINSHOT="frame:path.ppm;...": the window's drawable as presented (before the present: the back buffer
 // is undefined after it)
+static void write_ppm(const char *path, const uint32_t *px, int w, int h) {
+    FILE *o = fopen(path, "wb");
+    if (!o) return;
+    fprintf(o, "P6\n%d %d\n255\n", w, h);
+    for (int i = 0; i < w * h; i++) {
+        unsigned char rgb[3] = {(unsigned char)(px[i] >> 16), (unsigned char)(px[i] >> 8), (unsigned char)px[i]};
+        fwrite(rgb, 1, 3, o);
+    }
+    fclose(o);
+}
 static void window_shot(void) {
     static const char *spec;
     if (!spec) spec = getenv("ACWW_WINSHOT") ? getenv("ACWW_WINSHOT") : "";
@@ -308,7 +345,13 @@ static void window_shot(void) {
     for (const char *p = spec; *p;) {
         unsigned fr;
         char path[512];
-        if (sscanf(p, "%u:%511[^;]", &fr, path) == 2 && fr == f) {
+        if (sscanf(p, "%u:%511[^;]", &fr, path) == 2 && fr == f && sGpu) {
+            int w, h;
+            SDL_GetWindowSizeInPixels(sWin, &w, &h);
+            uint32_t *px = malloc((size_t)w * h * 4);
+            if (px && wdisp_read_window(w, h, px)) write_ppm(path, px, w, h);
+            free(px);
+        } else if (sscanf(p, "%u:%511[^;]", &fr, path) == 2 && fr == f) {
             int w, h;
             SDL_GetRendererOutputSize(sRen, &w, &h);
             uint32_t *px = malloc((size_t)w * h * 4);
@@ -316,15 +359,7 @@ static void window_shot(void) {
             SDL_RenderSetLogicalSize(sRen, 0, 0);
             SDL_RenderSetViewport(sRen, 0);
             if (px && SDL_RenderReadPixels(sRen, 0, SDL_PIXELFORMAT_XRGB8888, px, w * 4) == 0) {
-                FILE *o = fopen(path, "wb");
-                if (o) {
-                    fprintf(o, "P6\n%d %d\n255\n", w, h);
-                    for (int i = 0; i < w * h; i++) {
-                        unsigned char rgb[3] = {(unsigned char)(px[i] >> 16), (unsigned char)(px[i] >> 8), (unsigned char)px[i]};
-                        fwrite(rgb, 1, 3, o);
-                    }
-                    fclose(o);
-                }
+                write_ppm(path, px, w, h);
             } else {
                 fprintf(stderr, "frontend: ACWW_WINSHOT: %s\n", SDL_GetError());
             }
@@ -343,6 +378,13 @@ static void frame_body(void) {
     while (SDL_PollEvent(&e)) handle(&e);
     update_touch();
     sShm->keys = keyboard_keys() | pad_keys();
+    if (sGpu) {
+        int w, h;
+        SDL_GetWindowSizeInPixels(sWin, &w, &h);
+        window_shot();
+        wdisp_present(w, h);
+        return;
+    }
     SDL_UpdateTexture(sTex, 0, sShm->pixels, 256 * 4);
     SDL_SetRenderDrawColor(sRen, 0, 0, 0, 255);
     SDL_RenderClear(sRen);

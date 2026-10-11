@@ -79,6 +79,10 @@ typedef struct Engine {
     // OBJ vertical mosaic: the line mosaic OBJs show (set every MOSAIC bits 12-15 + 1 lines), and the line counter
     int objMosaicLine, objMosaicCount;
     u32 out[SCREEN_W * SCREEN_H];  // this engine's picture (6-bit channels: r | g << 8 | b << 16)
+    // with the 3D layer deferred (gpu2d.h gpu2d_deferred): word 1 per pixel (0: kind 0), and per line
+    // MASTER_BRIGHT | BG0HOFS << 16
+    u32 defer[SCREEN_W * SCREEN_H];
+    u32 lineInfo[SCREEN_H];
     // diagnostics: per pixel the top layer, the one below it (LAYER_*, 6: 3D) and the effect applied
     u8 dbgTop[SCREEN_W * SCREEN_H], dbgBelow[SCREEN_W * SCREEN_H], dbgEffect[SCREEN_W * SCREEN_H];
     u8 dbgObj[SCREEN_W * SCREEN_H], dbgAlpha[SCREEN_W * SCREEN_H];

@@ -14,6 +14,7 @@
 static AcwwShm *sShm;
 
 #include "render.h"
+#include "wgpu_display.h"
 
 void frontend_init(const char *argv0) {
     if (getenv("ACWW_HEADLESS")) return;
@@ -44,7 +45,9 @@ void frontend_frame(void) {
     // (released = 1); bit 15 clear = not folded
     u16 xy = 0x2c00;
     if (sShm) {
-        for (int s = 0; s < 2; s++) memcpy(sShm->pixels + s * 256 * 192, render_screen(s), 256 * 192 * 4);
+        // (not when the GPU shows them itself: they would be read back from it)
+        if (!wdisp_presenting())
+            for (int s = 0; s < 2; s++) memcpy(sShm->pixels + s * 256 * 192, render_screen(s), 256 * 192 * 4);
         __atomic_thread_fence(__ATOMIC_SEQ_CST);
         sShm->frame++;
         frontend_backend_frame(sShm);

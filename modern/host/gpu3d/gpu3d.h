@@ -42,9 +42,13 @@ void gpu3d_frame(const uint8_t *const bank[9]);
 // the picture the frame shows: 192 lines of 256 pixels, red bits 0-5, green 8-13, blue 16-21, alpha bits 24-28
 // (0-31; 0: no pixel), before BG0HOFS's scroll (the 2D renderer's BG0 input)
 const uint32_t *gpu3d_lines(void);
-// the polygons drawn by the GPU (WebGPU, gpu3d_wgpu.c) instead of the software rasteriser; 0 if this build or this
-// machine can't
-int gpu3d_use_wgpu(void);
+// the polygons drawn by the GPU (WebGPU, gpu3d_wgpu.c) instead of the software rasteriser, with the device and queue
+// given (a WGPUDevice and WGPUQueue) at `scale` times the DS's resolution; readback: gpu3d_lines has the picture
+// (read back every frame, at scale 1), else only gpu3d_wgpu_picture. 0 if this build can't
+int gpu3d_use_wgpu(void *device, void *queue, int scale, int readback);
+// the picture the frame shows, on the GPU: a WGPUTextureView of an R32Uint texture of 256 x 192 times the scale, in
+// gpu3d_lines' format
+void *gpu3d_wgpu_picture(void);
 
 // diagnostics
 typedef struct Gpu3dPolyInfo {

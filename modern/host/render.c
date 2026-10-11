@@ -9,7 +9,12 @@
 //                                         results, matrices, RAM counts), raises the GX FIFO interrupt and draws the
 //                                         3D layer. Default: the 2D renderer's choice. `own` needs the own 2D renderer
 //                                         too (melonDS's 2D would show its own 3D), so it implies ACWW_RENDERER=own.
-//                                         With both `own` melonDS isn't run at all.
+//                                         With both `own` melonDS isn't run at all. With wgpu the GPU composites the
+//                                         screens too and shows them (wgpu_display.c): the 2D renderer leaves the 3D
+//                                         layer to it, and the frames stay on the GPU (read back only for screenshots)
+//   ACWW_SCALE3D=<n>                      wgpu: the 3D picture at n times the DS's resolution (1-8, default 1)
+//   ACWW_WGPU_READBACK=1                  wgpu: the 3D picture read back, the screens composited on the CPU (as
+//                                         with ACWW_RENDER_COMPARE; the GPU's compositing checked against it)
 //   ACWW_RENDER_COMPARE=1                 render with both every frame and report the frames where they differ: the
 //                                         first differing pixel of each screen and what the own renderer put there
 //                                         (layers, effect); for the 3D engine also every read whose value differs,
@@ -31,6 +36,7 @@
 #include "gpu3d/gpu3d.h"
 #include "host_mem.h"
 #include "render.h"
+#include "wgpu_display.h"
 
 // melon.cpp
 void melon_init(void);
@@ -57,6 +63,8 @@ static int sGpu2d;        // the own 2D renderer runs (sOwn or sCompare)
 static int sGpu3d;        // the own 3D engine runs (sOwn3d or sCompare)
 static int sMelon;        // melonDS runs
 static int sCompare;
+static int sGpuDisplay;   // the screens composited by the GPU (wgpu_display.c)
+static int sScale3d = 1;  // ACWW_SCALE3D
 static int sSelftest;      // ACWW_RENDER_SELFTEST (render_selftest.c compares itself)
 static long sCompareMax = 200, sCompareLines;
 static u64 sCompared, sDiffering, sFirstDiffering = ~0ull;
@@ -80,10 +88,17 @@ void render_init(void) {
     sOwn3d = getenv("ACWW_RENDERER3D") ? !env_is("ACWW_RENDERER3D", "melon") : sOwn;
     if (getenv("ACWW_RENDERER3D") && sOwn3d && !env_is("ACWW_RENDERER3D", "own") && !env_is("ACWW_RENDERER3D", "wgpu"))
         fprintf(stderr, "render: ACWW_RENDERER3D=%s unknown (own, wgpu, melon): own\n", getenv("ACWW_RENDERER3D"));
-    if (env_is("ACWW_RENDERER3D", "wgpu") && !gpu3d_use_wgpu())
-        fprintf(stderr, "render: ACWW_RENDERER3D=wgpu: no WebGPU in this build or on this machine: own\n");
     if (sOwn3d) sOwn = 1;
     sCompare = getenv("ACWW_RENDER_COMPARE") ? atoi(getenv("ACWW_RENDER_COMPARE")) : 0;
+    if (env_is("ACWW_RENDERER3D", "wgpu")) {
+        // (compared with melonDS: the 3D picture read back, the screens composited on the CPU)
+        int readback = sCompare || getenv("ACWW_RENDER_SELFTEST") || getenv("ACWW_RENDER_SELFTEST3D") ||
+                       env_is("ACWW_WGPU_READBACK", "1");
+        if (getenv("ACWW_SCALE3D")) sScale3d = atoi(getenv("ACWW_SCALE3D"));
+        sScale3d = readback || sScale3d < 1 ? 1 : sScale3d > 8 ? 8 : sScale3d;
+        if (wdisp_init() && gpu3d_use_wgpu(wdisp_device(), wdisp_queue(), sScale3d, readback)) sGpuDisplay = !readback;
+        else fprintf(stderr, "render: ACWW_RENDERER3D=wgpu: no WebGPU in this build or on this machine: own\n");
+    }
     if (getenv("ACWW_RENDER_COMPARE_MAX")) sCompareMax = strtol(getenv("ACWW_RENDER_COMPARE_MAX"), 0, 10);
     if (getenv("ACWW_RENDER_SELFTEST") || getenv("ACWW_RENDER_SELFTEST3D")) sCompare = sCompare ? sCompare : 1;
     sGpu2d = sOwn || sCompare;
@@ -488,7 +503,8 @@ void render_frame(void) {
     // the 3D picture this frame shows (melonDS renders the next one in the frame)
     const u32 *lines3d = s3d;
     if (sGpu2d) {
-        if (sOwn3d) lines3d = gpu3d_lines();
+        if (sGpuDisplay) lines3d = NULL;  // (the GPU's: gpu3d_wgpu_picture)
+        else if (sOwn3d) lines3d = gpu3d_lines();
         else melon_3d_lines(s3d);
     }
     if (sMelon) melon_frame();
@@ -503,7 +519,13 @@ void render_frame(void) {
         // it draws the frame at once)
         in.hblank = sOwn ? render_hblank : 0;
         in.hblankContext = 0;
+        in.defer3d = sGpuDisplay;
         gpu2d_render_frame(&in);
+        if (sGpuDisplay) {
+            const u32 *deferred[2] = {gpu2d_deferred(0), gpu2d_deferred(1)};
+            const u32 *lines[2] = {gpu2d_deferred_lines(0), gpu2d_deferred_lines(1)};
+            wdisp_frame(deferred, lines, gpu3d_wgpu_picture(), sScale3d);
+        }
     }
     if (sGpu3d) gpu3d_run_frame();
     if (sCompare && !sSelftest) {
@@ -512,7 +534,11 @@ void render_frame(void) {
     }
 }
 
-const u32 *render_screen(int screen) { return sOwn ? gpu2d_screen(screen) : melon_screen(screen); }
+const u32 *render_screen(int screen) {
+    if (sGpuDisplay) return wdisp_screens() + 256 * 192 * (screen & 1);
+    return sOwn ? gpu2d_screen(screen) : melon_screen(screen);
+}
+int render_on_gpu(void) { return sGpuDisplay; }
 
 void render_exit_report(void) {
     if (sCompare) {

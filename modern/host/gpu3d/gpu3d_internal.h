@@ -73,8 +73,9 @@ int g3_raster_pixel_polygon(int x, int y);  // index into gG3Render.poly, -1 non
 void g3_raster_diagnostics(int on);
 
 // gpu3d_wgpu.c (HOST_WGPU builds; elsewhere g3w_init fails)
-int g3w_init(void);
+int g3w_init(void *device, void *queue, int scale);
 void g3w_render(const G3RenderState *r, const u8 *img, const u8 *pal, u32 *out);
+void *g3w_picture(void);
 
 // feature census (gpu3d_geom.c)
 void g3_feature(int id);

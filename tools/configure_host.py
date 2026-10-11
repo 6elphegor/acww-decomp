@@ -209,7 +209,8 @@ GUARD_FLAGS = " -DHOST_GUARDS" if args.guards else ""
 # linked with the system's libSDL2); otherwise none (modern/host/frontend_none.c: headless only)
 SDL2 = X64 and not WIN and os.path.exists(f"{args.sdl2}/usr/include/SDL2/SDL.h")
 FRONTEND_FLAG = " -DHOST_FRONTEND_SDL=1" if SDL2 else " -DHOST_FRONTEND_NONE=1" if HOST64 else ""
-SDL_CFLAGS = f"-I{args.sdl2}/usr/include/SDL2 -I{args.sdl2}/usr/include/x86_64-linux-gnu" if SDL2 else ""
+# (SDL_syswm.h, for the window's native handles: modern/host/x11shim stands in for the X11 headers)
+SDL_CFLAGS = f"-I{args.sdl2}/usr/include/SDL2 -I{args.sdl2}/usr/include/x86_64-linux-gnu -Imodern/host/x11shim" if SDL2 else ""
 SDL_LIBS = "-l:libSDL2-2.0.so.0" if SDL2 else ""
 if A64:
     # the cross toolchain's glibc; melonDS's core cross-built for aarch64 (build-core-a64: without the JIT and the GDB
@@ -322,7 +323,7 @@ def main():
             rule = {".cpp": "hostcxx", ".S": "hostas_S"}.get(s.suffix, "hostcc")
             sdl = s.name == "frontend_sdl.c" and SDL_CFLAGS
             # the 2D and 3D renderers' per-pixel loops: optimised further than the rest of the runtime (-O1)
-            fl = SDL_CFLAGS if sdl else WGPU_CFLAGS if s.name == "gpu3d_wgpu.c" else \
+            fl = SDL_CFLAGS if sdl else WGPU_CFLAGS if s.name in ("gpu3d_wgpu.c", "wgpu_display.c") else \
                 "-O2" if "gpu2d" in s.parts or "gpu3d" in s.parts else None
             n.build(o, rule, str(s), variables={"flags": fl} if fl else None)
             objs.append(o)
