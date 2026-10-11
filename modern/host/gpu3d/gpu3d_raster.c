@@ -555,19 +555,19 @@ void g3_render(void) {
         timing = getenv("ACWW_GPU3D_TIMING") != 0;
         (void)timing_report;
     }
-    if (timing) clock_gettime(CLOCK_MONOTONIC, &t0);
+    if (timing) timespec_get(&t0, TIME_UTC);
     sR = &gG3Render;
     struct timespec ta, tb, tc;
     g3_tex_setup();
     clear_buffers();
     sPE.p = 0;
-    if (timing) clock_gettime(CLOCK_MONOTONIC, &ta);
+    if (timing) timespec_get(&ta, TIME_UTC);
     for (int i = 0; i < sR->npoly; i++) draw_polygon(sR->poly[i], i);
-    if (timing) clock_gettime(CLOCK_MONOTONIC, &tb);
+    if (timing) timespec_get(&tb, TIME_UTC);
     fog_pass();
     aa_pass();
     if (timing) {
-        clock_gettime(CLOCK_MONOTONIC, &tc);
+        timespec_get(&tc, TIME_UTC);
         static double setup, polys, passes;
         setup += (ta.tv_sec - t0.tv_sec) * 1e9 + (ta.tv_nsec - t0.tv_nsec);
         polys += (tb.tv_sec - ta.tv_sec) * 1e9 + (tb.tv_nsec - ta.tv_nsec);
@@ -579,7 +579,7 @@ void g3_render(void) {
     sShown ^= 1;
     memcpy(sFrameBuf[sShown], sColor, sizeof sColor);
     if (timing) {
-        clock_gettime(CLOCK_MONOTONIC, &t1);
+        timespec_get(&t1, TIME_UTC);
         double ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
         sRenderNs += ns;
         if (ns > sRenderMax) sRenderMax = ns;
