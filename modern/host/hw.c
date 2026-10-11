@@ -103,13 +103,15 @@ static void host_pace_frame(void) {
 // (OS_Halt, or a call that advances time and takes the interrupts). Nothing is done to the game's thread.
 // ACWW_WATCHDOG=<ms>: the threshold in real time (default 2000), 0 turns it off.
 static u32 sHeartbeat, sHeartbeatFrame;  // the low word of the cycle counter and the frame (relaxed atomics)
+static int sPaused;  // host_set_paused: the frontend holds the game (its key binding screen)
+void host_set_paused(int paused) { __atomic_store_n(&sPaused, paused, __ATOMIC_RELAXED); }
 static void watchdog(void *arg) {
     u32 limit = (u32)(uintptr_t)arg, still = 0, last = 0;
     int reported = 0;
     for (;;) {
         host_plat_sleep_ms(100);
         u32 hb = __atomic_load_n(&sHeartbeat, __ATOMIC_RELAXED);
-        if (hb != last) { last = hb; still = 0; reported = 0; continue; }
+        if (hb != last || __atomic_load_n(&sPaused, __ATOMIC_RELAXED)) { last = hb; still = 0; reported = 0; continue; }
         still += 100;
         if (still >= limit && !reported) {
             reported = 1;
@@ -251,13 +253,8 @@ static void run_events_body(void) {
             static long exitAt = -2;
             if (exitAt == -2) exitAt = getenv("ACWW_EXIT_FRAME") ? strtol(getenv("ACWW_EXIT_FRAME"), 0, 10) : -1;
             if (exitAt >= 0 && (long)host_frame() >= exitAt) {
-                extern void snd7_output_close(void);
-                snd7_output_close();
-                extern void frontend_shutdown(void);
-                frontend_shutdown();
-                host_exit_dumps();  // (_Exit runs no atexit handlers)
                 fprintf(stderr, "host: exit at frame %llu (ACWW_EXIT_FRAME)\n", (unsigned long long)host_frame());
-                _Exit(0);
+                host_quit();
             }
         }
         {   // ACWW_RAMHASH=<file>: "frame hash" of main RAM (host_ram_image: the game's data and heaps on 32-bit
@@ -641,6 +638,19 @@ void host_io_ring_dump(void) {
     }
 }
 static uintptr_t io_last_caller(void) { return sRing[(sRingPos - 1) & 15].pc; }
+
+// the end of a run (the window closed, ACWW_EXIT_FRAME, the game's exit): the sound file closed, the frontend shut
+// down, the reports written, then _Exit - not exit, whose handlers would run the game's static destructors, which
+// free into heaps that aren't there any more outside the game's threads
+void host_quit(void) {
+    extern void snd7_output_close(void);
+    snd7_output_close();
+    extern void frontend_shutdown(void);
+    frontend_shutdown();
+    host_exit_dumps();
+    fflush(NULL);
+    _Exit(0);
+}
 
 // the reports written at exit: atexit, ACWW_EXIT_FRAME (_Exit), SIGINT (debug_posix.c)
 void host_exit_dumps(void) {

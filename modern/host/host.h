@@ -39,6 +39,8 @@ u8 *host_io(u32 addr);                 // an I/O register (the register model's 
 unsigned long long HostIo_Read(uintptr_t addr, unsigned int size);
 unsigned long long HostIo_Write(uintptr_t addr, unsigned int size, unsigned long long value);
 void host_io_ring_dump(void);          // the last register accesses (stderr)
+void host_quit(void) __attribute__((noreturn));  // the end of a run: reports, then _Exit (hw.c)
+void host_set_paused(int paused);  // the frontend holds the game (the watchdog keeps quiet)
 void host_exit_dumps(void);            // the reports written at exit (ACWW_IOHIST, ACWW_PROFILE)
 
 // debug_posix.c (empty without HOST_DEBUG_POSIX)

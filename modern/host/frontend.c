@@ -51,7 +51,7 @@ void frontend_frame(void) {
         __atomic_thread_fence(__ATOMIC_SEQ_CST);
         sShm->frame++;
         frontend_backend_frame(sShm);
-        if (sShm->quit) exit(0);
+        if (sShm->quit) host_quit();
         u32 k = sShm->keys;
         keyinput = (u16)(~k & 0x3ff);
         xy = (u16)(0x2000 | (~k & 0x0c00));

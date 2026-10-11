@@ -367,7 +367,7 @@ static void window_shot(void) {
 // ---- ACWW_UI_SCRIPT="frame:item,item,...;...": scripted input for testing the binding screen - from that frame on,
 // one item at a time (a frame each, or a step of the paused binding screen): a key (SDL's scancode name, e.g. F1,
 // Down, Return: pressed and released), pad:<button> (SDL's name, e.g. pad:a: a controller button), shot:<file> (what
-// the window shows, as ACWW_WINSHOT)
+// the window shows, as ACWW_WINSHOT), wait:<ms> (real time), quit (the window closed)
 static char sPendingShot[512];  // (taken by show, before the present)
 static void script_step(void) {
     static const char *spec, *next;
@@ -390,7 +390,12 @@ static void script_step(void) {
     next = next[len] == ',' ? next + len + 1 : NULL;
     SDL_Event e;
     memset(&e, 0, sizeof e);
-    if (!strncmp(item, "shot:", 5)) {
+    if (!strncmp(item, "wait:", 5)) {
+        SDL_Delay((Uint32)atoi(item + 5));
+    } else if (!strcmp(item, "quit")) {
+        e.type = SDL_QUIT;
+        handle(&e);
+    } else if (!strncmp(item, "shot:", 5)) {
         snprintf(sPendingShot, sizeof sPendingShot, "%s", item + 5);
     } else if (!strncmp(item, "pad:", 4)) {
         e.type = SDL_CONTROLLERBUTTONDOWN;
@@ -445,6 +450,7 @@ static void frame_body(void) {
     SDL_Event e;
     while (SDL_PollEvent(&e)) handle(&e);
     script_step();
+    if (ui_is_open()) host_set_paused(1);
     while (ui_is_open() && !sShm->quit) {
         show();
         if (SDL_WaitEventTimeout(&e, 50)) {
@@ -453,6 +459,7 @@ static void frame_body(void) {
         }
         script_step();
     }
+    host_set_paused(0);
     update_touch();
     sShm->keys = keyboard_keys() | pad_keys();
     show();

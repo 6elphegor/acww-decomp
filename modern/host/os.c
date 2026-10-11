@@ -204,6 +204,6 @@ void Fatal_SaveRegisters(void) {}
 void AutoloadCallback(void) {}
 void OSi_DoBoot(void) { host_fatal("OSi_DoBoot (reset)"); }
 void __TransferControl(void *a, void *b, char *c) { (void)a; (void)b; (void)c; host_fatal("C++ exception"); }
-void sys_exit(void) { exit(0); }
+void sys_exit(void) { host_quit(); }
 int sys_readc(void) { return getchar(); }
 void sys_writec(const u8 *p) { fputc(*p, stderr); }
