@@ -14,6 +14,7 @@ import glob
 import os
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -33,15 +34,17 @@ parser.add_argument("--melonds", default=os.path.expanduser("~/acww/ref/melonDS"
                     help="--oracle: melonDS source tree patched with tools/host/melonds.patch and built for the "
                          "target (build-core32, build-core, build-core-a64, build-core-win64)")
 parser.add_argument("--wgpu", default=None,
-                    help="wgpu-native (include/, lib/libwgpu_native.a) for ACWW_RENDERER3D=wgpu (the 3D engine's polygons "
-                         "drawn by the GPU: modern/host/gpu3d/gpu3d_wgpu.c); default for x86-64 Linux: "
-                         "~/acww/toolchains/wgpu-native-v29.0.1.1/linux-x86_64 when it is there; 'none': without")
-parser.add_argument("--sdl2", default=os.path.expanduser("~/acww/toolchains/sdl2-dev"),
-                    help="directory with SDL2 development headers (usr/include/SDL2): the 64-bit builds' frontend "
-                         "(in the game's process, linked with the system's libSDL2) and the i386 build's viewer")
-parser.add_argument("--arch", choices=["i386", "x86_64", "aarch64"], default="i386",
-                    help="i386: build_host.ninja, build/host_<v> (the working build); x86_64: build_host64.ninja, "
-                         "build/host64_<v> (64-bit, in progress: docs/host.md); aarch64: build_host_a64.ninja, "
+                    help="wgpu-native (include/, lib/libwgpu_native.a) for the GPU renderer (ACWW_RENDERER3D=wgpu, the "
+                         "default: modern/host/wgpu_display.c); default for x86-64 Linux: toolchains/wgpu-native-v29.0.1.1/"
+                         "linux-x86_64 in the repository (tools/host_fetch_wgpu.py downloads it), else the same in "
+                         "~/acww/toolchains, when it is there; 'none': without")
+parser.add_argument("--sdl2", default=None,
+                    help="a directory with SDL2 development headers (usr/include/SDL2) for the window (the 64-bit "
+                         "builds' frontend, linked with the system's libSDL2) and the i386 build's viewer; default: "
+                         "pkg-config's sdl2, /usr/include/SDL2, /usr/local/include/SDL2, ~/acww/toolchains/sdl2-dev")
+parser.add_argument("--arch", choices=["i386", "x86_64", "aarch64"], default="x86_64",
+                    help="x86_64 (default): build_host64.ninja, build/host64_<v>; i386: build_host.ninja, build/host_<v> "
+                         "(32-bit, --sysroot); aarch64: build_host_a64.ninja, "
                          "build/hosta64_<v> (64-bit ARM Linux, cross-compiled with --cross; run under qemu-aarch64: "
                          "docs/host.md)")
 parser.add_argument("--cross", default=os.path.expanduser(
@@ -207,10 +210,30 @@ M = args.melonds
 GUARD_FLAGS = " -DHOST_GUARDS" if args.guards else ""
 # the frontend: SDL2 in the game's process (modern/host/frontend_sdl.c) when its headers are there (x86-64: --sdl2,
 # linked with the system's libSDL2); otherwise none (modern/host/frontend_none.c: headless only)
-SDL2 = X64 and not WIN and os.path.exists(f"{args.sdl2}/usr/include/SDL2/SDL.h")
+def find_sdl2():
+    """The -I directories for SDL2's headers (SDL.h's own directory first), or None."""
+    def tree(d):  # a Debian-style tree: usr/include/SDL2, its configuration in the multiarch directory
+        return [f"{d}/usr/include/SDL2", f"{d}/usr/include/x86_64-linux-gnu"] \
+            if os.path.exists(f"{d}/usr/include/SDL2/SDL.h") else None
+    if args.sdl2:
+        return tree(args.sdl2)
+    try:
+        out = subprocess.run(["pkg-config", "--cflags-only-I", "sdl2"], capture_output=True, text=True, timeout=10)
+        dirs = [f[2:] for f in out.stdout.split() if f.startswith("-I")]
+        sdl = [d for d in dirs if os.path.exists(f"{d}/SDL.h")]
+        if out.returncode == 0 and sdl:
+            return sdl + [d for d in dirs if d not in sdl]
+    except (OSError, subprocess.SubprocessError):
+        pass
+    for d in ("/usr/include/SDL2", "/usr/local/include/SDL2"):
+        if os.path.exists(f"{d}/SDL.h"):
+            return [d]
+    return tree(os.path.expanduser("~/acww/toolchains/sdl2-dev"))
+SDL2_DIRS = find_sdl2() if X64 and not WIN else None
+SDL2 = bool(SDL2_DIRS)
 FRONTEND_FLAG = " -DHOST_FRONTEND_SDL=1" if SDL2 else " -DHOST_FRONTEND_NONE=1" if HOST64 else ""
 # (SDL_syswm.h, for the window's native handles: modern/host/x11shim stands in for the X11 headers)
-SDL_CFLAGS = f"-I{args.sdl2}/usr/include/SDL2 -I{args.sdl2}/usr/include/x86_64-linux-gnu -Imodern/host/x11shim" if SDL2 else ""
+SDL_CFLAGS = " ".join(f"-I{d}" for d in SDL2_DIRS) + " -Imodern/host/x11shim" if SDL2 else ""
 SDL_LIBS = "-l:libSDL2-2.0.so.0" if SDL2 else ""
 if A64:
     # the cross toolchain's glibc; melonDS's core cross-built for aarch64 (build-core-a64: without the JIT and the GDB
@@ -256,7 +279,12 @@ if not args.oracle:  # (no melonDS: its headers and libraries aren't needed)
 # WebGPU (wgpu-native, linked statically): ACWW_RENDERER3D=wgpu
 WGPU = args.wgpu
 if WGPU is None:
-    WGPU = os.path.expanduser("~/acww/toolchains/wgpu-native-v29.0.1.1/linux-x86_64") if X64 and not WIN else "none"
+    WGPU = "none"
+    if X64 and not WIN:  # (the repository's toolchains/, then ~/acww/toolchains)
+        for d in (str(root / "toolchains"), os.path.expanduser("~/acww/toolchains")):
+            if os.path.exists(f"{d}/wgpu-native-v29.0.1.1/linux-x86_64/lib/libwgpu_native.a"):
+                WGPU = f"{d}/wgpu-native-v29.0.1.1/linux-x86_64"
+                break
 if WGPU == "none" or not os.path.exists(f"{WGPU}/lib/libwgpu_native.a"):
     if args.wgpu not in (None, "none"):
         sys.exit(f"--wgpu: no {args.wgpu}/lib/libwgpu_native.a")
@@ -399,9 +427,11 @@ def main():
         objects_file.write_text("".join(f"{o}\n" for o in link_objs))
         exe = str(build / ("acww.exe" if WIN else "acww"))
         n.build(exe, "link", link_objs, implicit=[str(objects_file)], variables={"objects": str(objects_file)})
-        # the viewer: a 64-bit SDL2 program (SDL2 headers from --sdl2, the system's libSDL2 at run time)
-        n.rule("viewer", f"gcc -O2 -I{args.sdl2}/usr/include -I{args.sdl2}/usr/include/x86_64-linux-gnu $in -o $out "
-                         "-l:libSDL2-2.0.so.0", description="VIEWER $out")
+        # the viewer: a 64-bit SDL2 program (SDL2's headers as for the frontend: <SDL2/SDL.h>, so their parent
+        # directory; the system's libSDL2 at run time)
+        vdirs = find_sdl2() or []
+        vflags = " ".join(f"-I{os.path.dirname(d) if os.path.exists(d + '/SDL.h') else d}" for d in vdirs)
+        n.rule("viewer", f"gcc -O2 {vflags} $in -o $out -l:libSDL2-2.0.so.0", description="VIEWER $out")
         if WIN:
             n.default([exe])
         elif A64:
@@ -432,5 +462,17 @@ def main():
             n.default([exe, viewer])
 
 
+def summary():
+    """What the build has, and what to do about what it hasn't."""
+    print(f"configure_host.py: {NINJA_FILE}: build with `ninja -f {NINJA_FILE}`, the game: {build}/"
+          f"{'acww.exe' if WIN else 'acww'}")
+    if HOST64 and not WIN:
+        print("  window: " + ("SDL2" if SDL2 else
+              "none, headless only - install SDL2's development files (e.g. libsdl2-dev) or give --sdl2"))
+        print("  GPU renderer: " + ("wgpu-native" if WGPU else
+              "none, the CPU renderers - `python3 tools/host_fetch_wgpu.py` downloads wgpu-native"))
+
+
 if __name__ == "__main__":
     main()
+    summary()
