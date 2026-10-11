@@ -12,9 +12,10 @@ the dual build (`HOST_AT`, `HOST_AT_A`, `HOST_SIZED`: `include/uptr.h`) go away 
 Checking changes without the matching ROM: the behaviour must not change. Both builds are deterministic and, since
 docs/portability.md 3.4, give the same output (screenshots, sound, save files, register traffic frame for frame); the
 x86-64 build is the reference. `tools/host_oracle.sh <binary> quick|play` compares a build's screenshots and sound
-with the captures in `~/acww/ref/oracle/captures_v2` (not in the repository; recorded from the x86-64 build of
-step 3.4 with `tools/host_oracle.sh build/host64_usa/acww record`, which writes only that directory - `CAPDIR=`
-another): `quick` - the attract demo and title, screenshots at frames 2500 and 8000 and the sound; `play` - scripted
+with the captures in `~/acww/ref/oracle/captures_v3` (not in the repository; recorded from the x86-64 build with the
+own renderers, docs/portability.md 5.3, with `tools/host_oracle.sh build/host64_usa/acww record`, which writes only
+that directory - `CAPDIR=` another; `captures_v2`, the same runs as melonDS draws them, are checked with the oracle
+build: `CAPDIR=~/acww/ref/oracle/captures_v2 ACWW_RENDERER=melon tools/host_oracle.sh build/host64_oracle_usa/acww`): `quick` - the attract demo and title, screenshots at frames 2500 and 8000 and the sound; `play` - scripted
 play through the intro (`tools/host_play_script.py play`: A every second), screenshots to frame 25000. The earlier
 captures (`~/acww/ref/oracle/captures`, the i386 build with the access-counting virtual time) stay as they were;
 `~/acww/ref/oracle/oracle.sh <binary> quick|play` still compares with them when the run uses that time:
@@ -182,7 +183,8 @@ The runtime (`modern/host/`):
   shows there.
 - `render.c` / `render.h`: the display interface the rest of the runtime uses (`render_init`, `render_write8/16/32`,
   `render_read32`, `render_frame`, `render_screen`, `render_gx_fifo_irq_level`), and the choice of renderer:
-  `ACWW_RENDERER=melon` (default) or `own`, `ACWW_RENDER_COMPARE=1` (both every frame, the first differing pixel of
+  `ACWW_RENDERER=own` (default) or `melon`, `ACWW_RENDERER3D` (the same choice for the 3D engine; default: the 2D
+  one's), `ACWW_RENDER_COMPARE=1` (both every frame, the first differing pixel of
   each differing frame reported with the layers and effect the own renderer used there; a summary at exit),
   `ACWW_RENDER_SELFTEST=<n>` (`render_selftest.c`: n random scenes through both renderers before the game starts,
   then exit; `_SEED`, `_MASK`, `_OBJ`, `_OBJS`, `_SHOTS` narrow it down), `ACWW_GPU2D_FEATURES=1` (the 2D features the
@@ -192,8 +194,10 @@ The runtime (`modern/host/`):
   screens out. `gpu2d.c` (VRAM mapping with the banks' mirrors, windows, compositing and effects, display modes,
   master brightness), `gpu2d_bg.c` (text, affine, extended and large bitmap BGs, mosaic), `gpu2d_obj.c` (OBJs).
   Compiled with -O2 (about 2 ms a frame on this machine).
-- `melon.cpp`: melonDS's GPU (register forwarding, 3D commands run at once, VRAM sync): the 3D engine, and the 2D
-  engines unless `ACWW_RENDERER=own`; `melon_3d_lines` hands its 3D picture to the own renderer.
+- `melon.cpp`: melonDS's GPU (GPL-3.0; register forwarding, 3D commands run at once, VRAM sync), in the oracle build
+  only (`tools/configure_host.py --oracle`: `build_host64_oracle.ninja`, `build/host64_oracle_usa`; any --arch) as the
+  reference for `ACWW_RENDERER=melon` / `ACWW_RENDERER3D=melon`, the comparisons and the render self-tests. The other
+  builds compile `melon_none.c` instead (asking for melonDS stops with a message) and link no GPL code.
 - `os.c`: interrupt masking per thread, thread contexts (a host stack each, `coro.h`), lock ids, BIOS waits.
 - `pxi7.c`: the ARM7 services - start-up handshake, WVR, NVRAM (firmware image), RTC (the host's local time;
   `ACWW_RTC`), touch panel, card backup (the save memory, `ACWW_SAVE`; replies delayed like the DS's), power management (PMIC registers kept in the host:

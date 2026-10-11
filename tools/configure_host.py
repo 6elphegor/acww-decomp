@@ -25,9 +25,13 @@ parser.add_argument("--cc", default="gcc",
                     help="the C compiler: gcc, or clang or a path to one (a separate build: suffix _clang; when no "
                          "clang is on the PATH, the newest of ~/acww/toolchains/LLVM-*/bin and "
                          "~/acww/toolchains/llvm-mingw-*/bin, a full clang that also targets Linux)")
+parser.add_argument("--oracle", action="store_true",
+                    help="the oracle variant (a separate build: suffix _oracle): melonDS (GPL-3.0, --melonds) linked in "
+                         "as a reference renderer for ACWW_RENDERER=melon, ACWW_RENDERER3D=melon, ACWW_RENDER_COMPARE "
+                         "and the render self-tests. The other builds have no melonDS (modern/host/melon_none.c)")
 parser.add_argument("--melonds", default=os.path.expanduser("~/acww/ref/melonDS"),
-                    help="melonDS source tree patched with tools/host/melonds.patch and built for 32-bit x86 in build-core32 "
-                         "(the display renderer)")
+                    help="--oracle: melonDS source tree patched with tools/host/melonds.patch and built for the "
+                         "target (build-core32, build-core, build-core-a64, build-core-win64)")
 parser.add_argument("--sdl2", default=os.path.expanduser("~/acww/toolchains/sdl2-dev"),
                     help="directory with SDL2 development headers (usr/include/SDL2): the 64-bit builds' frontend "
                          "(in the game's process, linked with the system's libSDL2) and the i386 build's viewer")
@@ -98,6 +102,8 @@ if CLANG and not WIN:
         args.cc = found[-1]
 if args.guards and not args.suffix:
     args.suffix = "_guards"
+if args.oracle and not args.suffix:
+    args.suffix = "_oracle"
 A64 = args.arch == "aarch64"
 if A64 and CLANG:
     sys.exit("configure_host.py: --arch aarch64 builds with the GCC cross toolchain (--cross) only so far")
@@ -238,6 +244,9 @@ else:
                       f"-I{M}/src -I{M}/build-core32/src -DHOST")
     MELON_LIBS = f"{M}/build-core32/src/libcore.a {M}/build-core32/src/teakra/src/libteakra.a"
     # the frontend: the 64-bit viewer process (modern/host/frontend_viewer.c, viewer/)
+if not args.oracle:  # (no melonDS: its headers and libraries aren't needed)
+    MELON_LIBS = ""
+    HOST_CXX_FLAGS = re.sub(f" -I{re.escape(M)}/\\S+| -DJIT_ENABLED| -DGDBSTUB_ENABLED", "", HOST_CXX_FLAGS)
 
 MWCC_FLAG_MAP = {("-char", "unsigned"): "-funsigned-char"}
 
@@ -292,6 +301,8 @@ def main():
                 continue
             if WIN and s.name in ("frontend_sdl.c", "frontend_viewer.c", "plat_posix.c"):
                 continue  # (debug_posix.c and guards.c are empty there: HOST_DEBUG_POSIX 0, no HOST_GUARDS)
+            if s.name in (("melon_none.c",) if args.oracle else ("melon.cpp", "melon_platform.cpp")):
+                continue  # (melonDS, or the stand-in that refuses it: --oracle)
             o = str(build / s.with_suffix(".o"))
             rule = {".cpp": "hostcxx", ".S": "hostas_S"}.get(s.suffix, "hostcc")
             sdl = s.name == "frontend_sdl.c" and SDL_CFLAGS

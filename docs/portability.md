@@ -1034,7 +1034,19 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     instead of dividing, edges set up once per polygon, texture slots flattened once a frame); the remaining cost is
     the per-pixel perspective division (interp_setup). `ACWW_PROFILE`'s file now starts with a function's address
     (`# host_debug_exit_dumps <addr>`), so position-independent samples map through nm.
-30. **5.3** Drop melonDS (and the GPL obligation), then HBlank effects (`Sky_HBlank*` stubs).
+30. **5.3** Drop melonDS (and the GPL obligation), then HBlank effects (`Sky_HBlank*` stubs). **melonDS dropped
+    (2026-10-10):** the own 2D renderer and 3D engine are the default (`ACWW_RENDERER` / `ACWW_RENDERER3D`, `own`;
+    the 3D choice follows the 2D one unless set). melonDS (melon.cpp, melon_platform.cpp, its libraries) is linked
+    only into the oracle build (`tools/configure_host.py --oracle`: suffix `_oracle`, any --arch), the reference for
+    `ACWW_RENDERER=melon`, `ACWW_RENDER_COMPARE` and the render self-tests; every other build compiles
+    `melon_none.c` (asking for melonDS stops with a message) and links no GPL code (no melonDS symbol in the
+    binary). The bar, chosen with the user: feature complete, not pixel-exact - the own engine's ±1 rounding is
+    accepted for now. New captures `~/acww/ref/oracle/captures_v3` recorded from the x86-64 build with the own
+    renderers (the quick screenshots equal the own-renderer runs before the switch); `tools/host_oracle.sh` compares
+    with them by default (timeouts raised to 300 / 900 s: the own engine is slower than melonDS's). **Checks:**
+    i386, clang, aarch64 (quick, qemu), Windows (Wine) and the oracle build identical to captures_v3 (quick and play);
+    the oracle build with `ACWW_RENDERER=melon` identical to captures_v2; render self-tests run in the oracle build.
+    **Open:** HBlank effects; the ±1 precision items of 29.
 
 ---
 

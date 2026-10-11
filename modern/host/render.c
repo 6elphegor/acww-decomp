@@ -1,13 +1,14 @@
 // Host build: the display interface (render.h) and the choice of renderer.
 //
-// melonDS (melon.cpp, GPL-3.0, temporary) can render both 2D engines and the 3D engine; the project's own 2D renderer
-// (gpu2d/, docs/portability.md 5.1) and 3D engine (gpu3d/, 5.2) replace it:
-//   ACWW_RENDERER=melon (default) | own   whose 2D pictures the screens show
-//   ACWW_RENDERER3D=melon (default) | own whose 3D engine runs the game's 3D: answers its reads (GXSTAT, the test
+// The display is the project's own 2D renderer (gpu2d/, docs/portability.md 5.1) and 3D engine (gpu3d/, 5.2).
+// melonDS (melon.cpp, GPL-3.0) is linked into the oracle build only (tools/configure_host.py --oracle; 5.3), as a
+// reference renderer; the other builds have melon_none.c, which stops with a message when it is asked for:
+//   ACWW_RENDERER=own (default) | melon   whose 2D pictures the screens show
+//   ACWW_RENDERER3D=own | melon           whose 3D engine runs the game's 3D: answers its reads (GXSTAT, the test
 //                                         results, matrices, RAM counts), raises the GX FIFO interrupt and draws the
-//                                         3D layer. `own` needs the own 2D renderer too (melonDS's 2D would show its
-//                                         own 3D), so it implies ACWW_RENDERER=own. With both `own` melonDS isn't run
-//                                         at all.
+//                                         3D layer. Default: the 2D renderer's choice. `own` needs the own 2D renderer
+//                                         too (melonDS's 2D would show its own 3D), so it implies ACWW_RENDERER=own.
+//                                         With both `own` melonDS isn't run at all.
 //   ACWW_RENDER_COMPARE=1                 render with both every frame and report the frames where they differ: the
 //                                         first differing pixel of each screen and what the own renderer put there
 //                                         (layers, effect); for the 3D engine also every read whose value differs,
@@ -70,12 +71,12 @@ static int env_is(const char *name, const char *value) {
 }
 
 void render_init(void) {
-    sOwn = env_is("ACWW_RENDERER", "own");
-    if (getenv("ACWW_RENDERER") && !sOwn && !env_is("ACWW_RENDERER", "melon"))
-        fprintf(stderr, "render: ACWW_RENDERER=%s unknown (own, melon): melon\n", getenv("ACWW_RENDERER"));
-    sOwn3d = env_is("ACWW_RENDERER3D", "own");
-    if (getenv("ACWW_RENDERER3D") && !sOwn3d && !env_is("ACWW_RENDERER3D", "melon"))
-        fprintf(stderr, "render: ACWW_RENDERER3D=%s unknown (own, melon): melon\n", getenv("ACWW_RENDERER3D"));
+    sOwn = !env_is("ACWW_RENDERER", "melon");
+    if (getenv("ACWW_RENDERER") && sOwn && !env_is("ACWW_RENDERER", "own"))
+        fprintf(stderr, "render: ACWW_RENDERER=%s unknown (own, melon): own\n", getenv("ACWW_RENDERER"));
+    sOwn3d = getenv("ACWW_RENDERER3D") ? !env_is("ACWW_RENDERER3D", "melon") : sOwn;
+    if (getenv("ACWW_RENDERER3D") && sOwn3d && !env_is("ACWW_RENDERER3D", "own"))
+        fprintf(stderr, "render: ACWW_RENDERER3D=%s unknown (own, melon): own\n", getenv("ACWW_RENDERER3D"));
     if (sOwn3d) sOwn = 1;
     sCompare = getenv("ACWW_RENDER_COMPARE") ? atoi(getenv("ACWW_RENDER_COMPARE")) : 0;
     if (getenv("ACWW_RENDER_COMPARE_MAX")) sCompareMax = strtol(getenv("ACWW_RENDER_COMPARE_MAX"), 0, 10);
