@@ -637,8 +637,8 @@ void MI_CpuFill8(void *dst, u8 data, u32 size);
 void DC_FlushRange(const void *start, u32 size);
 s32 _s32_div_f(s32 a, s32 b);
 u32 _u32_div_f(u32 a, u32 b);
-void Sky_HBlankMain(void);
-void Sky_HBlankSub(void);
+extern "C" void Sky_HBlankMain(void);
+extern "C" void Sky_HBlankSub(void);
 fx32 func_01ffcb0c(fx32 v1, fx32 v2);
 fx32 FX_Div(fx32 numer, fx32 denom);
 fx32 FX_Inv(fx32 x);
@@ -6373,6 +6373,48 @@ extern "C" void Sky_VBlankMain()
     Gfx2d_SetMainWin0Planes(0x15);
     Gfx2d_SetMainWinOutPlanes(0x1f);
     Gfx2d_SetMainWin0Rect(0, r, 0xff, 0xc0);
+}
+
+// The H-blank handlers (ITCM 0x01ffcd50 / 0x01ffceb8, code in a gap of the DS build; HBlank_Handler calls them after
+// each visible line): the next line of the sky from the line tables, y being VCOUNT plus the screen offset (at most
+// 191) - the backdrop gradient, the cloud BG's affine line, the blend, and below the horizon (151, 168) the layers
+// and blending the sea shows with
+extern "C" void Sky_HBlankMain()
+{
+    s32 y = IO_R(&REG16(0x4000006)) + gWeatherManager.screenOffsetY[gWeatherManager.bufferIndex];
+    if (y >= 0xc0) y = 0xbf;
+    REG16(HW_PLTT + 0x400) = sSkyGradient.keyColors[0];
+    REG16(HW_PLTT) = sSkyGradient.lineColors[sSkyGradient.bufferIndex][y];
+    SkyLineAffine *e = &gWeatherManager.lineAffine[gWeatherManager.lineBufferIndex][y];
+    IO_W(&REG16(0x4000030), e->pa);
+    IO_W(&REG32(0x4000038), e->x);
+    IO_W(&REG32(0x400003c), e->y);
+    if (y >= 0xa8) {
+        IO_W(&REG32(0x4000000), IO_R(&REG32(0x4000000)) & 0xfffff5ff);
+        IO_W(&REG16(0x4000050), 0x2040);
+    } else if (y >= 0x97) {
+        IO_W(&REG32(0x4000000), IO_R(&REG32(0x4000000)) & 0xfffffdff);
+        IO_W(&REG16(0x4000050), 0x2048);
+    }
+    IO_W(&REG16(0x4000052), gWeatherManager.lineBlend[gWeatherManager.lineBufferIndex][y]);
+}
+
+// (engine B's: the reference point's low 16 bits only, as the DS code writes them)
+extern "C" void Sky_HBlankSub()
+{
+    s32 y = IO_R(&REG16(0x4000006)) + gWeatherManager.screenOffsetY[gWeatherManager.bufferIndex];
+    if (y >= 0xc0) y = 0xbf;
+    REG16(HW_PLTT + 0x400) = sSkyGradient.lineColors[sSkyGradient.bufferIndex][y];
+    REG16(HW_PLTT) = sSkyGradient.keyColors[1];
+    SkyLineAffine *e = &gWeatherManager.lineAffine[gWeatherManager.lineBufferIndex][y];
+    IO_W(&REG16(0x4001030), e->pa);
+    IO_W(&REG32(0x4001038), (u16)e->x);
+    IO_W(&REG32(0x400103c), (u16)e->y);
+    if (y >= 0x97) {
+        IO_W(&REG32(0x4001000), IO_R(&REG32(0x4001000)) & 0xfffffdff);
+        IO_W(&REG16(0x4001050), 0x2048);
+    }
+    IO_W(&REG16(0x4001052), gWeatherManager.lineBlend[gWeatherManager.lineBufferIndex][y]);
 }
 
 #undef REG16

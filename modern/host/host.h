@@ -48,6 +48,7 @@ void host_debug_exit_dumps(void);
 u32 host_irq_pending(void);            // IE & IF when IME is set
 void host_irq_ack(u32 mask);
 void host_irq_raise(u32 mask);
+void host_irq_call(int bit);  // os.c: one interrupt handler at once (the H-blank, hw.c)
 void host_advance_to_next_event(void);
 u64 host_frame(void);
 u64 host_cycles(void);

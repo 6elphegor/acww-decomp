@@ -69,6 +69,19 @@ void host_deliver_irqs(void) {
 
 void OS_IrqHandler(void) { host_deliver_irqs(); }
 
+// one interrupt's handler (OS_IRQTable entry `bit`) at once, in interrupt mode, for an interrupt the host raises in the
+// middle of its own work (the H-blank: hw.c host_hblank); the handler wakes no thread
+void host_irq_call(int bit) {
+    if (!data_027e0000[bit]) return;
+    u32 disabled = sIrqDisabled;
+    int inIrq = sInIrq;
+    sInIrq = 1;
+    sIrqDisabled = 0x80;
+    data_027e0000[bit]();
+    sIrqDisabled = disabled;
+    sInIrq = inIrq;
+}
+
 int host_irq_ready(void) { return !sIrqDisabled && !sInIrq && host_irq_pending(); }
 void OSi_ExceptionHandler(void) { host_fatal("OSi_ExceptionHandler"); }
 

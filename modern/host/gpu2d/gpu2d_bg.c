@@ -95,15 +95,15 @@ static void text_line(Engine *e, int n, int line, u16 *dst) {
 }
 
 // the affine parameters of BG n (2 or 3): PA, PC (per pixel), and the reference point of this line (20.8 fixed
-// point; the internal reference point advances by PB, PD each line from BGxX, BGxY at the frame's start)
+// point: the internal reference point, gpu2d.c; a mosaic line above the current one steps back by PB, PD)
 static void affine_start(const Engine *e, int n, int line, s32 *x, s32 *y, s32 *pa, s32 *pc) {
     u32 r = REG_BG2PA + (u32)(n - 2) * 0x10;
     *pa = (s16)reg16(e, r);
     s32 pb = (s16)reg16(e, r + 2);
     *pc = (s16)reg16(e, r + 4);
     s32 pd = (s16)reg16(e, r + 6);
-    *x = e->refX[n - 2] + pb * line;
-    *y = e->refY[n - 2] + pd * line;
+    *x = e->refX[n - 2] + pb * (line - e->refLine);
+    *y = e->refY[n - 2] + pd * (line - e->refLine);
 }
 
 // coordinate c of a w-wide area: wrapped (BGxCNT bit 13) or -1 outside

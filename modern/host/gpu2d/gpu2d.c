@@ -52,9 +52,14 @@ void gpu2d_reset(void) {
     sFrame = 0;
 }
 
+// a write to BGxX / BGxY (BG2: 0x28-0x2f, BG3: 0x38-0x3f) reloads the internal reference point for the next line
+static void engine_write8(Engine *e, u32 off, u8 value) {
+    e->regs[off] = value;
+    if ((off & ~0x17u) == 0x28) e->refWritten[off >> 4 & 1] |= (u8)(1 << (off >> 2 & 1));
+}
 void gpu2d_write8(uint32_t addr, uint8_t value) {
-    if (addr >= 0x04000000 && addr < 0x04000000 + REG_SIZE) sEngine[0].regs[addr - 0x04000000] = value;
-    else if (addr >= 0x04001000 && addr < 0x04001000 + REG_SIZE) sEngine[1].regs[addr - 0x04001000] = value;
+    if (addr >= 0x04000000 && addr < 0x04000000 + REG_SIZE) engine_write8(&sEngine[0], addr - 0x04000000, value);
+    else if (addr >= 0x04001000 && addr < 0x04001000 + REG_SIZE) engine_write8(&sEngine[1], addr - 0x04001000, value);
     else if (addr == 0x04000304) sPowCnt = (u16)((sPowCnt & 0xff00) | value);
     else if (addr == 0x04000305) sPowCnt = (u16)((sPowCnt & 0x00ff) | value << 8);
     else if (addr >= 0x04000240 && addr <= 0x04000246) sVramCnt[addr - 0x04000240] = value;
@@ -469,8 +474,15 @@ void gpu2d_render_frame(const Gpu2dFrameInput *in) {
         for (int i = 0; i < 2; i++) {
             e->refX[i] = ref28(e, 0x28 + 0x10 * (u32)i);
             e->refY[i] = ref28(e, 0x2c + 0x10 * (u32)i);
+            e->refWritten[i] = 0;
         }
-        for (int line = 0; line < SCREEN_H; line++) {
+        e->refLine = 0;
+    }
+    // line by line, both engines: after each line its H-blank (in->hblank), whose register and palette writes the
+    // lines below show
+    for (int line = 0; line < SCREEN_H; line++) {
+        for (int n = 0; n < 2; n++) {
+            Engine *e = &sEngine[n];
             window_vertical(e, line);
             // OBJs are prepared a line ahead (during the line before): line 0's during the previous frame's
             // last line, before this frame's register, OAM and VRAM changes
@@ -479,6 +491,22 @@ void gpu2d_render_frame(const Gpu2dFrameInput *in) {
             else gpu2d_render_obj_line(e, line, &e->obj);
             render_line(e, in, line);
         }
+        if (in->hblank) in->hblank(line, in->hblankContext);
+        for (int n = 0; n < 2; n++) {  // the internal reference points: the next line's
+            Engine *e = &sEngine[n];
+            for (int i = 0; i < 2; i++) {
+                u32 r = REG_BG2PA + 0x10 * (u32)i;
+                e->refX[i] = e->refWritten[i] & 1 ? ref28(e, 0x28 + 0x10 * (u32)i)
+                                                  : e->refX[i] + (s16)reg16(e, r + 2) * (line + 1 - e->refLine);
+                e->refY[i] = e->refWritten[i] & 2 ? ref28(e, 0x2c + 0x10 * (u32)i)
+                                                  : e->refY[i] + (s16)reg16(e, r + 6) * (line + 1 - e->refLine);
+                e->refWritten[i] = 0;
+            }
+            e->refLine = line + 1;
+        }
+    }
+    for (int n = 0; n < 2; n++) {
+        Engine *e = &sEngine[n];
         for (int line = SCREEN_H; line < FRAME_LINES; line++) window_vertical(e, line);
         gpu2d_render_obj_line(e, 0, &e->objNextLine0);
         e->haveNextLine0 = 1;

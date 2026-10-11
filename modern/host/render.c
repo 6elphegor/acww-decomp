@@ -44,6 +44,8 @@ void melon_debug(void);
 void melon_3d_lines(u32 *out);
 int melon_3d_poly_count(void);
 int melon_3d_poly_get(int i, Gpu3dVertexOut *v, u32 *attr, u32 *texparam, u32 *texpal, int *flags);
+// hw.c
+void host_hblank(int line);
 // vram.c
 u8 *host_vram_bank(int i);
 void host_vram_flush(void);
@@ -475,6 +477,10 @@ static void gpu3d_run_frame(void) {
     gpu3d_frame(banks);
 }
 
+static void render_hblank(int line, void *context) {
+    (void)context;
+    host_hblank(line);
+}
 void render_frame(void) {
     // the 3D picture this frame shows (melonDS renders the next one in the frame)
     const u32 *lines3d = s3d;
@@ -490,6 +496,10 @@ void render_frame(void) {
         in.palette = gHostPltt;
         in.oam = gHostOam;
         in.lines3d = lines3d;
+        // the game's H-blank effects, between the lines the screens show (not when they show melonDS's pictures:
+        // it draws the frame at once)
+        in.hblank = sOwn ? render_hblank : 0;
+        in.hblankContext = 0;
         gpu2d_render_frame(&in);
     }
     if (sGpu3d) gpu3d_run_frame();

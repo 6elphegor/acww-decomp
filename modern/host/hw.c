@@ -222,7 +222,10 @@ static void run_events_body(void) {
         __atomic_store_n(&sHeartbeatFrame, (u32)host_frame(), __ATOMIC_RELAXED);
         u16 st = R16(0x04000004);
         if (st & 8) host_irq_raise(1);    // VBlank
-        if (st & 16) host_irq_raise(2);   // HBlank (once per frame: the per-line effects aren't emulated)
+        // HBlank: once per frame here, as delivered interrupts wake the threads waiting for one (its handler finds
+        // VCOUNT past the visible lines and does nothing); the per-line effects run while the frame is drawn
+        // (host_hblank)
+        if (st & 16) host_irq_raise(2);
         dma_on_vblank();
         render_frame();
         extern void frontend_frame(void);
@@ -487,7 +490,31 @@ void host_spend_cycles(u64 n) {
     sCycles += n;
     run_events();
 }
+// the H-blank after visible line `line` (render.c, while the 2D renderer draws the frame): the game's H-blank interrupt
+// handler, run at once as the interrupt would, when DISPSTAT, IE and IME enable it. The DS raises it on every line;
+// the game's handler acts on the visible ones, after which the effects' register writes show. Meanwhile DISPSTAT and
+// VCOUNT read as that line's H-blank, without moving the virtual time, and the handler's register accesses leave the
+// interrupted code's polling state (a polling loop, the spin check) as it was: they are the renderer's, not the game
+// code's in which the frame happens to be drawn.
+static int sHBlankLine = -1;
+static u32 sPollAddr, sPollRepeat;  // (defined below, io_read_cost)
+void host_hblank(int line) {
+    if (!(R16(0x04000004) & 0x10) || !(R32(0x04000208) & 1) || !(R32(0x04000210) & 2)) return;
+    u16 st = R16(0x04000004), vcount = R16(0x04000006);
+    u32 pollAddr = sPollAddr, pollRepeat = sPollRepeat, timeless = sTimeless;
+    sHBlankLine = line;
+    host_irq_call(1);
+    sHBlankLine = -1;
+    sPollAddr = pollAddr, sPollRepeat = pollRepeat, sTimeless = timeless;
+    R16(0x04000004) = st;
+    R16(0x04000006) = vcount;
+}
 static void io_read(u32 a) {
+    if (sHBlankLine >= 0 && (a & ~3u) == 0x04000004) {
+        R16(0x04000004) = (u16)((R16(0x04000004) & ~7u) | 2);
+        R16(0x04000006) = (u16)sHBlankLine;
+        return;
+    }
     u32 cost = io_read_cost(a);
     if (cost) {
         sCycles += cost;
@@ -697,24 +724,27 @@ static void io_note(uintptr_t a, int write, void *caller) {
     if (sIoHist) io_hist((u32)a, (uintptr_t)caller, write);
 }
 unsigned long long HostIo_Read(uintptr_t addr, unsigned int size) {
-    io_note(addr, 0, __builtin_return_address(0));
     u32 a = (u32)addr;
+    if (sHBlankLine >= 0)  // (the H-blank handler's accesses: not the game code's traffic, host_hblank)
+        return size == 8 ? io_load(a, 4) | (unsigned long long)io_load(a + 4, 4) << 32 : io_load(a, size);
+    io_note(addr, 0, __builtin_return_address(0));
     unsigned long long v = size == 8 ? io_load(a, 4) | (unsigned long long)io_load(a + 4, 4) << 32 : io_load(a, size);
     if (sIoTrace > 0) io_trace_value(a, 0, v);
     io_access_done();
     return v;
 }
 unsigned long long HostIo_Write(uintptr_t addr, unsigned int size, unsigned long long v) {
-    io_note(addr, 1, __builtin_return_address(0));
     u32 a = (u32)addr;
-    if (sIoTrace > 0) io_trace_value(a, 1, v);
+    int traced = sHBlankLine < 0;  // (as for reads)
+    if (traced) io_note(addr, 1, __builtin_return_address(0));
+    if (traced && sIoTrace > 0) io_trace_value(a, 1, v);
     if (size == 8) {
         io_store(a, 4, (u32)v);
         io_store(a + 4, 4, (u32)(v >> 32));
     } else {
         io_store(a, size, (u32)v);
     }
-    io_access_done();
+    if (traced) io_access_done();
     return v;
 }
 

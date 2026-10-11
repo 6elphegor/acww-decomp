@@ -31,6 +31,10 @@ typedef struct Gpu2dFrameInput {
     // the 3D engine's picture for this frame (engine A's BG0 when DISPCNT bit 3 is set): 192 lines of 256 pixels,
     // red bits 0-5, green 8-13, blue 16-21, alpha 24-28 (0-31; 0: no pixel), not scrolled; NULL: no 3D picture
     const uint32_t *lines3d;
+    // called after each visible line (0-191) of both engines, the H-blank: register writes (gpu2d_write*) and
+    // palette changes made there show from the next line on (NULL: none)
+    void (*hblank)(int line, void *context);
+    void *hblankContext;
 } Gpu2dFrameInput;
 
 void gpu2d_reset(void);
