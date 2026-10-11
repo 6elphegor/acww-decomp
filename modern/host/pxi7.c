@@ -223,7 +223,8 @@ static void rtc_command(u32 data) {
 // page, 11 erase sector, 12 erase chip. The ARM9 side splits a long write into page-sized requests (the stream
 // command), each followed by a verify. The save memory is kept in the host; with ACWW_SAVE=<file> it is loaded
 // from that file at the first access (a missing file is a blank memory, all 0xff) and every change is written
-// through to it. Without ACWW_SAVE every run starts with a blank save memory and nothing is written to disk.
+// through to it. Without ACWW_SAVE, a run with a window saves next to the ROM (<name>.sav); a headless one
+// (ACWW_HEADLESS, the tests) starts with a blank save memory and writes nothing to disk; ACWW_SAVE= (empty): neither.
 static CARDCmd *sCardBlock;
 static int sCardWantBlock;
 static u8 *sSave;
@@ -433,6 +434,18 @@ void pxi7_init(void) {
         if (t) t++;
     }
     sSavePath = getenv("ACWW_SAVE");
+    if (!sSavePath && !getenv("ACWW_HEADLESS")) {  // (playing: next to the ROM, <name>.sav; test runs: none)
+        extern const char *host_rom_path(void);
+        static char path[1024];
+        const char *rom = host_rom_path();
+        size_t n = rom ? strlen(rom) : 0;
+        if (n > 4 && !strcmp(rom + n - 4, ".nds")) n -= 4;
+        if (rom && n + 5 < sizeof path) {
+            snprintf(path, sizeof path, "%.*s.sav", (int)n, rom);
+            sSavePath = path;
+            fprintf(stderr, "pxi7: the save file: %s (ACWW_SAVE: another)\n", path);
+        }
+    }
     if (sSavePath && !*sSavePath) sSavePath = 0;
     const char *fw = getenv("ACWW_FIRMWARE");
     FILE *f = fw ? fopen(fw, "rb") : 0;

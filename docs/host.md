@@ -128,9 +128,12 @@ explicit wait at that site; none is known (`ACWW_WATCHDOG=<ms>`, 0 = off). Runs 
 screenshots and sound). The debugging aids that use POSIX signals (crash report, the SIGINT dump, `ACWW_PROFILE`,
 `ACWW_WATCH`) are in `debug_posix.c` behind `HOST_DEBUG_POSIX` (on by default except on Windows).
 
-Build: `python3 tools/configure_host.py && ninja -f build_host.ninja` (needs the 32-bit sysroot, SDL2 headers for the
-viewer, and a melonDS tree patched with `tools/host/melonds.patch` and built for 32-bit x86 in `build-core32`; see
-`--sysroot`, `--sdl2`, `--melonds`). Run: `ACWW_FIRMWARE=<firmware image> build/host_usa/acww <rom.nds>`: a window
+Build (README.md): `python3 tools/configure_host.py && ninja -f build_host64.ninja` (x86-64; SDL2's headers from
+pkg-config or `/usr/include/SDL2`, `--sdl2` otherwise; wgpu-native from `toolchains/`, which
+`tools/host_fetch_wgpu.py` fills); the 32-bit build: `--arch i386` and `build_host.ninja` (needs the 32-bit sysroot,
+`--sysroot`; melonDS only for `--oracle`: `--melonds`, a tree patched with `tools/host/melonds.patch`). Run:
+`build/host64_usa/acww <rom.nds>` (`ACWW_FIRMWARE=<firmware image>`: the user settings from a firmware image, else a
+built-in one; the save file `<rom>.sav` beside the ROM unless `ACWW_SAVE` or `ACWW_HEADLESS`): a window
 shows both screens; keys (by position, so the same keys on other layouts): arrows, X = A, Z = B, S = X, A = Y, Q/W =
 L/R, Enter = Start, Right Shift = Select; the mouse on the bottom screen touches; M mutes. Sound goes to the default
 audio device (SDL), about 70 ms behind. The 64-bit builds have the frontend in the game's process

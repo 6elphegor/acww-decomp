@@ -1,7 +1,8 @@
-# Animal Crossing: Wild World decompilation
+# Animal Crossing: Wild World, native
 
-Work-in-progress matching decompilation of Animal Crossing: Wild World for the Nintendo DS, built with
-[dsd (ds-decomp)](https://github.com/AetiasHax/ds-decomp).
+Animal Crossing: Wild World (Nintendo DS) as a native PC program. The game's code comes from a complete
+decompilation and is compiled for the PC, with its own 2D and 3D renderers (on the GPU through WebGPU, or on the
+CPU), sound, input and a window. It doesn't use an emulator. You need your own copy of the game.
 
 Supported version:
 
@@ -9,129 +10,74 @@ Supported version:
 | -------------- | --------- | ------------------------------------------ |
 | USA (Rev 1)    | `ADME`    | `77fde3e30e1e6068395d1f96ea63be569b61c351` |
 
-## Status
+## Run it
 
-Every overlay and all of main are built from source, and the build reproduces the original ROM byte for byte.
+Linux on x86-64 for now. You need GCC, Python 3, Ninja and SDL2's development files; on Debian or Ubuntu:
 
-| Module | Code built from source | Data owned by a source file |
-|---|--:|--:|
-| ARM9 main | 100% of functions | 99.7% |
-| Overlays (148) | 100% | 100% |
-| ITCM | 97.0% | (code only) |
-| `autoload_2` (libraries) | 99.4% | 99.5% |
-| `autoload_3` (bss of main and the libraries) | | 99.9% |
-| DTCM | | 100% |
-| **Total** | **99.9%** | **99.9%** |
+```
+sudo apt install build-essential python3 ninja-build libsdl2-dev
+```
 
-The 6 functions still taken from the original image, and the data no source file owns yet, are listed in
+Then:
+
+```
+python3 tools/host_fetch_wgpu.py   # optional: the GPU renderer (downloads wgpu-native)
+python3 tools/configure_host.py    # says what the build will have
+ninja -f build_host64.ninja
+build/host64_usa/acww path/to/your/game.nds
+```
+
+The game saves next to the ROM (`game.sav` for `game.nds`). Without `host_fetch_wgpu.py`, or on a machine without
+a GPU that WebGPU can use, the game is drawn by the CPU renderers instead.
+
+### Controls
+
+| DS | Keyboard | Controller |
+|---|---|---|
+| D-pad | arrow keys | D-pad or left stick |
+| A / B / X / Y | X / Z / S / A | the face buttons by position, as on the DS |
+| L / R | Q / W | shoulder buttons or triggers |
+| Start / Select | Enter / Right Shift | Start / Back |
+| touch screen | the mouse (left button) on the bottom screen, or a finger | |
+
+The keyboard keys are by position, so they are the same on other layouts. **F1** (or Back + Start on a controller)
+opens a screen for changing every binding; it stays hidden until then, and the game pauses while it is open. F11
+changes the window size, Alt+Enter switches to full screen and M mutes the sound.
+
+### Options
+
+Set as environment variables:
+- `ACWW_RENDERER3D=own`: the CPU renderers even when there is a GPU (default: the GPU, `wgpu`).
+- `ACWW_SCALE3D=<n>`: the 3D scenes at n times the DS's resolution (default 2).
+- `ACWW_MSAA=1`: no smoothing of the 3D edges.
+- `ACWW_VSYNC=1`: wait for the display's refresh.
+- `ACWW_SAVE=<file>`: another save file.
+- `ACWW_FIRMWARE=<file>`: a DS firmware image for the user settings (by default a built-in one).
+
+[`docs/host.md`](docs/host.md) has the rest, including the test and comparison options.
+
+## What's here
+
+- `src/`, `include/`: the game's code, decompiled to C and C++. On this branch it is changed freely toward plain,
+  portable code, so it no longer rebuilds the original ROM.
+- `modern/host/`: the PC runtime:
+  - the DS's hardware services (interrupts, timers, DMA, the ARM7's side: sound, touch, the clock, save memory);
+  - the 2D renderer (`gpu2d/`) and 3D engine (`gpu3d/`), also as GPU shaders (`gpu2d.wgsl`, `gpu3d/gpu3d_wgpu.c`);
+  - the SDL frontend.
+- [`docs/host.md`](docs/host.md): how the native build works, its options and how changes are checked.
+- [`docs/portability.md`](docs/portability.md): the port's plan and log (Windows, macOS, the GPU renderers).
+
+Other builds: 32-bit x86 (`--arch i386`), 64-bit ARM Linux (`--arch aarch64`, cross-compiled) and Windows
+(`--os windows`, cross-compiled with llvm-mingw; no window yet). [`docs/host.md`](docs/host.md) has their setup.
+
+## The matching decompilation
+
+The decompilation itself, which rebuilds the original ROM byte for byte with the original compiler, is at the
+`matching` tag. Its README covers the setup, the compiler and how functions were matched; this tree keeps its
+notes in [`docs/matching.md`](docs/matching.md), [`docs/layout.md`](docs/layout.md) and
 [`docs/unmatched.md`](docs/unmatched.md).
-
-Names: 29,224 of the 29,319 functions (99.7%) have real names; 95 are still `func_<address>`, mostly library
-functions whose original names could not be proven. About 300 types are still `Unk_<address>` placeholders, most of
-them views or bitfields whose fold would change the generated code. Library code uses the libraries' own names
-(NitroSDK, NitroSystem, MSL, the GameSpy SDK) where the evidence supports them.
-
-## Documentation
-
-- [`docs/matching.md`](docs/matching.md): how to match a function, compiler settings and quirks, the tools.
-- [`docs/assembly.md`](docs/assembly.md): when code is kept as assembly, and the exceptions.
-- [`docs/unmatched.md`](docs/unmatched.md): what is left.
-- [`docs/layout.md`](docs/layout.md): where code and libraries live in the ROM.
-- [`tools/pipeline/linking.md`](tools/pipeline/linking.md): turning matched code into linked units.
-
-## Setup
-
-Requirements:
-- Python 3.11 or newer
-- [Ninja](https://github.com/ninja-build/ninja/releases)
-- macOS on Apple silicon: Rosetta 2 (`softwareupdate --install-rosetta`), used by wibo to run the compiler
-
-1. Put your own dump of the game in `extract/`, named `baserom_acww_usa.nds`.
-2. Generate the build script:
-   ```
-   python3 tools/configure.py usa
-   ```
-3. Build:
-   ```
-   ninja
-   ```
-   The first build downloads dsd, objdiff, wibo and the Metrowerks compilers. The build ends by checking the
-   rebuilt `acww_usa.nds` against the original SHA-1.
-
-Other targets:
-- `ninja check_modules`: verify every module's layout in the linked binary (`ninja check` also runs
-  `check_symbols`, which reports data inside compiled files under compiler-local `@NN` names)
-- `ninja objdiff`: generate `objdiff.json` for [objdiff](https://github.com/encounter/objdiff)
-- `ninja report`: generate a progress report
-
-### ARM7 BIOS (optional)
-
-The ROM header stores a CRC of the encrypted secure area, which dsd can only compute with the Blowfish key from
-the ARM7 BIOS. Without it, `tools/fix_header.py` copies that CRC from the base ROM instead. If you have dumped the
-BIOS from your own DS, place it at `arm7_bios.bin` and rerun `configure.py` to have dsd compute it.
-
-## Compiler
-
-The game was built with Metrowerks CodeWarrior for DS 1.2 (`mwccarm` internal version 2.0 build 72):
-- 2.0 and DSi compilers don't match.
-- Secondary-base adjuster thunks (`_ZThn…`) are the one exception to 1.2/base. All 159 thunks in the game save and restore
-  r2 around the `this` adjustment, which 1.2/sp2 does and 1.2/base doesn't, while the switch tables need base. The game
-  was probably built with 1.2/sp1, which isn't available. A file containing thunks can switch compilers with a
-  `// mwcc-version: 1.2/sp2` line at the top; `configure.py` picks it up.
-- 1.2/sp3 onwards return from Thumb functions with `pop {pc}` instead of the game's `pop {r3}; bx r3`.
-- 558 of the game's 563 Thumb switch jump tables use a dispatch sequence that only 1.2/b56 and 1.2/base generate.
-  The other 5 are in overlay 65, which uses the 1.2/sp2p3 form and was likely built separately.
-- b56 and base haven't been told apart; `configure.py` uses `1.2/base`.
-
-The game code is mostly Thumb C/C++ and matches with `-O4,s`; the libraries in `autoload_2` (NitroSDK,
-NitroSystem, MSL, the C++ runtime) and the in-house ARM code use `-O4,p`. Per-file settings go in a
-`// mwcc-flags:` line at the top; [`docs/matching.md`](docs/matching.md) has the table.
-
-Quirks:
-- Functions are emitted in reverse order, so define them from highest to lowest address within a source file.
-- A loop that tests at the top and branches back unconditionally is `for (;;) { ... if (!cond) break; ... }`;
-  `while` and `for` put the test at the bottom.
-- Local declaration order affects register allocation. If only registers differ, reorder declarations or add or
-  remove a temporary.
-- Flat two-word structs are copied with interleaved loads and stores; nested aggregates load both words first.
-- A compare whose result is unused comes from `else if (x != 0) { var = value_it_already_has; }`.
-- `if (fits) { ... } else { ...; break; }` and `if (!fits) { ...; break; }` lay out their blocks in different orders.
-- `*(p + n - 1)` and `p[n - 1]` compile differently, as do `a * b` and `size = a; size * b`.
-- A repeated expression inside a short-circuit condition may need to go into a temporary first.
-- Pure virtual slots are written as 0 in vtables.
-- Two vtable stores in a row in a constructor or destructor mean an intermediate class with an inline, empty
-  constructor or destructor.
-
-Tools for matching:
-- `python3 tools/asmdiff.py <file> <function>` compiles a file and diffs one function's disassembly against the
-  original.
-- `python3 tools/compiler_search.py <file>` checks which compiler versions reproduce each function in a file.
-
-## C++
-
-Parts of the game are C++, compiled with the ARM/Itanium C++ ABI:
-- Names are mangled Itanium-style (`_ZN9TextLabelC1Ev`). Rename a class's functions in `symbols.txt` to their
-  mangled names so that other code links against the compiled ones.
-- Vtables are `[0, 0, virtual functions...]` in `.data`, and objects point 8 bytes in. Give the vtable symbol an
-  explicit size, e.g. `_ZTV9TextLabel kind:data(word[4])`, include its range in the file's `.data`, and write
-  references to it as `to:<vtable> add:0x8` in `relocs.txt`.
-- mwcc emits every constructor and destructor variant (C1, C2, D0, D1, D2); the linker dead-strips the unused ones, as
-  in the original build. Delinked code is kept through a `FORCE_ACTIVE` block, see `tools/force_active.py`.
-- Functions without known names can be declared `extern "C"` to keep their `func_*` symbols.
-
-## Layout
-
-[`docs/layout.md`](docs/layout.md) describes where the game code, libraries and C++ files are, and how that was
-worked out. `python3 tools/xrefs.py <start> <end>` lists what an address range references and what references it,
-which helps find the extent of a source file.
-
-## dsd
-
-The dsd config in `config/` was generated with `dsd init` from dsd v0.12.1 plus a fix for Thumb functions whose
-second instruction is an unconditional branch (without it, `init` fails on this ROM). Building only needs the
-released v0.12.1, which `configure.py` downloads. To rerun `init`, use a dsd build with that fix.
 
 ## Licence
 
 The project's own work (sources, tools, documentation) is under the MIT licence, see [`LICENSE`](LICENSE). The
-game and its ROM belong to Nintendo and are not included; you need your own dump to build.
+game and its ROM belong to Nintendo and are not included; you need your own dump.
