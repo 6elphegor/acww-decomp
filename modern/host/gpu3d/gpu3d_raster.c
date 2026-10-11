@@ -2,6 +2,7 @@
 // colour buffer with depth, attribute and fog buffers; then the frame-end passes (edge marking, fog, anti-aliasing).
 // Written from the hardware's documented behaviour (GBATEK "DS 3D Rendering").
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,11 +32,16 @@ static void interp_setup(Interp *ip, s32 x, s32 x0, s32 x1, s32 w0, s32 w1, int 
     ip->shift = shift;
     s32 span = x1 - x0, pos = x - x0;
     if (span <= 0) { ip->factor = 0; return; }
+    // (a 32-bit division where the operands are non-negative and fit, the same quotient: 64-bit divisions are
+    // several times slower on older x86)
     if (w0 == w1) {  // linear
-        ip->factor = ((s64)pos << shift) / span;
+        s64 num = (s64)pos << shift;
+        ip->factor = num >= 0 && num <= UINT32_MAX ? (s64)((u32)num / (u32)span) : num / span;
     } else {
         s64 a = (s64)pos * w0, b = (s64)(x1 - x) * w1;
-        ip->factor = (a << shift) / (a + b);
+        s64 num = a << shift, den = a + b;
+        ip->factor = num >= 0 && num <= UINT32_MAX && den > 0 && den <= UINT32_MAX ? (s64)((u32)num / (u32)den)
+                                                                                  : num / den;
     }
 }
 static s32 interp(const Interp *ip, s32 a0, s32 a1) {
