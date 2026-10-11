@@ -1113,6 +1113,16 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     the build has wgpu-native and the machine a hardware adapter (a software one only when asked for: llvmpipe is
     slower than the CPU's renderers), else to `own` without a message; `own` still when comparing with melonDS;
     tools/host_oracle.sh pins `own` (the captures are the CPU renderers', which the GPU's differ from slightly).
+32. **Key bindings (2026-10-11, the user's request: "a keybinding ui that can be fully hidden"):**
+    modern/host/frontend_ui.c, in the SDL frontend. Nothing shows until F1 (or a controller's Back + Start); then a
+    screen over both screens (drawn on the CPU into a 256x384 overlay with a 5x7 font of its own, blended in by
+    wgpu_display.c's compositor or the SDL renderer) lists the 12 DS buttons with a key and a controller button
+    each; Enter and the next key or button pressed rebinds (a key or button does one thing: taken from another),
+    Delete clears, a line resets to the defaults; the game waits while it is open; closing saves `bindings.txt`
+    (SDL's preference directory, or `ACWW_BINDINGS`). The left stick and triggers stay D-pad and L/R besides; F1 and
+    F11 can't be bound; M mutes only while no DS button has it. **Checks:** scripted (`ACWW_UI_SCRIPT`) in a real
+    window (GPU path) and with SDL's offscreen driver (SDL renderer path): rebinding by key and by controller
+    button, clearing, the file written and read back, nothing left on the screen after closing.
 
 ---
 

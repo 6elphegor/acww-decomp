@@ -32,6 +32,9 @@ int wdisp_attach(int kind, void *display, uint64_t window, int vsync);
 int wdisp_presenting(void);
 // the last frame into the window, whose drawable is w x h pixels (the screens letterboxed in it)
 void wdisp_present(int w, int h);
+// a picture over the screens (256x384, 0xAARRGGBB, straight alpha: the key binding screen) or none (NULL);
+// `changed`: it differs from the last one given
+void wdisp_overlay(const uint32_t *argb, int changed);
 // the same picture read back (w x h, 0x00RRGGBB; ACWW_WINSHOT); 0 if it failed
 int wdisp_read_window(int w, int h, uint32_t *out);
 

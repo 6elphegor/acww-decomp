@@ -315,13 +315,13 @@ def main():
         for s in sources(Path("modern/host"), (".c", ".cpp", ".S")):
             if "viewer" in s.parts or "tests" in s.parts:
                 continue
-            if WIN and s.name in ("frontend_sdl.c", "frontend_viewer.c", "plat_posix.c"):
+            if WIN and s.name in ("frontend_sdl.c", "frontend_ui.c", "frontend_viewer.c", "plat_posix.c"):
                 continue  # (debug_posix.c and guards.c are empty there: HOST_DEBUG_POSIX 0, no HOST_GUARDS)
             if s.name in (("melon_none.c",) if args.oracle else ("melon.cpp", "melon_platform.cpp")):
                 continue  # (melonDS, or the stand-in that refuses it: --oracle)
             o = str(build / s.with_suffix(".o"))
             rule = {".cpp": "hostcxx", ".S": "hostas_S"}.get(s.suffix, "hostcc")
-            sdl = s.name == "frontend_sdl.c" and SDL_CFLAGS
+            sdl = s.name in ("frontend_sdl.c", "frontend_ui.c") and SDL_CFLAGS
             implicit = []
             if s.name == "wgpu_display.c":  # (the 2D renderer's shader, embedded: modern/host/gpu2d.wgsl)
                 wgsl_h = str(build / "gen" / "gpu2d_wgsl.h")

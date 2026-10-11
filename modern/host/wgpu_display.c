@@ -39,6 +39,7 @@ int wdisp_attach(int kind, void *display, uint64_t window, int vsync) {
 }
 int wdisp_presenting(void) { return 0; }
 void wdisp_present(int w, int h) { (void)w, (void)h; }
+void wdisp_overlay(const uint32_t *argb, int changed) { (void)argb, (void)changed; }
 int wdisp_read_window(int w, int h, uint32_t *out) {
     (void)w, (void)h, (void)out;
     return 0;
@@ -123,11 +124,12 @@ void *wdisp_queue(void) { return sQueue; }
 
 // ---- the compositing
 static const char kShader[] =
-    "struct U { vp: vec4f, scale: u32, pad0: u32, pad1: u32, pad2: u32 };\n"
+    "struct U { vp: vec4f, scale: u32, overlay: u32, pad1: u32, pad2: u32 };\n"
     "@group(0) @binding(0) var<uniform> u: U;\n"
     "@group(0) @binding(1) var deferred: texture_2d<u32>;\n"
     "@group(0) @binding(2) var<storage, read> lines: array<u32>;\n"
     "@group(0) @binding(3) var pic: texture_2d<u32>;\n"
+    "@group(0) @binding(4) var overlay: texture_2d<f32>;\n"
     "@vertex fn vfull(@builtin(vertex_index) i: u32) -> @builtin(position) vec4f {\n"
     "  let p = vec2f(f32((i << 1u) & 2u), f32(i & 2u)); return vec4f(p * 2.0 - 1.0, 0.0, 1.0);\n"
     "}\n"
@@ -176,7 +178,9 @@ static const char kShader[] =
     "    for (var i = 0u; i < n; i++) {\n"
     "      let q = clamp(corner + (vec2f(f32(i), f32(j)) + 0.5) / f32(n) * px, vec2f(0.0), vec2f(255.99, 383.99));\n"
     "      let c = screens(q);\n"
-    "      sum += vec3f((c << vec3u(2u)) | (c >> vec3u(4u)));\n"
+    "      var c8 = vec3f((c << vec3u(2u)) | (c >> vec3u(4u)));\n"
+    "      if (u.overlay != 0u) { let o = textureLoad(overlay, vec2i(q), 0); c8 = mix(c8, o.rgb * 255.0, o.a); }\n"
+    "      sum += c8;\n"
     "    }\n"
     "  }\n"
     "  return vec4f(sum / f32(n * n) / 255.0, 1.0);\n"
@@ -193,6 +197,9 @@ static struct { WGPUTextureView pic; WGPUBindGroup group; } sGroups[2];
 static WGPUTextureView sPic;  // the 3D picture of the last frame (NULL: no frame yet)
 static int sScale = 1;
 static u32 sFrames;
+static WGPUTexture sOverlayTex;
+static WGPUTextureView sOverlayView;
+static int sOverlayOn;
 
 static int setup(void) {
     if (sShader) return 1;
@@ -202,8 +209,8 @@ static int setup(void) {
     WGPUShaderModuleDescriptor md = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
     md.nextInChain = &src.chain;
     sShader = wgpuDeviceCreateShaderModule(sDev, &md);
-    WGPUBindGroupLayoutEntry e[4];
-    for (int i = 0; i < 4; i++) {
+    WGPUBindGroupLayoutEntry e[5];
+    for (int i = 0; i < 5; i++) {
         e[i] = (WGPUBindGroupLayoutEntry)WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT;
         e[i].binding = (u32)i;
         e[i].visibility = WGPUShaderStage_Fragment;
@@ -212,8 +219,10 @@ static int setup(void) {
     e[2].buffer.type = WGPUBufferBindingType_ReadOnlyStorage;
     e[1].texture.sampleType = e[3].texture.sampleType = WGPUTextureSampleType_Uint;
     e[1].texture.viewDimension = e[3].texture.viewDimension = WGPUTextureViewDimension_2D;
+    e[4].texture.sampleType = WGPUTextureSampleType_Float;
+    e[4].texture.viewDimension = WGPUTextureViewDimension_2D;
     WGPUBindGroupLayoutDescriptor ld = WGPU_BIND_GROUP_LAYOUT_DESCRIPTOR_INIT;
-    ld.entryCount = 4;
+    ld.entryCount = 5;
     ld.entries = e;
     sLayout = wgpuDeviceCreateBindGroupLayout(sDev, &ld);
     WGPUPipelineLayoutDescriptor pd = WGPU_PIPELINE_LAYOUT_DESCRIPTOR_INIT;
@@ -227,6 +236,10 @@ static int setup(void) {
                WGPUTextureUsage_CopySrc;
     sDeferredTex = wgpuDeviceCreateTexture(sDev, &td);
     sDeferredView = wgpuTextureCreateView(sDeferredTex, NULL);
+    td.format = WGPUTextureFormat_BGRA8Unorm;  // (0xAARRGGBB words)
+    td.usage = WGPUTextureUsage_TextureBinding | WGPUTextureUsage_CopyDst;
+    sOverlayTex = wgpuDeviceCreateTexture(sDev, &td);
+    sOverlayView = wgpuTextureCreateView(sOverlayTex, NULL);
     WGPUBufferDescriptor bd = WGPU_BUFFER_DESCRIPTOR_INIT;
     bd.size = 32;
     bd.usage = WGPUBufferUsage_Uniform | WGPUBufferUsage_CopyDst;
@@ -263,15 +276,16 @@ static WGPUBindGroup group(WGPUTextureView pic) {
         if (sGroups[i].group && sGroups[i].pic == pic) return sGroups[i].group;
     int i = sGroups[0].group ? 1 : 0;
     if (sGroups[i].group) wgpuBindGroupRelease(sGroups[i].group);  // (both taken: the 3D pictures changed)
-    WGPUBindGroupEntry g[4];
-    for (int k = 0; k < 4; k++) g[k] = (WGPUBindGroupEntry)WGPU_BIND_GROUP_ENTRY_INIT, g[k].binding = (u32)k;
+    WGPUBindGroupEntry g[5];
+    for (int k = 0; k < 5; k++) g[k] = (WGPUBindGroupEntry)WGPU_BIND_GROUP_ENTRY_INIT, g[k].binding = (u32)k;
+    g[4].textureView = sOverlayView;
     g[0].buffer = sUniform, g[0].size = 32;
     g[1].textureView = sDeferredView;
     g[2].buffer = sLines, g[2].size = 384 * 4;
     g[3].textureView = pic;
     WGPUBindGroupDescriptor gd = WGPU_BIND_GROUP_DESCRIPTOR_INIT;
     gd.layout = sLayout;
-    gd.entryCount = 4;
+    gd.entryCount = 5;
     gd.entries = g;
     sGroups[i].pic = pic;
     return sGroups[i].group = wgpuDeviceCreateBindGroup(sDev, &gd);
@@ -416,6 +430,7 @@ static void composite(WGPUCommandEncoder enc, WGPUTextureView view, WGPUTextureF
     float vp[8] = {0, 0, (float)w, (float)h};
     if (!fill) wdisp_letterbox(w, h, vp);
     memcpy(&vp[4], &(u32){(u32)sScale}, 4);
+    memcpy(&vp[5], &(u32){(u32)sOverlayOn}, 4);
     wgpuQueueWriteBuffer(sQueue, sUniform, 0, vp, sizeof vp);
     WGPURenderPassColorAttachment ca = WGPU_RENDER_PASS_COLOR_ATTACHMENT_INIT;
     ca.view = view;
@@ -592,6 +607,19 @@ int wdisp_attach(int kind, void *display, uint64_t window, int vsync) {
     return 1;
 }
 int wdisp_presenting(void) { return sSurface != 0; }
+
+void wdisp_overlay(const uint32_t *argb, int changed) {
+    if (!setup()) return;
+    sOverlayOn = argb != NULL;
+    if (!argb || !changed) return;
+    WGPUTexelCopyTextureInfo dst = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
+    dst.texture = sOverlayTex;
+    WGPUTexelCopyBufferLayout l = WGPU_TEXEL_COPY_BUFFER_LAYOUT_INIT;
+    l.bytesPerRow = 256 * 4;
+    l.rowsPerImage = 384;
+    WGPUExtent3D size = {256, 384, 1};
+    wgpuQueueWriteTexture(sQueue, &dst, argb, 256 * 384 * 4, &l, &size);
+}
 
 void wdisp_present(int w, int h) {
     if (!sSurface || w <= 0 || h <= 0) return;

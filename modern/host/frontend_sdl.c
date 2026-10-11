@@ -2,10 +2,12 @@
 // docs/portability.md 4.1). A window with both screens, keyboard and game controller input, the mouse or a finger on
 // the bottom screen as the touch panel, the sound through an SDL audio callback that reads the AcwwShm ring.
 //
-// Keys: arrows = D-pad, X = A, Z = B, S = X, A = Y, Q = L, W = R, Enter = Start, Right Shift = Select (by position:
-// the same keys on other layouts). F11: window size 1x/2x/3x; Alt+Enter: full screen; M: mute.
+// Keys (the defaults; F1 opens the key binding screen, frontend_ui.c): arrows = D-pad, X = A, Z = B, S = X, A = Y,
+// Q = L, W = R, Enter = Start, Right Shift = Select (by position: the same keys on other layouts). F11: window size
+// 1x/2x/3x; Alt+Enter: full screen; M: mute (unless a DS button has it).
 // Game controllers (SDL's database): D-pad or left stick, the face buttons by position as on the DS (right = A,
-// bottom = B, top = X, left = Y), shoulders or triggers = L / R, Start, Back = Select.
+// bottom = B, top = X, left = Y), shoulders or triggers = L / R, Start, Back = Select; Back + Start: the binding
+// screen.
 //
 // The game's thread calls this at each VBlank, on whichever game stack is running: SDL (and the video driver under
 // it) runs on a stack of its own instead (8 MB, a coroutine: frontend_backend_frame switches to it and back), so the
@@ -29,6 +31,7 @@
 
 #include "coro.h"
 #include "frontend.h"
+#include "frontend_ui.h"
 #include "host.h"
 #include "plat.h"
 #include "render.h"
@@ -37,7 +40,7 @@
 static AcwwShm *sShm;
 static SDL_Window *sWin;
 static SDL_Renderer *sRen;
-static SDL_Texture *sTex;
+static SDL_Texture *sTex, *sOverlayTex;
 static int sGpu;  // the window drawn by wgpu_display.c
 static SDL_AudioDeviceID sDev;
 static int sScale = 2, sMute;
@@ -167,6 +170,7 @@ AcwwShm *frontend_backend_open(const char *argv0) {
         free(sShm);
         return sShm = 0;
     }
+    ui_init();
     open_audio();
     atexit(sdl_quit);
     return sShm;
@@ -182,39 +186,22 @@ void frontend_backend_close(void) {}
 
 // ---- input
 static uint32_t keyboard_keys(void) {
-    static const struct { SDL_Scancode sc; uint32_t bit; } map[] = {
-        {SDL_SCANCODE_X, 1u << 0},      {SDL_SCANCODE_Z, 1u << 1},     {SDL_SCANCODE_RSHIFT, 1u << 2},
-        {SDL_SCANCODE_RETURN, 1u << 3}, {SDL_SCANCODE_RIGHT, 1u << 4}, {SDL_SCANCODE_LEFT, 1u << 5},
-        {SDL_SCANCODE_UP, 1u << 6},     {SDL_SCANCODE_DOWN, 1u << 7},  {SDL_SCANCODE_W, 1u << 8},
-        {SDL_SCANCODE_Q, 1u << 9},      {SDL_SCANCODE_S, 1u << 10},    {SDL_SCANCODE_A, 1u << 11},
-    };
-    const Uint8 *st = SDL_GetKeyboardState(0);
-    uint32_t k = 0;
-    for (unsigned i = 0; i < sizeof map / sizeof map[0]; i++)
-        if (st[map[i].sc]) k |= map[i].bit;
-    // (Alt+Enter is the full-screen toggle, not Start)
-    if ((SDL_GetModState() & KMOD_ALT) && st[SDL_SCANCODE_RETURN]) k &= ~(1u << 3);
-    return k;
+    static Uint8 st[SDL_NUM_SCANCODES];
+    int n;
+    const Uint8 *now = SDL_GetKeyboardState(&n);
+    memcpy(st, now, (size_t)(n < SDL_NUM_SCANCODES ? n : SDL_NUM_SCANCODES));
+    // (Alt+Enter is the full-screen toggle, not a DS button)
+    if (SDL_GetModState() & KMOD_ALT) st[SDL_SCANCODE_RETURN] = 0;
+    return ui_keyboard_keys(st);
 }
 
 static uint32_t pad_keys(void) {
-    static const struct { SDL_GameControllerButton b; uint32_t bit; } map[] = {
-        {SDL_CONTROLLER_BUTTON_B, 1u << 0},  // right face button: A
-        {SDL_CONTROLLER_BUTTON_A, 1u << 1},  // bottom: B
-        {SDL_CONTROLLER_BUTTON_Y, 1u << 10}, // top: X
-        {SDL_CONTROLLER_BUTTON_X, 1u << 11}, // left: Y
-        {SDL_CONTROLLER_BUTTON_BACK, 1u << 2},          {SDL_CONTROLLER_BUTTON_START, 1u << 3},
-        {SDL_CONTROLLER_BUTTON_DPAD_RIGHT, 1u << 4},    {SDL_CONTROLLER_BUTTON_DPAD_LEFT, 1u << 5},
-        {SDL_CONTROLLER_BUTTON_DPAD_UP, 1u << 6},       {SDL_CONTROLLER_BUTTON_DPAD_DOWN, 1u << 7},
-        {SDL_CONTROLLER_BUTTON_RIGHTSHOULDER, 1u << 8}, {SDL_CONTROLLER_BUTTON_LEFTSHOULDER, 1u << 9},
-    };
     enum { DEAD = 16000 };
     uint32_t k = 0;
     for (int p = 0; p < 4; p++) {
         SDL_GameController *c = sPads[p];
         if (!c) continue;
-        for (unsigned i = 0; i < sizeof map / sizeof map[0]; i++)
-            if (SDL_GameControllerGetButton(c, map[i].b)) k |= map[i].bit;
+        k |= ui_pad_keys(c);
         int x = SDL_GameControllerGetAxis(c, SDL_CONTROLLER_AXIS_LEFTX), y = SDL_GameControllerGetAxis(c, SDL_CONTROLLER_AXIS_LEFTY);
         if (x > DEAD) k |= 1u << 4;
         if (x < -DEAD) k |= 1u << 5;
@@ -281,8 +268,15 @@ static void update_touch(void) {
 }
 
 static void handle(const SDL_Event *e) {
+    // (the binding screen takes the rest while it is open)
+    if (e->type == SDL_QUIT) { sShm->quit = 1; return; }
+    if (e->type == SDL_CONTROLLERDEVICEADDED) { pad_added(e->cdevice.which); return; }
+    if (e->type == SDL_CONTROLLERDEVICEREMOVED) { pad_removed(e->cdevice.which); return; }
+    if (ui_event(e)) {
+        sMouse.held = sFinger.held = 0;
+        return;
+    }
     switch (e->type) {
-    case SDL_QUIT: sShm->quit = 1; break;
     case SDL_KEYDOWN:
         if (e->key.repeat) break;
         if (e->key.keysym.scancode == SDL_SCANCODE_F11) {
@@ -292,7 +286,7 @@ static void handle(const SDL_Event *e) {
         } else if (e->key.keysym.scancode == SDL_SCANCODE_RETURN && (e->key.keysym.mod & KMOD_ALT)) {
             int full = (SDL_GetWindowFlags(sWin) & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0;
             SDL_SetWindowFullscreen(sWin, full ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
-        } else if (e->key.keysym.scancode == SDL_SCANCODE_M) {
+        } else if (e->key.keysym.scancode == SDL_SCANCODE_M && !ui_key_bound(SDL_SCANCODE_M)) {
             __atomic_store_n(&sMute, !sMute, __ATOMIC_RELAXED);
         }
         break;
@@ -320,8 +314,6 @@ static void handle(const SDL_Event *e) {
     case SDL_FINGERUP:
         if (sFinger.held && e->tfinger.fingerId == sFingerId) sFinger.held = 0;
         break;
-    case SDL_CONTROLLERDEVICEADDED: pad_added(e->cdevice.which); break;
-    case SDL_CONTROLLERDEVICEREMOVED: pad_removed(e->cdevice.which); break;
     default: break;
     }
 }
@@ -338,6 +330,26 @@ static void write_ppm(const char *path, const uint32_t *px, int w, int h) {
     }
     fclose(o);
 }
+// what the window shows into a file (before the present)
+static void shot(const char *path) {
+    int w, h;
+    if (sGpu) {
+        SDL_GetWindowSizeInPixels(sWin, &w, &h);
+        uint32_t *px = malloc((size_t)w * h * 4);
+        if (px && wdisp_read_window(w, h, px)) write_ppm(path, px, w, h);
+        free(px);
+        return;
+    }
+    SDL_GetRendererOutputSize(sRen, &w, &h);
+    uint32_t *px = malloc((size_t)w * h * 4);
+    // (the whole output: with the logical size the viewport is only the letterboxed picture)
+    SDL_RenderSetLogicalSize(sRen, 0, 0);
+    SDL_RenderSetViewport(sRen, 0);
+    if (px && SDL_RenderReadPixels(sRen, 0, SDL_PIXELFORMAT_XRGB8888, px, w * 4) == 0) write_ppm(path, px, w, h);
+    else fprintf(stderr, "frontend: ACWW_WINSHOT: %s\n", SDL_GetError());
+    SDL_RenderSetLogicalSize(sRen, 256, 384);
+    free(px);
+}
 static void window_shot(void) {
     static const char *spec;
     if (!spec) spec = getenv("ACWW_WINSHOT") ? getenv("ACWW_WINSHOT") : "";
@@ -345,43 +357,67 @@ static void window_shot(void) {
     for (const char *p = spec; *p;) {
         unsigned fr;
         char path[512];
-        if (sscanf(p, "%u:%511[^;]", &fr, path) == 2 && fr == f && sGpu) {
-            int w, h;
-            SDL_GetWindowSizeInPixels(sWin, &w, &h);
-            uint32_t *px = malloc((size_t)w * h * 4);
-            if (px && wdisp_read_window(w, h, px)) write_ppm(path, px, w, h);
-            free(px);
-        } else if (sscanf(p, "%u:%511[^;]", &fr, path) == 2 && fr == f) {
-            int w, h;
-            SDL_GetRendererOutputSize(sRen, &w, &h);
-            uint32_t *px = malloc((size_t)w * h * 4);
-            // (the whole output: with the logical size the viewport is only the letterboxed picture)
-            SDL_RenderSetLogicalSize(sRen, 0, 0);
-            SDL_RenderSetViewport(sRen, 0);
-            if (px && SDL_RenderReadPixels(sRen, 0, SDL_PIXELFORMAT_XRGB8888, px, w * 4) == 0) {
-                write_ppm(path, px, w, h);
-            } else {
-                fprintf(stderr, "frontend: ACWW_WINSHOT: %s\n", SDL_GetError());
-            }
-            SDL_RenderSetLogicalSize(sRen, 256, 384);
-            free(px);
-        }
+        if (sscanf(p, "%u:%511[^;]", &fr, path) == 2 && fr == f) shot(path);
         p = strchr(p, ';');
         if (!p) break;
         p++;
     }
 }
 
-// one frame (on the frontend's stack): events, input, then the picture
-static void frame_body(void) {
+// ---- ACWW_UI_SCRIPT="frame:item,item,...;...": scripted input for testing the binding screen - from that frame on,
+// one item at a time (a frame each, or a step of the paused binding screen): a key (SDL's scancode name, e.g. F1,
+// Down, Return: pressed and released), pad:<button> (SDL's name, e.g. pad:a: a controller button), shot:<file> (what
+// the window shows, as ACWW_WINSHOT)
+static char sPendingShot[512];  // (taken by show, before the present)
+static void script_step(void) {
+    static const char *spec, *next;
+    if (!spec) spec = getenv("ACWW_UI_SCRIPT") ? getenv("ACWW_UI_SCRIPT") : "";
+    if (!next) {
+        unsigned f = (unsigned)host_frame();
+        for (const char *p = spec; *p;) {
+            unsigned fr;
+            int n = 0;
+            if (sscanf(p, "%u:%n", &fr, &n) == 1 && n && fr == f) next = p + n;
+            p = strchr(p, ';');
+            if (!p) break;
+            p++;
+        }
+        if (!next) return;
+    }
+    char item[512];
+    size_t len = strcspn(next, ",;");
+    snprintf(item, sizeof item, "%.*s", (int)(len < sizeof item ? len : sizeof item - 1), next);
+    next = next[len] == ',' ? next + len + 1 : NULL;
     SDL_Event e;
-    while (SDL_PollEvent(&e)) handle(&e);
-    update_touch();
-    sShm->keys = keyboard_keys() | pad_keys();
+    memset(&e, 0, sizeof e);
+    if (!strncmp(item, "shot:", 5)) {
+        snprintf(sPendingShot, sizeof sPendingShot, "%s", item + 5);
+    } else if (!strncmp(item, "pad:", 4)) {
+        e.type = SDL_CONTROLLERBUTTONDOWN;
+        e.cbutton.which = -1;
+        e.cbutton.button = (Uint8)SDL_GameControllerGetButtonFromString(item + 4);
+        handle(&e);
+        e.type = SDL_CONTROLLERBUTTONUP;
+        handle(&e);
+    } else {
+        e.type = SDL_KEYDOWN;
+        e.key.keysym.scancode = SDL_GetScancodeFromName(item);
+        handle(&e);
+        e.type = SDL_KEYUP;
+        handle(&e);
+    }
+}
+
+// the frame and, while it is open, the binding screen over it
+static void show(void) {
+    int changed;
+    const uint32_t *overlay = ui_overlay(&changed);
     if (sGpu) {
         int w, h;
         SDL_GetWindowSizeInPixels(sWin, &w, &h);
+        wdisp_overlay(overlay, changed);
         window_shot();
+        if (sPendingShot[0]) shot(sPendingShot), sPendingShot[0] = 0;
         wdisp_present(w, h);
         return;
     }
@@ -389,8 +425,37 @@ static void frame_body(void) {
     SDL_SetRenderDrawColor(sRen, 0, 0, 0, 255);
     SDL_RenderClear(sRen);
     SDL_RenderCopy(sRen, sTex, 0, 0);
+    if (overlay) {
+        if (!sOverlayTex) {
+            sOverlayTex = SDL_CreateTexture(sRen, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, 256, 384);
+            SDL_SetTextureBlendMode(sOverlayTex, SDL_BLENDMODE_BLEND);
+            changed = 1;
+        }
+        if (changed) SDL_UpdateTexture(sOverlayTex, 0, overlay, 256 * 4);
+        SDL_RenderCopy(sRen, sOverlayTex, 0, 0);
+    }
     window_shot();
+    if (sPendingShot[0]) shot(sPendingShot), sPendingShot[0] = 0;
     SDL_RenderPresent(sRen);
+}
+
+// one frame (on the frontend's stack): events, input, then the picture; while the binding screen is open the game
+// waits here
+static void frame_body(void) {
+    SDL_Event e;
+    while (SDL_PollEvent(&e)) handle(&e);
+    script_step();
+    while (ui_is_open() && !sShm->quit) {
+        show();
+        if (SDL_WaitEventTimeout(&e, 50)) {
+            handle(&e);
+            while (SDL_PollEvent(&e)) handle(&e);
+        }
+        script_step();
+    }
+    update_touch();
+    sShm->keys = keyboard_keys() | pad_keys();
+    show();
 }
 
 #endif
