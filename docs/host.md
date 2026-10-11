@@ -185,7 +185,8 @@ The runtime (`modern/host/`):
   `render_read32`, `render_frame`, `render_screen`, `render_gx_fifo_irq_level`), and the choice of renderer:
   `ACWW_RENDERER=own` (default) or `melon`, `ACWW_RENDERER3D` (the same choice for the 3D engine, plus `wgpu`: the
   own engine's polygons drawn by the GPU, gpu3d/gpu3d_wgpu.c, and the screens composited and shown by it,
-  wgpu_display.c, docs/portability.md 5.4; `ACWW_SCALE3D=<n>`: the 3D picture at n times the DS's resolution;
+  wgpu_display.c, docs/portability.md 5.4; `ACWW_SCALE3D=<n>`: the 3D picture at n times the DS's resolution (default 2); `ACWW_MSAA=1`: no 4x MSAA
+  for the 3D edges;
   `ACWW_WGPU_READBACK=1`: the 3D picture read back and composited on the CPU instead; default: the 2D one's), `ACWW_RENDER_COMPARE=1` (both every frame, the first differing pixel of
   each differing frame reported with the layers and effect the own renderer used there; a summary at exit),
   `ACWW_RENDER_SELFTEST=<n>` (`render_selftest.c`: n random scenes through both renderers before the game starts,

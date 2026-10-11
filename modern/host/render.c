@@ -12,7 +12,8 @@
 //                                         With both `own` melonDS isn't run at all. With wgpu the GPU composites the
 //                                         screens too and shows them (wgpu_display.c): the 2D renderer leaves the 3D
 //                                         layer to it, and the frames stay on the GPU (read back only for screenshots)
-//   ACWW_SCALE3D=<n>                      wgpu: the 3D picture at n times the DS's resolution (1-8, default 1)
+//   ACWW_SCALE3D=<n>                      wgpu: the 3D picture at n times the DS's resolution (1-8, default 2;
+//                                         the window shows 2x; screenshots average the 3D picture's pixels)
 //   ACWW_WGPU_READBACK=1                  wgpu: the 3D picture read back, the screens composited on the CPU (as
 //                                         with ACWW_RENDER_COMPARE; the GPU's compositing checked against it)
 //   ACWW_RENDER_COMPARE=1                 render with both every frame and report the frames where they differ: the
@@ -64,7 +65,7 @@ static int sGpu3d;        // the own 3D engine runs (sOwn3d or sCompare)
 static int sMelon;        // melonDS runs
 static int sCompare;
 static int sGpuDisplay;   // the screens composited by the GPU (wgpu_display.c)
-static int sScale3d = 1;  // ACWW_SCALE3D
+static int sScale3d = 2;  // ACWW_SCALE3D
 static int sSelftest;      // ACWW_RENDER_SELFTEST (render_selftest.c compares itself)
 static long sCompareMax = 200, sCompareLines;
 static u64 sCompared, sDiffering, sFirstDiffering = ~0ull;

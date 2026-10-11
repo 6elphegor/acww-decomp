@@ -1087,8 +1087,14 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     compositing gives the same screenshots, bit for bit, as the CPU's compositing of the same 3D picture
     (`ACWW_WGPU_READBACK=1`, frames 2500 and 8000); presented into a real window (X11 through XWayland, the RTX 3060)
     at scales 1 and 2; the 3D engine's time a frame (the CPU's side: texture slots, vertices, the commands) 0.82 ms
-    against 2.0 with the read-back, a fast headless run of 6000 frames 39.6 s against 43.5. **Next:** edge anti-aliasing (or MSAA, which upscaling partly stands in for), the texture
-    slots uploaded only when VRAM changed; the 2D layers on the GPU too if the CPU's share matters on slow machines.
+    against 2.0 with the read-back, a fast headless run of 6000 frames 39.6 s against 43.5. **Then (2026-10-11):** edge anti-aliasing as 4x MSAA (the
+    resolve applies fog per sample and averages the samples weighted by alpha, when DISP3DCNT bit 4 is set;
+    `ACWW_MSAA=1`: off); only the changed 4 KB pieces of the texture slots uploaded; `ACWW_SCALE3D` defaults to 2,
+    and where a window pixel covers several 3D pixels (a smaller window, the 256x384 screenshots) the compositor
+    averages a grid of points in it. The GPU's compositing still equals the CPU's at scale 1 without MSAA; MSAA
+    smooths more edges than the DS's anti-aliasing (which leaves edges between polygons alone), so the 1x pictures
+    are no closer to the software references (12539 pixels differ at frame 2500, against 12393). **Next:** the 2D
+    layers on the GPU too if the CPU's share matters on slow machines.
 
 ---
 

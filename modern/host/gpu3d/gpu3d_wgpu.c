@@ -12,8 +12,10 @@
 //     (as gpu3d_raster.c fog_pass) and the packing into the frame buffer format - a texture, which the display
 //     composites (modern/host/wgpu_display.c), or read back into the software rasteriser's frame buffer
 // At `scale` times the DS's resolution (the polygons' positions have 4 fractional bits; the textures stay sharp).
-// Not done: edge anti-aliasing, edge marking, toon / highlight, shadows, wireframe, lines and points, the rear plane
-// bitmap (the game uses the first only).
+//   - edge anti-aliasing (DISP3DCNT bit 4): 4 samples a pixel, averaged in the resolve (not the DS's coverage rule:
+//     every edge is smoothed, also between polygons); ACWW_MSAA=1: none
+// Not done: edge marking, toon / highlight, shadows, wireframe, lines and points, the rear plane bitmap (the game
+// uses none of them).
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -47,6 +49,7 @@ static int sScale = 1;
 static WGPUTexture sColorTex, sFogTex, sDepthTex, sOutTex[2];
 static WGPUTextureView sColorView, sFogView, sDepthView, sDepthOnlyView, sOutView[2];
 static int sShown;
+static int sSamples = 4;  // the targets' samples (ACWW_MSAA=1: none; else 4): the edges' anti-aliasing
 static WGPUBuffer sState, sImg, sPal, sVerts, sIndices, sReadback;
 static WGPUBindGroupLayout sDrawLayout, sResolveLayout;
 static WGPUBindGroup sDrawGroup, sResolveGroup;
@@ -156,24 +159,40 @@ static const char kShader[] =
     "  var o: FOutW; o.color = shade(i); o.fog = f32((i.poly.x >> 15u) & 1u);\n"
     "  o.depth = clamp(i.zw, 0.0, 1.0); return o;\n"
     "}\n"
-    // the resolve: fog (as gpu3d_raster.c fog_pass) and the frame buffer format (r | g << 8 | b << 16 | a << 24)
+    "@vertex fn vfull(@builtin(vertex_index) i: u32) -> @builtin(position) vec4f {\n"
+    "  let p = vec2f(f32((i << 1u) & 2u), f32(i & 2u)); return vec4f(p * 2.0 - 1.0, 0.0, 1.0);\n"
+    "}\n";
+// the resolve's targets: multisampled (sSamples > 1) or not
+static const char kResolveTargets1[] =
     "@group(1) @binding(0) var colorTex: texture_2d<f32>;\n"
     "@group(1) @binding(1) var depthTex: texture_depth_2d;\n"
     "@group(1) @binding(2) var fogTex: texture_2d<f32>;\n"
-    "@vertex fn vfull(@builtin(vertex_index) i: u32) -> @builtin(position) vec4f {\n"
-    "  let p = vec2f(f32((i << 1u) & 2u), f32(i & 2u)); return vec4f(p * 2.0 - 1.0, 0.0, 1.0);\n"
-    "}\n"
+    "const SAMPLES = 1u;\n"
+    "fn ldColor(xy: vec2i, i: u32) -> vec4f { return textureLoad(colorTex, xy, 0); }\n"
+    "fn ldDepth(xy: vec2i, i: u32) -> f32 { return textureLoad(depthTex, xy, 0); }\n"
+    "fn ldFog(xy: vec2i, i: u32) -> f32 { return textureLoad(fogTex, xy, 0).r; }\n";
+static const char kResolveTargetsN[] =
+    "@group(1) @binding(0) var colorTex: texture_multisampled_2d<f32>;\n"
+    "@group(1) @binding(1) var depthTex: texture_depth_multisampled_2d;\n"
+    "@group(1) @binding(2) var fogTex: texture_multisampled_2d<f32>;\n"
+    "const SAMPLES = 4u;\n"
+    "fn ldColor(xy: vec2i, i: u32) -> vec4f { return textureLoad(colorTex, xy, i); }\n"
+    "fn ldDepth(xy: vec2i, i: u32) -> f32 { return textureLoad(depthTex, xy, i); }\n"
+    "fn ldFog(xy: vec2i, i: u32) -> f32 { return textureLoad(fogTex, xy, i).r; }\n";
+// the resolve: fog (as gpu3d_raster.c fog_pass) per sample, the samples averaged when anti-aliasing is on (DISP3DCNT
+// bit 4: the colours weighted by alpha, so that an edge over nothing keeps its colour and fades out by alpha, as the
+// DS's anti-aliasing does), and the frame buffer format (r | g << 8 | b << 16 | a << 24)
+static const char kResolve[] =
     "fn fogTab(n: u32) -> i32 { return i32(st.fogTable[n >> 2u][n & 3u]); }\n"
-    "@fragment fn fresolve(@builtin(position) fp: vec4f) -> @location(0) u32 {\n"
-    "  let xy = vec2i(fp.xy);\n"
-    "  let pc = textureLoad(colorTex, xy, 0);\n"
+    "fn resolveSample(xy: vec2i, i: u32) -> vec4u {\n"
+    "  let pc = ldColor(xy, i);\n"
     "  var a = u32(round(pc.a * 31.0));\n"
     "  var c = vec3u(st.clearRgb & 63u, (st.clearRgb >> 8u) & 63u, (st.clearRgb >> 16u) & 63u);\n"
     "  if (pc.a > 0.0) { c = vec3u(round(clamp(pc.rgb / pc.a, vec3f(0.0), vec3f(1.0)) * 63.0)); }\n"
-    "  if ((st.dispcnt & 0x80u) != 0u && textureLoad(fogTex, xy, 0).r > 0.5) {\n"
+    "  if ((st.dispcnt & 0x80u) != 0u && ldFog(xy, i) > 0.5) {\n"
     "    let shift = (st.dispcnt >> 8u) & 15u;\n"
     "    var step = 0; if (shift <= 10u) { step = 0x400 >> shift; }\n"
-    "    let z = i32(u32(round(textureLoad(depthTex, xy, 0) * 16777215.0)) >> 9u);\n"
+    "    let z = i32(u32(round(ldDepth(xy, i) * 16777215.0)) >> 9u);\n"
     "    let b0 = i32(st.fogOffset) + step;\n"
     "    var d: i32;\n"
     "    if (z < b0 || step == 0) { if (z < b0) { d = fogTab(0u); } else { d = fogTab(31u); } }\n"
@@ -190,12 +209,26 @@ static const char kShader[] =
     "    a = (((fc >> 16u) & 31u) * du + a * (128u - du)) >> 7u;\n"
     "    if ((st.dispcnt & 0x40u) == 0u) { c = (f * du + c * (128u - du)) >> vec3u(7u); }\n"
     "  }\n"
-    "  return c.x | (c.y << 8u) | (c.z << 16u) | (a << 24u);\n"
+    "  return vec4u(c, a);\n"
+    "}\n"
+    "@fragment fn fresolve(@builtin(position) fp: vec4f) -> @location(0) u32 {\n"
+    "  let xy = vec2i(fp.xy);\n"
+    "  var r = resolveSample(xy, 0u);\n"
+    "  if (SAMPLES > 1u && (st.dispcnt & 0x10u) != 0u) {\n"
+    "    var sc = vec3u(0u); var sa = 0u; var su = vec3u(0u);\n"
+    "    for (var i = 0u; i < SAMPLES; i++) {\n"
+    "      let k = resolveSample(xy, i); sc += k.xyz * k.w; sa += k.w; su += k.xyz;\n"
+    "    }\n"
+    "    if (sa > 0u) { r = vec4u((sc + sa / 2u) / sa, (sa + SAMPLES / 2u) / SAMPLES); }\n"
+    "    else { r = vec4u((su + SAMPLES / 2u) / SAMPLES, 0u); }\n"
+    "  }\n"
+    "  return r.x | (r.y << 8u) | (r.z << 16u) | (r.w << 24u);\n"
     "}\n";
 
 // ---- set-up
-static WGPUTexture texture(WGPUTextureFormat fmt, WGPUTextureUsage usage) {
+static WGPUTexture texture(WGPUTextureFormat fmt, WGPUTextureUsage usage, int samples) {
     WGPUTextureDescriptor d = WGPU_TEXTURE_DESCRIPTOR_INIT;
+    d.sampleCount = (u32)samples;
     d.size = (WGPUExtent3D){W * (u32)sScale, H * (u32)sScale, 1};
     d.format = fmt;
     d.usage = usage;
@@ -221,19 +254,23 @@ int g3w_init(void *device, void *queue, int scale) {
     sDev = device;
     sQueue = queue;
     sScale = scale < 1 ? 1 : scale > 8 ? 8 : scale;
+    const char *ms = getenv("ACWW_MSAA");
+    sSamples = ms && atoi(ms) <= 1 ? 1 : 4;
+    static char code[sizeof kShader + sizeof kResolveTargetsN + sizeof kResolve];
+    snprintf(code, sizeof code, "%s%s%s", kShader, sSamples > 1 ? kResolveTargetsN : kResolveTargets1, kResolve);
     WGPUShaderSourceWGSL src = WGPU_SHADER_SOURCE_WGSL_INIT;
-    src.code = sv(kShader);
+    src.code = sv(code);
     WGPUShaderModuleDescriptor md = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
     md.nextInChain = &src.chain;
     sShader = wgpuDeviceCreateShaderModule(sDev, &md);
 
-    sColorTex = texture(WGPUTextureFormat_RGBA16Float, WGPUTextureUsage_RenderAttachment | WGPUTextureUsage_TextureBinding);
-    sFogTex = texture(WGPUTextureFormat_R8Unorm, WGPUTextureUsage_RenderAttachment | WGPUTextureUsage_TextureBinding);
-    sDepthTex = texture(WGPUTextureFormat_Depth24PlusStencil8,
-                        WGPUTextureUsage_RenderAttachment | WGPUTextureUsage_TextureBinding);
+    WGPUTextureUsage tu = WGPUTextureUsage_RenderAttachment | WGPUTextureUsage_TextureBinding;
+    sColorTex = texture(WGPUTextureFormat_RGBA16Float, tu, sSamples);
+    sFogTex = texture(WGPUTextureFormat_R8Unorm, tu, sSamples);
+    sDepthTex = texture(WGPUTextureFormat_Depth24PlusStencil8, tu, sSamples);
     for (int i = 0; i < 2; i++) {
         sOutTex[i] = texture(WGPUTextureFormat_R32Uint, WGPUTextureUsage_RenderAttachment | WGPUTextureUsage_CopySrc |
-                                                            WGPUTextureUsage_TextureBinding);
+                                                            WGPUTextureUsage_TextureBinding, 1);
         sOutView[i] = wgpuTextureCreateView(sOutTex[i], NULL);
     }
     sColorView = wgpuTextureCreateView(sColorTex, NULL);
@@ -279,6 +316,7 @@ int g3w_init(void *device, void *queue, int scale) {
         re[i].visibility = WGPUShaderStage_Fragment;
         re[i].texture.sampleType = i == 1 ? WGPUTextureSampleType_Depth : WGPUTextureSampleType_UnfilterableFloat;
         re[i].texture.viewDimension = WGPUTextureViewDimension_2D;
+        re[i].texture.multisampled = sSamples > 1;
     }
     ld.entries = re;
     sResolveLayout = wgpuDeviceCreateBindGroupLayout(sDev, &ld);
@@ -339,6 +377,7 @@ static WGPURenderPipeline pipeline(int key) {
     rp.vertex.buffers = &vl;
     rp.primitive.topology = WGPUPrimitiveTopology_TriangleList;
     rp.primitive.cullMode = WGPUCullMode_None;  // (the geometry engine culled already)
+    rp.multisample.count = (u32)sSamples;
     WGPUDepthStencilState ds = WGPU_DEPTH_STENCIL_STATE_INIT;
     ds.format = WGPUTextureFormat_Depth24PlusStencil8;
     ds.depthWriteEnabled = !trans || (key & 8) ? WGPUOptionalBool_True : WGPUOptionalBool_False;
@@ -379,6 +418,21 @@ static WGPURenderPipeline pipeline(int key) {
     return sPipes[key] = wgpuDeviceCreateRenderPipeline(sDev, &rp);
 }
 
+// the texture slots: only the 4 KB pieces that changed since the last frame uploaded (the game rarely changes
+// texture VRAM; the GPU's copy is compared with what was sent)
+static u8 sImgCopy[IMG_SIZE], sPalCopy[PAL_SIZE];
+static void upload(WGPUBuffer buf, u8 *copy, const u8 *src, u32 size) {
+    enum { PIECE = 0x1000 };
+    for (u32 o = 0; o < size;) {
+        if (!memcmp(copy + o, src + o, PIECE)) { o += PIECE; continue; }
+        u32 end = o + PIECE;
+        while (end < size && memcmp(copy + end, src + end, PIECE)) end += PIECE;  // (a run of changed pieces)
+        memcpy(copy + o, src + o, end - o);
+        wgpuQueueWriteBuffer(sQueue, buf, o, src + o, end - o);
+        o = end;
+    }
+}
+
 static u32 rgb5_to_6(u32 c) { return c ? c * 2 + 1 : 0; }
 
 static GVertex sV[MAX_POLYGONS * 10];
@@ -406,8 +460,8 @@ void g3w_render(const G3RenderState *r, const u8 *img, const u8 *pal, u32 *out) 
     st[4] = r->fogOffset;
     for (int i = 0; i < 32; i++) st[8 + i] = r->fogTable[i];
     wgpuQueueWriteBuffer(sQueue, sState, 0, st, sizeof st);
-    wgpuQueueWriteBuffer(sQueue, sImg, 0, img, IMG_SIZE);
-    wgpuQueueWriteBuffer(sQueue, sPal, 0, pal, PAL_SIZE);
+    upload(sImg, sImgCopy, img, IMG_SIZE);
+    upload(sPal, sPalCopy, pal, PAL_SIZE);
     // the polygons: a fan each
     int nv = 0, ni = 0;
     for (int k = 0; k < r->npoly; k++) {
