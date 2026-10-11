@@ -1046,7 +1046,17 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     with them by default (timeouts raised to 300 / 900 s: the own engine is slower than melonDS's). **Checks:**
     i386, clang, aarch64 (quick, qemu), Windows (Wine) and the oracle build identical to captures_v3 (quick and play);
     the oracle build with `ACWW_RENDERER=melon` identical to captures_v2; render self-tests run in the oracle build.
-    **Open:** HBlank effects; the ±1 precision items of 29.
+    **H-blank effects (2026-10-10):** the 2D renderer draws both engines line by line with an H-blank hook after
+    each visible line, where the host runs the game's H-blank interrupt handler (hw.c `host_hblank`: when DISPSTAT,
+    IE and IME enable it; VCOUNT reads as the line; the handler's accesses stay out of the polling state, the
+    virtual time and `ACWW_IOTRACE`). BGxX/BGxY writes reload the affine reference point (stepped by PB/PD per line).
+    `Sky_HBlankMain` / `Sky_HBlankSub` (ITCM gap code) written in C from the DS code (unk_020b8d9c.cpp): the sky's
+    gradient, the clouds' perspective, the blend, the horizon's layers; `MenuScreen_WipeHBlank` (the menus' sawtooth
+    edge) and `IrisWipe_HBlank` (the circle of scene changes) now act per line. The once-per-frame HBlank interrupt
+    stays (delivering it wakes the threads waiting for an interrupt; without it the sound shifts slightly). Game
+    behaviour unchanged: quick sound, save script's save file and register traffic identical; captures_v3
+    re-recorded (the previous set: `captures_v3.20261010-220357`). **Open:** the ±1 precision items of 29; OBJs
+    are still prepared from the registers at the start of their line (the DS: during the line before).
 
 ---
 
