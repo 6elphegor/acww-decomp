@@ -1025,7 +1025,15 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     pixels to 681; play script median per frame 2618 to 1286. **Open:** anti-aliasing residuals (±1 coverage on long
     x-major runs, some vertex rows, slivers), span-factor precision at seams, Z-buffer depth (15-bit steps along edges; the game uses
     W-buffering), specular lighting, sliver left/right choice, toon /
-    highlight, shadows, edge marking, wireframe, 1-dot polygons, the rear plane bitmap.
+    highlight, shadows, edge marking, wireframe, the rear plane bitmap. **Feature audit (2026-10-10):** the game's
+    models and code use none of toon / highlight, shadows, edge marking, wireframe or the rear bitmap, so the own
+    engine is feature complete for ACWW; the open items above are precision refinements or unused features.
+    Polygons without area are drawn (as melonDS): one-line polygons from the leftmost x to the rightmost (excluded,
+    one pixel at least), points, lines with two equal vertices (full-size runs). Speed: `ACWW_GPU3D_TIMING=1`
+    (rasteriser time per frame, printed every 1000 frames): about 6 ms a frame in the quick script (exact spans step
+    instead of dividing, edges set up once per polygon, texture slots flattened once a frame); the remaining cost is
+    the per-pixel perspective division (interp_setup). `ACWW_PROFILE`'s file now starts with a function's address
+    (`# host_debug_exit_dumps <addr>`), so position-independent samples map through nm.
 30. **5.3** Drop melonDS (and the GPL obligation), then HBlank effects (`Sky_HBlank*` stubs).
 
 ---
