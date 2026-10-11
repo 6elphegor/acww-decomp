@@ -1109,7 +1109,10 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     `ACWW_GPU2D_SELFTEST=<n>` does it for render_selftest.c's random scenes (all BG modes, bitmap and affine OBJs,
     mosaic, windows, effects, display modes): 2100 scenes on three seeds identical (and a deliberately broken
     shader is caught). The 2D renderer's CPU time a frame 0.275 ms (3.26 drawing on the CPU); a fast headless run
-    of 6000 frames 9.5 s (28.5).
+    of 6000 frames 9.5 s (28.5). **wgpu the default (2026-10-11):** `ACWW_RENDERER3D` defaults to `wgpu` where
+    the build has wgpu-native and the machine a hardware adapter (a software one only when asked for: llvmpipe is
+    slower than the CPU's renderers), else to `own` without a message; `own` still when comparing with melonDS;
+    tools/host_oracle.sh pins `own` (the captures are the CPU renderers', which the GPU's differ from slightly).
 
 ---
 

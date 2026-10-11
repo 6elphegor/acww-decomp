@@ -30,6 +30,8 @@ if [ "$MODE" = record ]; then
   cp "$B" "$C/acww_reference"; echo "recorded from $B into $C"; exit 0
 fi
 case "$MODE" in quick-raw) MODE=quick; RAW=1;; play-raw) MODE=play; RAW=1;; esac
+# (the captures are the CPU's renderers': not the GPU's, the default where there is WebGPU, which differs a little)
+[ "${ACWW_RENDERER:-own}" = own ] && export ACWW_RENDERER3D=${ACWW_RENDERER3D:-own}
 export ACWW_HEADLESS=1 ACWW_FAST=1 ACWW_TOUCH="2200:10:128,96" ACWW_FIRMWARE=${ACWW_FIRMWARE:-$HOME/acww/ref/firmware_generated.bin}
 if [ "$MODE" = quick ]; then
   ACWW_EXIT_FRAME=8001 ACWW_SHOT="2500:$T/a-2500.ppm;8000:$T/a-8000.ppm" ACWW_WAV=$T/a.wav ACWW_SAVE=$T/s.sav \

@@ -183,7 +183,9 @@ The runtime (`modern/host/`):
   shows there.
 - `render.c` / `render.h`: the display interface the rest of the runtime uses (`render_init`, `render_write8/16/32`,
   `render_read32`, `render_frame`, `render_screen`, `render_gx_fifo_irq_level`), and the choice of renderer:
-  `ACWW_RENDERER=own` (default) or `melon`, `ACWW_RENDERER3D` (the same choice for the 3D engine, plus `wgpu`: the
+  `ACWW_RENDERER=own` (default) or `melon`, `ACWW_RENDERER3D` (the same choice for the 3D engine, plus `wgpu`, the default where the build and the machine
+  have WebGPU (a hardware adapter; else `own`; `own` when comparing with melonDS; tools/host_oracle.sh sets `own`,
+  as the captures are the CPU renderers'): the
   own engine's polygons drawn by the GPU, gpu3d/gpu3d_wgpu.c, and the screens composited and shown by it,
   wgpu_display.c, docs/portability.md 5.4; `ACWW_SCALE3D=<n>`: the 3D picture at n times the DS's resolution (default 2); `ACWW_MSAA=1`: no 4x MSAA
   for the 3D edges; the 2D layers drawn by the GPU too (`ACWW_GPU2D=0`: by the CPU), `ACWW_GPU2D_CHECK=1` checked against the

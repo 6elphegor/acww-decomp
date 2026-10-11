@@ -12,7 +12,10 @@
 
 #ifndef HOST_WGPU
 
-int wdisp_init(void) { return 0; }
+int wdisp_init(int software_ok) {
+    (void)software_ok;
+    return 0;
+}
 void *wdisp_device(void) { return 0; }
 void *wdisp_queue(void) { return 0; }
 void wdisp_frame(const uint32_t *const deferred[2], const uint32_t *const lines[2], void *picture3d, int scale) {
@@ -75,7 +78,7 @@ static void on_device(WGPURequestDeviceStatus status, WGPUDevice d, WGPUStringVi
     else fprintf(stderr, "wgpu: no device: %.*s\n", svlen(msg), msg.data ? msg.data : "");
 }
 
-int wdisp_init(void) {
+int wdisp_init(int software_ok) {
     if (sDev) return 1;
     sInst = wgpuCreateInstance(NULL);
     if (!sInst) return 0;
@@ -95,6 +98,11 @@ int wdisp_init(void) {
     }
     WGPUAdapterInfo info = WGPU_ADAPTER_INFO_INIT;
     wgpuAdapterGetInfo(sAdapter, &info);
+    int software = info.adapterType == WGPUAdapterType_CPU;
+    if (software && !software_ok && !ao.forceFallbackAdapter) {  // (the CPU's own renderers are faster)
+        wgpuAdapterInfoFreeMembers(info);
+        return 0;
+    }
     fprintf(stderr, "wgpu: %.*s (backend %d)\n", svlen(info.device), info.device.data ? info.device.data : "",
             (int)info.backendType);
     wgpuAdapterInfoFreeMembers(info);

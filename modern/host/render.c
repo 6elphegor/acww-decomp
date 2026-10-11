@@ -7,7 +7,9 @@
 //   ACWW_RENDERER3D=own | wgpu | melon    whose 3D engine runs the game's 3D (wgpu: the own engine, its polygons
 //                                         drawn by the GPU: gpu3d/gpu3d_wgpu.c): answers its reads (GXSTAT, the test
 //                                         results, matrices, RAM counts), raises the GX FIFO interrupt and draws the
-//                                         3D layer. Default: the 2D renderer's choice. `own` needs the own 2D renderer
+//                                         3D layer. Default: wgpu where this build and machine have WebGPU (else own,
+//                                         silently), own when comparing with melonDS (ACWW_RENDER_COMPARE, the
+//                                         self-tests), melon with ACWW_RENDERER=melon. `own` needs the own 2D renderer
 //                                         too (melonDS's 2D would show its own 3D), so it implies ACWW_RENDERER=own.
 //                                         With both `own` melonDS isn't run at all. With wgpu the GPU composites the
 //                                         screens too and shows them (wgpu_display.c): the 2D renderer leaves the 3D
@@ -100,14 +102,18 @@ void render_init(void) {
         fprintf(stderr, "render: ACWW_RENDERER3D=%s unknown (own, wgpu, melon): own\n", getenv("ACWW_RENDERER3D"));
     if (sOwn3d) sOwn = 1;
     sCompare = getenv("ACWW_RENDER_COMPARE") ? atoi(getenv("ACWW_RENDER_COMPARE")) : 0;
-    if (env_is("ACWW_RENDERER3D", "wgpu")) {
+    // the GPU by default (the own renderers, not compared with melonDS's)
+    int asked = env_is("ACWW_RENDERER3D", "wgpu");
+    int wgpu = asked || (!getenv("ACWW_RENDERER3D") && sOwn3d && !sCompare && !getenv("ACWW_RENDER_SELFTEST") &&
+                         !getenv("ACWW_RENDER_SELFTEST3D"));
+    if (wgpu) {
         // (compared with melonDS: the 3D picture read back, the screens composited on the CPU)
         int readback = sCompare || getenv("ACWW_RENDER_SELFTEST") || getenv("ACWW_RENDER_SELFTEST3D") ||
                        env_is("ACWW_WGPU_READBACK", "1");
         if (getenv("ACWW_SCALE3D")) sScale3d = atoi(getenv("ACWW_SCALE3D"));
         sScale3d = readback || sScale3d < 1 ? 1 : sScale3d > 8 ? 8 : sScale3d;
-        if (wdisp_init() && gpu3d_use_wgpu(wdisp_device(), wdisp_queue(), sScale3d, readback)) sGpuDisplay = !readback;
-        else fprintf(stderr, "render: ACWW_RENDERER3D=wgpu: no WebGPU in this build or on this machine: own\n");
+        if (wdisp_init(asked) && gpu3d_use_wgpu(wdisp_device(), wdisp_queue(), sScale3d, readback)) sGpuDisplay = !readback;
+        else if (asked) fprintf(stderr, "render: ACWW_RENDERER3D=wgpu: no WebGPU in this build or on this machine: own\n");
         if (sGpuDisplay && !env_is("ACWW_GPU2D", "0")) sGpu2dMode = env_is("ACWW_GPU2D_CHECK", "1") ? 2 : 1;
         if (sGpuDisplay && getenv("ACWW_GPU2D_SELFTEST")) sGpu2dMode = 2;
     }

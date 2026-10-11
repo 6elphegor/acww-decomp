@@ -8,8 +8,9 @@
 #include <stdint.h>
 
 // the WebGPU device (ACWW_WGPU_ADAPTER=gpu (default) | cpu: the software adapter, for headless tests); 0 if this
-// build or this machine has none
-int wdisp_init(void);
+// build or this machine has none - or only a software one (llvmpipe, slower than the CPU's own renderers) unless
+// `software_ok` or ACWW_WGPU_ADAPTER=cpu
+int wdisp_init(int software_ok);
 void *wdisp_device(void);  // WGPUDevice
 void *wdisp_queue(void);   // WGPUQueue
 // a frame: the 2D renderer's deferred pictures (gpu2d_deferred / gpu2d_deferred_lines of both screens) and the 3D
