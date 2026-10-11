@@ -1057,6 +1057,22 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     behaviour unchanged: quick sound, save script's save file and register traffic identical; captures_v3
     re-recorded (the previous set: `captures_v3.20261010-220357`). **Open:** the ±1 precision items of 29; OBJs
     are still prepared from the registers at the start of their line (the DS: during the line before).
+31. **5.4** WebGPU rendering (wgpu-native; the user's request, 2026-10-10: more efficient, and the way to macOS and
+    the web). **Phase 1 done:** `ACWW_RENDERER3D=wgpu` keeps the own geometry engine and draws its polygon list on the
+    GPU (modern/host/gpu3d/gpu3d_wgpu.c) into the same frame buffer, read back for the 2D renderer: texture image and
+    palette slots as storage buffers, the 7 formats decoded in the fragment shader; modulation / decal, alpha test,
+    translucency (premultiplied colour, alpha by max: blending only over non-transparent pixels, as the DS), the
+    translucent polygon ID rule (stencil), translucent depth update, depth "equal" (less or equal), Z-buffer (linear
+    in screen space) and W-buffer (per pixel), the fog flag (min blend) and a resolve pass with fog and the frame
+    buffer's packing. Not done: edge anti-aliasing, lines / points, toon, shadows, edge marking, rear bitmap.
+    `configure_host.py --wgpu <dir>` (default for x86-64 Linux: `~/acww/toolchains/wgpu-native-v29.0.1.1/
+    linux-x86_64`, the release's static library; `none`: without; other builds compile a stub and fall back to the
+    software rasteriser with a message). `ACWW_WGPU_ADAPTER=cpu`: the software adapter (llvmpipe). **Checks:** 2.4 ms
+    a frame on the RTX 3060 (the software rasteriser: about 6) with a synchronous readback and the texture slots
+    uploaded every frame; not pixel-exact (12% of the 3D pixels differ, 5% visibly: texel boundaries from the GPU's
+    float interpolation, edges without anti-aliasing), the pictures look the same; the save script's save file is
+    identical (the 3D picture doesn't reach the game logic); the default renderer's output unchanged. **Next (phase
+    2):** the 2D compositing on the GPU and presenting from there (no readback), then upscaled 3D.
 
 ---
 

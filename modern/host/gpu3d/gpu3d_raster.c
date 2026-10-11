@@ -554,6 +554,13 @@ static void timing_report(void) {
         fprintf(stderr, "gpu3d: rasteriser %.3f ms a frame on average, %.3f ms at most, %ld frames\n",
                 sRenderNs / sRenderFrames / 1e6, sRenderMax / 1e6, sRenderFrames);
 }
+// ACWW_RENDERER3D=wgpu: the polygons drawn by the GPU (gpu3d_wgpu.c) into the same frame buffer
+static int sWgpu;
+int gpu3d_use_wgpu(void) {
+    if (!g3w_init()) return 0;
+    sWgpu = 1;
+    return 1;
+}
 void g3_render(void) {
     static int timing = -1;
     struct timespec t0, t1;
@@ -563,24 +570,15 @@ void g3_render(void) {
     }
     if (timing) timespec_get(&t0, TIME_UTC);
     sR = &gG3Render;
-    struct timespec ta, tb, tc;
     g3_tex_setup();
-    clear_buffers();
-    sPE.p = 0;
-    if (timing) timespec_get(&ta, TIME_UTC);
-    for (int i = 0; i < sR->npoly; i++) draw_polygon(sR->poly[i], i);
-    if (timing) timespec_get(&tb, TIME_UTC);
-    fog_pass();
-    aa_pass();
-    if (timing) {
-        timespec_get(&tc, TIME_UTC);
-        static double setup, polys, passes;
-        setup += (ta.tv_sec - t0.tv_sec) * 1e9 + (ta.tv_nsec - t0.tv_nsec);
-        polys += (tb.tv_sec - ta.tv_sec) * 1e9 + (tb.tv_nsec - ta.tv_nsec);
-        passes += (tc.tv_sec - tb.tv_sec) * 1e9 + (tc.tv_nsec - tb.tv_nsec);
-        if ((sRenderFrames + 1) % 1000 == 0)
-            fprintf(stderr, "gpu3d: setup %.3f polygons %.3f passes %.3f ms a frame\n", setup / (sRenderFrames + 1) / 1e6,
-                    polys / (sRenderFrames + 1) / 1e6, passes / (sRenderFrames + 1) / 1e6);
+    if (sWgpu)  // (the GPU's rasteriser: gpu3d_wgpu.c)
+        g3w_render(sR, sImgFlat, sPalFlat, sColor);
+    else {
+        clear_buffers();
+        sPE.p = 0;
+        for (int i = 0; i < sR->npoly; i++) draw_polygon(sR->poly[i], i);
+        fog_pass();
+        aa_pass();
     }
     sShown ^= 1;
     memcpy(sFrameBuf[sShown], sColor, sizeof sColor);

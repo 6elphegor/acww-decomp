@@ -42,6 +42,9 @@ void gpu3d_frame(const uint8_t *const bank[9]);
 // the picture the frame shows: 192 lines of 256 pixels, red bits 0-5, green 8-13, blue 16-21, alpha bits 24-28
 // (0-31; 0: no pixel), before BG0HOFS's scroll (the 2D renderer's BG0 input)
 const uint32_t *gpu3d_lines(void);
+// the polygons drawn by the GPU (WebGPU, gpu3d_wgpu.c) instead of the software rasteriser; 0 if this build or this
+// machine can't
+int gpu3d_use_wgpu(void);
 
 // diagnostics
 typedef struct Gpu3dPolyInfo {

@@ -183,8 +183,8 @@ The runtime (`modern/host/`):
   shows there.
 - `render.c` / `render.h`: the display interface the rest of the runtime uses (`render_init`, `render_write8/16/32`,
   `render_read32`, `render_frame`, `render_screen`, `render_gx_fifo_irq_level`), and the choice of renderer:
-  `ACWW_RENDERER=own` (default) or `melon`, `ACWW_RENDERER3D` (the same choice for the 3D engine; default: the 2D
-  one's), `ACWW_RENDER_COMPARE=1` (both every frame, the first differing pixel of
+  `ACWW_RENDERER=own` (default) or `melon`, `ACWW_RENDERER3D` (the same choice for the 3D engine, plus `wgpu`: the
+  own engine's polygons drawn by the GPU, gpu3d/gpu3d_wgpu.c, docs/portability.md 5.4; default: the 2D one's), `ACWW_RENDER_COMPARE=1` (both every frame, the first differing pixel of
   each differing frame reported with the layers and effect the own renderer used there; a summary at exit),
   `ACWW_RENDER_SELFTEST=<n>` (`render_selftest.c`: n random scenes through both renderers before the game starts,
   then exit; `_SEED`, `_MASK`, `_OBJ`, `_OBJS`, `_SHOTS` narrow it down), `ACWW_GPU2D_FEATURES=1` (the 2D features the

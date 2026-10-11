@@ -32,6 +32,10 @@ parser.add_argument("--oracle", action="store_true",
 parser.add_argument("--melonds", default=os.path.expanduser("~/acww/ref/melonDS"),
                     help="--oracle: melonDS source tree patched with tools/host/melonds.patch and built for the "
                          "target (build-core32, build-core, build-core-a64, build-core-win64)")
+parser.add_argument("--wgpu", default=None,
+                    help="wgpu-native (include/, lib/libwgpu_native.a) for ACWW_RENDERER3D=wgpu (the 3D engine's polygons "
+                         "drawn by the GPU: modern/host/gpu3d/gpu3d_wgpu.c); default for x86-64 Linux: "
+                         "~/acww/toolchains/wgpu-native-v29.0.1.1/linux-x86_64 when it is there; 'none': without")
 parser.add_argument("--sdl2", default=os.path.expanduser("~/acww/toolchains/sdl2-dev"),
                     help="directory with SDL2 development headers (usr/include/SDL2): the 64-bit builds' frontend "
                          "(in the game's process, linked with the system's libSDL2) and the i386 build's viewer")
@@ -248,6 +252,17 @@ if not args.oracle:  # (no melonDS: its headers and libraries aren't needed)
     MELON_LIBS = ""
     HOST_CXX_FLAGS = re.sub(f" -I{re.escape(M)}/\\S+| -DJIT_ENABLED| -DGDBSTUB_ENABLED", "", HOST_CXX_FLAGS)
 
+# WebGPU (wgpu-native, linked statically): ACWW_RENDERER3D=wgpu
+WGPU = args.wgpu
+if WGPU is None:
+    WGPU = os.path.expanduser("~/acww/toolchains/wgpu-native-v29.0.1.1/linux-x86_64") if X64 and not WIN else "none"
+if WGPU == "none" or not os.path.exists(f"{WGPU}/lib/libwgpu_native.a"):
+    if args.wgpu not in (None, "none"):
+        sys.exit(f"--wgpu: no {args.wgpu}/lib/libwgpu_native.a")
+    WGPU = None
+WGPU_CFLAGS = f"-O2 -DHOST_WGPU -I{WGPU}/include" if WGPU else "-O2"
+WGPU_LIBS = f" {WGPU}/lib/libwgpu_native.a -ldl" if WGPU else ""
+
 MWCC_FLAG_MAP = {("-char", "unsigned"): "-funsigned-char"}
 
 
@@ -287,7 +302,7 @@ def main():
         n.rule("hostcxx", f"{CXX} {HOST_CXX_FLAGS} -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCXX $in")
         libs = "" if WIN else f" {SDL_LIBS} -lstdc++ -lpthread -lm -lc -lgcc"
-        n.rule("link", f"{CXX} {LINK_FLAGS} -o $out @$objects {MELON_LIBS}{libs}", description="LINK $out")
+        n.rule("link", f"{CXX} {LINK_FLAGS} -o $out @$objects {MELON_LIBS}{WGPU_LIBS}{libs}", description="LINK $out")
         objs = []
         for s in sources(Path("src"), (".c", ".cpp")):
             o = str(build / s.with_suffix(".o"))
@@ -307,7 +322,8 @@ def main():
             rule = {".cpp": "hostcxx", ".S": "hostas_S"}.get(s.suffix, "hostcc")
             sdl = s.name == "frontend_sdl.c" and SDL_CFLAGS
             # the 2D and 3D renderers' per-pixel loops: optimised further than the rest of the runtime (-O1)
-            fl = SDL_CFLAGS if sdl else "-O2" if "gpu2d" in s.parts or "gpu3d" in s.parts else None
+            fl = SDL_CFLAGS if sdl else WGPU_CFLAGS if s.name == "gpu3d_wgpu.c" else \
+                "-O2" if "gpu2d" in s.parts or "gpu3d" in s.parts else None
             n.build(o, rule, str(s), variables={"flags": fl} if fl else None)
             objs.append(o)
         # The data between the decomp's units (gap objects of the DS build's delinking): generated once from that

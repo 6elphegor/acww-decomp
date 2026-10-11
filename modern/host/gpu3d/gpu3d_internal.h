@@ -72,6 +72,10 @@ const u32 *g3_frame_lines(void);
 int g3_raster_pixel_polygon(int x, int y);  // index into gG3Render.poly, -1 none
 void g3_raster_diagnostics(int on);
 
+// gpu3d_wgpu.c (HOST_WGPU builds; elsewhere g3w_init fails)
+int g3w_init(void);
+void g3w_render(const G3RenderState *r, const u8 *img, const u8 *pal, u32 *out);
+
 // feature census (gpu3d_geom.c)
 void g3_feature(int id);
 enum {

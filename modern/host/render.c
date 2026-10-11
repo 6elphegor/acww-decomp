@@ -4,7 +4,8 @@
 // melonDS (melon.cpp, GPL-3.0) is linked into the oracle build only (tools/configure_host.py --oracle; 5.3), as a
 // reference renderer; the other builds have melon_none.c, which stops with a message when it is asked for:
 //   ACWW_RENDERER=own (default) | melon   whose 2D pictures the screens show
-//   ACWW_RENDERER3D=own | melon           whose 3D engine runs the game's 3D: answers its reads (GXSTAT, the test
+//   ACWW_RENDERER3D=own | wgpu | melon    whose 3D engine runs the game's 3D (wgpu: the own engine, its polygons
+//                                         drawn by the GPU: gpu3d/gpu3d_wgpu.c): answers its reads (GXSTAT, the test
 //                                         results, matrices, RAM counts), raises the GX FIFO interrupt and draws the
 //                                         3D layer. Default: the 2D renderer's choice. `own` needs the own 2D renderer
 //                                         too (melonDS's 2D would show its own 3D), so it implies ACWW_RENDERER=own.
@@ -77,8 +78,10 @@ void render_init(void) {
     if (getenv("ACWW_RENDERER") && sOwn && !env_is("ACWW_RENDERER", "own"))
         fprintf(stderr, "render: ACWW_RENDERER=%s unknown (own, melon): own\n", getenv("ACWW_RENDERER"));
     sOwn3d = getenv("ACWW_RENDERER3D") ? !env_is("ACWW_RENDERER3D", "melon") : sOwn;
-    if (getenv("ACWW_RENDERER3D") && sOwn3d && !env_is("ACWW_RENDERER3D", "own"))
-        fprintf(stderr, "render: ACWW_RENDERER3D=%s unknown (own, melon): own\n", getenv("ACWW_RENDERER3D"));
+    if (getenv("ACWW_RENDERER3D") && sOwn3d && !env_is("ACWW_RENDERER3D", "own") && !env_is("ACWW_RENDERER3D", "wgpu"))
+        fprintf(stderr, "render: ACWW_RENDERER3D=%s unknown (own, wgpu, melon): own\n", getenv("ACWW_RENDERER3D"));
+    if (env_is("ACWW_RENDERER3D", "wgpu") && !gpu3d_use_wgpu())
+        fprintf(stderr, "render: ACWW_RENDERER3D=wgpu: no WebGPU in this build or on this machine: own\n");
     if (sOwn3d) sOwn = 1;
     sCompare = getenv("ACWW_RENDER_COMPARE") ? atoi(getenv("ACWW_RENDER_COMPARE")) : 0;
     if (getenv("ACWW_RENDER_COMPARE_MAX")) sCompareMax = strtol(getenv("ACWW_RENDER_COMPARE_MAX"), 0, 10);
