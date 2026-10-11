@@ -88,6 +88,45 @@ static u32 sNvWords[8];
 static int sNvCount;
 static u8 sNvStatus;  // bit 1: write enable latch
 
+// the firmware image when none is given (ACWW_FIRMWARE): a 128 KB flash, erased (0xff) but for what GBATEK ("DS
+// Firmware Header", "DS Firmware User Settings") says is read - the user settings' place in the header, and the user
+// settings twice (as after a first start: owner "PLAYER", English, a birthday of 1 January, the touch screen
+// calibration of a typical unit), each with its CRC. The game reads the header and the Wi-Fi settings (left erased:
+// no access point set up); the runtime the calibration (tp_raw).
+static u16 fw_crc16(u16 crc, const u8 *p, u32 n) {
+    for (u32 i = 0; i < n; i++) {
+        crc ^= p[i];
+        for (int b = 0; b < 8; b++) crc = crc & 1 ? (u16)(crc >> 1 ^ 0xa001) : (u16)(crc >> 1);
+    }
+    return crc;
+}
+static void default_firmware(void) {
+    enum { SIZE = 0x20000, USER = SIZE - 0x200 };
+    memset(sNvram, 0xff, SIZE);
+    sNvram[0x20] = (u8)(USER / 8), sNvram[0x21] = (u8)(USER / 8 >> 8);
+    for (int copy = 0; copy < 2; copy++) {
+        u8 *u = sNvram + USER + copy * 0x100;
+        memset(u, 0, 0x100);
+        u[0x00] = 5;                      // version
+        u[0x02] = 0;                      // favourite colour
+        u[0x03] = 1, u[0x04] = 1;         // birthday: month, day
+        static const char kName[] = "PLAYER";
+        for (int i = 0; kName[i]; i++) u[0x06 + 2 * i] = (u8)kName[i];  // nickname (UTF-16)
+        u[0x1a] = (u8)(sizeof kName - 1); // its length
+        static const u16 kCal[6] = {0x02df, 0x032c, 0x0d3b, 0x0ce7, 0, 0};  // ADC x1, y1, x2, y2
+        u[0x58] = (u8)kCal[0], u[0x59] = (u8)(kCal[0] >> 8), u[0x5a] = (u8)kCal[1], u[0x5b] = (u8)(kCal[1] >> 8);
+        u[0x5c] = 0x20, u[0x5d] = 0x20;   // their screen points
+        u[0x5e] = (u8)kCal[2], u[0x5f] = (u8)(kCal[2] >> 8), u[0x60] = (u8)kCal[3], u[0x61] = (u8)(kCal[3] >> 8);
+        u[0x62] = 0xe0, u[0x63] = 0xa0;
+        u[0x64] = 0x01;                   // language: English
+        u[0x66] = 0;                      // year (2000 +)
+        u[0x70] = (u8)copy;               // update counter
+        u16 crc = fw_crc16(0xffff, u, 0x70);
+        u[0x72] = (u8)crc, u[0x73] = (u8)(crc >> 8);
+    }
+    sNvramSize = SIZE;
+}
+
 static void nvram_command(void) {
     u32 cmd = sNvWords[0] >> 8 & 0xff;
     u32 addr = (sNvWords[0] & 0xff) << 16 | (sNvWords[1] & 0xffff);
@@ -398,7 +437,8 @@ void pxi7_init(void) {
     const char *fw = getenv("ACWW_FIRMWARE");
     FILE *f = fw ? fopen(fw, "rb") : 0;
     if (f) { sNvramSize = (u32)fread(sNvram, 1, sizeof sNvram, f); fclose(f); }
-    else fprintf(stderr, "pxi7: no firmware image (ACWW_FIRMWARE): NVRAM reads give 0xff\n");
+    else if (fw) fprintf(stderr, "pxi7: can't read the firmware image %s: a default one\n", fw);
+    if (!sNvramSize) default_firmware();
     // ARM7 callbacks ready for every tag (OSSystemWork.pxiHandleChecker[1])
     ((volatile u32 *)gHostSysWork.pxiHandleChecker)[1] = 0xffffffff;
 }
