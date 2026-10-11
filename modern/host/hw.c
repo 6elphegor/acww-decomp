@@ -104,7 +104,11 @@ static void host_pace_frame(void) {
 // ACWW_WATCHDOG=<ms>: the threshold in real time (default 2000), 0 turns it off.
 static u32 sHeartbeat, sHeartbeatFrame;  // the low word of the cycle counter and the frame (relaxed atomics)
 static int sPaused;  // host_set_paused: the frontend holds the game (its key binding screen)
-void host_set_paused(int paused) { __atomic_store_n(&sPaused, paused, __ATOMIC_RELAXED); }
+void host_set_paused(int paused) {
+    // (the pause's real time isn't owed: the frames go on at their pace from now, not faster to catch up)
+    if (!paused && __atomic_load_n(&sPaused, __ATOMIC_RELAXED)) sNextFrame = 0;
+    __atomic_store_n(&sPaused, paused, __ATOMIC_RELAXED);
+}
 static void watchdog(void *arg) {
     u32 limit = (u32)(uintptr_t)arg, still = 0, last = 0;
     int reported = 0;
