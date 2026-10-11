@@ -18,6 +18,14 @@ void *wdisp_queue(void) { return 0; }
 void wdisp_frame(const uint32_t *const deferred[2], const uint32_t *const lines[2], void *picture3d, int scale) {
     (void)deferred, (void)lines, (void)picture3d, (void)scale;
 }
+void wdisp_frame_2d(const void *gpuFrame, const uint8_t *const banks[9], const uint32_t *const lines[2],
+                    void *picture3d, int scale) {
+    (void)gpuFrame, (void)banks, (void)lines, (void)picture3d, (void)scale;
+}
+int wdisp_read_2d(uint32_t *out) {
+    (void)out;
+    return 0;
+}
 const uint32_t *wdisp_screens(void) {
     static uint32_t none[256 * 384];
     return none;
@@ -37,6 +45,9 @@ int wdisp_read_window(int w, int h, uint32_t *out) {
 
 #include <webgpu/webgpu.h>
 #include <webgpu/wgpu.h>
+
+#include "gpu2d/gpu2d.h"
+#include "gpu2d_wgsl.h"  // kShader2d: modern/host/gpu2d.wgsl
 
 typedef uint32_t u32;
 typedef uint64_t u64;
@@ -204,7 +215,8 @@ static int setup(void) {
     WGPUTextureDescriptor td = WGPU_TEXTURE_DESCRIPTOR_INIT;
     td.size = (WGPUExtent3D){256, 384, 1};
     td.format = WGPUTextureFormat_RG32Uint;
-    td.usage = WGPUTextureUsage_TextureBinding | WGPUTextureUsage_CopyDst;
+    td.usage = WGPUTextureUsage_TextureBinding | WGPUTextureUsage_CopyDst | WGPUTextureUsage_RenderAttachment |
+               WGPUTextureUsage_CopySrc;
     sDeferredTex = wgpuDeviceCreateTexture(sDev, &td);
     sDeferredView = wgpuTextureCreateView(sDeferredTex, NULL);
     WGPUBufferDescriptor bd = WGPU_BUFFER_DESCRIPTOR_INIT;
@@ -257,6 +269,13 @@ static WGPUBindGroup group(WGPUTextureView pic) {
     return sGroups[i].group = wgpuDeviceCreateBindGroup(sDev, &gd);
 }
 
+static void frame_lines(const uint32_t *const lines[2], void *picture3d, int scale) {
+    for (int s = 0; s < 2; s++) wgpuQueueWriteBuffer(sQueue, sLines, (u64)s * 192 * 4, lines[s], 192 * 4);
+    sPic = picture3d;
+    sScale = scale;
+    sFrames++;
+}
+
 void wdisp_frame(const uint32_t *const deferred[2], const uint32_t *const lines[2], void *picture3d, int scale) {
     if (!setup()) return;
     for (int s = 0; s < 2; s++) {
@@ -268,11 +287,120 @@ void wdisp_frame(const uint32_t *const deferred[2], const uint32_t *const lines[
         l.rowsPerImage = 192;
         WGPUExtent3D size = {256, 192, 1};
         wgpuQueueWriteTexture(sQueue, &dst, deferred[s], 256 * 192 * 8, &l, &size);
-        wgpuQueueWriteBuffer(sQueue, sLines, (u64)s * 192 * 4, lines[s], 192 * 4);
     }
-    sPic = picture3d;
-    sScale = scale;
-    sFrames++;
+    frame_lines(lines, picture3d, scale);
+}
+
+// ---- the 2D renderer on the GPU (gpu2d.wgsl): its pictures drawn into the deferred texture
+enum { VRAM_SIZE = GPU2D_VRAM_OVERLAP + 74 * 0x4000, BANKS_SIZE = GPU2D_VRAM_ZERO };
+static WGPUShaderModule sShader2d;
+static WGPURenderPipeline sPipe2d;
+static WGPUBindGroup sGroup2d;
+static WGPUBuffer s2dBuf[6];  // VRAM, lines, tables, palettes, OAMs, line 0's OBJs
+static const u64 k2dSize[6] = {VRAM_SIZE, 2 * 192 * GPU2D_LINE_WORDS * 4, 2 * 64 * 4, GPU2D_MAX_VERSIONS * 0x800,
+                               GPU2D_MAX_VERSIONS * 0x800, 2 * 256 * 4};
+static uint8_t sBanksCopy[BANKS_SIZE];  // what the GPU's VRAM buffer holds of the banks
+
+static int setup2d(void) {
+    if (sPipe2d) return 1;
+    if (!setup()) return 0;
+    WGPUShaderSourceWGSL src = WGPU_SHADER_SOURCE_WGSL_INIT;
+    src.code = sv(kShader2d);
+    WGPUShaderModuleDescriptor md = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
+    md.nextInChain = &src.chain;
+    sShader2d = wgpuDeviceCreateShaderModule(sDev, &md);
+    WGPUBindGroupLayoutEntry e[6];
+    WGPUBindGroupEntry g[6];
+    for (int i = 0; i < 6; i++) {
+        e[i] = (WGPUBindGroupLayoutEntry)WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT;
+        e[i].binding = (u32)i;
+        e[i].visibility = WGPUShaderStage_Fragment;
+        e[i].buffer.type = WGPUBufferBindingType_ReadOnlyStorage;
+        WGPUBufferDescriptor bd = WGPU_BUFFER_DESCRIPTOR_INIT;
+        bd.size = k2dSize[i];
+        bd.usage = WGPUBufferUsage_Storage | WGPUBufferUsage_CopyDst;
+        s2dBuf[i] = wgpuDeviceCreateBuffer(sDev, &bd);  // (zeroed: the zero granule stays so)
+        g[i] = (WGPUBindGroupEntry)WGPU_BIND_GROUP_ENTRY_INIT;
+        g[i].binding = (u32)i;
+        g[i].buffer = s2dBuf[i];
+        g[i].size = k2dSize[i];
+    }
+    WGPUBindGroupLayoutDescriptor ld = WGPU_BIND_GROUP_LAYOUT_DESCRIPTOR_INIT;
+    ld.entryCount = 6;
+    ld.entries = e;
+    WGPUBindGroupLayout layout = wgpuDeviceCreateBindGroupLayout(sDev, &ld);
+    WGPUBindGroupDescriptor gd = WGPU_BIND_GROUP_DESCRIPTOR_INIT;
+    gd.layout = layout;
+    gd.entryCount = 6;
+    gd.entries = g;
+    sGroup2d = wgpuDeviceCreateBindGroup(sDev, &gd);
+    WGPUPipelineLayoutDescriptor pd = WGPU_PIPELINE_LAYOUT_DESCRIPTOR_INIT;
+    pd.bindGroupLayoutCount = 1;
+    pd.bindGroupLayouts = &layout;
+    WGPURenderPipelineDescriptor rp = WGPU_RENDER_PIPELINE_DESCRIPTOR_INIT;
+    rp.layout = wgpuDeviceCreatePipelineLayout(sDev, &pd);
+    rp.vertex.module = sShader2d;
+    rp.vertex.entryPoint = sv("vfull2d");
+    WGPUColorTargetState ct = WGPU_COLOR_TARGET_STATE_INIT;
+    ct.format = WGPUTextureFormat_RG32Uint;
+    WGPUFragmentState fs = WGPU_FRAGMENT_STATE_INIT;
+    fs.module = sShader2d;
+    fs.entryPoint = sv("f2d");
+    fs.targetCount = 1;
+    fs.targets = &ct;
+    rp.fragment = &fs;
+    sPipe2d = wgpuDeviceCreateRenderPipeline(sDev, &rp);
+    return 1;
+}
+
+// the banks into the VRAM buffer: only the 4 KB pieces that changed
+static void upload_banks(const uint8_t *const banks[9]) {
+    static const u32 kOffset[9] = GPU2D_BANK_OFFSET;
+    static const u32 kSize[9] = {0x20000, 0x20000, 0x20000, 0x20000, 0x10000, 0x4000, 0x4000, 0x8000, 0x4000};
+    enum { PIECE = 0x1000 };
+    for (int b = 0; b < 9; b++) {
+        uint8_t *copy = sBanksCopy + kOffset[b];
+        for (u32 o = 0; o < kSize[b];) {
+            if (!memcmp(copy + o, banks[b] + o, PIECE)) { o += PIECE; continue; }
+            u32 end = o + PIECE;
+            while (end < kSize[b] && memcmp(copy + end, banks[b] + end, PIECE)) end += PIECE;
+            memcpy(copy + o, banks[b] + o, end - o);
+            wgpuQueueWriteBuffer(sQueue, s2dBuf[0], kOffset[b] + o, banks[b] + o, end - o);
+            o = end;
+        }
+    }
+}
+
+void wdisp_frame_2d(const void *gpuFrame, const uint8_t *const banks[9], const uint32_t *const lines[2],
+                    void *picture3d, int scale) {
+    const Gpu2dGpuFrame *f = gpuFrame;
+    if (!setup2d()) return;
+    upload_banks(banks);
+    if (f->overlapSize) wgpuQueueWriteBuffer(sQueue, s2dBuf[0], GPU2D_VRAM_OVERLAP, f->overlap, f->overlapSize);
+    wgpuQueueWriteBuffer(sQueue, s2dBuf[1], 0, f->lines, sizeof f->lines);
+    wgpuQueueWriteBuffer(sQueue, s2dBuf[2], 0, f->tables, sizeof f->tables);
+    wgpuQueueWriteBuffer(sQueue, s2dBuf[3], 0, f->palettes, (size_t)f->paletteCount * 0x800);
+    wgpuQueueWriteBuffer(sQueue, s2dBuf[4], 0, f->oams, (size_t)f->oamCount * 0x800);
+    wgpuQueueWriteBuffer(sQueue, s2dBuf[5], 0, f->obj0, sizeof f->obj0);
+    WGPUCommandEncoder enc = wgpuDeviceCreateCommandEncoder(sDev, NULL);
+    WGPURenderPassColorAttachment ca = WGPU_RENDER_PASS_COLOR_ATTACHMENT_INIT;
+    ca.view = sDeferredView;
+    ca.loadOp = WGPULoadOp_Clear;
+    ca.storeOp = WGPUStoreOp_Store;
+    WGPURenderPassDescriptor rd = WGPU_RENDER_PASS_DESCRIPTOR_INIT;
+    rd.colorAttachmentCount = 1;
+    rd.colorAttachments = &ca;
+    WGPURenderPassEncoder pass = wgpuCommandEncoderBeginRenderPass(enc, &rd);
+    wgpuRenderPassEncoderSetPipeline(pass, sPipe2d);
+    wgpuRenderPassEncoderSetBindGroup(pass, 0, sGroup2d, 0, NULL);
+    wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+    wgpuRenderPassEncoderEnd(pass);
+    wgpuRenderPassEncoderRelease(pass);
+    WGPUCommandBuffer cmd = wgpuCommandEncoderFinish(enc, NULL);
+    wgpuQueueSubmit(sQueue, 1, &cmd);
+    wgpuCommandBufferRelease(cmd);
+    wgpuCommandEncoderRelease(enc);
+    frame_lines(lines, picture3d, scale);
 }
 
 // the screens into `view` (w x h, of format fmt), letterboxed (or filling it: fill)
@@ -355,6 +483,39 @@ static int read_back(int w, int h, int fill, uint32_t *out) {
     for (int y = 0; y < h; y++)
         for (int x = 0; x < w; x++) out[y * w + x] = p[y * (stride / 4) + x] & 0xffffff;
     wgpuBufferUnmap(sReadBuf);
+    return 1;
+}
+
+int wdisp_read_2d(uint32_t *out) {
+    if (!sPipe2d) return 0;
+    static WGPUBuffer buf;
+    enum { SIZE = 256 * 384 * 8 };
+    if (!buf) {
+        WGPUBufferDescriptor bd = WGPU_BUFFER_DESCRIPTOR_INIT;
+        bd.size = SIZE;
+        bd.usage = WGPUBufferUsage_MapRead | WGPUBufferUsage_CopyDst;
+        buf = wgpuDeviceCreateBuffer(sDev, &bd);
+    }
+    WGPUCommandEncoder enc = wgpuDeviceCreateCommandEncoder(sDev, NULL);
+    WGPUTexelCopyTextureInfo src = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
+    src.texture = sDeferredTex;
+    WGPUTexelCopyBufferInfo dst = WGPU_TEXEL_COPY_BUFFER_INFO_INIT;
+    dst.buffer = buf;
+    dst.layout.bytesPerRow = 256 * 8;
+    dst.layout.rowsPerImage = 384;
+    WGPUExtent3D size = {256, 384, 1};
+    wgpuCommandEncoderCopyTextureToBuffer(enc, &src, &dst, &size);
+    submit(enc);
+    int mapped = 0;
+    WGPUBufferMapCallbackInfo mc = WGPU_BUFFER_MAP_CALLBACK_INFO_INIT;
+    mc.mode = WGPUCallbackMode_AllowSpontaneous;
+    mc.callback = on_mapped;
+    mc.userdata1 = &mapped;
+    wgpuBufferMapAsync(buf, WGPUMapMode_Read, 0, SIZE, mc);
+    while (!mapped) wgpuDevicePoll(sDev, 1, NULL);
+    if (mapped < 0) return 0;
+    memcpy(out, wgpuBufferGetConstMappedRange(buf, 0, SIZE), SIZE);
+    wgpuBufferUnmap(buf);
     return 1;
 }
 

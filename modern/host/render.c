@@ -14,6 +14,13 @@
 //                                         layer to it, and the frames stay on the GPU (read back only for screenshots)
 //   ACWW_SCALE3D=<n>                      wgpu: the 3D picture at n times the DS's resolution (1-8, default 2;
 //                                         the window shows 2x; screenshots average the 3D picture's pixels)
+//   ACWW_GPU2D=0                          wgpu: the 2D renderer's pictures drawn by the CPU, not by the GPU (default:
+//                                         gpu2d.wgsl; the CPU keeps the per-line state and the H-blank; 12 times less
+//                                         CPU time than drawing them); ACWW_GPU2D_CHECK=1: drawn by
+//                                         both, the GPU's checked against the CPU's every frame (the differing
+//                                         frames reported, a count at exit)
+//   ACWW_GPU2D_SELFTEST=<n>               wgpu: before the game starts, n random scenes (render_selftest.c) drawn by
+//                                         the CPU and the GPU and compared as with ACWW_GPU2D_CHECK, then exit
 //   ACWW_WGPU_READBACK=1                  wgpu: the 3D picture read back, the screens composited on the CPU (as
 //                                         with ACWW_RENDER_COMPARE; the GPU's compositing checked against it)
 //   ACWW_RENDER_COMPARE=1                 render with both every frame and report the frames where they differ: the
@@ -66,6 +73,8 @@ static int sMelon;        // melonDS runs
 static int sCompare;
 static int sGpuDisplay;   // the screens composited by the GPU (wgpu_display.c)
 static int sScale3d = 2;  // ACWW_SCALE3D
+static int sGpu2dMode;    // ACWW_GPU2D: 1 the 2D pictures drawn by the GPU, 2 checked against the CPU's
+static u64 sGpu2dChecked, sGpu2dDiffering;
 static int sSelftest;      // ACWW_RENDER_SELFTEST (render_selftest.c compares itself)
 static long sCompareMax = 200, sCompareLines;
 static u64 sCompared, sDiffering, sFirstDiffering = ~0ull;
@@ -99,6 +108,8 @@ void render_init(void) {
         sScale3d = readback || sScale3d < 1 ? 1 : sScale3d > 8 ? 8 : sScale3d;
         if (wdisp_init() && gpu3d_use_wgpu(wdisp_device(), wdisp_queue(), sScale3d, readback)) sGpuDisplay = !readback;
         else fprintf(stderr, "render: ACWW_RENDERER3D=wgpu: no WebGPU in this build or on this machine: own\n");
+        if (sGpuDisplay && !env_is("ACWW_GPU2D", "0")) sGpu2dMode = env_is("ACWW_GPU2D_CHECK", "1") ? 2 : 1;
+        if (sGpuDisplay && getenv("ACWW_GPU2D_SELFTEST")) sGpu2dMode = 2;
     }
     if (getenv("ACWW_RENDER_COMPARE_MAX")) sCompareMax = strtol(getenv("ACWW_RENDER_COMPARE_MAX"), 0, 10);
     if (getenv("ACWW_RENDER_SELFTEST") || getenv("ACWW_RENDER_SELFTEST3D")) sCompare = sCompare ? sCompare : 1;
@@ -107,9 +118,17 @@ void render_init(void) {
     sMelon = !sOwn || !sOwn3d || sCompare;
     if (sMelon) melon_init();
     gpu2d_reset();
-    gpu2d_set_diagnostics(sCompare);
+    gpu2d_set_diagnostics(sCompare || sGpu2dMode == 2);
     gpu3d_reset();
     gpu3d_set_diagnostics(sCompare);
+    if (getenv("ACWW_GPU2D_SELFTEST")) {  // (render_selftest.c: the GPU's 2D pictures against the CPU's)
+        if (sGpu2dMode != 2) {
+            fprintf(stderr, "render: ACWW_GPU2D_SELFTEST needs ACWW_RENDERER3D=wgpu (and WebGPU)\n");
+            exit(1);
+        }
+        sSelftest = 1;
+        render_selftest_gpu2d(strtol(getenv("ACWW_GPU2D_SELFTEST"), 0, 10));
+    }
     if (getenv("ACWW_RENDER_SELFTEST")) {  // (render_selftest.c)
         sGpu2d = sGpu3d = sCompare = sSelftest = sMelon = 1;
         render_selftest(strtol(getenv("ACWW_RENDER_SELFTEST"), 0, 10));
@@ -496,6 +515,35 @@ static void gpu3d_run_frame(void) {
     gpu3d_frame(banks);
 }
 
+// ACWW_GPU2D_CHECK: the GPU's 2D pictures against the CPU's, word for word
+int render_check_gpu2d(void) {
+    static u32 gpu[256 * 384 * 2];
+    static long reported;
+    if (!wdisp_read_2d(gpu)) return 1;
+    sGpu2dChecked++;
+    int count = 0, first = -1;
+    for (int s = 0; s < 2; s++) {
+        const u32 *cpu = gpu2d_deferred(s);
+        for (int i = 0; i < 256 * 192 * 2; i++)
+            if (cpu[i] != gpu[s * 256 * 192 * 2 + i]) {
+                if (first < 0) first = s * 256 * 192 * 2 + i;
+                count++;
+            }
+    }
+    if (!count) return 0;
+    sGpu2dDiffering++;
+    if (reported++ < sCompareMax) {
+        int px = first / 2, s = px / (256 * 192), y = px / 256 % 192, x = px % 256, w = first & 1;
+        const u32 *cpu = gpu2d_deferred(s) + (y * 256 + x) * 2;
+        char what[256];
+        gpu2d_describe_pixel(s, x, y, what, sizeof what);
+        fprintf(stderr, "gpu2d-check: frame %llu: %d words differ, first %s screen (%d, %d) word %d: cpu %08x %08x gpu "
+                "%08x %08x (%s)\n", (unsigned long long)host_frame(), count, s ? "bottom" : "top", x, y, w, cpu[0], cpu[1],
+                gpu[(px) * 2], gpu[px * 2 + 1], what);
+    }
+    return 1;
+}
+
 static void render_hblank(int line, void *context) {
     (void)context;
     host_hblank(line);
@@ -521,11 +569,14 @@ void render_frame(void) {
         in.hblank = sOwn ? render_hblank : 0;
         in.hblankContext = 0;
         in.defer3d = sGpuDisplay;
+        in.gpu = sGpu2dMode;
         gpu2d_render_frame(&in);
         if (sGpuDisplay) {
             const u32 *deferred[2] = {gpu2d_deferred(0), gpu2d_deferred(1)};
             const u32 *lines[2] = {gpu2d_deferred_lines(0), gpu2d_deferred_lines(1)};
-            wdisp_frame(deferred, lines, gpu3d_wgpu_picture(), sScale3d);
+            if (sGpu2dMode) wdisp_frame_2d(gpu2d_gpu_frame(), in.bank, lines, gpu3d_wgpu_picture(), sScale3d);
+            else wdisp_frame(deferred, lines, gpu3d_wgpu_picture(), sScale3d);
+            if (sGpu2dMode == 2 && !sSelftest) render_check_gpu2d();
         }
     }
     if (sGpu3d) gpu3d_run_frame();
@@ -562,6 +613,9 @@ void render_exit_report(void) {
                         (unsigned long long)sPolyKind[k][1]);
         fprintf(stderr, "\n");
     }
+    if (sGpu2dMode == 2)
+        fprintf(stderr, "gpu2d-check: %llu frames checked, %llu differ\n", (unsigned long long)sGpu2dChecked,
+                (unsigned long long)sGpu2dDiffering);
     if (sGpu2d && getenv("ACWW_GPU2D_FEATURES")) gpu2d_print_features();
     if (sGpu3d && getenv("ACWW_GPU3D_FEATURES")) gpu3d_print_features();
 }

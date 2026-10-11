@@ -37,6 +37,9 @@ typedef struct Gpu2dFrameInput {
     void *hblankContext;
     // 1: the 3D layer is composited by the caller (lines3d NULL; the GPU: gpu2d_deferred), not here
     int defer3d;
+    // the pictures drawn by a GPU (gpu2d_gpu_frame; implies defer3d): 1 the frame's inputs recorded for it and no
+    // pixels drawn here, 2 both (to check the GPU's against these)
+    int gpu;
 } Gpu2dFrameInput;
 
 void gpu2d_reset(void);
@@ -63,6 +66,35 @@ const uint32_t *gpu2d_screen(int screen);
 // it for kind 0 only. P is the 3D picture's pixel at x + the line's BG0HOFS (bits 16-24, 9-bit signed).
 const uint32_t *gpu2d_deferred(int screen);
 const uint32_t *gpu2d_deferred_lines(int screen);
+
+// With Gpu2dFrameInput.gpu: what a GPU needs to draw the frame into gpu2d_deferred's words (wgpu_display.c, whose
+// shader follows this renderer's rules). VRAM is laid out as the banks A-I at GPU2D_BANK_OFFSET, a zero granule at
+// GPU2D_VRAM_ZERO, and the composites of overlapping banks (`overlap`, overlapSize bytes) at GPU2D_VRAM_OVERLAP.
+#define GPU2D_BANK_OFFSET {0x00000u, 0x20000u, 0x40000u, 0x60000u, 0x80000u, 0x90000u, 0x94000u, 0x98000u, 0xa0000u}
+enum { GPU2D_VRAM_ZERO = 0xa4000, GPU2D_VRAM_OVERLAP = 0xa8000, GPU2D_LINE_WORDS = 40, GPU2D_MAX_VERSIONS = 193 };
+// a line of an engine (GPU2D_LINE_WORDS words): 0-27 the registers (0x04000000 / 0x04001000 + 0-0x6f), 28-31 the
+// affine BGs' reference points (BG2 X, Y, BG3 X, Y) at this line, 32 the windows' flags at its start (window 0
+// bits 0-1, window 1 bits 2-3: inside vertically, horizontally), 33 the line OBJ mosaic shows, 34 / 35 the palette /
+// OAM version, 36 POWCNT1
+enum { G2L_REGS = 0, G2L_REF = 28, G2L_WIN = 32, G2L_OBJMOSAIC = 33, G2L_PALETTE = 34, G2L_OAM = 35, G2L_POWCNT = 36 };
+// an engine's VRAM tables (64 words, byte offsets into the layout): 0-31 the BG area's 16 KB granules, 32-47 the
+// OBJ area's, 48-51 the extended BG palette slots, 52 the extended OBJ palette (unmapped ones: the zero granule),
+// 53-56 banks A-D when mapped to the LCDC (else ~0); word 63 of engine A's: the screen it shows on (0 top)
+enum { G2T_BG = 0, G2T_OBJ = 32, G2T_BGEXT = 48, G2T_OBJEXT = 52, G2T_LCDC = 53, G2T_SCREEN_A = 63 };
+typedef struct Gpu2dGpuFrame {
+    const uint8_t *overlap;
+    uint32_t overlapSize;
+    uint32_t tables[2][64];
+    uint32_t lines[2][192][GPU2D_LINE_WORDS];
+    const uint8_t *palettes;  // paletteCount versions of the palettes (0x800 bytes each: as Gpu2dFrameInput.palette)
+    uint32_t paletteCount;
+    const uint8_t *oams;      // oamCount versions of OAM (0x800 bytes each)
+    uint32_t oamCount;
+    // line 0's OBJ pixels (prepared during the previous frame): value 0-15, source 16-17, priority 18-19, kind 20-21,
+    // alpha 22-25, mosaic 26, OBJ window 27
+    uint32_t obj0[2][256];
+} Gpu2dGpuFrame;
+const Gpu2dGpuFrame *gpu2d_gpu_frame(void);
 
 // diagnostics: what made pixel (x, y) of a screen in the last frame, as text ("engine A: OBJ#12 over BG2, alpha");
 // only with gpu2d_set_diagnostics(1) (it costs time)

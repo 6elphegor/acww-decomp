@@ -15,6 +15,12 @@ void *wdisp_queue(void);   // WGPUQueue
 // a frame: the 2D renderer's deferred pictures (gpu2d_deferred / gpu2d_deferred_lines of both screens) and the 3D
 // picture it shows (gpu3d_wgpu_picture, a WGPUTextureView; `scale` times the DS's size)
 void wdisp_frame(const uint32_t *const deferred[2], const uint32_t *const lines[2], void *picture3d, int scale);
+// the same with the 2D renderer's pictures drawn by the GPU from what it recorded (a gpu2d.h Gpu2dGpuFrame; banks:
+// VRAM A-I) in place of `deferred`
+void wdisp_frame_2d(const void *gpuFrame, const uint8_t *const banks[9], const uint32_t *const lines[2],
+                    void *picture3d, int scale);
+// ... and those pictures read back (256x384 pixels, gpu2d_deferred's two words each), to check them; 0 if it failed
+int wdisp_read_2d(uint32_t *out);
 // the last frame's screens read back (256x384, 0x00RRGGBB: the top screen, then the bottom one)
 const uint32_t *wdisp_screens(void);
 

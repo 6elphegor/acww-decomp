@@ -322,10 +322,18 @@ def main():
             o = str(build / s.with_suffix(".o"))
             rule = {".cpp": "hostcxx", ".S": "hostas_S"}.get(s.suffix, "hostcc")
             sdl = s.name == "frontend_sdl.c" and SDL_CFLAGS
+            implicit = []
+            if s.name == "wgpu_display.c":  # (the 2D renderer's shader, embedded: modern/host/gpu2d.wgsl)
+                wgsl_h = str(build / "gen" / "gpu2d_wgsl.h")
+                n.rule("embed", "python3 tools/host_embed.py $in $out $name", description="EMBED $out")
+                n.build(wgsl_h, "embed", "modern/host/gpu2d.wgsl", implicit=["tools/host_embed.py"],
+                        variables={"name": "kShader2d"})
+                implicit = [wgsl_h]
             # the 2D and 3D renderers' per-pixel loops: optimised further than the rest of the runtime (-O1)
-            fl = SDL_CFLAGS if sdl else WGPU_CFLAGS if s.name in ("gpu3d_wgpu.c", "wgpu_display.c") else \
+            fl = SDL_CFLAGS if sdl else WGPU_CFLAGS + f" -I{build}/gen" if s.name == "wgpu_display.c" else \
+                WGPU_CFLAGS if s.name == "gpu3d_wgpu.c" else \
                 "-O2" if "gpu2d" in s.parts or "gpu3d" in s.parts else None
-            n.build(o, rule, str(s), variables={"flags": fl} if fl else None)
+            n.build(o, rule, str(s), variables={"flags": fl} if fl else None, implicit=implicit)
             objs.append(o)
         # The data between the decomp's units (gap objects of the DS build's delinking): generated once from that
         # build, which this branch no longer runs, and kept in modern/gen/. --regen-gen rebuilds it from

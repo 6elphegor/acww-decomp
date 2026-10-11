@@ -1093,8 +1093,23 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     and where a window pixel covers several 3D pixels (a smaller window, the 256x384 screenshots) the compositor
     averages a grid of points in it. The GPU's compositing still equals the CPU's at scale 1 without MSAA; MSAA
     smooths more edges than the DS's anti-aliasing (which leaves edges between polygons alone), so the 1x pictures
-    are no closer to the software references (12539 pixels differ at frame 2500, against 12393). **Next:** the 2D
-    layers on the GPU too if the CPU's share matters on slow machines.
+    are no closer to the software references (12539 pixels differ at frame 2500, against 12393). **Then
+    (2026-10-11): the 2D layers on the GPU** (default with wgpu, `ACWW_GPU2D=0`: off; modern/host/gpu2d.wgsl, embedded by
+    tools/host_embed.py). The 2D renderer took 3.8 ms of CPU time a frame (60 a second; the 3D engine 0.65): about
+    a quarter of a core, mostly compositing (2.7), BGs (1.15) and OBJs (0.8), the game's H-blank handler 0.28. Now
+    the CPU keeps only the state that goes from line to line - the H-blank, the windows' flags, the affine
+    reference points, the OBJ mosaic counter, line 0's OBJs (prepared at the end of the previous frame, from its
+    VRAM) - and records per line the registers and those values, a new version of the palettes or OAM when an
+    H-blank changed them, and the VRAM mapping as offsets into one buffer (banks A-I, a zero granule, the composites
+    of overlapping banks; only changed 4 KB pieces uploaded) (gpu2d.h `Gpu2dGpuFrame`). A fragment shader follows
+    gpu2d.c / gpu2d_bg.c / gpu2d_obj.c rule for rule per pixel (every BG kind, the 128 OBJs, windows, both
+    mosaics - a mosaic OBJ pixel walks back over its run -, effects, display modes, master brightness) into the
+    same two words per pixel the CPU makes for the compositor. **Checks:** `ACWW_GPU2D_CHECK=1` draws with both and
+    compares every word every frame: the quick script's 8002 frames and the play script's 25002 identical;
+    `ACWW_GPU2D_SELFTEST=<n>` does it for render_selftest.c's random scenes (all BG modes, bitmap and affine OBJs,
+    mosaic, windows, effects, display modes): 2100 scenes on three seeds identical (and a deliberately broken
+    shader is caught). The 2D renderer's CPU time a frame 0.275 ms (3.26 drawing on the CPU); a fast headless run
+    of 6000 frames 9.5 s (28.5).
 
 ---
 

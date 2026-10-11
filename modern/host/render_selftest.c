@@ -174,3 +174,28 @@ void render_selftest(long scenes) {
     render_exit_report();
     exit(bad ? 1 : 0);
 }
+
+// ACWW_GPU2D_SELFTEST=<scenes> (render.c): the same scenes, the GPU's 2D pictures (gpu2d.wgsl) against the CPU's
+void render_selftest_gpu2d(long scenes) {
+    if (getenv("ACWW_RENDER_SELFTEST_SEED")) sRng = (u32)strtoul(getenv("ACWW_RENDER_SELFTEST_SEED"), 0, 0) | 1;
+    if (getenv("ACWW_RENDER_SELFTEST_MASK")) sMask = (u32)strtoul(getenv("ACWW_RENDER_SELFTEST_MASK"), 0, 0);
+    if (getenv("ACWW_RENDER_SELFTEST_OBJ")) sObjMask = (u32)strtoul(getenv("ACWW_RENDER_SELFTEST_OBJ"), 0, 0);
+    if (getenv("ACWW_RENDER_SELFTEST_OBJS")) sObjCount = (u32)strtoul(getenv("ACWW_RENDER_SELFTEST_OBJS"), 0, 0);
+    long bad = 0;
+    for (long n = 0; n < scenes; n++) {
+        scene();
+        int differs = 0;
+        for (int f = 0; f < 2; f++) {
+            render_frame();
+            differs |= render_check_gpu2d();
+        }
+        if (differs) {
+            fprintf(stderr, "gpu2d-selftest: scene %ld differs: vramcnt", n);
+            for (int i = 0; i < 9; i++) fprintf(stderr, " %02x", (unsigned)(render_vramcnt(i)));
+            fprintf(stderr, " dispcnt %08x %08x\n", gpu2d_read32(0x04000000), gpu2d_read32(0x04001000));
+        }
+        bad += differs;
+    }
+    fprintf(stderr, "gpu2d-selftest: %ld scenes, %ld differ\n", scenes, bad);
+    exit(bad ? 1 : 0);
+}

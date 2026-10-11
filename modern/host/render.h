@@ -24,5 +24,7 @@ void render_exit_report(void);     // ACWW_RENDER_COMPARE's summary, ACWW_GPU2D_
 int render_compare(const char *kind, u64 label);
 int render_compare_3d(const char *kind, u64 label);
 void render_selftest(long scenes) __attribute__((noreturn));
+void render_selftest_gpu2d(long scenes) __attribute__((noreturn));
+int render_check_gpu2d(void);  // ACWW_GPU2D_CHECK's comparison of the last frame: 1 if it differs
 
 #endif
