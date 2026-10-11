@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "gpu3d_internal.h"
+#include "gpu3d_tex.h"
 
 enum { W = 256, H = 192 };
 static u32 sFrameBuf[2][W * H];
@@ -216,9 +217,18 @@ static void put_pixel(const G3Polygon *p, int x, int y, s32 z, const s32 *a, int
     sPoly[i] = (s16)idx;
 }
 
-// the polygon's two edges that cross line y (the left one first); 0 if fewer than two do
-static int edges_at(const G3Polygon *p, s32 y, Edge *l, Edge *r) {
-    int n = p->nv, found = 0, flatbottom = 0;
+// the polygon's edges, set up once per polygon (edges_at picks the two that cross a line)
+typedef struct {
+    const G3Polygon *p;
+    int n;
+    s64 area;
+    Edge e[10];
+    int down[10];
+    s32 ya[10], yb[10];
+} PolyEdges;
+static PolyEdges sPE;
+static void poly_edges(const G3Polygon *p) {
+    int n = p->nv, flatbottom = 0;
     s32 bx = -1;  // (a horizontal bottom edge: two bottom vertices at different x)
     for (int i = 0; i < n; i++)
         if (p->v[i]->y == p->ybottom) {
@@ -232,27 +242,42 @@ static int edges_at(const G3Polygon *p, s32 y, Edge *l, Edge *r) {
         const G3Vertex *a = p->v[i], *b = p->v[(i + 1) % n];
         area += (s64)a->x * b->y - (s64)b->x * a->y;
     }
-    Edge e[2];
-    double mid[2];
-    int down[2];
-    for (int i = 0; i < n && found < 2; i++) {
+    sPE.p = p;
+    sPE.area = area;
+    sPE.n = 0;
+    for (int i = 0; i < n; i++) {
         int a = i, b = (i + 1) % n;
         s32 ya = p->v[a]->y, yb = p->v[b]->y;
         if (ya == yb) continue;
-        down[found] = ya < yb;  // (going down in the vertex order)
+        int k = sPE.n++;
+        sPE.down[k] = ya < yb;  // (going down in the vertex order)
         if (ya > yb) { int t = a; a = b; b = t; s32 u = ya; ya = yb; yb = u; }
-        if (y < ya || y >= yb) continue;
-        edge_setup(&e[found], p, a, b);
-        e[found].bottom = yb == p->ybottom && flatbottom;
-        s32 dx = p->v[b]->x - p->v[a]->x, dy = yb - ya;
-        mid[found] = p->v[a]->x + (double)dx * (2.0 * (y - ya) + 1) / (2.0 * dy);
+        edge_setup(&sPE.e[k], p, a, b);
+        sPE.e[k].bottom = yb == p->ybottom && flatbottom;
+        sPE.ya[k] = ya;
+        sPE.yb[k] = yb;
+    }
+}
+// the polygon's two edges that cross line y (the left one first); 0 if fewer than two do
+static int edges_at(const G3Polygon *p, s32 y, Edge *l, Edge *r) {
+    if (sPE.p != p) poly_edges(p);
+    int found = 0, idx[2];
+    double mid[2];
+    int down[2];
+    for (int k = 0; k < sPE.n && found < 2; k++) {
+        down[found] = sPE.down[k];
+        if (y < sPE.ya[k] || y >= sPE.yb[k]) continue;
+        const Edge *e = &sPE.e[k];
+        s32 dx = e->x1 - e->x0, dy = e->y1 - e->y0;
+        mid[found] = e->x0 + (double)dx * (2.0 * (y - e->y0) + 1) / (2.0 * dy);
+        idx[found] = k;
         found++;
     }
     if (found < 2) return 0;
     // clockwise (area > 0, y down): the chain in the vertex order is the right one
-    int s = area == 0 || down[0] == down[1] ? mid[1] < mid[0] : (down[0] == (area > 0));
-    *l = e[s];
-    *r = e[!s];
+    int s = sPE.area == 0 || down[0] == down[1] ? mid[1] < mid[0] : (down[0] == (sPE.area > 0));
+    *l = sPE.e[idx[s]];
+    *r = sPE.e[idx[!s]];
     return 1;
 }
 
@@ -390,30 +415,59 @@ static void draw_polygon(const G3Polygon *p, int idx) {
             } else  // (after the left edge's pixel)
                 rsn = (s32)(edge_x(&L, y, 0) >> 18) + 1 - R.x0;
         }
+        // the span: one perspective factor per pixel, or exact linear steps (a quotient and a remainder per
+        // attribute: the same values as a division per pixel)
+        int ex = exact_ok(ends[0][1], ends[1][1]);
+        int flat = cx[1] == cx[0];
+        s32 span = cx[1] - cx[0];
+        s32 q[6];
+        s64 rem[6], dq[6], dr[6];
+        if (!flat && ex) {
+            for (int c = 0; c < 5; c++) {  // value(x) = a0 + floor(d * (x - cx0) / span)
+                s64 d = (s64)ends[1][2 + c] - ends[0][2 + c], num = d * (xl - cx[0]);
+                s64 fq = num >= 0 ? num / span : -((-num + span - 1) / span);
+                q[c] = ends[0][2 + c] + (s32)fq;
+                rem[c] = num - fq * span;
+                dq[c] = d >= 0 ? d / span : -((-d + span - 1) / span);
+                dr[c] = d - dq[c] * span;
+            }
+        }
+        // (the pixels the edges' anti-aliasing can reach on this line; elsewhere the coverage is 31)
+        s32 al0 = 1, al1 = 0, ar0 = 1, ar1 = 0;
+        if (aa) {
+            s64 l0 = edge_x(&L, y, 0) >> 18, l1 = edge_x(&L, y, 1) >> 18;
+            s64 r0 = edge_x(&R, y, 0) >> 18, r1 = edge_x(&R, y, 1) >> 18;
+            al0 = (s32)(l0 < l1 ? l0 : l1) - 2, al1 = (s32)(l0 > l1 ? l0 : l1) + 2;
+            s32 sh = rsd ? (rsn >= 0 ? rsn : -rsn) / rsd + 1 : 0;
+            ar0 = (s32)(r0 < r1 ? r0 : r1) - 2 - sh, ar1 = (s32)(r0 > r1 ? r0 : r1) + 2 + sh;
+        }
         for (s32 x = xl; x <= xr; x++) {
-            if (x < 0 || x >= W) continue;
-            Interp ip;
-            interp_setup(&ip, x, xl, xr + 1, ends[0][1], ends[1][1], 8);
-            s32 z;
-            if (p->wbuffer) {  // (W, interpolated as the colours are: fitted to melonDS)
-                Interp iz;
-                interp_setup(&iz, x, cx[0], cx[1], ends[0][1], ends[1][1], 8);
-                z = cx[1] == cx[0] ? ends[0][0] : interp(&iz, ends[0][0], ends[1][0]);
-            } else
-                z = interp_z_linear(x, xl, xr, ends[0][0], ends[1][0]);
             s32 col[5];
-            int ex = exact_ok(ends[0][1], ends[1][1]);
+            if (flat) {
+                for (int c = 0; c < 5; c++) col[c] = ends[0][2 + c];
+            } else if (ex) {
+                for (int c = 0; c < 5; c++) {
+                    col[c] = q[c];
+                    q[c] += (s32)dq[c];
+                    rem[c] += dr[c];
+                    if (rem[c] >= span) q[c]++, rem[c] -= span;
+                }
+            }
+            if (x < 0 || x >= W) continue;
             Interp ic = {0, 0};
-            if (!ex) interp_setup(&ic, x, cx[0], cx[1], ends[0][1], ends[1][1], 8);
-            for (int c = 0; c < 5; c++)
-                col[c] = cx[1] == cx[0] ? ends[0][2 + c]
-                         : ex           ? lerp_floor(ends[0][2 + c], ends[1][2 + c], x - cx[0], cx[1] - cx[0])
-                                        : interp(&ic, ends[0][2 + c], ends[1][2 + c]);
+            if (!flat && (p->wbuffer || !ex)) interp_setup(&ic, x, cx[0], cx[1], ends[0][1], ends[1][1], 8);
+            s32 z;
+            if (p->wbuffer)  // (W, interpolated as the colours are: fitted to melonDS)
+                z = flat ? ends[0][0] : interp(&ic, ends[0][0], ends[1][0]);
+            else
+                z = interp_z_linear(x, xl, xr, ends[0][0], ends[1][0]);
+            if (!flat && !ex)
+                for (int c = 0; c < 5; c++) col[c] = interp(&ic, ends[0][2 + c], ends[1][2 + c]);
             int cov = 31;
             if (aa) {
                 // (where the left edge cuts the pixel its coverage counts, else the right edge's: fitted)
-                int cl = edge_coverage(&L, 0, x, y, 0, 1);
-                cov = cl < 31 ? cl : edge_coverage(&R, 1, x, y, rsn, rsd);
+                int cl = x >= al0 && x <= al1 ? edge_coverage(&L, 0, x, y, 0, 1) : 31;
+                cov = cl < 31 ? cl : x >= ar0 && x <= ar1 ? edge_coverage(&R, 1, x, y, rsn, rsd) : 31;
                 if (!cov) continue;
             }
             put_pixel(p, x, y, z, col, idx, cov);
@@ -503,11 +557,25 @@ void g3_render(void) {
     }
     if (timing) clock_gettime(CLOCK_MONOTONIC, &t0);
     sR = &gG3Render;
+    struct timespec ta, tb, tc;
     g3_tex_setup();
     clear_buffers();
+    sPE.p = 0;
+    if (timing) clock_gettime(CLOCK_MONOTONIC, &ta);
     for (int i = 0; i < sR->npoly; i++) draw_polygon(sR->poly[i], i);
+    if (timing) clock_gettime(CLOCK_MONOTONIC, &tb);
     fog_pass();
     aa_pass();
+    if (timing) {
+        clock_gettime(CLOCK_MONOTONIC, &tc);
+        static double setup, polys, passes;
+        setup += (ta.tv_sec - t0.tv_sec) * 1e9 + (ta.tv_nsec - t0.tv_nsec);
+        polys += (tb.tv_sec - ta.tv_sec) * 1e9 + (tb.tv_nsec - ta.tv_nsec);
+        passes += (tc.tv_sec - tb.tv_sec) * 1e9 + (tc.tv_nsec - tb.tv_nsec);
+        if ((sRenderFrames + 1) % 1000 == 0)
+            fprintf(stderr, "gpu3d: setup %.3f polygons %.3f passes %.3f ms a frame\n", setup / (sRenderFrames + 1) / 1e6,
+                    polys / (sRenderFrames + 1) / 1e6, passes / (sRenderFrames + 1) / 1e6);
+    }
     sShown ^= 1;
     memcpy(sFrameBuf[sShown], sColor, sizeof sColor);
     if (timing) {

@@ -159,6 +159,9 @@ void host_debug_exit_dumps(void) {
     if (!getenv("ACWW_PROFILE")) return;
     FILE *f = fopen("acww_profile.txt", "w");
     if (!f) return;
+    // (where this function is now: with its address in the binary (nm), the load offset of a position-independent
+    // executable)
+    fprintf(f, "# host_debug_exit_dumps %08lx\n", (unsigned long)(void *)host_debug_exit_dumps);
     for (int i = 0; i < PROF_SLOTS; i++)
         if (sProfCount[i]) fprintf(f, "%u %08lx\n", sProfCount[i], (unsigned long)sProfAddr[i]);
     fclose(f);

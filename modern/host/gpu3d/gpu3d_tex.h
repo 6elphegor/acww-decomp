@@ -2,6 +2,10 @@
 // them, and one texel of a polygon's texture in each of the 7 formats (GBATEK "DS 3D Texture Formats", "DS 3D
 // Texture Attributes").
 
+// (included by gpu3d_raster.c only, so that the texel fetch is inlined into the pixel loop)
+#ifndef GPU3D_TEX_H
+#define GPU3D_TEX_H
+
 #include <string.h>
 
 #include "gpu3d_internal.h"
@@ -16,48 +20,53 @@ static const u8 *sPal[8][3];
 static int sNPal[8];
 static const u32 kBankSize[9] = {0x20000, 0x20000, 0x20000, 0x20000, 0x10000, 0x4000, 0x4000, 0x8000, 0x4000};
 
-void g3_tex_setup(void) {
+// the slots as flat images for the frame being drawn (the banks OR-ed; unmapped slots zero)
+static u8 sImgFlat[4 * IMG_SLOT];
+static u8 sPalFlat[8 * PAL_SLOT];
+
+static void g3_tex_setup(void) {
     memset(sNImg, 0, sizeof sNImg);
     memset(sNPal, 0, sizeof sNPal);
-    if (!gG3Banks) return;
-    for (int b = 0; b < 7; b++) {
-        u8 c = gG3VramCnt[b];
-        if (!(c & 0x80) || (c & 7) != 3 || !gG3Banks[b]) continue;
-        int ofs = c >> 3 & 3;
-        if (b < 4) sImg[ofs][sNImg[ofs]++] = gG3Banks[b];
-        else if (b == 4)
-            for (int s = 0; s < 4; s++) sPal[s][sNPal[s]++] = gG3Banks[b] + s * PAL_SLOT;
-        else {
-            int s = (ofs & 1) + (ofs >> 1) * 4;
-            sPal[s][sNPal[s]++] = gG3Banks[b];
+    if (gG3Banks)
+        for (int b = 0; b < 7; b++) {
+            u8 c = gG3VramCnt[b];
+            if (!(c & 0x80) || (c & 7) != 3 || !gG3Banks[b]) continue;
+            int ofs = c >> 3 & 3;
+            if (b < 4) sImg[ofs][sNImg[ofs]++] = gG3Banks[b];
+            else if (b == 4)
+                for (int s = 0; s < 4; s++) sPal[s][sNPal[s]++] = gG3Banks[b] + s * PAL_SLOT;
+            else {
+                int s = (ofs & 1) + (ofs >> 1) * 4;
+                sPal[s][sNPal[s]++] = gG3Banks[b];
+            }
         }
+    for (int s = 0; s < 4; s++) {
+        u8 *d = sImgFlat + s * IMG_SLOT;
+        if (!sNImg[s]) { memset(d, 0, IMG_SLOT); continue; }
+        memcpy(d, sImg[s][0], IMG_SLOT);
+        for (int i = 1; i < sNImg[s]; i++)
+            for (u32 k = 0; k < IMG_SLOT; k++) d[k] |= sImg[s][i][k];
+    }
+    for (int s = 0; s < 8; s++) {
+        u8 *d = sPalFlat + s * PAL_SLOT;
+        if (!sNPal[s]) { memset(d, 0, PAL_SLOT); continue; }
+        memcpy(d, sPal[s][0], PAL_SLOT);
+        for (int i = 1; i < sNPal[s]; i++)
+            for (u32 k = 0; k < PAL_SLOT; k++) d[k] |= sPal[s][i][k];
     }
     (void)kBankSize;
 }
 
-static u8 img8(u32 a) {
-    a &= 0x7ffff;
-    int s = a >> 17;
-    u8 v = 0;
-    for (int i = 0; i < sNImg[s]; i++) v |= sImg[s][i][a & (IMG_SLOT - 1)];
-    return v;
-}
-static u16 img16(u32 a) { return (u16)(img8(a) | img8(a + 1) << 8); }
-static u32 img32(u32 a) { return (u32)img16(a) | (u32)img16(a + 2) << 16; }
-static u16 pal16(u32 a) {
+static inline u8 img8(u32 a) { return sImgFlat[a & 0x7ffff]; }
+static inline u16 img16(u32 a) { return (u16)(img8(a) | img8(a + 1) << 8); }
+static inline u32 img32(u32 a) { return (u32)img16(a) | (u32)img16(a + 2) << 16; }
+static inline u16 pal16(u32 a) {
     a &= 0x1ffff;
-    int s = a >> 14;
-    if (s >= 8) return 0;
-    u16 v = 0;
-    for (int i = 0; i < sNPal[s]; i++) {
-        const u8 *p = sPal[s][i] + (a & (PAL_SLOT - 1));
-        v |= (u16)(p[0] | p[1] << 8);
-    }
-    return v;
+    return (u16)(sPalFlat[a] | sPalFlat[(a + 1) & 0x1ffff] << 8);
 }
 
 // a coordinate (whole texels) into the texture: repeated (flipped every other time) or clamped
-static int wrap(int c, int size, int repeat, int flip) {
+static inline int wrap(int c, int size, int repeat, int flip) {
     if (!repeat) return c < 0 ? 0 : c >= size ? size - 1 : c;
     if (flip && (c & size)) return size - 1 - (c & (size - 1));
     return c & (size - 1);
@@ -65,7 +74,7 @@ static int wrap(int c, int size, int repeat, int flip) {
 
 // the texel at texture coordinates (s, t) (whole texels) of a polygon's texture: BGR555 in bits 0-14, alpha 0-31
 // in bits 16-20 (0: transparent)
-u32 g3_texel(u32 texparam, u32 texpal, int s, int t) {
+static inline u32 g3_texel(u32 texparam, u32 texpal, int s, int t) {
     int fmt = texparam >> 26 & 7;
     int w = 8 << (texparam >> 20 & 7), h = 8 << (texparam >> 23 & 7);
     s = wrap(s, w, texparam >> 16 & 1, texparam >> 18 & 1);
@@ -129,3 +138,5 @@ u32 g3_texel(u32 texparam, u32 texpal, int s, int t) {
     default: return 31u << 16;  // (no texture)
     }
 }
+
+#endif
