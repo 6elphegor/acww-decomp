@@ -54,10 +54,12 @@ parser.add_argument("--cross", default=os.path.expanduser(
 parser.add_argument("--qemu", default=os.path.expanduser("~/acww/toolchains/qemu/usr/bin/qemu-aarch64"),
                     help="--arch aarch64: qemu-aarch64 (user mode) for running the tests (the game: ACWW_RUNNER, "
                          "tools/host_oracle.sh)")
-parser.add_argument("--os", choices=["linux", "windows"], default="linux",
+parser.add_argument("--os", choices=["linux", "windows", "macos"], default="macos" if sys.platform == "darwin" else "linux",
                     help="windows (with --arch x86_64): a cross build for x86-64 Windows with llvm-mingw (clang, UCRT, "
                          "libc++, lld; --mingw): build_host_win64.ninja, build/hostwin64_<v>/acww.exe, headless only "
-                         "(no frontend yet), run with Wine here (ACWW_RUNNER; docs/host.md)")
+                         "(no frontend yet), run with Wine here (ACWW_RUNNER; docs/host.md); macos (the default on a "
+                         "Mac): a native build for the Mac's own architecture with Apple's clang, SDL2 from pkg-config "
+                         "(Homebrew): build_host64.ninja, build/host64_<v>")
 parser.add_argument("--mingw", default="",
                     help="the llvm-mingw directory for --os windows (default: the newest ~/acww/toolchains/llvm-mingw-*)")
 parser.add_argument("--extra-cflags", default="",
@@ -86,6 +88,14 @@ args = parser.parse_args()
 
 root = Path(__file__).resolve().parent.parent
 WIN = args.os == "windows"
+MAC = args.os == "macos"
+if MAC:
+    if args.guards or args.oracle:
+        sys.exit("--os macos: no --guards or --oracle (GNU ld / melonDS builds)")
+    # (Apple's gcc is clang; the build is native, for the machine's own architecture: arm64 or x86-64)
+    if args.cc == "gcc":
+        args.cc = "clang"
+    args.arch = "x86_64" if os.uname().machine == "x86_64" else "aarch64"
 if WIN:
     if args.arch != "x86_64":
         sys.exit("--os windows: x86_64 only")
@@ -98,7 +108,7 @@ if WIN:
         args.mingw = str(Path(found[-1]).parent.parent)
     args.cc = f"{args.mingw}/bin/x86_64-w64-mingw32-clang"
 CLANG = os.path.basename(args.cc).startswith("clang") or WIN
-if CLANG and not WIN:
+if CLANG and not WIN and not MAC:
     if not args.suffix:
         args.suffix = "_clang"
     if not shutil.which(args.cc):
@@ -112,7 +122,7 @@ if args.guards and not args.suffix:
 if args.oracle and not args.suffix:
     args.suffix = "_oracle"
 A64 = args.arch == "aarch64"
-if A64 and CLANG:
+if A64 and CLANG and not MAC:
     sys.exit("configure_host.py: --arch aarch64 builds with the GCC cross toolchain (--cross) only so far")
 SANITIZE = [x for x in args.sanitize.split(",") if x]
 if SANITIZE:
@@ -127,7 +137,11 @@ if SANITIZE:
 X64 = args.arch == "x86_64"
 HOST64 = X64 or A64  # a 64-bit build (the build directory's and the ninja file's names apart)
 CXX = "g++"
-if A64:
+if MAC:
+    CXX = "clang++"
+    build = Path("build") / f"host64{args.suffix}_{args.version}"
+    NINJA_FILE = f"build_host64{args.suffix}.ninja"
+elif A64:
     # the cross compiler (C and C++; its sysroot built in)
     args.cc = f"{args.cross}/bin/aarch64-none-linux-gnu-gcc"
     CXX = f"{args.cross}/bin/aarch64-none-linux-gnu-g++"
@@ -143,10 +157,10 @@ else:
     NINJA_FILE = f"build_host64{args.suffix}.ninja" if X64 else f"build_host{args.suffix}.ninja"
 R = args.sysroot
 G = f"{R}/usr/lib/gcc/x86_64-linux-gnu/15/32"
-M_FLAG = "-m64" if X64 else "" if A64 else "-m32"
+M_FLAG = "" if MAC or A64 else "-m64" if X64 else "-m32"
 # the compiler command; clang is told its target (llvm-mingw's clang is a cross compiler for Windows too; on Linux it
 # finds the system's GCC installation for the host runtime's headers and libraries)
-CC = f"{args.cc} --target={'x86_64' if X64 else 'i386'}-linux-gnu" if CLANG and not WIN else args.cc
+CC = f"{args.cc} --target={'x86_64' if X64 else 'i386'}-linux-gnu" if CLANG and not WIN and not MAC else args.cc
 LD_EMU = "elf_x86_64" if X64 else "aarch64linux" if A64 else "elf_i386"
 
 # the 64-bit builds: position-independent executables (loaded anywhere, ASLR; docs/portability.md 3.3); i386, the
@@ -175,7 +189,7 @@ CXX_FLAGS += " -femit-class-debug-always"
 if args.guards:
     # a section per variable: tools/host_guards.py puts a guard after each
     GAME_FLAGS += " -fdata-sections"
-if A64:
+if A64 or MAC:
     # no fused multiply-adds (GCC contracts a * b + c by default on arm64, x86-64 has no FMA without -mfma): the
     # same floating-point results as the x86 builds
     GAME_FLAGS += " -ffp-contract=off"
@@ -184,6 +198,10 @@ if CLANG:
     if HOST64:
         GAME_FLAGS = GAME_FLAGS.replace(" -fpcc-struct-return", "")
     CXX_FLAGS = CXX_FLAGS.replace("-femit-class-debug-always", "-fstandalone-debug")
+if MAC:
+    # the base-object constructors and destructors (C2/D2) with the complete-object ones as their aliases, as on ELF:
+    # Darwin's default emits only the variants a unit uses, and modern/gen/shared_table.c names the C2/D2 ones
+    CXX_FLAGS += " -Xclang -mconstructor-aliases"
 if args.extra_cflags:
     GAME_FLAGS += " " + args.extra_cflags
 # the sanitizer variant: the game, the runtime and the link with the same -fsanitize options; HOST_ASAN tells the
@@ -229,13 +247,23 @@ def find_sdl2():
         if os.path.exists(f"{d}/SDL.h"):
             return [d]
     return tree(os.path.expanduser("~/acww/toolchains/sdl2-dev"))
-SDL2_DIRS = find_sdl2() if X64 and not WIN else None
+SDL2_DIRS = find_sdl2() if (X64 or MAC) and not WIN else None
 SDL2 = bool(SDL2_DIRS)
 FRONTEND_FLAG = " -DHOST_FRONTEND_SDL=1" if SDL2 else " -DHOST_FRONTEND_NONE=1" if HOST64 else ""
 # (SDL_syswm.h, for the window's native handles: modern/host/x11shim stands in for the X11 headers)
 SDL_CFLAGS = " ".join(f"-I{d}" for d in SDL2_DIRS) + " -Imodern/host/x11shim" if SDL2 else ""
 SDL_LIBS = "-l:libSDL2-2.0.so.0" if SDL2 else ""
-if A64:
+if MAC and SDL2:
+    SDL_LIBS = subprocess.run(["pkg-config", "--libs", "sdl2"], capture_output=True, text=True).stdout.strip() or "-lSDL2"
+if MAC:
+    # Apple's clang and ld64: a PIE (always, on macOS); a native build, no -m64. The default 8 MB stack is the main
+    # thread's (the game's threads have stacks of their own, os.c).
+    HOST_FLAGS = ("-O1 -g -fno-omit-frame-pointer -ffp-contract=off -Wall -std=gnu11 -DHOST -Iinclude" + FRONTEND_FLAG
+                  + SAN_FLAGS)
+    LINK_FLAGS = SAN_FLAGS.replace(" -DHOST_ASAN", "")
+    HOST_CXX_FLAGS = "-O1 -g -ffp-contract=off -std=c++17 -DHOST" + SAN_FLAGS
+    MELON_LIBS = ""
+elif A64:
     # the cross toolchain's glibc; melonDS's core cross-built for aarch64 (build-core-a64: without the JIT and the GDB
     # stub, -ffp-contract=off; tools/host/aarch64-linux.toolchain.cmake, docs/host.md)
     HOST_FLAGS = ("-fPIE -O1 -g -fno-omit-frame-pointer -ffp-contract=off -Wall -std=gnu11 -DHOST -Iinclude"
@@ -330,7 +358,8 @@ def main():
         n.rule("hostas_S", " ".join(x for x in (CC, M_FLAG, PIE) if x) + " -c $in -o $out", description="AS $in")
         n.rule("hostcxx", f"{CXX} {HOST_CXX_FLAGS} -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCXX $in")
-        libs = " -lws2_32" if WIN else f" {SDL_LIBS} -lstdc++ -lpthread -lm -lc -lgcc"  # (ws2_32: wm7.c's sockets)
+        libs = " -lws2_32" if WIN else f" {SDL_LIBS} -lc++ -lpthread -lm" if MAC else \
+            f" {SDL_LIBS} -lstdc++ -lpthread -lm -lc -lgcc"  # (ws2_32: wm7.c's sockets)
         n.rule("link", f"{CXX} {LINK_FLAGS} -o $out @$objects {MELON_LIBS}{WGPU_LIBS}{libs}", description="LINK $out")
         objs = []
         for s in sources(Path("src"), (".c", ".cpp")):
@@ -432,7 +461,7 @@ def main():
         vdirs = find_sdl2() or []
         vflags = " ".join(f"-I{os.path.dirname(d) if os.path.exists(d + '/SDL.h') else d}" for d in vdirs)
         n.rule("viewer", f"gcc -O2 {vflags} $in -o $out -l:libSDL2-2.0.so.0", description="VIEWER $out")
-        if WIN:
+        if WIN or MAC:
             n.default([exe])
         elif A64:
             n.default([exe])
@@ -466,7 +495,7 @@ def summary():
     """What the build has, and what to do about what it hasn't."""
     print(f"configure_host.py: {NINJA_FILE}: build with `ninja -f {NINJA_FILE}`, the game: {build}/"
           f"{'acww.exe' if WIN else 'acww'}")
-    if HOST64 and not WIN:
+    if (HOST64 or MAC) and not WIN:
         print("  window: " + ("SDL2" if SDL2 else
               "none, headless only - install SDL2's development files (e.g. libsdl2-dev) or give --sdl2"))
         print("  GPU renderer: " + ("wgpu-native" if WGPU else

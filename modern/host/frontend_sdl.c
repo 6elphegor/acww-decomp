@@ -149,10 +149,14 @@ AcwwShm *frontend_backend_open(const char *argv0) {
         SDL_SysWMinfo wm;
         SDL_VERSION(&wm.version);
         if (SDL_GetWindowWMInfo(sWin, &wm)) {
+#if defined(SDL_VIDEO_DRIVER_X11)
             if (wm.subsystem == SDL_SYSWM_X11)
                 sGpu = wdisp_attach(WDISP_X11, wm.info.x11.display, wm.info.x11.window, vsync);
-            else if (wm.subsystem == SDL_SYSWM_WAYLAND)
+#endif
+#if defined(SDL_VIDEO_DRIVER_WAYLAND)
+            if (wm.subsystem == SDL_SYSWM_WAYLAND)
                 sGpu = wdisp_attach(WDISP_WAYLAND, wm.info.wl.display, (uintptr_t)wm.info.wl.surface, vsync);
+#endif
         }
         if (!sGpu) fprintf(stderr, "frontend: the GPU can't draw into the window: the screens are read back\n");
     }

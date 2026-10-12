@@ -15,14 +15,22 @@
 
 #if HOST_DEBUG_POSIX
 
+#if defined(__APPLE__)
+#include <mach-o/dyld.h>
+#else
 #include <link.h>
+#endif
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
 #include <sys/time.h>
+#if defined(__APPLE__)
+#include <sys/ucontext.h>  // (the types only: <ucontext.h> wants _XOPEN_SOURCE there)
+#else
 #include <ucontext.h>
+#endif
 #include <unistd.h>
 
 #include "plat.h"
@@ -42,6 +50,16 @@
 #define UC_PC(uc) ((uintptr_t)(uc)->uc_mcontext.pc)
 #define UC_SP(uc) ((uintptr_t)(uc)->uc_mcontext.sp)
 #define UC_BP(uc) ((uintptr_t)(uc)->uc_mcontext.regs[29])
+#elif defined(__APPLE__) && defined(__aarch64__)
+#define HAVE_UC_REGS 1
+#define UC_PC(uc) ((uintptr_t)(uc)->uc_mcontext->__ss.__pc)
+#define UC_SP(uc) ((uintptr_t)(uc)->uc_mcontext->__ss.__sp)
+#define UC_BP(uc) ((uintptr_t)(uc)->uc_mcontext->__ss.__fp)
+#elif defined(__APPLE__) && defined(__x86_64__)
+#define HAVE_UC_REGS 1
+#define UC_PC(uc) ((uintptr_t)(uc)->uc_mcontext->__ss.__rip)
+#define UC_SP(uc) ((uintptr_t)(uc)->uc_mcontext->__ss.__rsp)
+#define UC_BP(uc) ((uintptr_t)(uc)->uc_mcontext->__ss.__rbp)
 #else
 #define HAVE_UC_REGS 0
 #endif
@@ -57,11 +75,17 @@
 // the program's load bias (a PIE: where it was loaded; 0 for a fixed-address program), read at start-up: the reports
 // print each code address also less it, the address addr2line and gdb take for the program file
 static uintptr_t sLoadBias;
+#if defined(__APPLE__)
+// (Mach-O: image 0 is the program; the slide is its distance from the file's addresses, which start at 4 GB)
+static void find_load_bias(void) { sLoadBias = (uintptr_t)_dyld_get_image_vmaddr_slide(0); }
+#else
 static int first_object(struct dl_phdr_info *info, size_t size, void *data) {
     (void)size;
     *(uintptr_t *)data = (uintptr_t)info->dlpi_addr;
     return 1;  // (the program itself is the first)
 }
+static void find_load_bias(void) { dl_iterate_phdr(first_object, &sLoadBias); }
+#endif
 static void print_code_address(const char *what, uintptr_t a) {
     if (sLoadBias && a >= sLoadBias) fprintf(stderr, "%s%08lx (%lx)", what, (unsigned long)a, (unsigned long)(a - sLoadBias));
     else fprintf(stderr, "%s%08lx", what, (unsigned long)a);
@@ -216,7 +240,7 @@ void host_debug_crash_handlers(void) {
 }
 
 void host_debug_init(void) {
-    dl_iterate_phdr(first_object, &sLoadBias);
+    find_load_bias();
     struct sigaction sa;
     memset(&sa, 0, sizeof sa);
     sa.sa_flags = SA_SIGINFO | SA_NODEFER;
