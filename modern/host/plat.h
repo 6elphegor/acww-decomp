@@ -1,8 +1,8 @@
 // Host build runtime: the operating-system services the runtime needs (docs/portability.md 1.4, 4.2). One
 // implementation per platform: plat_posix.c (Linux, macOS), plat_win32.c (Windows); the parts that are plain C
 // are in plat_common.c. Nothing else in modern/host calls the operating system directly, except the POSIX-only
-// debugging aids (debug_posix.c, guards.c), the i386 viewer link (frontend_viewer.c) and the low-4 GB harness
-// (hw.c, ACWW_HIGHMEM: x86-64 Linux only).
+// debugging aids (debug_posix.c, guards.c), the i386 viewer link (frontend_viewer.c), the low-4 GB harness
+// (hw.c, ACWW_HIGHMEM: x86-64 Linux only) and the wireless's UDP sockets (wm7.c, POSIX and Winsock).
 #ifndef HOST_PLAT_H
 #define HOST_PLAT_H
 
@@ -16,6 +16,10 @@ void host_plat_sleep_until_ns(uint64_t t);  // sleep until host_plat_time_ns() >
 void host_plat_sleep_ms(unsigned ms);
 // the local (wall-clock) time now, broken down as localtime_r would; 0 if it isn't known
 int host_plat_localtime(struct tm *out);
+
+// ---- the program started again in place (the same arguments and environment: the DS's system reset); returns only
+// if it couldn't be
+void host_plat_restart(char **argv);
 
 // ---- threads: a detached background thread (the watchdog); 0 if it couldn't be started
 int host_plat_thread_start(void (*fn)(void *), void *arg);

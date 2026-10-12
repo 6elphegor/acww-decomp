@@ -2,6 +2,7 @@
 #define NITRO_WM_H
 
 #include "types.h"
+#include "host_ptr32.h"
 
 // NitroSDK WM callback / request message (the ARM7 reply buffer every WM callback receives; 0x100-byte FIFO
 // slots, data_021ff4b8 is the ARM9-side instance). C header for the WM units in autoload_2 (0x0211e3fc-0x02121e5c).
@@ -99,7 +100,8 @@ typedef struct WMScanParam {
     /* 0x0e */ u16 rsv[9];
 } WMScanParam;
 
-// WM_StartScan callback (the fields after linkLevel are not declared: nothing here reads them yet).
+// WM_StartScan callback (state 4 no parent found, 5 a parent found: its description in the scan buffer; the fields
+// after linkLevel are not declared: nothing here reads them).
 typedef struct WMStartScanCallback {
     /* 0x00 */ u16 apiid;
     /* 0x02 */ u16 errcode;
@@ -133,7 +135,7 @@ typedef struct WMMeasureChannelCallback {
     /* 0x0a */ u16 ccaBusyRatio;
 } WMMeasureChannelCallback;
 
-// Port receive callback (WM_SetPortCallback); fields after aid are not declared.
+// Port receive callback (WM_SetPortCallback). arg is where WmReceiveFifo puts the port's argument (WMMsg.arg).
 typedef struct WMPortRecvCallback {
     /* 0x00 */ u16 apiid;
     /* 0x02 */ u16 errcode;
@@ -143,7 +145,38 @@ typedef struct WMPortRecvCallback {
     /* 0x0c */ u16 *data;
     /* 0x10 */ u16 length;
     /* 0x12 */ u16 aid;
+    /* 0x14 */ u8 macAddress[6];
+    /* 0x1a */ u16 seqNo;
+    /* 0x1c */ void *arg;
+    /* 0x20 */ u16 myAid;
+    /* 0x22 */ u16 connectedAidBitmap;
 } WMPortRecvCallback;
+
+// WM_StartConnect(Ex) callback (the state codes as WMStartParentCallback's).
+typedef struct WMStartConnectCallback {
+    /* 0x00 */ u16 apiid;
+    /* 0x02 */ u16 errcode;
+    /* 0x04 */ u16 wlCmdID;
+    /* 0x06 */ u16 wlResult;
+    /* 0x08 */ u16 state;
+    /* 0x0a */ u16 aid;
+    /* 0x0c */ u16 reason;
+    /* 0x0e */ u16 wlStatus;
+    /* 0x10 */ u8 macAddress[6];
+    /* 0x16 */ u16 parentSize;
+    /* 0x18 */ u16 childSize;
+} WMStartConnectCallback;
+
+// WM_StartMP(Ex) callback: state 10 started, 11 MPEND_IND (parent: a sequence done), 12 MP_IND (child: the parent's
+// frame received), 13 MPACK_IND (child: the sequence done).
+typedef struct WMStartMPCallback {
+    /* 0x00 */ u16 apiid;
+    /* 0x02 */ u16 errcode;
+    /* 0x04 */ u16 state;
+    /* 0x06 */ u16 reserved;
+    /* 0x08 */ u32 recvBuf; // an ARM7 address word (WMi_Arm7Ptr)
+    /* 0x0c */ u16 timeout;
+} WMStartMPCallback;
 
 // WM_SetMPDataToPort(Ex) callback; arg is the argument given to the send call.
 typedef struct WMPortSendCallback {
@@ -253,12 +286,13 @@ typedef struct WMArm9Buf {
     /* 0x104 */ void *portArg[16]; // WM_SetPortCallback's arguments
 } WMArm9Buf;
 
-// Requests written to WMArm9Buf.req for the ARM7 (WMi_SendCommand): the ARM7's layout, its addresses are 32-bit
-// (the data they point to stays below 4 GB on the host).
-static inline u32 WMi_Arm7Addr(const void *p) { return (u32)(__UINTPTR_TYPE__)p; }
-#define WM_ARM7_ADDR(p) WMi_Arm7Addr(p)
-// an address in a reply of the ARM7 (WMMsg.f08: the receive buffer)
-static inline void *WMi_Arm7Ptr(u32 a) { return (void *)(__UINTPTR_TYPE__)a; }
+// Requests written to WMArm9Buf.req for the ARM7 (WMi_SendCommand): the ARM7's layout, with 32-bit address words. On
+// the host the ARM7 side is modern/host/wm7.c, and an address word is a ptr32 (include/host_ptr32.h: the pointer
+// itself where it fits, else a handle), which wm7.c resolves; the words WMi_SendCommand passes are made the same way.
+static inline u32 WMi_Arm7Addr(const void *p) { return HostPtr32_Of(p); }
+#define WM_ARM7_ADDR(p) WMi_Arm7Addr((const void *)(p))
+// an address word in a reply of the ARM7 (WMMsg.f08: the receive buffer)
+static inline void *WMi_Arm7Ptr(u32 a) { return HostPtr32_Get(a); }
 
 typedef struct WMScanReq { // WM_StartScan (apiid 10)
     /* 0x00 */ u16 apiid;

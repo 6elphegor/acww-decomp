@@ -1,4 +1,5 @@
 #include "nitro/pxi_ptr.h"
+#include "sys/OSMessageQueue.h"
 #include "sys/CardCommon.h"
 #include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
@@ -28,8 +29,8 @@ extern int (*data_021ff464)(void);
 extern u32 data_021ff460;
 extern WMArm9Buf *data_021ff46c;
 extern u16 data_021ff468;
-extern u8 data_021ff470[0x20];
-extern u8 data_021ff490[0x28];
+extern u8 data_021ff470[];   // the OSMessageQueue of the free request buffers (0x20 bytes on the DS)
+extern void *data_021ff490[10];  // its message array (0x28 bytes on the DS: 10 pointers)
 extern WMMsg data_021ff4b8;
 extern u8 data_021ff4cc[];
 extern u8 data_021ff4dc[];
@@ -84,7 +85,7 @@ u32 WMi_SendCommand(u32 id, u16 paramNum, ...);
 u32 WMi_CheckInitialized(void);
 u32 WMi_CheckIdle(void);
 u32 WMi_CheckStateEx(int n, ...);
-void WmReceiveFifo(u32 tag, WMMsg *m, BOOL err);
+void WmReceiveFifo(u32 tag, u32 data, BOOL err);
 WMStatus *WMi_GetStatusAddress(void);
 void CARDi_PulledOutCallback(u32 tag, u32 data, BOOL err);
 void CARDi_SendtoPxi(u32 data, u32 n);
@@ -223,5 +224,6 @@ u32 data_0213c1fc = 0x10000;
 // sort)
 u16 data_021ff468;
 WMArm9Buf *data_021ff46c;
-u8 data_021ff470[0x20];
-u8 data_021ff490[0x28];
+// (sized for the host's OSMessageQueue and pointers: on 64-bit hosts 0x20 / 0x28 bytes overran into the neighbours)
+_Alignas(8) u8 data_021ff470[sizeof(OSMessageQueue)];
+void *data_021ff490[10];

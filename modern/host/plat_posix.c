@@ -53,6 +53,13 @@ static void *thread_main(void *p) {
     s.fn(s.arg);
     return 0;
 }
+void host_plat_restart(char **argv) {
+#ifdef __linux__
+    execv("/proc/self/exe", argv);
+#endif
+    execvp(argv[0], argv);
+}
+
 int host_plat_thread_start(void (*fn)(void *), void *arg) {
     struct Start *s = malloc(sizeof *s);
     if (!s) return 0;

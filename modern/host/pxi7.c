@@ -80,6 +80,26 @@ static void *take_pointer(u32 tag) {
     return p;
 }
 
+// The other way (the WM's replies, wm7.c): the word goes out with the pointer, which the ARM9's receive callback takes
+// (HostPxi_TakeArm7Pointer) in the order the words arrive. The word's data bits are the DS's (the address's low bits).
+static struct { u32 tag; void *p; } sArm7Pointer[64];
+static int sArm7PointerHead, sArm7PointerCount;
+int pxi7_send_pointer(u32 tag, void *p) {
+    if (sCount == 64 || sArm7PointerCount == 64) return 0;
+    sArm7Pointer[(sArm7PointerHead + sArm7PointerCount++) % 64].tag = tag;
+    sArm7Pointer[(sArm7PointerHead + sArm7PointerCount - 1) % 64].p = p;
+    pxi7_send(tag | ((u32)(uintptr_t)p & 0x3ffffff) << 6);
+    return 1;
+}
+void *HostPxi_TakeArm7Pointer(unsigned int tag) {
+    if (!sArm7PointerCount || sArm7Pointer[sArm7PointerHead].tag != tag)
+        host_fatal("pxi7: a reply without its pointer");
+    void *p = sArm7Pointer[sArm7PointerHead].p;
+    sArm7PointerHead = (sArm7PointerHead + 1) % 64;
+    sArm7PointerCount--;
+    return p;
+}
+
 // ---- NVRAM (tag 4): the firmware flash. Messages: bit 25 start, bit 24 end, bits 16-23 index, bits 0-15 payload;
 // the first carries the command in bits 8-15. The reply's low byte is the result (0: success).
 static u8 sNvram[0x40000];
@@ -405,6 +425,10 @@ static void pm_word(u32 data) {
 struct SNDCommand;
 void snd7_receive(struct SNDCommand *list);
 
+// ---- wireless (tag 10): the WM's requests (wm7.c)
+void wm7_receive(void *request);
+void wm7_init(const char *savePath);
+
 // ---- services
 static void service(u32 tag, u32 data, u32 err) {
     switch (tag) {
@@ -413,6 +437,7 @@ static void service(u32 tag, u32 data, u32 err) {
     case 6: tp_command(data); break;
     case 7: snd7_receive(data ? take_pointer(7) : 0); break;
     case 8: pm_word(data); break;
+    case 10: wm7_receive(take_pointer(10)); break;  // WM (wireless): wm7.c
     case 11: card_request(data); break;
     case 15:  // WVR: VRAM C/D for the wireless reboot driver; the ARM7 acknowledges at once
         if (data >> 16 == 1) pxi7_send(15 | 0x10000u << 6);
@@ -452,6 +477,7 @@ void pxi7_init(void) {
     if (f) { sNvramSize = (u32)fread(sNvram, 1, sizeof sNvram, f); fclose(f); }
     else if (fw) fprintf(stderr, "pxi7: can't read the firmware image %s: a default one\n", fw);
     if (!sNvramSize) default_firmware();
+    wm7_init(sSavePath);  // (the MAC address and the wireless channels in the user settings' copy)
     // ARM7 callbacks ready for every tag (OSSystemWork.pxiHandleChecker[1])
     ((volatile u32 *)gHostSysWork.pxiHandleChecker)[1] = 0xffffffff;
 }

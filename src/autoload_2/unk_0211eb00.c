@@ -1,3 +1,4 @@
+#include "nitro/pxi_ptr.h"
 #include "uptr.h"
 #include "host_mem.h"
 #include "sys/CardCommon.h"
@@ -86,7 +87,7 @@ u32 WMi_SendCommand(u32 id, u16 paramNum, ...);
 u32 WMi_CheckInitialized(void);
 u32 WMi_CheckIdle(void);
 u32 WMi_CheckStateEx(int n, ...);
-void WmReceiveFifo(u32 tag, WMMsg *m, BOOL err);
+void WmReceiveFifo(u32 tag, u32 data, BOOL err);
 WMStatus *WMi_GetStatusAddress(void);
 void CARDi_PulledOutCallback(u32 tag, u32 data, BOOL err);
 void CARDi_SendtoPxi(u32 data, u32 n);
@@ -94,8 +95,14 @@ void CARDi_OnFifoRecv(u32 tag, u32 data, BOOL err);
 BOOL CARDi_Request(CardCommon *c, u32 arg, int retry);
 BOOL CARDi_ReadFromCache(u8 *cache);
 void CARDi_SetRomOp(u32 hi, u32 lo);
-BOOL CARDi_TryReadCardDma(CardCommon *req);void WmReceiveFifo(u32 tag, WMMsg *m, BOOL err) {
+BOOL CARDi_TryReadCardDma(CardCommon *req);
+
+// The ARM7's message: on the DS the data word is its address; on the host wm7.c hands the pointer over with the word
+// (HostPxi_TakeArm7Pointer, include/nitro/pxi_ptr.h).
+void WmReceiveFifo(u32 tag, u32 data, BOOL err) {
+    WMMsg *m;
     if (err != 0) return;
+    m = (WMMsg *)HostPxi_TakeArm7Pointer(tag);
     DC_InvalidateRange(data_021ff46c->f10, 0x100);
     if (data_021ff46c->f16 == 0) DC_InvalidateRange(data_021ff46c->status, 0x800);
     if (m != (WMMsg *)data_021ff46c->f10) DC_InvalidateRange(m, 0x100);
@@ -134,18 +141,21 @@ BOOL CARDi_TryReadCardDma(CardCommon *req);void WmReceiveFifo(u32 tag, WMMsg *m,
             if (data_021ff468 == 0) return;
         }
         if (m->id == 8 || m->id == 12) {
+            // (read through the callbacks' own layouts: WMMsg's fields after 0x0c move on 64-bit hosts)
             if (m->id == 8) {
-                r5 = (u8 *)&m->f0a;
-                r4 = m->_14;
-                r8 = m->f08w;
-                r7 = m->f10;
+                WMStartParentCallback *p = (WMStartParentCallback *)m;
+                r5 = p->macAddress;
+                r4 = (u8 *)p + 0x14;  // the SSID
+                r8 = p->state;
+                r7 = p->aid;
                 r6 = 0;
             } else if (m->id == 12) {
+                WMStartConnectCallback *c = (WMStartConnectCallback *)m;
                 r7 = 0;
-                r8 = m->f08w;
-                r6 = m->f10;
+                r8 = c->state;
+                r6 = c->aid;
                 r4 = NULL;
-                r5 = (u8 *)&m->f0a;
+                r5 = c->macAddress;
             }
             if (r8 == 7 || r8 == 9) {
                 u16 i;
@@ -158,7 +168,8 @@ BOOL CARDi_TryReadCardDma(CardCommon *req);void WmReceiveFifo(u32 tag, WMMsg *m,
                 data_021ff4b8.f12 = r7;
                 data_021ff4b8.f20h = r6;
                 data_021ff4b8.f1a = 0xffff;
-                MI_CpuCopy8(r5, data_021ff4cc, 6);
+                // (data_021ff4cc on the DS: the message's +0x14)
+                MI_CpuCopy8(r5, ((WMPortRecvCallback *)&data_021ff4b8)->macAddress, 6);
                 if (r4 != 0) {
                     MIi_CpuCopy16(r4, data_021ff4dc, 0x18);
                 } else {

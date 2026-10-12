@@ -209,7 +209,7 @@ u32 WM_SetWEPKey(WMCallback cb, u32 wepmode, void *key) {
         DC_StoreRange(key, 0x50);
     }
     WMi_SetCallbackTable(20, cb);
-    r = WMi_SendCommand(20, 2, wepmode, key);
+    r = WMi_SendCommand(20, 2, wepmode, WM_ARM7_ADDR(key));
     if (r == 0) r = 2;
     return r;
 }
@@ -224,7 +224,7 @@ u32 WM_SetWEPKeyEx(WMCallback cb, u32 wepmode, u32 wepkeyid, void *key) {
         DC_StoreRange(key, 0x50);
     }
     WMi_SetCallbackTable(39, cb);
-    r = WMi_SendCommand(39, 3, wepmode, key, wepkeyid);
+    r = WMi_SendCommand(39, 3, wepmode, WM_ARM7_ADDR(key), wepkeyid);
     if (r == 0) r = 2;
     return r;
 }
@@ -238,7 +238,7 @@ u32 WM_SetGameInfo(WMCallback cb, void *userGameInfo, u32 size, u32 ggid, u16 tg
     MIi_CpuCopy16(userGameInfo, data_021fff00, size);
     DC_StoreRange(data_021fff00, size);
     WMi_SetCallbackTable(24, cb);
-    r = WMi_SendCommand(24, 5, data_021fff00, size, ggid, tgid, attr);
+    r = WMi_SendCommand(24, 5, WM_ARM7_ADDR(data_021fff00), size, ggid, tgid, attr);
     if (r == 0) r = 2;
     return r;
 }
@@ -494,7 +494,7 @@ void WmDataSharingSetDataCallback(WMMsg *msg) {
     ds = w->portArg[msg->f0a];
     if (w->portCb[msg->f0a] != WmDataSharingReceiveCallback_Parent && w->portCb[msg->f0a] != WmDataSharingReceiveCallback_Child) return;
     if (ds == 0) return;
-    if (WM_ARM7_ADDR(ds) != msg->f20) return; // (f20: the send call's argument, an ARM7 address)
+    if ((void *)ds != ((WMPortSendCallback *)msg)->arg) return; // (the send call's argument)
     DC_InvalidateRange(&st->f184, 2);
     err = msg->errcode;
     aid = st->f184;

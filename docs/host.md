@@ -157,7 +157,7 @@ write. Without `ACWW_SAVE` every run starts blank and nothing is written to disk
 local time, years clamped to 2000-2099; `ACWW_RTC="2026-10-08 12:00:00"` pins a fixed date and time that doesn't
 advance. Headless runs default to the fixed 2026-04-01 12:00:00, the clock the oracle's captures were taken with, so
 that scripted runs stay reproducible; `ACWW_RTC=host` gives them the local time), `ACWW_HEADLESS=1` (no window),
-`ACWW_FAST=1` (not paced to 60 Hz), `ACWW_SHOT="frame:file.ppm;..."`, `ACWW_KEYS="frame:frames:mask;..."`, `ACWW_TOUCH="frame:frames:x,y;..."`;
+`ACWW_FAST=1` (not paced to 60 Hz; `ACWW_FAST=<frame>`: not paced until that frame), `ACWW_SHOT="frame:file.ppm;..."`, `ACWW_KEYS="frame:frames:mask;..."`, `ACWW_TOUCH="frame:frames:x,y;..."`;
 `ACWW_WAV=file.wav` (the sound, also headless; ACWW_KEYS masks are hex KEYINPUT bits: 1 A, 2 B, 8 Start, 10 Right,
 20 Left, 40 Up, 80 Down, 400 X, 800 Y), `ACWW_MUTE=1`; debugging: `ACWW_STATS`, `ACWW_FPS`, `ACWW_IOLOG=addr`,
 `ACWW_IOHIST` (register accesses by address and calling code, to `acww_iohist.txt`; written at exit, on SIGINT and
@@ -168,8 +168,23 @@ position every n frames: for writing input scripts that walk somewhere), `ACWW_W
 device, underruns); window runs: `ACWW_WINSHOT` (above), `ACWW_VSYNC=1` (also wait for the display's vsync; the pacing
 is the runtime's either way), `ACWW_AUDIO_SAMPLES` (the audio device's buffer, default 512 frames).
 
+Local wireless (the gate's DS-to-DS play between copies of the program, `wm7.c`): every copy on a machine and the LAN
+finds the others by itself (UDP ports 31470-31477, the first free one; `ACWW_NET_PORT=<port>`: that one). Over the
+internet the visitor names the host: `ACWW_NET_PEER=<host>[:<port>][,...]` (the host's port reachable: forwarded, by
+default 31470); `ACWW_NET_LAN=0` keeps a copy's beacons off the LAN. Each copy's MAC address (how the game tells the
+players apart) is made from the machine's name and the save file's path, `ACWW_MAC=xx:xx:xx:xx:xx:xx` sets it
+(headless runs: a fixed one; two headless copies need two). `ACWW_WM_LOG=1` logs the requests, the connections and
+the MP traffic once a second, `=2` every packet. For scripted tests: `ACWW_TEST_JOB_DONE=1` keeps the player's
+"Nook's part-time job" flag clear (the gate opens only after the job; the save script's save hasn't done it) and
+`ACWW_FAST=<frame>` gets there quickly before both copies run in real time (they wait for each other's packets);
+`tools/host_wireless_test.sh <binary> <save file>` runs a whole visit with two copies. A connection that breaks
+makes the game reset the system (on the DS: back to its title); the program then starts again in place
+(`host_reset_system`; a headless run ends there).
+
 The runtime (`modern/host/`):
 
+- `wm7.c`: the ARM7's wireless manager (PXI tag 10): the WM requests answered, the radio's traffic as UDP datagrams
+  between copies (docs/portability.md 33).
 - `hw.c`: nothing mapped at a DS address (the game's variables are ordinary data and bss); the register model behind `HostIo_Read` / `HostIo_Write` (the registers in host arrays);
   virtual time (scanlines, timers, VBlank), DMA, the divider and square root; interrupts taken after register
   accesses; 60 Hz pacing; the watchdog.

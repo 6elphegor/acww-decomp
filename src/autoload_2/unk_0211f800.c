@@ -129,7 +129,7 @@ u32 WM_StartDCF(WMCallback cb, void *ptr, u32 len) {
     if (ptr == 0) return 6;
     DC_StoreRange(ptr, len);
     WMi_SetCallbackTable(17, cb);
-    r = WMi_SendCommand(17, 2, ptr, len);
+    r = WMi_SendCommand(17, 2, WM_ARM7_ADDR(ptr), len);
     if (r == 0) r = 2;
     return r;
 }
@@ -146,7 +146,7 @@ u32 WM_SetDCFData(WMCallback cb, void *mac, void *buf, u32 len) {
     DC_StoreRange(buf, len);
     WMi_SetCallbackTable(18, cb);
     MI_CpuCopy8(mac, m, 6);
-    r = WMi_SendCommand(18, 4, m[0], m[1], buf, len);
+    r = WMi_SendCommand(18, 4, m[0], m[1], WM_ARM7_ADDR(buf), len);
     if (r == 0) r = 2;
     return r;
 }
@@ -184,7 +184,7 @@ u32 WM_StartMPEx(WMCallback cb, void *a, u16 len, void *c, u16 s1, u16 s2, u16 s
         if ((t & 0x1f) != 0) return 6;
     }
     WMi_SetCallbackTable(14, cb);
-    r = WMi_SendCommand(14, 10, a, (u32)len >> 1, c, s1, s2, s3, s4, s5, s6, s7);
+    r = WMi_SendCommand(14, 10, WM_ARM7_ADDR(a), (u32)len >> 1, WM_ARM7_ADDR(c), s1, s2, s3, s4, s5, s6, s7);
     if (r == 0) r = 2;
     return r;
 }
@@ -213,7 +213,8 @@ u32 WM_SetMPDataToPortEx(WMCallback cb, void *arg, void *sendData, u16 size, u16
     if (size + (parent != 0 ? 4 : 2) > maxSize) return 6;
     if (size == 0) return 6;
     DC_StoreRange(sendData, size);
-    r = WMi_SendCommand(15, 7, sendData, size, destBitmap, port, prio, cb, arg);
+    r = WMi_SendCommand(15, 7, WM_ARM7_ADDR(sendData), size, destBitmap, port, prio, WM_ARM7_ADDR(cb),
+                        WM_ARM7_ADDR(arg));
     if (r == 0) r = 2;
     return r;
 }
@@ -238,7 +239,7 @@ u32 WM_Enable(WMCallback cb) {
     WMi_SetCallbackTable(3, cb);
     {
         WMArm9Buf *w = WMi_GetSystemWork();
-        r = WMi_SendCommand(3, 3, w->w0, w->status, w->f10);
+        r = WMi_SendCommand(3, 3, WM_ARM7_ADDR(w->w0), WM_ARM7_ADDR(w->status), WM_ARM7_ADDR(w->f10));
     }
     if (r == 0) r = 2;
     return r;
@@ -281,7 +282,7 @@ u32 WM_Initialize(void *buf, WMCallback cb, u16 dmaNo) {
     if (r != 0) return r;
     WMi_SetCallbackTable(0, cb);
     w = WMi_GetSystemWork();
-    r = WMi_SendCommand(0, 3, w->w0, w->status, w->f10);
+    r = WMi_SendCommand(0, 3, WM_ARM7_ADDR(w->w0), WM_ARM7_ADDR(w->status), WM_ARM7_ADDR(w->f10));
     if (r == 0) r = 2;
     return r;
 }
@@ -322,7 +323,7 @@ u32 WM_SetParentParameter(WMCallback cb, WMParentParam *p) {
     WMi_SetCallbackTable(7, cb);
     DC_StoreRange(p, sizeof(WMParentParam));
     if (p->userGameInfoLength != 0) DC_StoreRange(p->userGameInfo, p->userGameInfoLength);
-    r = WMi_SendCommand(7, 1, p);
+    r = WMi_SendCommand(7, 1, WM_ARM7_ADDR(p));
     if (r == 0) r = 2;
     return r;
 }

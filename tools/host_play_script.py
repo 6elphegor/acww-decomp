@@ -12,6 +12,12 @@ Scripts (headless runs with the oracle's firmware image and a fresh save file un
             Start -> "Save and end": the first save (written to ACWW_SAVE) and back to the title.
   continue  with the save file from `save`: the title's continue path, the player wakes up in the house and
             stands in front of it in town.
+  gate-host, gate-visit
+            local wireless between two copies (tools/host_wireless_test.sh), each with the save file from `save` and
+            ACWW_TEST_JOB_DONE=1 (the gate opens only after Nook's part-time job): continue, walk to the gate house,
+            in, talk to Copper. gate-host opens the gate ("Invite guests!", DS to DS) and walks off; gate-visit goes
+            out (DS to DS), picks the town found, travels, arrives at the host's gate, goes back in and asks Copper to
+            go home. Real time from frame 9600 on (ACWW_FAST=9600): the copies wait for each other.
 Frame numbers are virtual frames (ACWW_KEYS / ACWW_TOUCH: frame:frames:value); keys are KEYINPUT bits (hex).
 """
 import sys
@@ -60,7 +66,48 @@ def cont():
     return keys, touch
 
 
-SCRIPTS = {'play': play, 'town': town, 'save': save, 'continue': cont}
+def moves(frame, seq):
+    """keys from a list of moves from `frame` on: ('A', n) / ('D', n): press A or Down (6 frames), then wait n frames;
+    (direction, n): hold it n frames, then 40 frames; ('W', n): wait n frames"""
+    keys = []
+    for k, n in seq:
+        if k == 'W':
+            frame += n
+        elif k in ('A', 'D'):
+            keys.append((frame, 6, A if k == 'A' else DOWN))
+            frame += 6 + n
+        else:
+            keys.append((frame, n, {'U': UP, 'L': LEFT, 'R': RIGHT, 'S': DOWN}[k]))
+            frame += n + 40
+    return keys
+
+
+# from in front of the player's house (81, 110): around it to the west, north past the trees, east to the gate house
+# at (80, 33), in, up to the inner doors (16, 17) and right to Copper
+TO_COPPER = [('S', 100), ('L', 150), ('U', 520), ('R', 80), ('U', 500), ('R', 20), ('U', 200), ('W', 300),
+             ('U', 60), ('W', 50), ('U', 60), ('W', 50), ('U', 60), ('W', 50), ('U', 60), ('S', 10), ('R', 40),
+             ('W', 30)]
+
+
+def gate_host():
+    keys = every(2400, 3500, 60, 6, A)
+    # Copper's talk to his menu (13 A), "Invite guests!", then up to the gate opening (22 A: one more starts a new
+    # talk, and a host in a talk keeps the visitor waiting), then away from Copper
+    keys += moves(4000, TO_COPPER + [('A', 84)] * 13 + [('D', 84)] + [('A', 84)] * 22 + [('W', 200), ('S', 300)])
+    return keys, [(2200, 10, '128,96')]
+
+
+def gate_visit():
+    keys = every(2400, 3500, 60, 6, A)
+    # "I wanna go out!" (DS to DS), the search, the town found, the trip (54 A in all); at the host's gate: back
+    # into its gate house, up to the doors, right to Copper, and his talk about going home
+    keys += moves(4000, TO_COPPER + [('A', 84)] * 54 + [('W', 300), ('U', 100), ('W', 300), ('U', 115), ('W', 60),
+                                                         ('R', 40), ('W', 30)] + [('A', 84)] * 30)
+    return keys, [(2200, 10, '128,96')]
+
+
+SCRIPTS = {'play': play, 'town': town, 'save': save, 'continue': cont, 'gate-host': gate_host,
+           'gate-visit': gate_visit}
 
 
 def fmt(entries, hexval):

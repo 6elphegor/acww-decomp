@@ -88,8 +88,10 @@ static u64 tm_next_overflow(Timer *t) {
 static int sFast = -1;
 static u64 sNextFrame;  // host_plat_time_ns
 static void host_pace_frame(void) {
-    if (sFast < 0) sFast = getenv("ACWW_FAST") != 0;
-    if (sFast) return;
+    // ACWW_FAST=1: never paced; ACWW_FAST=<frame> (> 1): not paced until that frame (a test gets somewhere quickly,
+    // then runs in real time - the wireless tests: two copies keep each other's pace)
+    if (sFast < 0) sFast = getenv("ACWW_FAST") ? (atoi(getenv("ACWW_FAST")) > 1 ? atoi(getenv("ACWW_FAST")) : 1) : 0;
+    if (sFast == 1 || host_frame() < (u64)sFast) return;
     u64 now = host_plat_time_ns();
     if (sNextFrame == 0) sNextFrame = now;
     sNextFrame += 16715000;                                  // 59.83 Hz
@@ -195,6 +197,8 @@ void host_advance_to_next_event(void) {
     sStatWaits++;
     u64 next = sNextVblank;
     if (pxi7_next_due() < next) next = pxi7_next_due();
+    extern u64 wm7_next_due(void);
+    if (wm7_next_due() < next) next = wm7_next_due();
     extern u64 snd7_next_due(void);
     if (snd7_next_due() < next) next = snd7_next_due();
     for (int i = 0; i < 4; i++) {
@@ -222,6 +226,8 @@ void snd7_run(u64 now);
 static void run_events_body(void) {
     snd7_run(sCycles);
     pxi7_run_due();
+    extern void wm7_run(u64 now);
+    wm7_run(sCycles);
     while (sCycles >= sNextVblank) {
         static int watchdogOn;
         if (!watchdogOn) { watchdogOn = 1; watchdog_start(); }
@@ -251,6 +257,15 @@ static void run_events_body(void) {
                 if (p) fprintf(stderr, "pos %llu %.2f %.2f %.2f\n", (unsigned long long)host_frame(), p[0] / 4096.0,
                                p[1] / 4096.0, p[2] / 4096.0);
             }
+        }
+        {   // ACWW_TEST_JOB_DONE=1: the current player's "Nook's part-time job" flag (PlayerData flag 1) kept clear, so
+            // that a scripted test from the save script's save can use the gate (local wireless) without playing the
+            // job. Test runs only: the flag is written into the game's memory every frame.
+            static int jobDone = -1;
+            if (jobDone < 0) jobDone = getenv("ACWW_TEST_JOB_DONE") != 0;
+            extern void *PlayerData_GetCurrent(void);
+            u32 *pd = jobDone ? PlayerData_GetCurrent() : 0;
+            if (pd) pd[0x21fc / 4] &= ~2u;  // (PlayerData.flags[0], include/player/PlayerData.h)
         }
         {   // ACWW_EXIT_FRAME=<n>: end the run after frame n (sound file closed as on an interrupt) - test runs
             // stop once they have what they compare instead of running out a timeout
@@ -654,6 +669,24 @@ void host_quit(void) {
     host_exit_dumps();
     fflush(NULL);
     _Exit(0);
+}
+
+// The DS's system reset (OS_ResetSystem: the game starts again from its title, e.g. after a broken wireless
+// connection): the program starts again in place, its window closed and opened again; headless runs end there (a
+// test script can't go on).
+void host_reset_system(void) {
+    fprintf(stderr, "host: the game reset the system (frame %llu)%s\n", (unsigned long long)host_frame(),
+            getenv("ACWW_HEADLESS") ? ": the run ends" : ": starting again");
+    if (getenv("ACWW_HEADLESS")) host_quit();
+    extern void snd7_output_close(void);
+    snd7_output_close();
+    extern void frontend_shutdown(void);
+    frontend_shutdown();
+    host_exit_dumps();
+    fflush(NULL);
+    extern char **gHostArgv;
+    host_plat_restart(gHostArgv);
+    host_fatal("the program couldn't start again");
 }
 
 // the reports written at exit: atexit, ACWW_EXIT_FRAME (_Exit), SIGINT (debug_posix.c)

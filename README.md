@@ -56,6 +56,21 @@ Set as environment variables:
 
 [`docs/host.md`](docs/host.md) has the rest, including the test and comparison options.
 
+### Playing together
+
+The gate's DS-to-DS play works between copies of the program, each with its own save file: one player talks to Copper
+and opens the gate ("Invite guests!"), the other asks Copper to go out by DS to DS and picks the town. Copies on the
+same machine or the same LAN find each other by themselves (UDP ports 31470-31477: a firewall has to let them
+through). A second copy on the same machine needs a save file of its own: `ACWW_SAVE=second.sav`. Over the internet,
+the visitor names the host:
+
+```
+ACWW_NET_PEER=<the host's address> build/host64_usa/acww path/to/your/game.nds
+```
+
+The host's UDP port 31470 has to be reachable (forwarded on its router). Both players need the same build (64-bit or
+32-bit). Nintendo Wi-Fi Connection is not supported.
+
 ## What's here
 
 - `src/`, `include/`: the game's code, decompiled to C and C++. On this branch it is changed freely toward plain,

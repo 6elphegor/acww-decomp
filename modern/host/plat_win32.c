@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
+#include <process.h>
 
 #include "plat.h"
 
@@ -54,6 +55,12 @@ static DWORD WINAPI thread_main(LPVOID p) {
     s.fn(s.arg);
     return 0;
 }
+void host_plat_restart(char **argv) {
+    char path[MAX_PATH];
+    if (!GetModuleFileNameA(NULL, path, sizeof path)) return;
+    _execv(path, (const char *const *)argv);
+}
+
 int host_plat_thread_start(void (*fn)(void *), void *arg) {
     struct Start *s = malloc(sizeof *s);
     if (!s) return 0;

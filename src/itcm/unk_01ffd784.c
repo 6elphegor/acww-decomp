@@ -76,13 +76,11 @@ void MIi_DmaSetParams_wait_noInt(u32 dmaNo, uptr src, uptr dest, u32 ctrl) {
     (void)IO_R((vu32 *)0x040000b0);
 }
 
-// OSi_DoResetSystem
+// OSi_DoResetSystem. On the DS: wait for the ARM7's acknowledgement, reload the ROM's start and boot it again; on
+// the host the program starts again (host_reset_system, modern/host/hw.c).
 void OSi_DoResetSystem(void) {
-    while (data_021fcf50 == 0) {
-    }
-    IO_W((vu16 *)0x04000208, 0);
-    OSi_ReloadRomData();
-    OSi_DoBoot();
+    extern void host_reset_system(void);
+    host_reset_system();
 }
 
 // OSi_ReloadRomData

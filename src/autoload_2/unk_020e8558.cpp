@@ -25,9 +25,17 @@
 
 // The NitroSystem heap headers in front of a heap's memory (its HeapHead + ExpHead + a block header, HeapHead +
 // FrmHead; src/autoload_2/unk_02100234.c): they hold pointers, so on a 64-bit host they're larger - these are
-// generous there (an overestimate only leaves a few bytes unused).
+// generous there (an overestimate only leaves a few bytes unused; the heaps are twice the size there, below). On
+// 32-bit hosts the DS's: the game sizes parents for their children with the DS's header sizes (PlayerBodyAnimHeap:
+// 0x48 per child heap, this overhead and sizeof(FrameHeap)), and with more the last child didn't fit - the second
+// player's heap in a local wireless visit.
+#ifdef HOST64
 #define NNS_EXPHEAP_OVERHEAD (0x4c * 2)
 #define NNS_FRMHEAP_OVERHEAD (0x30 * 2)
+#else
+#define NNS_EXPHEAP_OVERHEAD 0x4c
+#define NNS_FRMHEAP_OVERHEAD 0x30
+#endif
 
 
 

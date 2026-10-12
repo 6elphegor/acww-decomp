@@ -264,7 +264,7 @@ void LocalWl_StartParentNow(void);
 void LocalWl_EndParent(void);
 #endif
 #ifndef PROTO_LOCAL_LocalWl_StartConnect
-void LocalWl_StartConnect(u32 a);
+void LocalWl_StartConnect(void *a);
 #endif
 #ifndef PROTO_LOCAL_LocalWl_Disconnect
 s32 LocalWl_Disconnect(u32 a);

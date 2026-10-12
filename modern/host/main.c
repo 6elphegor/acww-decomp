@@ -88,7 +88,9 @@ static void game_main(void *arg) {
     host_fatal("NitroMain returned");
 }
 
+char **gHostArgv;  // (host_reset_system: the program starts again with them)
 int main(int argc, char **argv) {
+    gHostArgv = argv;
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "-v")) gHostVerbose = 1;
         else gHostRomPath = argv[i];

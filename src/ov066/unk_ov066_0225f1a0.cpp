@@ -325,7 +325,7 @@ u32 WM_GetAllowedChannel(void);
 s32 WM_SetPortCallback(u32, void *, s32);
 s32 WM_SetIndCallback(void *);
 s32 WM_Disconnect(void *, u32);
-s32 WM_StartConnectEx(void *, u32, u32, u32, u32);
+s32 WM_StartConnectEx(void *, void *, u32, u32, u32);
 s32 WM_EndScan(void *);
 s32 WM_StartScan(void *, void *);
 s32 WM_EndParent(void *);
@@ -623,7 +623,7 @@ void LocalWlMp_PutParentRecord(LocalWlMpFrame *o) {
 void LocalWlMp_BuildChildPacket(void) {
     LocalWlMpWork *g = sLocalWlMp;
     s32 sent = 0;
-    LocalWlMpRecord *rec = (LocalWlMpRecord *)((u8 *)g->curSendFrame + 0x20);
+    LocalWlMpRecord *rec = (LocalWlMpRecord *)&g->curSendFrame->payload;  // (+0x20 on the DS)
     if (g->flags.resendRequest != 0) {
         rec->type = 3;
         sent = 2;
@@ -1495,7 +1495,7 @@ void LocalWl_ConnectToBeacon(u8 *p, u32 v) {
         u32 c = *(u32 *)&sLocalWlSession->flags;
         *(u32 *)&sLocalWlSession->flags = (c & ~0x40) | (w << 6);
     }
-    LocalWl_StartConnect(p + 0x20);
+    LocalWl_StartConnect(&((LocalWlBeacon *)p)->bssDesc);  // (+0x20 on the DS)
 }
 #undef data_ov066_022647bc
 #undef data_ov066_022647c0
@@ -1528,8 +1528,8 @@ void LocalWl_SetMember(u32 idx, u8 *src) {
     } else {
         MI_CpuFill8(buf, 0, 6);
     }
-    r = (u8 *)sLocalWlSession + idx * 6;
-    *(LocalWlMacAddr *)(r + 0x28) = *(LocalWlMacAddr *)buf;
+    r = (u8 *)sLocalWlSession->memberMacs + idx * 6;  // (+0x28 on the DS)
+    *(LocalWlMacAddr *)r = *(LocalWlMacAddr *)buf;
     LocalWl_CountMembers();
 }
 
@@ -1766,7 +1766,7 @@ void LocalWl_OnChildControl(WMPortRecvCallback *m) {
 void LocalWl_ApplyMemberTable(void *m) {
     u8 buf[8];
     MI_CpuCopy8(m, buf, 8);
-    LocalWl_MergeMemberTable((u8 *)sLocalWlSession + 0x28, (u8 *)m + 8);
+    LocalWl_MergeMemberTable((u8 *)sLocalWlSession->memberMacs, (u8 *)m + 8);  // (+0x28 on the DS)
     LocalWl_CountMembers();
     if (sLocalWl->state == 9) {
         sLocalWl->state = 11;
@@ -1867,7 +1867,7 @@ void LocalWl_OnEndParent(LocalWlEventMsg *m) {
     }
 }
 
-void LocalWl_StartConnect(u32 a) {
+void LocalWl_StartConnect(void *a) {  // (a: the WMBssDesc)
     s32 r = WM_StartConnectEx((void *)LocalWl_OnChildConnectEvent, a, 0, 1, 0);
     if (r == 2) {
         return;

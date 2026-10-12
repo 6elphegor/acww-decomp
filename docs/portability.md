@@ -1123,6 +1123,51 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     F11 can't be bound; M mutes only while no DS button has it. **Checks:** scripted (`ACWW_UI_SCRIPT`) in a real
     window (GPU path) and with SDL's offscreen driver (SDL renderer path): rebinding by key and by controller
     button, clearing, the file written and read back, nothing left on the screen after closing.
+33. **Local wireless (2026-10-11, the user's request: "can we get multiplayer working?"):** the gate's DS-to-DS play
+    between copies of the program. The game's whole wireless stack is the decomp's (the SDK's WM library, ov066's
+    session and reliable MP layer, the network layer and CommManager above it); what the DS's ARM7 does - the radio -
+    is modern/host/wm7.c, PXI tag 10: it answers the WM requests (power, parent parameters, beacons, scans, the
+    connection, the MP sequences, the per-port data) and carries the radio's traffic in UDP datagrams between copies:
+    a parent's beacons to every copy on the machine and the LAN (ports 31470-31477) and to the addresses that asked
+    for them, the connection handshake, and per MP sequence (mpFreq per frame) the parent's frame to its children and
+    each child's answer, as the DS hardware sends them. ov066 keeps its own frame numbers, acknowledgements and resends,
+    so late or lost datagrams only slow it. Over the internet the visitor names the host (`ACWW_NET_PEER=host[:port]`)
+    and asks it for its beacons; only the host's port has to be reachable. Options in docs/host.md.
+    What it took besides wm7.c:
+    - **The MAC address and the channels.** The game refuses wireless with the all-zero MAC address the host had in the
+      user settings' copy (`func_0211f7e4`), and reads the channels allowed from there. wm7_init puts a MAC address
+      (Nintendo's prefix; per copy: made from the machine's name and the save file's path, `ACWW_MAC`, a fixed one for
+      headless runs) and channels 1, 7 and 13 there. Nothing else reads them in the scripted runs: captures_v3 stay
+      identical.
+    - **Pointers to the ARM7 side.** `WMi_SendCommand` passes its arguments as 32-bit words, and four requests put
+      addresses into the request (scan buffers, the parent's description): those are ptr32 words now
+      (`WM_ARM7_ADDR`, include/host_ptr32.h), which wm7.c resolves. The ARM7's answers carry their message's address
+      in the 26-bit PXI word on the DS; wm7.c hands the pointer over with the word (`HostPxi_TakeArm7Pointer`), and
+      `WmReceiveFifo` takes it.
+    - **64-bit layouts.** The free-buffer message queue of WM_Init was sized for the DS (0x20 + 0x28 bytes): on 64-bit
+      hosts it overran `WMArm9Buf *` and the init flag beside it (every request then failed). ov066 used DS offsets
+      into host structures in three places (a beacon's description at +0x20, a ring frame's payload at +0x20, the
+      member table at +0x28) and passed a beacon pointer through a u32; `WmReceiveFifo` read the connect events'
+      fields through WMMsg's view, whose fields after 0x0c move on 64-bit hosts. The callback structures the ARM7 fills
+      are the SDK's (WMStartConnectCallback, WMStartMPCallback, the full WMPortRecvCallback), laid out for the host.
+    - **32-bit hosts' heap overheads.** The NitroSystem header overheads in unk_020e8558.cpp were doubled on every
+      host; on i386, where the heaps keep the DS's sizes, a parent sized with the DS's 0x48 per child heap then held
+      one child less: the second player's body heap in a visit was NULL (a crash on arrival). The DS's values on
+      32-bit hosts now (64-bit hosts: doubled, with heaps twice the size).
+    - **The system reset.** A broken connection makes the game reset the system (`OS_ResetSystem`: back to the title
+      on the DS), which spun on the host: `OSi_DoResetSystem` calls `host_reset_system`, which starts the program
+      again in place (`host_plat_restart`: exec with the same arguments; headless runs end there).
+    **Checks:** two copies on this machine (`tools/host_wireless_test.sh <binary> <save>`: the scripts gate-host and
+    gate-visit, `ACWW_TEST_JOB_DONE` for the gate, `ACWW_FAST=<frame>` then real time; both from the save script's
+    town): the host opens the gate, the visitor finds the town, travels,
+    arrives ("has come to play!"), walks around (seen on the host's screen), goes home through the gate ("is going
+    home!"), both carry on - three runs in a row the same, on x86-64 and on i386; the same over `ACWW_NET_PEER` with
+    `ACWW_NET_LAN=0`; the host quitting during the visit: the visitor's game reports the broken connection, resets,
+    and (a window run) starts again; quick/play identical to captures_v3 (x86-64, i386); the save script's save
+    differs only in the Wi-Fi user data made from the MAC address. Not done: Nintendo WFC (ov065: an access point,
+    the game's own TCP/IP and SSL, a server - servers that no longer exist; Wiimmfi is a community one), a real DS,
+    latency over the internet. A 32-bit and a 64-bit build don't play together (the visitor's game reports a broken
+    connection on arrival: something the copies exchange differs between them; not looked into).
 
 ---
 

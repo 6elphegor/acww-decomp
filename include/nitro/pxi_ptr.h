@@ -10,6 +10,9 @@
 extern "C" {
 #endif
 void HostPxi_PutPointer(unsigned int tag, const void *p);  // (modern/host/pxi7.c)
+// The other way: a message of the ARM7 side that carries an address (the WM's replies) comes with the pointer, which
+// the receive callback takes in the messages' order.
+void *HostPxi_TakeArm7Pointer(unsigned int tag);
 #ifdef __cplusplus
 }
 #endif
