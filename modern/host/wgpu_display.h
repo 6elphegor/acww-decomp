@@ -26,8 +26,8 @@ int wdisp_read_2d(uint32_t *out);
 const uint32_t *wdisp_screens(void);
 
 // presenting to a window: its native handles (WDISP_X11: Display *, Window; WDISP_WAYLAND: wl_display *,
-// wl_surface *); 0 if it can't
-enum { WDISP_X11 = 1, WDISP_WAYLAND = 2 };
+// wl_surface *; WDISP_METAL: CAMetalLayer *, unused); 0 if it can't
+enum { WDISP_X11 = 1, WDISP_WAYLAND = 2, WDISP_METAL = 3 };
 int wdisp_attach(int kind, void *display, uint64_t window, int vsync);
 int wdisp_presenting(void);
 // the last frame into the window, whose drawable is w x h pixels (the screens letterboxed in it)

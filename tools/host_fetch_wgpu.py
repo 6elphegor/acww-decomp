@@ -4,7 +4,7 @@ repository, where tools/configure_host.py finds it: the pinned release, checked 
 
     python3 tools/host_fetch_wgpu.py
 
-Only Linux x86-64 for now (the other builds use the CPU renderers)."""
+Linux x86-64 and macOS (arm64, x86-64); the other builds use the CPU renderers."""
 import hashlib
 import io
 import os
@@ -17,6 +17,10 @@ VERSION = "v29.0.1.1"
 RELEASES = {  # platform: (the release's file, its SHA-256)
     "linux-x86_64": ("wgpu-linux-x86_64-release.zip",
                      "95a4d90c071005a98d03eab348beaa6b07e16eb00d1dcdb9f8348f75eb97ec5a"),
+    "darwin-arm64": ("wgpu-macos-aarch64-release.zip",
+                     "a5797a37b1adf720bcd5dcffb291edbbd5b7b14be0a3874c28e6393a655a7a3e"),
+    "darwin-x86_64": ("wgpu-macos-x86_64-release.zip",
+                      "8e2f7378548ddd0e2cf21e7d864dda46e953f0af724855a33778b85ead206d41"),
 }
 
 

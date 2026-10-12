@@ -562,8 +562,12 @@ int wdisp_attach(int kind, void *display, uint64_t window, int vsync) {
     if (!setup()) return 0;
     WGPUSurfaceSourceXlibWindow x11 = WGPU_SURFACE_SOURCE_XLIB_WINDOW_INIT;
     WGPUSurfaceSourceWaylandSurface wl = WGPU_SURFACE_SOURCE_WAYLAND_SURFACE_INIT;
+    WGPUSurfaceSourceMetalLayer metal = WGPU_SURFACE_SOURCE_METAL_LAYER_INIT;
     WGPUSurfaceDescriptor sd = WGPU_SURFACE_DESCRIPTOR_INIT;
-    if (kind == WDISP_X11) {
+    if (kind == WDISP_METAL) {
+        metal.layer = display;
+        sd.nextInChain = &metal.chain;
+    } else if (kind == WDISP_X11) {
         x11.display = display;
         x11.window = window;
         sd.nextInChain = &x11.chain;

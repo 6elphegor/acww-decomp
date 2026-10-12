@@ -13,6 +13,7 @@ import argparse
 import glob
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -308,17 +309,24 @@ if not args.oracle:  # (no melonDS: its headers and libraries aren't needed)
 WGPU = args.wgpu
 if WGPU is None:
     WGPU = "none"
-    if X64 and not WIN:  # (the repository's toolchains/, then ~/acww/toolchains)
+    if (X64 or MAC) and not WIN:  # (the repository's toolchains/, then ~/acww/toolchains)
+        # (tools/host_fetch_wgpu.py's directory names: the platform and machine as Python names them)
+        plat = f"darwin-{os.uname().machine}" if MAC else "linux-x86_64"
         for d in (str(root / "toolchains"), os.path.expanduser("~/acww/toolchains")):
-            if os.path.exists(f"{d}/wgpu-native-v29.0.1.1/linux-x86_64/lib/libwgpu_native.a"):
-                WGPU = f"{d}/wgpu-native-v29.0.1.1/linux-x86_64"
+            if os.path.exists(f"{d}/wgpu-native-v29.0.1.1/{plat}/lib/libwgpu_native.a"):
+                WGPU = f"{d}/wgpu-native-v29.0.1.1/{plat}"
                 break
 if WGPU == "none" or not os.path.exists(f"{WGPU}/lib/libwgpu_native.a"):
     if args.wgpu not in (None, "none"):
         sys.exit(f"--wgpu: no {args.wgpu}/lib/libwgpu_native.a")
     WGPU = None
-WGPU_CFLAGS = f"-O2 -DHOST_WGPU -I{WGPU}/include" if WGPU else "-O2"
-WGPU_LIBS = f" {WGPU}/lib/libwgpu_native.a -ldl" if WGPU else ""
+# (quoted: the repository's own path, where host_fetch_wgpu.py puts it, may have spaces)
+WGPU_CFLAGS = f"-O2 -DHOST_WGPU -I{shlex.quote(WGPU + '/include')}" if WGPU else "-O2"
+WGPU_LIBS = f" {shlex.quote(WGPU + '/lib/libwgpu_native.a')} -ldl" if WGPU else ""
+if WGPU and MAC:
+    # (wgpu-native's Metal backend: the system frameworks it calls)
+    WGPU_LIBS = (f" {shlex.quote(WGPU + '/lib/libwgpu_native.a')} -framework Metal -framework QuartzCore -framework CoreGraphics"
+                 " -framework Foundation -framework IOKit -lobjc")
 
 MWCC_FLAG_MAP = {("-char", "unsigned"): "-funsigned-char"}
 

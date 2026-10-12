@@ -14,7 +14,7 @@
 // game's 512 KB thread stacks needn't fit a GL driver's needs.
 //
 // With the screens on the GPU (ACWW_RENDERER3D=wgpu: render_on_gpu) the window is drawn by wgpu_display.c, through
-// its native handles (X11 or Wayland), at the window's resolution; else by an SDL renderer from the AcwwShm pixels.
+// its native handles (X11 or Wayland; on macOS a Metal view's CAMetalLayer), at the window's resolution; else by an SDL renderer from the AcwwShm pixels.
 //
 // Pacing stays the runtime's (hw.c, 60 Hz on the host clock); ACWW_VSYNC=1 also waits for the display's vsync.
 // Testing without a display: SDL_VIDEODRIVER=dummy (or offscreen), SDL_AUDIODRIVER=dummy (or disk, with
@@ -25,6 +25,9 @@
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
 #include <SDL_syswm.h>
+#if defined(__APPLE__)
+#include <SDL_metal.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -88,12 +91,20 @@ static void audio_callback(void *user, Uint8 *stream, int len) {
     __atomic_store_n(&shm->audio_read, r, __ATOMIC_RELEASE);
 }
 
+#if defined(__APPLE__)
+static SDL_MetalView sMetalView;  // (the window's Metal view, wgpu_display.c's surface)
+#endif
+
 static void sdl_quit(void) {
     if (getenv("ACWW_AUDIO_INFO") && sCalls)
         fprintf(stderr, "frontend: sound: %u underruns, %u skips, mean queue %.0f frames\n", sDry, sSkips,
                 sLevelSum / sCalls);
     if (sDev) SDL_CloseAudioDevice(sDev);
     sDev = 0;
+#if defined(__APPLE__)
+    if (sMetalView) SDL_Metal_DestroyView(sMetalView);
+    sMetalView = 0;
+#endif
     SDL_Quit();
 }
 
@@ -143,12 +154,21 @@ AcwwShm *frontend_backend_open(const char *argv0) {
     sShm->magic = ACWW_SHM_MAGIC;
     sFeSp = host_coro_prepare(stack, FE_STACK, fe_main, 0);
     sWin = SDL_CreateWindow("Animal Crossing: Wild World (native)", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                            256 * sScale, 384 * sScale, SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+                            256 * sScale, 384 * sScale, SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI
+#if defined(__APPLE__)
+                            | (render_on_gpu() ? SDL_WINDOW_METAL : 0)
+#endif
+                            );
     int vsync = getenv("ACWW_VSYNC") && atoi(getenv("ACWW_VSYNC"));
     if (sWin && render_on_gpu()) {  // the GPU draws into the window
+#if defined(__APPLE__)
+        // (a Metal view over the window's content: its layer is what wgpu draws into, at the drawable's pixels)
+        if ((sMetalView = SDL_Metal_CreateView(sWin)))
+            sGpu = wdisp_attach(WDISP_METAL, SDL_Metal_GetLayer(sMetalView), 0, vsync);
+#endif
         SDL_SysWMinfo wm;
         SDL_VERSION(&wm.version);
-        if (SDL_GetWindowWMInfo(sWin, &wm)) {
+        if (!sGpu && SDL_GetWindowWMInfo(sWin, &wm)) {
 #if defined(SDL_VIDEO_DRIVER_X11)
             if (wm.subsystem == SDL_SYSWM_X11)
                 sGpu = wdisp_attach(WDISP_X11, wm.info.x11.display, wm.info.x11.window, vsync);

@@ -12,11 +12,15 @@ Supported version:
 
 ## Run it
 
-Linux on x86-64 for now. You need GCC, Python 3, Ninja and SDL2's development files; on Debian or Ubuntu:
+Linux on x86-64 and macOS (Apple silicon or Intel). On Linux you need GCC, Python 3, Ninja and SDL2's development
+files; on Debian or Ubuntu:
 
 ```
 sudo apt install build-essential python3 ninja-build libsdl2-dev
 ```
+
+On macOS, Apple's command line tools (`xcode-select --install`) and, from Homebrew, `brew install ninja sdl2
+pkg-config`. The steps below are the same; the GPU renderer draws through Metal there.
 
 Then:
 
