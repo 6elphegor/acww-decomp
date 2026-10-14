@@ -4,6 +4,8 @@ Animal Crossing: Wild World (Nintendo DS) as a native PC program. The game's cod
 decompilation and is compiled for the PC, with its own 2D and 3D renderers (on the GPU through WebGPU, or on the
 CPU), sound, input and a window. It doesn't use an emulator. You need your own copy of the game.
 
+![K.K. Slider playing at The Roost, seen from behind the player's chair](docs/images/roost.png)
+
 Supported version:
 
 | Version        | Game code | SHA-1                                      |
