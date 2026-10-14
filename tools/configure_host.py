@@ -461,7 +461,8 @@ def main():
             link_objs = game_objs + host_objs
         # (the game's C library names don't clash with the host's: include/host_libc_rename.h)
         objects_file = build / "objects.txt"
-        objects_file.write_text("".join(f"{o}\n" for o in link_objs))
+        # (forward slashes: the linker reads the list with GNU quoting, where a backslash escapes - so on Windows too)
+        objects_file.write_text("".join(f"{Path(o).as_posix()}\n" for o in link_objs))
         exe = str(build / ("acww.exe" if WIN else "acww"))
         n.build(exe, "link", link_objs, implicit=[str(objects_file)], variables={"objects": str(objects_file)})
         # the viewer: a 64-bit SDL2 program (SDL2's headers as for the frontend: <SDL2/SDL.h>, so their parent
