@@ -103,7 +103,8 @@ if WIN:
     if args.guards or args.sanitize:
         sys.exit("--os windows: no --guards or --sanitize (GNU ld / Linux runtimes)")
     if not args.mingw:
-        found = sorted(glob.glob(os.path.expanduser("~/acww/toolchains/llvm-mingw-*/bin/x86_64-w64-mingw32-clang")))
+        found = sorted(glob.glob(os.path.expanduser("~/acww/toolchains/llvm-mingw-*/bin/x86_64-w64-mingw32-clang")
+                                     + (".exe" if os.name == "nt" else "")))
         if not found:
             sys.exit("configure_host.py: no llvm-mingw in ~/acww/toolchains (--mingw)")
         args.mingw = str(Path(found[-1]).parent.parent)
@@ -425,6 +426,9 @@ def main():
         for s in (Path("modern/link/game_begin.c"), Path("modern/link/game_end.c")):
             marks.append(str(build / s.with_suffix(".o")))
             n.build(marks[-1], "cc", str(s))
+        # (forward slashes, on Windows too: the tests below, the object lists' readers, and the linker, which reads
+        # @objects.txt with GNU quoting, where a backslash escapes)
+        objs, marks = [Path(o).as_posix() for o in objs], [Path(o).as_posix() for o in marks]
         host_objs = [o for o in objs if "/modern/host/" in o or o.endswith("/gaps.o")]
         game_objs = [marks[0]] + [o for o in objs if o not in host_objs] + [marks[1]]
         # (DTCM's variables, src/dtcm, are ordinary game variables; DTCM itself is a host block: include/host_mem.h)
@@ -461,7 +465,7 @@ def main():
             link_objs = game_objs + host_objs
         # (the game's C library names don't clash with the host's: include/host_libc_rename.h)
         objects_file = build / "objects.txt"
-        objects_file.write_text("".join(f"{o}\n" for o in link_objs))
+        objects_file.write_text("".join(f"{Path(o).as_posix()}\n" for o in link_objs))
         exe = str(build / ("acww.exe" if WIN else "acww"))
         n.build(exe, "link", link_objs, implicit=[str(objects_file)], variables={"objects": str(objects_file)})
         # the viewer: a 64-bit SDL2 program (SDL2's headers as for the frontend: <SDL2/SDL.h>, so their parent
